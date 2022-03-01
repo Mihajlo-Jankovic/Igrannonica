@@ -1,0 +1,39 @@
+<div class="jumbtron">
+  <h1 class="display-4 text-center">
+    Detalji za dostavu
+  </h1>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <app-porudzbine-details-form></app-porudzbine-details-form>
+  </div>
+  <div class="col-md-6">
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th>Ime</th>
+          <th>Adresa</th>
+          <th>Zip Kod</th>
+          <th>Grad</th>
+          <th>Telefon</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pd of service.list">
+          <td (click)="populateForm(pd)">{{pd.ime}}</td>
+          <td (click)="populateForm(pd)">{{pd.adresa}}</td>
+          <td (click)="populateForm(pd)">{{pd.zipKod}}</td>
+          <td (click)="populateForm(pd)">{{pd.grad}}</td>
+          <td (click)="populateForm(pd)">{{pd.telefon}}</td>
+          <td (click)="onDelete(pd.id)">
+            <i class="far fa-trash-alt fa-lg text-danger" ></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
