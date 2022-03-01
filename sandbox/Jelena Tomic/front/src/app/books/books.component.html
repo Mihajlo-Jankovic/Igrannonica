@@ -1,0 +1,31 @@
+<div class="jumbtron py-3">
+    <h1 class="display-4 text-center">Books</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <app-book-form></app-book-form>
+    </div>
+    
+    <div class="col-md-6">
+        <span>List of books</span>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let book of service.list">
+                    <td (click) = "populateForm(book)">{{book.name}}</td>
+                    <td (click) = "populateForm(book)">{{book.author}}</td>
+                    <td>
+                        <i class="far fa-trash-alt fa-lg text-danger" (click)="delete(book.id)"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

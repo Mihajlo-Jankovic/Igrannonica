@@ -1,0 +1,37 @@
+.form-group label 
+{
+    color : grey;
+}
+
+.form-group input
+{
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.form-group button
+{
+    margin-top: 10px;
+}
+
+.form-group input::placeholder
+{
+    color: darkgrey;
+    font-weight: 300;
+}
+
+thead th
+{
+    font-weight: 400;
+}
+
+table tbody tr:hover
+{
+    background-color: cornsilk;
+    cursor: pointer;
+}
+
+input.invalid
+{
+    border-color: red;
+}
