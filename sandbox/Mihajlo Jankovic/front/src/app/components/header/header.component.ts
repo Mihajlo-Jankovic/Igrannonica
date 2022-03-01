@@ -9,11 +9,11 @@ export class HeaderComponent implements OnInit
 {
   title: string = "Filmovi";
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void 
-  {
-    
+  ngOnInit(): void {}
+
+  toggleTable() {
+
   }
-
 }
