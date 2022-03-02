@@ -10,5 +10,15 @@ namespace MiniProjekat.Service
         {
             return movieRepositoryImpl.getAll();
         }
+
+        public bool addMovie(Movie movie)
+        {
+            return movieRepositoryImpl.create(movie);
+        }
+
+        public bool deleteMovie(int id)
+        {
+            return movieRepositoryImpl.delete(id);
+        }
     }
 }

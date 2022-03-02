@@ -7,14 +7,47 @@ namespace MiniProjekat.Repository.Implementation
     {
         private SqlConnection _connection = DbConnection.Connection;
 
-        public bool create(Movie t)
+        public bool create(Movie movie)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                string query = @"INSERT INTO movies (name, description, rating)
+                                 VALUES ('" + movie.Name + "', '" + movie.Description + "', " + movie.Rating + ");";
+
+                SqlCommand command = new SqlCommand(query, _connection);
+
+                int flag = command.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public bool delete(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                string query = @"DELETE FROM movies WHERE id = " + id;
+
+                SqlCommand command = new SqlCommand(query, _connection);
+
+                int flag = command.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
         }
 
         public Movie get(int id)

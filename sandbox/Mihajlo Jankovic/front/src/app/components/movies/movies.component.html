@@ -1,1 +1,2 @@
-<app-movie-item *ngFor="let movie of movies" [movie]="movie"></app-movie-item>
+<app-add-movie (onAddMovie)="addMovie($event)"></app-add-movie>
+<app-movie-item *ngFor="let movie of movies" [movie]="movie" (onDeleteMovie)="deleteMovie(movie)"></app-movie-item>

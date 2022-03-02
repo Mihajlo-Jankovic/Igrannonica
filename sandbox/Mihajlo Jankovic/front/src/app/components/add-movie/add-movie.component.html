@@ -1,0 +1,33 @@
+<form class="add-form" (ngSubmit)="onSubmit()">
+    <div class="form-control">
+      <label for="text">Name</label>
+      <input
+        type="text"
+        name="name"
+        [(ngModel)]="name"
+        id="name"
+        placeholder="Add Movie"
+      />
+    </div>
+    <div class="form-control">
+      <label for="day">Description</label>
+      <input
+        type="text"
+        name="description"
+        [(ngModel)]="description"
+        id="description"
+        placeholder="Add Description"
+      />
+    </div>
+    <div class="form-control">
+        <label for="rating">Rating</label>
+        <input
+            type="number"
+            name="rating"
+            [(ngModel)]="rating"
+            id="rating"
+            placeholder="Add Rating"
+        />
+    </div>
+    <input type="submit" value="Dodaj Film" class="btn btn-block" />
+  </form>

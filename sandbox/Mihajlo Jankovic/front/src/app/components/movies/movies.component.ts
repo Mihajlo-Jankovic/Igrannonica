@@ -16,4 +16,14 @@ export class MoviesComponent implements OnInit {
     this.movieService.getMovies().subscribe((movies) => (this.movies = movies));
   }
 
+  deleteMovie(movie: Movie)
+  {
+    //console.log(movie);
+    this.movieService.deleteMovie(movie).subscribe(() => (this.movies = this.movies.filter(m => m.id !== movie.id)));
+  }
+
+  addMovie(movie: Movie)
+  {
+    this.movieService.addMovie(movie).subscribe((movie) => (this.movies.push(movie)));
+  }
 }

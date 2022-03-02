@@ -4,7 +4,7 @@ using MiniProjekat.Service;
 
 namespace MiniProjekat.Controllers
 {
-    [Route("/")]
+    [Route("/api/movies")]
     [ApiController]
     public class MovieController : ControllerBase
     {
@@ -15,5 +15,32 @@ namespace MiniProjekat.Controllers
         {
             return movieService.getAllMovies();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> addMovie(Movie movie)
+        {
+            bool flag = movieService.addMovie(movie);
+            
+            if (!flag)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("/api/movies/{id}")]
+        public async Task<IActionResult> DeleteMovie(int id)
+        {
+            bool flag = movieService.deleteMovie(id);
+            
+            if (!flag)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
     }
 }
