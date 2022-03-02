@@ -1,0 +1,26 @@
+<form #form="ngForm" (submit)="onSubmit(form)">
+    <input type="hidden" name="userID" [value]="service.formData.userID">
+    <div class="form-group">
+        <label >FIRST NAME</label>
+        <input class="form-control form-control-lg" placeholder="First Name" name="firstName" 
+        #firstName = "ngModel" [(ngModel)] = "service.formData.firstName">
+    </div>
+    <div class="form-group">
+        <label >LAST NAME</label>
+        <input class="form-control form-control-lg" placeholder="Last Name" name="lastName" 
+        #lastName = "ngModel" [(ngModel)] = "service.formData.lastName">
+    </div>
+    <div class="form-group">
+        <label >E-Mail</label>
+        <input class="form-control form-control-lg" placeholder="E-Mail" name="eMail" 
+        #eMail = "ngModel" [(ngModel)] = "service.formData.eMail">
+    </div> 
+    <div class="form-group">
+        <label >Password</label>
+        <input type="password" class="form-control form-control-lg" placeholder="Password" name="password" 
+        #password = "ngModel" [(ngModel)] = "service.formData.password">
+    </div>
+    <div class="form-group">
+        <button class="btn btn-info btn-lg btn-block" type="submit" >SUBMIT</button>
+    </div>
+</form>
