@@ -1,0 +1,28 @@
+<div class="jumbotron py-3">
+    <h1 class="display-4 text-center">Unos knjige</h1>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <app-biblioteka-form></app-biblioteka-form>
+    </div>
+    <div class="col-md-6">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Autor</th>
+                    <th>Naziv knjige</th>
+                    <th>Izdanje</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tr *ngFor="let pd of service.list">
+                <td (click)="populateForm(pd)">{{pd.autor}}</td>
+                <td (click)="populateForm(pd)">{{pd.nazivKnjige}}</td>
+                <td (click)="populateForm(pd)">{{pd.izdanje}}</td>
+                <td>
+                    <i class="far fa-trash-alt fa-lg text-danger" (click)="onDelete(pd.id)"></i>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

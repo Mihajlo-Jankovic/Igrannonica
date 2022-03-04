@@ -1,0 +1,24 @@
+<form novalidate autocomplete="off" #form="ngForm"  (submit)="onSubmit(form)">
+    <input type="hidden" name="Id" [value]="service.formData.id" />
+    <div class="form-group">
+        <label>AUTOR</label>
+        <input class="form-control form-control-lg" placeholder="Ime i prezime" name="autor"
+            #autor="ngModel" [(ngModel)]="service.formData.autor"
+            required [class.invalid]="autor.invalid && autor.touched">
+    </div>
+    <div class="form-group">
+        <label>NAZIV KNJIGE</label>
+        <input class="form-control form-control-lg" placeholder="Naziv knjige" name="nazivKnjige"
+            #nazivKnjige="ngModel" [(ngModel)]="service.formData.nazivKnjige"
+            required  [class.invalid]="nazivKnjige.invalid && nazivKnjige.touched">
+    </div>
+        <div class="form-group ">
+            <label>GODINA IZDANJA</label>
+            <input  class="form-control form-control-lg" placeholder="Godina izdanja" name="izdanje"
+                #izdanje="ngModel" [(ngModel)]="service.formData.izdanje"
+                required maxlength="4" minlength="4" [class.invalid]="izdanje.invalid && izdanje.touched">
+        </div>
+    <div class="form-group">
+        <button class="btn btn-info btn-lg btn-block" type="submit" [disabled]="form.invalid">UNESI</button>
+    </div>
+</form>
