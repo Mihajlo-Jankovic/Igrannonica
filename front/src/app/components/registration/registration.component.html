@@ -1,0 +1,26 @@
+<form #logoutForm="ngForm"><!-- (ngSubmit)="onLogin(loginForm)"> -->
+    <div>
+        <label>Name</label><br>
+        <input type="text" placeholder="name" name="name" [(ngModel)]="name"><br>
+    </div>
+
+    <div>
+        <label>Surname</label><br>
+        <input type="text" placeholder="surname" name="surname" [(ngModel)]="surname"><br>
+    </div>
+
+    <div>
+        <label>Username</label><br>
+        <input type="text" placeholder="username" name="username" [(ngModel)]="username"><br>
+    </div>
+
+    <div>
+      <label>Password</label><br>
+      <input type="password" placeholder="password" name="password"[(ngModel)]="password"><br><br>
+    </div>
+    
+    <div>
+        <button type="submit" name="logout" (click)="registration()">Create account</button>
+    </div><br>
+    
+</form> 

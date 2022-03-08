@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { LoginService } from 'src/app/services/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -7,9 +9,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegistrationComponent implements OnInit {
 
-  constructor() { }
+  name: any;
+  surname: any;
+  username: any;
+  password: any;
+
+  constructor(private loginService: LoginService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
+  registration()
+  {
+    if(this.name && this.surname && this.username && this.password)
+    {
+        
+        this.router.navigate(['/login']);
+    }
+    else
+    {
+      alert("Popunite sva polja!");
+    }
+  }
 }
