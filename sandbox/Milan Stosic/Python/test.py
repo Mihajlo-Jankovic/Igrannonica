@@ -13,7 +13,27 @@ class requestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
-        self.wfile.write(json.dumps({'hello': 'world', 'received': 'ok'}).encode()) 
+        self.wfile.write(json.dumps({'Title': 'test', 'Body': 'test', 'UserId' : 4, 'id' : 101}).encode()) 
+
+    def do_POST(self):
+        ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
+        
+        # refuse to receive non-json content
+        if ctype != 'application/json':
+            self.send_response(400)
+            self.end_headers()
+            return
+            
+        # read the message and convert it into a python dictionary
+        length = int(self.headers.get('content-length'))
+        message = json.loads(self.rfile.read(length))
+        
+        # add a property to the object, just to mess with data
+        message['received'] = 'ok'
+        
+        # send the message back
+        self._set_headers()
+        self.wfile.write(json.dumps(message).encode())    
 
 def main():
     PORT = 8080
