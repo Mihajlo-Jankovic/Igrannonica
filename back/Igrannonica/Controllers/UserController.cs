@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Igrannonica.Models;
 using System.Security.Cryptography;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Igrannonica.Controllers
 {
@@ -15,8 +18,16 @@ namespace Igrannonica.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public static User user = new User();
+        private User user = new User();
+        private readonly IConfiguration _configuration;
         private readonly UserContext _context;
+
+        public UserController(UserContext context, IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _context = context;
+        }
+
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
@@ -43,11 +54,42 @@ namespace Igrannonica.Controllers
             List<User> users = _context.User.ToList();
             bool usernameExists = false;
             foreach (User user in users)
-                if(user.username == username)
+                if (user.username == username)
+                {
                     usernameExists = true;
+                    this.user = user;
+                }
             if (!usernameExists)
                 return BadRequest("User not found");
-            return Ok("dobro je");
+            if(!VerifyPasswordHash(password,user.passwordHash,user.passwordSalt))
+            {
+                return BadRequest("Wrong password");
+            }
+
+            string token = CreateToken(this.user);
+
+            return Ok(token);
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.username)
+            };
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims : claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: cred
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -59,10 +101,16 @@ namespace Igrannonica.Controllers
             }
         }
 
-        public UserController(UserContext context)
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            _context = context;
+            using(var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+
+            }
         }
+
 
         // GET: api/User
         [HttpGet]
