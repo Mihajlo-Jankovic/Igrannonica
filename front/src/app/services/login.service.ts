@@ -9,14 +9,16 @@ export class LoginService {
 
   constructor(private http: HttpClient) { }
 
-  /*
+  private connString : string = "https://localhost:7219/";
+
+  
   login(username: any, password: any): Observable<string> {
-    return this.http.post<string>("",
+    return this.http.post<string>(this.connString+"api/User/login",
     {
       "username": username,
       "password": password
     })
-  }*/
+  }
 
   /*
   registration(name:any, surname:any, username:any, password:any) {

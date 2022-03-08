@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -22,11 +23,7 @@ export class LoginComponent implements OnInit {
     if(this.username && this.password){
       console.log(loginForm.value);
       this.router.navigate(["/home"]);
-    }
-
-   /* if(this.username && this.password) {
-      this.loginService.login(this.username, this.password);
-    }*/
   }
+}
 
 }
