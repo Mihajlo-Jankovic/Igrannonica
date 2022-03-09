@@ -66,10 +66,10 @@ namespace Igrannonica.Controllers
             {
                 return BadRequest("Wrong password");
             }
+            UserDTO2 userDTO2 = new UserDTO2();
+            userDTO2.token = CreateToken(this.user);
 
-            userDTO1.token = CreateToken(this.user);
-
-            return Ok(userDTO1.token);
+            return Ok(userDTO2.token);
         }
 
         private string CreateToken(User user)
