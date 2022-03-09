@@ -50,7 +50,7 @@ namespace Igrannonica.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDTO1 userDTO1)
+        public async Task<ActionResult<UserDTO2>> Login(UserDTO1 userDTO1)
         {
             List<User> users = _context.User.ToList();
             bool usernameExists = false;
@@ -69,7 +69,7 @@ namespace Igrannonica.Controllers
             UserDTO2 userDTO2 = new UserDTO2();
             userDTO2.token = CreateToken(this.user);
 
-            return Ok(userDTO2.token);
+            return userDTO2;
         }
 
         private string CreateToken(User user)
