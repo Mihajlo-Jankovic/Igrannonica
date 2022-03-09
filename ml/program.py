@@ -1,4 +1,4 @@
-#import tensorflow as tf
+import tensorflow as tf
 import pandas as pd
 import csv
 
@@ -53,7 +53,7 @@ if(header):
     df = pd.read_csv(path, index_col = 0) 
 
     df.columns = [col.lower() for col in df]
-    df.columns = [col.strip('-$%') for col in df]
+    df.columns = [col.strip('-$%()') for col in df]
     df.columns = [col.strip() for col in df]
     df.columns = [col.replace(' ','_') for col in df]
 
@@ -63,3 +63,13 @@ else:
 df.dropna()
 
 stats = statistics(df,8)
+
+# Konvertovanje dataFrame-a iz Pandasa u TensorFlow test v1
+print(df.columns)
+
+print(df.dtypes)
+
+numeric_feature_names = ['runtime_minutes', 'rating', 'votes',  'revenue_millions']
+numeric_features = df[numeric_feature_names]
+
+tf.convert_to_tensor(numeric_features)
