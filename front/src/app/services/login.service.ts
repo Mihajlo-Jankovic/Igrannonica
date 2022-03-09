@@ -7,18 +7,19 @@ import { HttpClient } from '@angular/common/http';
 })
 export class LoginService {
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
-  private connString : string = "https://localhost:7219/";
-
-  
-  login(username: any, password: any): Observable<string> {
+  //private connString : string = "https://localhost:7219/";
+  //formData: User = new User();
+  /*
+  login(username: string, password: string): Observable<string> {
+    console.log(username, password);
     return this.http.post<string>(this.connString+"api/User/login",
     {
       "username": username,
       "password": password
     })
-  }
+  }*/
 
   /*
   registration(name:any, surname:any, username:any, password:any) {
