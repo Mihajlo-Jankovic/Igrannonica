@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginService } from 'src/app/services/login.service';
 import { CookieService } from 'ngx-cookie-service';
+import { UserService } from 'src/app/services/user.service';
+import { HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -10,18 +11,21 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  username:any;
+/*
+  username: any;
   password: any;
-  constructor(private loginService: LoginService,private cookieService: CookieService, private router:Router) { }
+  invalidLogin: boolean;
+  //constructor(public service: UserService, private cookieService: CookieService, private router:Router) { }
+  constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
   }
 
-  onLogin(loginForm:NgForm)
+  /*onLogin1()
   {
-    if(this.username && this.password) {
-      this.loginService.login(this.username, this.password).subscribe((token) => {
+    if(this.username && this.password) 
+    {
+        this.service.login(this.username, this.password).subscribe((token) => {
         if (token) {
           this.cookieService.set("token", token);
           this.router.navigate(["/home"]);
@@ -34,4 +38,39 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  onLogin(form: NgForm) {
+    const credentials = {
+        'username' : form.value.username,
+        'password' : form.value.password
+    }
+
+    this.http.post("https://localhost:7219/api/User/login", credentials)
+        .subscribe(response => {
+            const token = (<any>response).token;
+            localStorage.setItem("jwt", token);
+            this.invalidLogin = false;
+            this.router.navigate(["/"]);
+        }, err => {
+            this.invalidLogin = true;
+        })
+    }
+
+    */
+
+  username : string;
+  password : string;
+  constructor(private library : UserService, private cookie : CookieService, private router : Router) { }
+
+  ngOnInit(): void {
+  
+  }
+
+  login() {
+    this.library.login(this.username, this.password).subscribe(token => {
+    //this.cookie.set("token", token);
+    //this.router.navigate(['/books']);
+      //console.log(token);
+    })
+  }
 }
+

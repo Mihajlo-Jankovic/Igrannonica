@@ -1,18 +1,27 @@
+<!--
 <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
+    <input type="hidden" name="id">
     <div>
         <label>Username</label><br>
-        <input type="text" placeholder="username" name="username" [(ngModel)]="username"><br>
+        <input type="text" placeholder="username" name="username"  [(ngModel)]="username"><br>
       </div>
   
     <div>
       <label>Password</label><br>
-      <input type="password" placeholder="password" name="password"[(ngModel)]="password"><br><br>
+      <input type="password" placeholder="password" name="password" [(ngModel)]="password"><br><br>
     </div>
     
     <div>
-        <button type="submit" name="login" routing="/nav-bar" routerLink="/home">Login</button>
+        <button type="submit" name="login">Login</button>
     </div><br>
     <div>
       <a id="link" routerLink="/registration">Don't have an account?</a>
     </div>
-</form> 
+  </form>-->
+
+  <input type="text" [(ngModel)]="username">
+<br>
+<input type="password" [(ngModel)]="password">
+<br>
+<button (click)="login()">Prijavi se</button>
+

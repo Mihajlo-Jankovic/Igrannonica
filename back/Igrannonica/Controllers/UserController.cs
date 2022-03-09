@@ -62,7 +62,7 @@ namespace Igrannonica.Controllers
                 }
             if (!usernameExists)
                 return BadRequest("User not found");
-            if(!VerifyPasswordHash(userDTO1.password,user.passwordHash,user.passwordSalt))
+            if (!VerifyPasswordHash(userDTO1.password, user.passwordHash, user.passwordSalt))
             {
                 return BadRequest("Wrong password");
             }
@@ -84,7 +84,7 @@ namespace Igrannonica.Controllers
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
-                claims : claims,
+                claims: claims,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: cred
                 );
@@ -96,7 +96,7 @@ namespace Igrannonica.Controllers
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using(var hmac = new HMACSHA512())
+            using (var hmac = new HMACSHA512())
             {
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
@@ -105,7 +105,7 @@ namespace Igrannonica.Controllers
 
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            using(var hmac = new HMACSHA512(passwordSalt))
+            using (var hmac = new HMACSHA512(passwordSalt))
             {
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
