@@ -67,9 +67,8 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.library.login(this.username, this.password).subscribe(token => {
-    //this.cookie.set("token", token);
-    //this.router.navigate(['/books']);
-      //console.log(token);
+      this.cookie.set("token", token);
+      this.router.navigate(['/home']);
     })
   }
 }
