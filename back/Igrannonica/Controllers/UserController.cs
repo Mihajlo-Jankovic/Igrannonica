@@ -50,26 +50,26 @@ namespace Igrannonica.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(string username, string password)
+        public async Task<ActionResult<string>> Login(UserDTO1 userDTO1)
         {
             List<User> users = _context.User.ToList();
             bool usernameExists = false;
             foreach (User user in users)
-                if (user.username == username)
+                if (user.username == userDTO1.username)
                 {
                     usernameExists = true;
                     this.user = user;
                 }
             if (!usernameExists)
                 return BadRequest("User not found");
-            if(!VerifyPasswordHash(password,user.passwordHash,user.passwordSalt))
+            if(!VerifyPasswordHash(userDTO1.password,user.passwordHash,user.passwordSalt))
             {
                 return BadRequest("Wrong password");
             }
 
-            string token = CreateToken(this.user);
+            userDTO1.token = CreateToken(this.user);
 
-            return Ok(token);
+            return Ok(userDTO1.token);
         }
 
         private string CreateToken(User user)
