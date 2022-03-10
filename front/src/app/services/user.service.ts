@@ -34,6 +34,20 @@ export class UserService {
     }
     )
   }
+
+  register(name: any, surname:any, email: any, username:any, password:any)
+  {
+    return this.http.post<string>('https://localhost:7219/api/User/register',
+    {
+      "firstname": name,
+      "lastname": surname,
+      "email": email,
+      "username": username,
+      "password": password
+    })
+  }
+
+
   isAuthenticated() : boolean
   {
     if(this.cookieService.check('token'))
