@@ -1,9 +1,14 @@
-<div>
-<label>Username</label><br>
-<input type="text" placeholder="username" [(ngModel)]="username">
-<br>
-<label>Password</label><br>
-<input type="password" placeholder="password" [(ngModel)]="password">
-<br>
-<button (click)="login()">Login</button>
+<div id="body">
+    <div class="box">
+        <h1>Prijava</h1>
+        <!-- <label>Username</label><br> -->
+        <input type="text" placeholder="Korisnicko ime" [(ngModel)]="username">
+        <br>
+        <!-- <label>Password</label><br> -->
+        <input type="password" placeholder="Lozinka" [(ngModel)]="password">
+        <br>
+        <button (click)="login()">Prijavi se</button>
+        <br>
+        <a id="link" routerLink="/registration">Nemate nalog?</a>
+    </div>
 </div>
