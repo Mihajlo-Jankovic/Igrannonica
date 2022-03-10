@@ -11,6 +11,7 @@ export class RegistrationComponent implements OnInit {
 
   name: any;
   surname: any;
+  email: any;
   username: any;
   password: any;
 

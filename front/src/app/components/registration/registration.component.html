@@ -1,26 +1,17 @@
 <div id="body">
-    <div>
-        <label>Name</label><br>
-        <input type="text" placeholder="name" name="name" [(ngModel)]="name"><br>
-    </div>
+    <div class="box">
+        <h1>Registracija</h1>
 
-    <div>
-        <label>Surname</label><br>
-        <input type="text" placeholder="surname" name="surname" [(ngModel)]="surname"><br>
-    </div>
+        <input type="text" placeholder="Ime" name="name" [(ngModel)]="name">
 
-    <div>
-        <label>Username</label><br>
-        <input type="text" placeholder="username" name="username" [(ngModel)]="username"><br>
-    </div>
+        <input type="text" placeholder="Prezime" name="surname" [(ngModel)]="surname">
 
-    <div>
-      <label>Password</label><br>
-      <input type="password" placeholder="password" name="password"[(ngModel)]="password"><br><br>
+        <input type="text" placeholder="Email" name="email" [(ngModel)]="email">
+
+        <input type="text" placeholder="Korisnicko ime" name="username" [(ngModel)]="username">
+ 
+        <input type="password" placeholder="Lozinka" name="password"[(ngModel)]="password">
+ 
+        <button (click)="registration()">Kreiraj nalog</button>
     </div>
-    
-    <div>
-        <button type="submit" name="logout" (click)="registration()">Create account</button>
-    </div><br>
-    
 </div>
