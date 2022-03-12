@@ -30,9 +30,9 @@ namespace Igrannonica.Controllers
                 var endpoint = new Uri("http://127.0.0.1:5000/post");
                 var newPost = new PythonRequest()
                 {
-                    Title = "test",
-                    Body = "test",
-                    Id = 4
+                    FileName = "movies.csv",
+                    DataType = "all",
+                    Rows = 0
                 };
                 var newPostJson = JsonConvert.SerializeObject(newPost);
                 var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");

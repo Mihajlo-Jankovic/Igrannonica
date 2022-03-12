@@ -44,21 +44,26 @@ def statistics(df,colIndex):
 
     return (rowsNum,min,max,avg,med,firstQ,thirdQ,corrMatrix)
 
-path = 'csv\movies.csv'
 
-with open(path) as f: 
-    header = csv.Sniffer().has_header(f.read(1024)) # Proverava da li u fajlu postoji header
+#path = 'csv\movies.csv'
 
-if(header): 
-    df = pd.read_csv(path, index_col = 0) 
+def openCSV(path):
+    with open(path) as f: 
+        header = csv.Sniffer().has_header(f.read(1024)) # Proverava da li u fajlu postoji header
 
-    df.columns = [col.lower() for col in df]
-    df.columns = [col.strip('-$%') for col in df]
-    df.columns = [col.strip() for col in df]
-    df.columns = [col.replace(' ','_') for col in df]
+    if(header): 
+        df = pd.read_csv(path, index_col = 0) 
+        df.columns = [col.lower() for col in df]
+        df.columns = [col.strip('-$%') for col in df]
+        df.columns = [col.strip() for col in df]
+        df.columns = [col.replace(' ','_') for col in df]
+    else: 
+        df = pd.read_csv(path, header = None) 
 
-else: 
-    df = pd.read_csv(path, header = None) 
+    return df
+
+'''
+df = openCSV(path)
 
 df.dropna()
 
@@ -73,3 +78,4 @@ numeric_feature_names = ['runtime_(minutes)', 'rating', 'votes',  'revenue_(mill
 numeric_features = df[numeric_feature_names]
 
 tf.convert_to_tensor(numeric_features)
+'''
