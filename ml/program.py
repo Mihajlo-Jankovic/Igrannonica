@@ -53,7 +53,7 @@ if(header):
     df = pd.read_csv(path, index_col = 0) 
 
     df.columns = [col.lower() for col in df]
-    df.columns = [col.strip('-$%()') for col in df]
+    df.columns = [col.strip('-$%') for col in df]
     df.columns = [col.strip() for col in df]
     df.columns = [col.replace(' ','_') for col in df]
 
@@ -69,7 +69,7 @@ print(df.columns)
 
 print(df.dtypes)
 
-numeric_feature_names = ['runtime_minutes', 'rating', 'votes',  'revenue_millions']
+numeric_feature_names = ['runtime_(minutes)', 'rating', 'votes',  'revenue_(millions)']
 numeric_features = df[numeric_feature_names]
 
 tf.convert_to_tensor(numeric_features)
