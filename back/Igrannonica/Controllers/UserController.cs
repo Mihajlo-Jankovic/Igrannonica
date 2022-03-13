@@ -36,10 +36,18 @@ namespace Igrannonica.Controllers
         {
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
-                return BadRequest("Username already exists!");
+            {
+                GreskaDTO greskaDTO = new GreskaDTO();
+                greskaDTO.tekstGreske = "Username already exists!";
+                return Ok(greskaDTO);
+            }
             user = _context.User.Where(u => u.email == request.email).FirstOrDefault();
             if(user != null)
-                return BadRequest("Email is taken!");
+            {
+                GreskaDTO greskaDTO = new GreskaDTO();
+                greskaDTO.tekstGreske = "Email is taken!";
+                return Ok(greskaDTO);
+            }
 
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -60,14 +68,18 @@ namespace Igrannonica.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<TokenDTO>> Login(LoginDTO loginDTO)
         {
+            TokenDTO token = new TokenDTO();
             User user =  _context.User.Where(u => u.username == loginDTO.username).FirstOrDefault();
             if (user == null)
-                return BadRequest("User not found");
+            {
+                token.token = "User not found";
+                return Ok(token);
+            }
             if (!VerifyPasswordHash(loginDTO.password, user.passwordHash, user.passwordSalt))
             {
-                return BadRequest("Wrong password");
+                token.token = "Wrong password";
+                return Ok(token);
             }
-            TokenDTO token = new TokenDTO();
             token.token = CreateToken(user);
 
             return Ok(token);
