@@ -1,9 +1,12 @@
-import tensorflow as tf
+#import tensorflow as tf
+import numpy as np
 import pandas as pd
 import csv
 import keras as ks
 from keras.layers import Dense, Input
 from keras.regularizers import L1, L2
+from sklearn.preprocessing import LabelEncoder
+import category_encoders as ce
 
 #tf.enable_eager_execution()
 
@@ -48,7 +51,7 @@ def statistics(df,colIndex):
     return (rowsNum,min,max,avg,med,firstQ,thirdQ,corrMatrix)
 
 
-#path = 'csv\movies.csv'
+path = 'csv\movies.csv'
 
 def openCSV(path):
     with open(path) as f: 
@@ -106,3 +109,43 @@ numeric_features = df[numeric_feature_names]
 
 tf.convert_to_tensor(numeric_features)
 '''
+
+def input_output():
+    pass
+
+def encode(df, encodingType):
+    for col in df:
+        
+        # Provera da li je kolona kategorijska
+        if(df[col].dtypes == object):
+            
+            # Label encoding
+            if(encodingType == 'label'):
+                encoder = LabelEncoder()
+                df[col] = encoder.fit_transform(df[col])
+
+            # One-hot encoding
+            elif(encodingType == 'one-hot'):
+                df = pd.get_dummies(df, columns=[col], prefix = [col])
+                print(df.head)
+
+            # Binary encoding
+            elif(encodingType == 'binary'):
+                encoder = ce.BinaryEncoder(cols=[col])
+                df = encoder.fit_transform(df)
+            
+            # Backward encoding (ima problem sa duplikatima indexa)
+            elif(encodingType == 'backward'):
+                encoder = ce.BackwardDifferenceEncoder(cols=[col])
+                df = encoder.fit_transform(df)
+
+                print()
+                print()
+                print(df[df.index.duplicated()])
+                print()
+                print()
+
+    return df
+
+df = openCSV(path)
+df = encode(df,'backward')
