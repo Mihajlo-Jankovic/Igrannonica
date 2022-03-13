@@ -1,3 +1,4 @@
 <div>
-    <button name="upload">Upload files</button>
+    <input type="file" #file (change)="uploadFile(file.files)" accept=".csv" style="display: none;">
+    <button type="button" name="upload" (click)="file.click()">Upload files</button>
 </div>
