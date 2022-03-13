@@ -68,8 +68,17 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.username && this.password) {
       this.library.login(this.username, this.password).subscribe(token => {
-        this.cookie.set("token", token);
-        this.router.navigate(['/home']);
+        let JSONtoken : string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if(StringToken == "User not found")
+          alert("pogresno korisnicko ime");
+        else if(StringToken == "Wrong password")
+          alert("pogresna sifra");
+        else
+        {
+          this.cookie.set("token",StringToken);
+          this.router.navigate(['/home']);
+        }
       })
     }
     else
