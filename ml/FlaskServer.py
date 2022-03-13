@@ -8,11 +8,11 @@ app = Flask(__name__)
 def hello():
     return "Hello World"
 
-@app.route("/tabledata", methods=['GET'])
+@app.route("/simpleget", methods=['GET'])
 def tableData():
     return json.dumps({'Title': 'test', 'Body': 'test', 'UserId' : 4})
 
-@app.route('/post', methods=['POST'])
+@app.route('/tabledata', methods=['POST'])
 def process_json():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json; charset=utf-8'):

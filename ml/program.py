@@ -1,6 +1,9 @@
 import tensorflow as tf
 import pandas as pd
 import csv
+import keras as ks
+from keras.layers import Dense, Input
+from keras.regularizers import L1, L2
 
 #tf.enable_eager_execution()
 
@@ -62,7 +65,31 @@ def openCSV(path):
 
     return df
 
-'''
+def build_model(layers, neurons, activation, regularizer, regRate, optimizer, optRate, inputs, problemType, outputs):
+    model = ks.Sequential()
+    # Namestanje regularizera
+    if(regularizer == 'L1'):
+        reg = L1(regRate)
+    elif(regularizer == 'L2'):
+        reg = L2(regRate)
+    # Input layer
+    model.add(Input((inputs, )))
+    # Hidden layers
+    for i in range(layers):
+        # Provera da li je izabran regularizer
+        if(regularizer != 'None'):
+            model.add(Dense(neurons[i], activation=activation, kernel_regularizer=reg))
+        else:
+            model.add(Dense(neurons[i], activation=activation))
+    # Output layer
+    if(problemType == 'Regression'):
+        model.add(Dense(1, activation='linear'))
+    else:
+        model.add(Dense(outputs, activation='softmax'))
+    
+    return model
+
+''' 
 df = openCSV(path)
 
 df.dropna()
