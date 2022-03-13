@@ -38,9 +38,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+var connectionString = builder.Configuration.GetConnectionString("DevConnection");
+
 builder.Services.AddDbContext<UserContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 //Enable CORS

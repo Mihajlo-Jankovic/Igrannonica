@@ -1,19 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Igrannonica.Migrations
 {
-    public partial class prvamigracija : Migration
+    public partial class mysqlmigracija : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     firstname = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     lastname = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(50)", nullable: false),
@@ -24,7 +28,14 @@ namespace Igrannonica.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_email",
+                table: "User",
+                column: "email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_username",

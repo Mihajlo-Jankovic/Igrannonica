@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
+using Igrannonica.DataTransferObjects;
 
 namespace Igrannonica.Controllers
 {
@@ -33,43 +34,43 @@ namespace Igrannonica.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
         {
+            User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
+            if(user != null)
+                return BadRequest("Username already exists!");
+            user = _context.User.Where(u => u.email == request.email).FirstOrDefault();
+            if(user != null)
+                return BadRequest("Email is taken!");
+
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.id = request.id;
-            user.firstname = request.firstname;
-            user.lastname = request.lastname;
-            user.email = request.email;
-            user.passwordHash = passwordHash;
-            user.passwordSalt = passwordSalt;
-            user.username = request.username;
+            this.user.id = request.id;
+            this.user.firstname = request.firstname;
+            this.user.lastname = request.lastname;
+            this.user.email = request.email;
+            this.user.passwordHash = passwordHash;
+            this.user.passwordSalt = passwordSalt;
+            this.user.username = request.username;
 
-            _context.User.Add(user);
+            _context.User.Add(this.user);
             await _context.SaveChangesAsync();
 
-            return Ok(user);
+            return Ok(this.user);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDTO2>> Login(UserDTO1 userDTO1)
+        public async Task<ActionResult<TokenDTO>> Login(LoginDTO loginDTO)
         {
-            List<User> users = _context.User.ToList();
-            bool usernameExists = false;
-            foreach (User user in users)
-                if (user.username == userDTO1.username)
-                {
-                    usernameExists = true;
-                    this.user = user;
-                }
-            if (!usernameExists)
+            User user =  _context.User.Where(u => u.username == loginDTO.username).FirstOrDefault();
+            if (user == null)
                 return BadRequest("User not found");
-            if (!VerifyPasswordHash(userDTO1.password, user.passwordHash, user.passwordSalt))
+            if (!VerifyPasswordHash(loginDTO.password, user.passwordHash, user.passwordSalt))
             {
                 return BadRequest("Wrong password");
             }
-            UserDTO2 userDTO2 = new UserDTO2();
-            userDTO2.token = CreateToken(this.user);
+            TokenDTO token = new TokenDTO();
+            token.token = CreateToken(user);
 
-            return userDTO2;
+            return Ok(token);
         }
 
         private string CreateToken(User user)
