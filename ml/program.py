@@ -1,6 +1,9 @@
 import tensorflow as tf
 import pandas as pd
 import csv
+import keras as ks
+from keras.layers import Dense, Input
+from keras.regularizers import L1, L2
 
 #tf.enable_eager_execution()
 
@@ -44,21 +47,50 @@ def statistics(df,colIndex):
 
     return (rowsNum,min,max,avg,med,firstQ,thirdQ,corrMatrix)
 
-path = 'csv\movies.csv'
 
-with open(path) as f: 
-    header = csv.Sniffer().has_header(f.read(1024)) # Proverava da li u fajlu postoji header
+#path = 'csv\movies.csv'
 
-if(header): 
-    df = pd.read_csv(path, index_col = 0) 
+def openCSV(path):
+    with open(path) as f: 
+        header = csv.Sniffer().has_header(f.read(1024)) # Proverava da li u fajlu postoji header
 
-    df.columns = [col.lower() for col in df]
-    df.columns = [col.strip('-$%') for col in df]
-    df.columns = [col.strip() for col in df]
-    df.columns = [col.replace(' ','_') for col in df]
+    if(header): 
+        df = pd.read_csv(path, index_col = 0) 
+        df.columns = [col.lower() for col in df]
+        df.columns = [col.strip('-$%') for col in df]
+        df.columns = [col.strip() for col in df]
+        df.columns = [col.replace(' ','_') for col in df]
+    else: 
+        df = pd.read_csv(path, header = None) 
 
-else: 
-    df = pd.read_csv(path, header = None) 
+    return df
+
+def build_model(layers, neurons, activation, regularizer, regRate, optimizer, optRate, inputs, problemType, outputs):
+    model = ks.Sequential()
+    # Namestanje regularizera
+    if(regularizer == 'L1'):
+        reg = L1(regRate)
+    elif(regularizer == 'L2'):
+        reg = L2(regRate)
+    # Input layer
+    model.add(Input((inputs, )))
+    # Hidden layers
+    for i in range(layers):
+        # Provera da li je izabran regularizer
+        if(regularizer != 'None'):
+            model.add(Dense(neurons[i], activation=activation, kernel_regularizer=reg))
+        else:
+            model.add(Dense(neurons[i], activation=activation))
+    # Output layer
+    if(problemType == 'Regression'):
+        model.add(Dense(1, activation='linear'))
+    else:
+        model.add(Dense(outputs, activation='softmax'))
+    
+    return model
+
+''' 
+df = openCSV(path)
 
 df.dropna()
 
@@ -73,3 +105,4 @@ numeric_feature_names = ['runtime_(minutes)', 'rating', 'votes',  'revenue_(mill
 numeric_features = df[numeric_feature_names]
 
 tf.convert_to_tensor(numeric_features)
+'''

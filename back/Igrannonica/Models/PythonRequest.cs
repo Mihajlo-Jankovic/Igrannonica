@@ -2,8 +2,8 @@
 {
     public class PythonRequest
     {
-        public string Title { get; set; }
-        public string Body { get; set; }
-        public int Id { get; set; }
+        public string FileName { get; set; }
+        public string DataType { get; set; }
+        public int Rows { get; set; }
     }
 }
