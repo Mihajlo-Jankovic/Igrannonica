@@ -1,4 +1,4 @@
-﻿namespace Igrannonica.Controllers
+﻿namespace Igrannonica.DataTransferObjects
 {
     public class UserDTO
     {

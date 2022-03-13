@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Component, ModuleWithProviders, NgModule } from '@angular/core';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { AuthGuardService } from './services/auth-guard/auth-guard.service';
+import { LoginService } from './services/login.service';
 
 const routes: Routes = [
   {
@@ -21,6 +22,8 @@ const routes: Routes = [
   }
 
 ];
+
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

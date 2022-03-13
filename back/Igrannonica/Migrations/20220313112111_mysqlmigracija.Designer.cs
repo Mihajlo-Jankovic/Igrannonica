@@ -2,7 +2,6 @@
 using Igrannonica.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -11,25 +10,21 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Igrannonica.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20220307223029_prvamigracija")]
-    partial class prvamigracija
+    [Migration("20220313112111_mysqlmigracija")]
+    partial class mysqlmigracija
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Igrannonica.Models.User", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
                     b.Property<string>("email")
                         .IsRequired()
@@ -56,6 +51,9 @@ namespace Igrannonica.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("email")
+                        .IsUnique();
 
                     b.HasIndex("username")
                         .IsUnique();

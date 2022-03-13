@@ -1,6 +1,6 @@
-﻿namespace Igrannonica.Models
+﻿namespace Igrannonica.DataTransferObjects
 {
-    public class UserDTO1
+    public class LoginDTO
     {
         public string password { get; set; }
         public string username { get; set; }

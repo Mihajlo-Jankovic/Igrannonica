@@ -1,17 +1,24 @@
 <div id="body">
     <div class="box">
+        <form novalidate #form="ngForm" (ngSubmit)="registration(form)">
         <h1>Registracija</h1>
 
-        <input type="text" placeholder="Ime" name="name" [(ngModel)]="firstname">
+        <input type="text" placeholder="Ime" name="firstname"  value="firstname"  #firstname="ngModel" 
+        [(ngModel)]="formModel.firstname" required [class.invalid]="firstname.invalid && firstname.touched">
 
-        <input type="text" placeholder="Prezime" name="surname" [(ngModel)]="lastname">
+        <input type="text" placeholder="Prezime" name="lastname" value="lastname" #lastname="ngModel" 
+        [(ngModel)]="formModel.lastname" required [class.invalid]="lastname.invalid && lastname.touched">
 
-        <input type="text" placeholder="Email" name="email" [(ngModel)]="email">
+        <input type="email" placeholder="Email" name="email" ngModel email="true" value="email" #email="ngModel" 
+        [(ngModel)]="formModel.email">
 
-        <input type="text" placeholder="Korisnicko ime" name="username" [(ngModel)]="username">
+        <input type="text" placeholder="Korisnicko ime" name="username" value="username" #username="ngModel" 
+        [(ngModel)]="formModel.username" required minlength="3" [class.invalid]="username.invalid && username.touched">
  
-        <input type="password" placeholder="Lozinka" name="password"[(ngModel)]="password">
+        <input type="password" placeholder="Lozinka" name="password" value="password" #password="ngModel" 
+        [(ngModel)]="formModel.password" required minlength="3" [class.invalid]="password.invalid && password.touched">
  
-        <button (click)="registration()">Kreiraj nalog</button>
+        <button type="submit" [disabled]="form.invalid">Kreiraj nalog</button>
+        </form>
     </div>
 </div>
