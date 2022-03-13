@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { UserService } from 'src/app/services/user.service';
+import { LoginService } from 'src/app/services/login.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
 
   username: string;
   password: string;
-  constructor(private library: UserService, private cookie: CookieService, private router: Router) { }
+  constructor(private library: LoginService, private cookie: CookieService, private router: Router) { }
 
   ngOnInit(): void {
 
@@ -77,5 +77,6 @@ export class LoginComponent implements OnInit {
       alert("Pogresno korisnicko ime ili lozinka.");
     }
   }
+  
 }
 

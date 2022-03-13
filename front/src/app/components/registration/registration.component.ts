@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from 'src/app/services/login.service';
 import { Router } from '@angular/router';
-import { UserService } from 'src/app/services/user.service';
 import { CookieService } from 'ngx-cookie-service';
+import { NgForm } from '@angular/forms';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-registration',
@@ -11,30 +12,25 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class RegistrationComponent implements OnInit {
 
-  firstname: any;
-  lastname: any;
-  email: any;
-  username: any;
-  password: any;
-
-  constructor(private service: UserService, private cookie : CookieService, private router: Router) { }
+  formModel = {
+    firstname: "",
+    lastname: "",
+    email: "",
+    username: "",
+    password: ""
+  }
+  constructor(private service: LoginService, private cookie : CookieService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
-  registration()
+  registration(form:NgForm)
   {
-    if(this.firstname && this.lastname && this.email && this.username && this.password)
-    {
-        this.service.register(this.firstname, this.lastname, this.email, this.username, this.password).subscribe(token => {
+        this.service.register(form).subscribe(token => {
         this.cookie.set("token", token);
         this.router.navigate(['/login']);
-      })
-    }
-    else
-    {
-      alert("Popunite sva polja!");
-    }
+      }) 
   }
+
   
 }
