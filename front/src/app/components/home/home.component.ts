@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-home',
@@ -8,12 +9,13 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private cookie: CookieService) { }
 
   ngOnInit(): void {
   }
 
   onLogout() {
+    this.cookie.deleteAll();
     this.router.navigate(["/login"]);
   }
 }

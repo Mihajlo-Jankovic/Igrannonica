@@ -27,9 +27,18 @@ export class RegistrationComponent implements OnInit {
   registration(form:NgForm)
   {
         this.service.register(form).subscribe(token => {
-        this.cookie.set("token", token);
-        this.router.navigate(['/login']);
+        let JSONtoken : string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if(StringToken == "Username already exists!")
+          alert("korisnicko ime vec postoji");
+        else if(StringToken == "Email is taken!")
+          alert("email vec postoji");
+        else{
+          this.cookie.set("token", StringToken);
+          this.router.navigate(['/login']);
+        }
       }) 
+    
   }
 
   
