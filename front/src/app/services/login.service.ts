@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { RegistrationComponent } from '../components/registration/registration.component';
-import { NgForm, NgModel } from '@angular/forms';
+import { FormGroup, NgForm, NgModel } from '@angular/forms';
 
 const jwtHelper = new JwtHelperService()
 @Injectable({
@@ -26,7 +26,7 @@ export class LoginService {
     )
   }
 
-  register(form: NgForm)
+  register(form: FormGroup)
   {
     return this.http.post<string>('https://localhost:7219/api/User/register',
     {
