@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { LoginService } from 'src/app/services/login.service';
 import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -57,17 +58,29 @@ export class LoginComponent implements OnInit {
   
       */
 
-  username: string;
-  password: string;
-  constructor(private library: LoginService, private cookie: CookieService, private router: Router) { }
+  /*username: string;
+  password: string;*/
+
+  public loginForm: FormGroup;
+
+  constructor(private formBuilder: FormBuilder, private library: LoginService, private cookie: CookieService, private router: Router) {
+    this.loginForm = formBuilder.group({
+      username: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$")]],
+      password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
+    })
+   }
 
   ngOnInit(): void {
 
   }
 
-  login() {
-    if (this.username && this.password) {
-      this.library.login(this.username, this.password).subscribe(token => {
+  public get m(){
+    return this.loginForm.controls;
+  }
+
+  login(form: FormGroup) {
+    if (form.value.username && form.value.password) {
+      this.library.login(form.value.username, form.value.password).subscribe(token => {
         let JSONtoken : string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
         if(StringToken == "User not found")
@@ -83,7 +96,7 @@ export class LoginComponent implements OnInit {
     }
     else
     {
-      alert("Pogresno korisnicko ime ili lozinka.");
+      alert("Popunite sva polja!");
     }
   }
   
