@@ -70,7 +70,7 @@ def openCSV(path):
 
     return df
 
-def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, inputs, problemType, outputs):
+def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, inputs, problemType, outputs, lossFunction, metric):
     model = tf.keras.Sequential()
     # Namestanje regularizera
     if(regularizer == 'L1'):
@@ -111,11 +111,11 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
         case 'Ftrl':
             optimizer = tf.keras.optimizers.Ftrl(learningRate)
             
-    model.compile(optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer, loss=lossFunction , metrics=['binary_accuracy'])
 
     return model
 
-m = build_model(2, [10,10], 'relu', 'None', 0, 'Adam', 0.001, 28, 'Classification', 10)
+m = build_model(2, [10,10], 'relu', 'None', 0, 'SGD', 0.001, 28, 'Classification', 10, 'sparse_categorical_crossentropy', 'accuracy')
 print(m)
 m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
 
