@@ -84,9 +84,9 @@ export class LoginComponent implements OnInit {
         let JSONtoken : string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
         if(StringToken == "User not found")
-          alert("pogresno korisnicko ime");
+          alert("Pogresno korisnicko ime");
         else if(StringToken == "Wrong password")
-          alert("pogresna sifra");
+          alert("Pogresna sifra");
         else
         {
           this.cookie.set("token",StringToken);

@@ -15,7 +15,7 @@ export class RegistrationComponent implements OnInit {
 
   public registerForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private service: LoginService, private cookie : CookieService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private library: LoginService, private cookie : CookieService, private router: Router) {
     this.registerForm = formBuilder.group({
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
@@ -34,19 +34,25 @@ export class RegistrationComponent implements OnInit {
 
   registration(form: FormGroup)
   {
-        this.service.register(form).subscribe(token => {
+    if (form.value.username && form.value.password && form.value.firstname && form.value.lastname && form.value.email) {
+        this.library.register(form.value.username, form.value.password,form.value.firstname,form.value.lastname,form.value.email)
+        .subscribe(token => {
         let JSONtoken : string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        if(StringToken == "Username already exists!")
-          alert("korisnicko ime vec postoji");
-        else if(StringToken == "Email is taken!")
-          alert("email vec postoji");
+        if(StringToken == "Email is taken!")
+          alert("Email vec postoji");
+        else if(StringToken == "Username already exists!")
+          alert("Korisnicko ime vec postoji");
         else{
           this.cookie.set("token", StringToken);
           this.router.navigate(['/login']);
         }
       }) 
-    
+    }
+    else
+    {
+      alert("Popunite sva polja!");
+    }
   }
 
 }

@@ -34,19 +34,18 @@ namespace Igrannonica.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
         {
+            TokenDTO token = new TokenDTO();
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
             {
-                GreskaDTO greskaDTO = new GreskaDTO();
-                greskaDTO.tekstGreske = "Username already exists!";
-                return Ok(greskaDTO);
+                token.token = "Username already exists!";
+                return Ok(token);
             }
             user = _context.User.Where(u => u.email == request.email).FirstOrDefault();
             if(user != null)
             {
-                GreskaDTO greskaDTO = new GreskaDTO();
-                greskaDTO.tekstGreske = "Email is taken!";
-                return Ok(greskaDTO);
+                token.token = "Email is taken!";
+                return Ok(token);
             }
 
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);

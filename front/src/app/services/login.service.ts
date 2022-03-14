@@ -25,18 +25,29 @@ export class LoginService {
     }
     )
   }
-
-  register(form: FormGroup)
+  register(username : any, password : any, firstname: string, lastname: string, email:any)
   {
     return this.http.post<string>('https://localhost:7219/api/User/register',
     {
-      "firstname": form.value.firstname,
-      "lastname": form.value.lastname,
-      "email": form.value.email,
-      "username": form.value.username,
-      "password": form.value.password
+      "firstname": firstname,
+      "lastname": lastname,
+      "email": email,
+      "username": username,
+      "password": password
     })
   }
+
+  // register(form: FormGroup)
+  // {
+  //   return this.http.post<string>('https://localhost:7219/api/User/register',
+  //   {
+  //     "firstname": form.value.firstname,
+  //     "lastname": form.value.lastname,
+  //     "email": form.value.email,
+  //     "username": form.value.username,
+  //     "password": form.value.password
+  //   })
+  // }
 
 
   isAuthenticated() : boolean
