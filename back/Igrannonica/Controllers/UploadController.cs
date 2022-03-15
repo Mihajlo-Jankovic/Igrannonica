@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Igrannonica.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using System.Net.Http.Headers;
 
 namespace Igrannonica.Controllers
@@ -9,26 +11,30 @@ namespace Igrannonica.Controllers
     public class UploadController : ControllerBase
     {
         [HttpPost,DisableRequestSizeLimit]
-        public IActionResult Upload()
+        public async Task<IActionResult> Upload()
         {
             try
             {
+                CSVFile DBFile = new CSVFile();
+                var client = new MongoClient("mongodb://localhost:27017");
+                var database = client.GetDatabase("IgrannonicaDB");
+                var collection = database.GetCollection<CSVFile>("CSVFiles");
                 var file = Request.Form.Files[0];
-                var folderName = Path.Combine("Resources", "CSVFiles");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
                 if(file.Length > 0)
                 {
+                    using var fileStream = file.OpenReadStream();
+                    var parser = new Microsoft.VisualBasic.FileIO.TextFieldParser(fileStream);
+                    parser.TextFieldType = Microsoft.VisualBasic.FileIO.FieldType.Delimited;
+                    parser.SetDelimiters(new string[] { ";" });
+                    var fileContents = parser.ReadToEnd();
                     var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
+                    DBFile.FileName = fileName;
+                    DBFile.File = fileContents;
+                    DBFile.User_ID = 1;
+                    await collection.InsertOneAsync(DBFile);
 
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
-
-                    return Ok(new { dbPath });
+                    return Ok("okej");
                 }
                 return BadRequest( "nema fajla" );
             }
