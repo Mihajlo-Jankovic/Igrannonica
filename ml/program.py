@@ -2,12 +2,17 @@
 import numpy as np
 import pandas as pd
 import csv
-import keras as ks
-from keras.layers import Dense, Input
 from keras.regularizers import L1, L2
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import category_encoders as ce
+
+(X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
+X_train.shape, y_train.shape, X_test.shape, y_test.shape
+
+X_train = X_train / 255
+X_test = X_test / 255
+
 
 #tf.enable_eager_execution()
 
@@ -69,29 +74,54 @@ def openCSV(path):
 
     return df
 
-def build_model(layers, neurons, activation, regularizer, regRate, optimizer, optRate, inputs, problemType, outputs):
-    model = ks.Sequential()
+def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, inputs, problemType, outputs, lossFunction, metric):
+    model = tf.keras.Sequential()
     # Namestanje regularizera
     if(regularizer == 'L1'):
         reg = L1(regRate)
     elif(regularizer == 'L2'):
         reg = L2(regRate)
     # Input layer
-    model.add(Input((inputs, )))
+    model.add(tf.keras.layers.Input((inputs, 28)))
+    model.add(tf.keras.layers.Flatten())
     # Hidden layers
     for i in range(layers):
         # Provera da li je izabran regularizer
         if(regularizer != 'None'):
-            model.add(Dense(neurons[i], activation=activation, kernel_regularizer=reg))
+            model.add(tf.keras.layers.Dense(neurons[i], activation=activation, kernel_regularizer=reg))
         else:
-            model.add(Dense(neurons[i], activation=activation))
+            model.add(tf.keras.layers.Dense(neurons[i], activation=activation))
     # Output layer
     if(problemType == 'Regression'):
-        model.add(Dense(1, activation='linear'))
+        model.add(tf.keras.layers.Dense(1, activation='linear'))
     else:
-        model.add(Dense(outputs, activation='softmax'))
-    
+        model.add(tf.keras.layers.Dense(outputs, activation='softmax'))
+    # Odabir optimizera i podesavanje learning rate-a
+    match optimizerType:
+        case 'SGD':
+            optimizer = tf.keras.optimizers.SGD(learningRate)
+        case 'RMSprop':
+            optimizer = tf.keras.optimizers.RMSprop(learningRate)
+        case 'Adam':
+            optimizer = tf.keras.optimizers.Adam(learningRate)
+        case 'Adadelta':
+            optimizer = tf.keras.optimizers.Adadelta(learningRate)
+        case 'Adagrad':
+            optimizer = tf.keras.optimizers.Adagrad(learningRate)
+        case 'Adamax':
+            optimizer = tf.keras.optimizers.Adamax(learningRate)
+        case 'Nadam':
+            optimizer = tf.keras.optimizers.Nadam(learningRate)
+        case 'Ftrl':
+            optimizer = tf.keras.optimizers.Ftrl(learningRate)
+            
+    model.compile(optimizer, loss=lossFunction , metrics=metric)
+
     return model
+
+m = build_model(2, [10,10], 'relu', 'None', 0, 'SGD', 0.001, 28, 'Classification', 10, 'sparse_categorical_crossentropy', ['binary_accuracy', 'categorical_accuracy'])
+print(m)
+m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
 
 ''' 
 df = openCSV(path)

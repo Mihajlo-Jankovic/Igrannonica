@@ -31,8 +31,8 @@ namespace Igrannonica.Controllers
                 var newPost = new PythonRequest()
                 {
                     FileName = "movies.csv",
-                    DataType = "all",
-                    Rows = 0
+                    DataType = "all", //all, null, not null
+                    Rows = 0 
                 };
                 var newPostJson = JsonConvert.SerializeObject(newPost);
                 var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
