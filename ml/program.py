@@ -60,18 +60,21 @@ def statistics(df,colIndex):
 
 path = 'csv\movies.csv'
 
-def openCSV(path):
+def openCSV(path,rowNum):
     with open(path) as f: 
         header = csv.Sniffer().has_header(f.read(1024)) # Proverava da li u fajlu postoji header
 
     if(header): 
-        df = pd.read_csv(path, index_col = 0) 
+        if(rowNum != 0): df = pd.read_csv(path, index_col = 0, nrows = rowNum) 
+        else: df = pd.read_csv(path, index_col = 0) 
+
         df.columns = [col.lower() for col in df]
         df.columns = [col.strip('-$%') for col in df]
         df.columns = [col.strip() for col in df]
         df.columns = [col.replace(' ','_') for col in df]
     else: 
-        df = pd.read_csv(path, header = None) 
+        if(rowNum != 0): df = pd.read_csv(path, header = None, nrows = rowNum) 
+        else: df = pd.read_csv(path, header = None) 
 
     return df
 
@@ -138,9 +141,6 @@ numeric_features = df[numeric_feature_names]
 tf.convert_to_tensor(numeric_features)
 '''
 
-def input_output():
-    pass
-
 def encode(df, encodingType):
     for col in df:
         
@@ -206,16 +206,25 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 
     return (X_train, X_test, y_train, y_test)
 
-def filterCSV():
-    pass
+# Filtriranje CSV fajlova prema parametrima klijenta
+def filterCSV(path, rowNum, dataType):
+    df = openCSV(path,rowNum)
 
+    if(dataType == 'not null'):
+        df = df.dropna()
 
+    elif(dataType == 'null'):
+        na_free = df.dropna()
+        df = df[~df.index.isin(na_free.index)]
+
+    return df
+
+'''
 df = openCSV(path)
 X_train, X_test, y_train, y_test = prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2)
-
-#print(df)
 
 
 m = build_model(2, [10,10], 'linear', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse'])
 print(m)
 m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
+'''
