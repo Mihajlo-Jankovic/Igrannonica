@@ -197,21 +197,16 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
     input_output(df, inputList, outputList)
     df = encode(df, encodingType)
 
-    x = df.drop(inputList, axis=1)
-    X = x.values
-
-    y = df.drop(outputList, axis=1)
-
-    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = testSize, random_state=0)
+    df = df.dropna()
     
-    X_train = df.sample(frac=0.8, random_state=0)
-    X_test = df.drop(X_train.index)
+    tmpTrain = df.sample(frac=0.8, random_state=0)
+    tmpTest = df.drop(tmpTrain.index)
 
-    train_features = X_train.copy()
-    test_features = X_test.copy()
+    X_train = tmpTrain.copy()
+    X_test = tmpTest.copy()
 
-    y_train = train_features.pop(outputList[0])
-    y_test = test_features.pop(outputList[0])
+    y_train = X_train.pop(outputList[0])
+    y_test = X_test.pop(outputList[0])
 
     return (X_train, X_test, y_train, y_test)
 
