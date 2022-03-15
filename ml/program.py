@@ -86,7 +86,7 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     elif(regularizer == 'L2'):
         reg = L2(regRate)
     # Input layer
-    model.add(tf.keras.layers.Input((inputs,)))
+    #model.add(tf.keras.layers.Input((inputs,)))
     #model.add(tf.keras.layers.Flatten())
     # Hidden layers
     for i in range(layers):
@@ -202,7 +202,16 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 
     y = df.drop(outputList, axis=1)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = testSize, random_state=0)
+    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = testSize, random_state=0)
+    
+    X_train = df.sample(frac=0.8, random_state=0)
+    X_test = df.drop(X_train.index)
+
+    train_features = X_train.copy()
+    test_features = X_test.copy()
+
+    y_train = train_features.pop(outputList[0])
+    y_test = test_features.pop(outputList[0])
 
     return (X_train, X_test, y_train, y_test)
 
@@ -219,12 +228,11 @@ def filterCSV(path, rowNum, dataType):
 
     return df
 
-'''
-df = openCSV(path)
-X_train, X_test, y_train, y_test = prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2)
 
+df = openCSV(path,0)
+X_train, X_test, y_train, y_test = prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2)
+print(X_train, X_test, y_train, y_test)
 
 m = build_model(2, [10,10], 'linear', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse'])
 print(m)
 m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
-'''

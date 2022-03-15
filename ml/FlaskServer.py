@@ -18,16 +18,10 @@ def process_json():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
 
-        print()
-        print()
-        print(int(json['Rows']))
-        print(json['DataType'])
-        print()
-        print()
-
         df = program.filterCSV('csv' + "\\" + json['FileName'], int(json['Rows']), json['DataType'])
-        print(df)
+
         return df.to_json(orient = 'split')
+        
     else:
         return content_type
 
