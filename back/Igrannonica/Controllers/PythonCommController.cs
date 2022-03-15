@@ -23,18 +23,12 @@ namespace Igrannonica.Controllers
         }
 
         [HttpPost("postRequest")]
-        public async Task<ActionResult<string>> SendPostRequest()
+        public async Task<ActionResult<string>> SendPostRequest(PythonRequest req)
         {
             using (var client = new HttpClient())
             {
                 var endpoint = new Uri("http://127.0.0.1:5000/tabledata");
-                var newPost = new PythonRequest()
-                {
-                    FileName = "movies.csv",
-                    DataType = "all",
-                    Rows = 0
-                };
-                var newPostJson = JsonConvert.SerializeObject(newPost);
+                var newPostJson = JsonConvert.SerializeObject(req);
                 var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
                 return Ok(result);
