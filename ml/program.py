@@ -111,11 +111,11 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
         case 'Ftrl':
             optimizer = tf.keras.optimizers.Ftrl(learningRate)
             
-    model.compile(optimizer, loss=lossFunction , metrics=['binary_accuracy'])
+    model.compile(optimizer, loss=lossFunction , metrics=metric)
 
     return model
 
-m = build_model(2, [10,10], 'relu', 'None', 0, 'SGD', 0.001, 28, 'Classification', 10, 'sparse_categorical_crossentropy', 'accuracy')
+m = build_model(2, [10,10], 'relu', 'None', 0, 'SGD', 0.001, 28, 'Classification', 10, 'sparse_categorical_crossentropy', ['binary_accuracy', 'categorical_accuracy'])
 print(m)
 m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
 
