@@ -10,17 +10,15 @@ import { LoginService } from 'src/app/services/login.service';
 export class UploadComponent implements OnInit {
 
   loggedUser: boolean;
+  files: any = [];
 
   constructor(private http : HttpClient, private loginService: LoginService) { }
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     console.log(this.loggedUser);
-    /*this.files[0] = "a";
-    this.files[1] = "b";
-    this.files[2] = "c";
-    */
   }
+
   headingLines: any = [];
   rowLines: any = [];
 
