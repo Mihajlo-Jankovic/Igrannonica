@@ -27,7 +27,7 @@ public uploadFile(files : any)
   const formData = new FormData();
   formData.append('file', file, file.name);
 
-  this.http.post('https://localhost:7219/', formData).subscribe(err =>
+  this.http.post('https://localhost:7219/api/Upload', formData).subscribe(err =>
   {
     if(err)
     {

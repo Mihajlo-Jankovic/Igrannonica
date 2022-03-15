@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.FileProviders;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +59,13 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.Configure<FormOptions>(o =>
+{
+   o.ValueLengthLimit = int.MaxValue;
+   o.MultipartBodyLengthLimit = int.MaxValue;
+   o.MemoryBufferThreshold = int.MaxValue;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -71,6 +80,12 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseCors(myAllowSpecificOrigins);
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+    RequestPath = new PathString("/Resources")
+});
 
 app.UseAuthorization();
 
