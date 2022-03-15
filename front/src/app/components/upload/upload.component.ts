@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from 'src/app/services/login.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-upload',
@@ -10,13 +11,19 @@ import { LoginService } from 'src/app/services/login.service';
 export class UploadComponent implements OnInit {
 
   loggedUser: boolean;
-  files: any = [];
-
-  constructor(private http : HttpClient, private loginService: LoginService) { }
+  files: any [];
+  
+  constructor(private http : HttpClient, private loginService: LoginService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     console.log(this.loggedUser);
+
+    /*
+    this.userService.getAllFilesFromUser(1).subscribe(data => {
+      this.files.push(data);
+    }) */
+    
   }
 
   headingLines: any = [];
@@ -78,5 +85,8 @@ public uploadFile(files : any)
     })
   }
 }
+
+
+
 
 }
