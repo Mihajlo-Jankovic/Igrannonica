@@ -1,4 +1,4 @@
-#import tensorflow as tf
+import tensorflow as tf
 import numpy as np
 import pandas as pd
 import csv
@@ -7,12 +7,13 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import category_encoders as ce
 
+'''
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
 X_train.shape, y_train.shape, X_test.shape, y_test.shape
 
 X_train = X_train / 255
 X_test = X_test / 255
-
+'''
 
 #tf.enable_eager_execution()
 
@@ -82,8 +83,8 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     elif(regularizer == 'L2'):
         reg = L2(regRate)
     # Input layer
-    model.add(tf.keras.layers.Input((inputs, 28)))
-    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Input((inputs,)))
+    #model.add(tf.keras.layers.Flatten())
     # Hidden layers
     for i in range(layers):
         # Provera da li je izabran regularizer
@@ -118,10 +119,6 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     model.compile(optimizer, loss=lossFunction , metrics=metric)
 
     return model
-
-m = build_model(2, [10,10], 'relu', 'None', 0, 'SGD', 0.001, 28, 'Classification', 10, 'sparse_categorical_crossentropy', ['binary_accuracy', 'categorical_accuracy'])
-print(m)
-m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
 
 ''' 
 df = openCSV(path)
@@ -209,7 +206,16 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 
     return (X_train, X_test, y_train, y_test)
 
-'''
+def filterCSV():
+    pass
+
+
 df = openCSV(path)
-print(prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2))
-'''
+X_train, X_test, y_train, y_test = prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2)
+
+#print(df)
+
+
+m = build_model(2, [10,10], 'linear', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse'])
+print(m)
+m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
