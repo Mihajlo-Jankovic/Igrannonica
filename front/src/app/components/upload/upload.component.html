@@ -16,6 +16,8 @@
         </tbody>
       </table>
     <div *ngIf="loggedUser" id="listOfFiles" style="color: white;">
-
+      <ul>
+          <li *ngFor="let f of files" style="color: white;">{{f}}</li>
+      </ul>
     </div>
 </div>
