@@ -9,6 +9,6 @@ export class TableService {
   constructor(private http:HttpClient) { }
 
   getAll():Observable<any>{
-    return this.http.post("https://localhost:7219/api/PythonComm/getTableData",{});
+    return this.http.post("https://localhost:7219/api/PythonComm/getTableData",{"FileName" : "movies.csv", "DataType" : "All", "Rows" : 0});
   }
 }
