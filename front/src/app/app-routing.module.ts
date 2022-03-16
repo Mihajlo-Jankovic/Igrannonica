@@ -11,7 +11,8 @@ import { TableComponent } from './components/table/table.component';
 const routes: Routes = [
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [AuthGuardService]
   },
   {
     path: 'registration',
