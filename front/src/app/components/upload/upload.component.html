@@ -3,20 +3,6 @@
     <button type="button" name="upload" (click)="file.click()">Upload files</button>
 
 
-    <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th *ngFor="let item of headingLines[0]; let i = index">{{item}}</th>
-             
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of rowLines[0]; let i = index">
-            <td *ngFor="let itemm of headingLines[0]; let j = index">{{item[j]}}</td>
-            <td> <input type="button" value="Delete"><input type="button" value="Edit"></td>
-          </tr>
-        </tbody>
-      </table>
     <div *ngIf="loggedUser" id="listOfFiles" style="color: white;">
       <ul>
           <li *ngFor="let f of files" style="color: white;">{{f}}</li>
