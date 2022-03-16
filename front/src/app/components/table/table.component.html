@@ -8,6 +8,7 @@
       <tbody>
         <tr *ngFor="let dt of tableData; let i = index">
           <td  *ngFor="let dtt of tableData; let j = index">{{dt.data[j]}}</td>
+          <td><input type="button" value="Edit"><input type="button" value="Delete"></td>
         </tr>
       </tbody>
     </table>
