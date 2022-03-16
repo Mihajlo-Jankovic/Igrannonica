@@ -1,7 +1,11 @@
 ﻿using Igrannonica.Models;
+using LumenWorks.Framework.IO.Csv;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using Sylvan.Data.Csv;
+using System.Data;
 using System.Net.Http.Headers;
 
 namespace Igrannonica.Controllers
@@ -18,21 +22,20 @@ namespace Igrannonica.Controllers
                 CSVFile DBFile = new CSVFile();
                 var client = new MongoClient("mongodb://localhost:27017");
                 var database = client.GetDatabase("IgrannonicaDB");
-                var collection = database.GetCollection<CSVFile>("CSVFiles");
                 var file = Request.Form.Files[0];
 
                 if(file.Length > 0)
                 {
-                    using var fileStream = file.OpenReadStream();
-                    var parser = new Microsoft.VisualBasic.FileIO.TextFieldParser(fileStream);
-                    parser.TextFieldType = Microsoft.VisualBasic.FileIO.FieldType.Delimited;
-                    parser.SetDelimiters(new string[] { ";" });
-                    var fileContents = parser.ReadToEnd();
                     var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    DBFile.FileName = fileName;
-                    DBFile.File = fileContents;
-                    DBFile.User_ID = 1;
-                    await collection.InsertOneAsync(DBFile);
+                    var fileStream = file.OpenReadStream();
+                    DataTable csvTable = new DataTable();
+                    using (CsvReader csvReader =
+                        new CsvReader(new StreamReader(fileStream), true))
+                    {
+                        csvTable.Load(csvReader);
+                    }
+
+                    await SaveDataTableToCollection(csvTable,fileName);
 
                     return Ok("okej");
                 }
@@ -42,6 +45,24 @@ namespace Igrannonica.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [NonAction]
+        public async Task SaveDataTableToCollection(DataTable dt, string fileName)
+        {
+            var client = new MongoClient("mongodb://localhost:27017");
+            var database = client.GetDatabase("IgrannonicaDB");
+            database.CreateCollection(fileName);
+            var collection = database.GetCollection<BsonDocument>(fileName);
+
+            List<BsonDocument> batch = new List<BsonDocument>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                var dictionary = dr.Table.Columns.Cast<DataColumn>().ToDictionary(col => col.ColumnName, col => dr[col.ColumnName]);
+                batch.Add(new BsonDocument(dictionary));
+            }
+
+            await collection.InsertManyAsync(batch.AsEnumerable());
         }
     }
 }
