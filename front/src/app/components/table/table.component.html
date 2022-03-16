@@ -1,0 +1,14 @@
+<div class="container">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th *ngFor="let dt of tableData; let i = index">{{dt.columns}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dt of tableData; let i = index">
+          <td  *ngFor="let dtt of tableData; let j = index">{{dt.data[j]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

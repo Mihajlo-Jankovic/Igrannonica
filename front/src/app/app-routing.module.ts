@@ -5,6 +5,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { AuthGuardService } from './services/auth-guard/auth-guard.service';
 import { LoginService } from './services/login.service';
+import { TableComponent } from './components/table/table.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,12 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'table',
+    component: TableComponent
   }
+
 
 ];
 
