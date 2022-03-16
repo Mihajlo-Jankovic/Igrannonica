@@ -1,4 +1,4 @@
-#import tensorflow as tf
+import tensorflow as tf
 import numpy as np
 import pandas as pd
 import csv
@@ -7,12 +7,13 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import category_encoders as ce
 
+'''
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
 X_train.shape, y_train.shape, X_test.shape, y_test.shape
 
 X_train = X_train / 255
 X_test = X_test / 255
-
+'''
 
 #tf.enable_eager_execution()
 
@@ -59,18 +60,21 @@ def statistics(df,colIndex):
 
 path = 'csv\movies.csv'
 
-def openCSV(path):
+def openCSV(path,rowNum):
     with open(path) as f: 
         header = csv.Sniffer().has_header(f.read(1024)) # Proverava da li u fajlu postoji header
 
     if(header): 
-        df = pd.read_csv(path, index_col = 0) 
+        if(rowNum != 0): df = pd.read_csv(path, index_col = 0, nrows = rowNum) 
+        else: df = pd.read_csv(path, index_col = 0) 
+
         df.columns = [col.lower() for col in df]
         df.columns = [col.strip('-$%') for col in df]
         df.columns = [col.strip() for col in df]
         df.columns = [col.replace(' ','_') for col in df]
     else: 
-        df = pd.read_csv(path, header = None) 
+        if(rowNum != 0): df = pd.read_csv(path, header = None, nrows = rowNum) 
+        else: df = pd.read_csv(path, header = None) 
 
     return df
 
@@ -82,8 +86,8 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     elif(regularizer == 'L2'):
         reg = L2(regRate)
     # Input layer
-    model.add(tf.keras.layers.Input((inputs, 28)))
-    model.add(tf.keras.layers.Flatten())
+    #model.add(tf.keras.layers.Input((inputs,)))
+    #model.add(tf.keras.layers.Flatten())
     # Hidden layers
     for i in range(layers):
         # Provera da li je izabran regularizer
@@ -119,10 +123,6 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
 
     return model
 
-m = build_model(2, [10,10], 'relu', 'None', 0, 'SGD', 0.001, 28, 'Classification', 10, 'sparse_categorical_crossentropy', ['binary_accuracy', 'categorical_accuracy'])
-print(m)
-m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
-
 ''' 
 df = openCSV(path)
 
@@ -140,9 +140,6 @@ numeric_features = df[numeric_feature_names]
 
 tf.convert_to_tensor(numeric_features)
 '''
-
-def input_output():
-    pass
 
 def encode(df, encodingType):
     for col in df:
@@ -200,16 +197,38 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
     input_output(df, inputList, outputList)
     df = encode(df, encodingType)
 
-    x = df.drop(inputList, axis=1)
-    X = x.values
+    df = df.dropna()
+    
+    tmpTrain = df.sample(frac=0.8, random_state=0)
+    tmpTest = df.drop(tmpTrain.index)
 
-    y = df.drop(outputList, axis=1)
+    X_train = tmpTrain.copy()
+    X_test = tmpTest.copy()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = testSize, random_state=0)
+    y_train = X_train.pop(outputList[0])
+    y_test = X_test.pop(outputList[0])
 
     return (X_train, X_test, y_train, y_test)
 
+# Filtriranje CSV fajlova prema parametrima klijenta
+def filterCSV(path, rowNum, dataType):
+    df = openCSV(path,rowNum)
+
+    if(dataType == 'not null'):
+        df = df.dropna()
+
+    elif(dataType == 'null'):
+        na_free = df.dropna()
+        df = df[~df.index.isin(na_free.index)]
+
+    return df
+
 '''
-df = openCSV(path)
-print(prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2))
+df = openCSV(path,0)
+X_train, X_test, y_train, y_test = prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2)
+print(X_train, X_test, y_train, y_test)
+
+m = build_model(2, [10,10], 'linear', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse'])
+print(m)
+m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
 '''

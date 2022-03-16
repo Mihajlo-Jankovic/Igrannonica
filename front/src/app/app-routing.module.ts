@@ -6,6 +6,7 @@ import { RegistrationComponent } from './components/registration/registration.co
 import { UploadComponent } from './components/upload/upload.component';
 import { AuthGuardService } from './services/auth-guard/auth-guard.service';
 import { LoginService } from './services/login.service';
+import { TableComponent } from './components/table/table.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,12 @@ const routes: Routes = [
   {
     path: 'upload',
     component: UploadComponent
+  },
+  {
+    path: 'table',
+    component: TableComponent
   }
+
 
 ];
 
