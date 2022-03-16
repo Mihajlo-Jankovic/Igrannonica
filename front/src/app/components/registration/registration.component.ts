@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { NgForm } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RegistrationService } from 'src/app/services/registration.service';
 
 @Component({
   selector: 'app-registration',
@@ -15,7 +16,7 @@ export class RegistrationComponent implements OnInit {
 
   public registerForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private library: LoginService, private cookie : CookieService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private registerService: RegistrationService, private cookie : CookieService, private router: Router) {
     this.registerForm = formBuilder.group({
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
@@ -35,7 +36,7 @@ export class RegistrationComponent implements OnInit {
   registration(form: FormGroup)
   {
     if (form.value.username && form.value.password && form.value.firstname && form.value.lastname && form.value.email) {
-        this.library.register(form.value.username, form.value.password,form.value.firstname,form.value.lastname,form.value.email)
+        this.registerService.register(form.value.username, form.value.password,form.value.firstname,form.value.lastname,form.value.email)
         .subscribe(token => {
         let JSONtoken : string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
