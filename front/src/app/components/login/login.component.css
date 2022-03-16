@@ -67,3 +67,8 @@
 #link {
     color: darkgrey;
 }
+
+#porukaObavestenja {
+    color: red;
+    font-size: 12px;
+}
