@@ -223,7 +223,7 @@ def filterCSV(path, rowNum, dataType):
 
     return df
 
-
+'''
 df = openCSV(path,0)
 X_train, X_test, y_train, y_test = prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2)
 print(X_train, X_test, y_train, y_test)
@@ -231,3 +231,4 @@ print(X_train, X_test, y_train, y_test)
 m = build_model(2, [10,10], 'linear', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse'])
 print(m)
 m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
+'''
