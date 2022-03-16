@@ -1,13 +1,16 @@
 <div class="container">
-    <table class="table table-bordered">
+    <table id="table" class="table table-bordered">
       <thead>
         <tr>
           <th *ngFor="let item of headingLines[0]; let i = index">{{item}}</th>
+          <th colspan="2"></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of rowLines[0]; let i = index">
           <td *ngFor="let itemm of headingLines[0]; let j = index">{{item[j]}}</td>
+          <td><input type="button" class="button" value="Edit"> </td>
+          <td><input type="button"  class="button" value="Delete"></td>
         </tr>
       </tbody>
     </table>
