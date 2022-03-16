@@ -9,6 +9,6 @@ export class TableService {
   constructor(private http:HttpClient) { }
 
   getAll():Observable<any>{
-    return this.http.get("https://localhost:7219/api/PythonComm/getRequest");
+    return this.http.post("https://localhost:7219/api/PythonComm/getTableData",{});
   }
 }

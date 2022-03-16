@@ -15,20 +15,20 @@ namespace Igrannonica.Controllers
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:8080/simpleget");
+                var endpoint = new Uri("http://127.0.0.1:5000/simpleget");
                 var result = client.GetAsync(endpoint).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
                 return Ok(json);
             }
         }
 
-        [HttpPost("postRequest")]
-        public async Task<ActionResult<string>> SendPostRequest()
+        [HttpPost("getTableData")]
+        public async Task<ActionResult<string>> GetTableData()
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:8080/tabledata");
-                var newPost = new PythonRequest()
+                var endpoint = new Uri("http://127.0.0.1:5000/tabledata");
+                var newPost = new TableDataDTO()
                 {
                     FileName = "movies.csv",
                     DataType = "null", //all, null, not null
