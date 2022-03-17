@@ -51,15 +51,15 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   },
   {
-    path: "/typography",
-    title: "Typography",
+    path: "/register",
+    title: "Register",
     rtlTitle: "طباعة",
     icon: "icon-align-center",
     class: ""
   },
   {
-    path: "/rtl",
-    title: "RTL Support",
+    path: "/login",
+    title: "Login",
     rtlTitle: "ار تي ال",
     icon: "icon-world",
     class: ""
