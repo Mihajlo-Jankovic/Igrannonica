@@ -1,0 +1,18 @@
+<div id="body">
+    <div class="box">
+        <h1>Prijava</h1>
+        <form novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">       
+            <input type="text" placeholder="Korisnicko ime" name="username" formControlName="username">
+            
+            <input type="password" placeholder="Lozinka" name="password" formControlName="password">
+
+            <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
+                <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Neispravno korisnicko ime/lozinka!</div>
+            </div>
+ 
+            <button type="submit" [disabled]="!loginForm.valid">Prijavi se</button>
+            <br>
+            <a id="link" routerLink="/registration">Nemate nalog?</a>
+        </form>
+    </div>
+</div>
