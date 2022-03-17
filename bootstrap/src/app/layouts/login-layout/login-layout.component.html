@@ -1,18 +1,53 @@
-<div id="body">
-  <div class="box">
-      <h1>Prijava</h1>
-      <form novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">       
-          <input type="text" placeholder="Korisnicko ime" name="username" formControlName="username">
-          
-          <input type="password" placeholder="Lozinka" name="password" formControlName="password">
-
-          <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
-              <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Neispravno korisnicko ime/lozinka!</div>
-          </div>
-
-          <button type="submit" [disabled]="!loginForm.valid">Prijavi se</button>
-          <br>
-          <a id="link" routerLink="/registration">Nemate nalog?</a>
-      </form>
-  </div>
+<div class="wrapper wrapper-full-page">
+    <div class="full-page login-page ">
+        <div class="content">
+            <div class="container">
+                <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
+                    <form class="form" novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
+                        <div class=" card card-login">
+                            <div class=" card-header">
+                                <h1 class=" card-title">Log in</h1>
+                            </div>
+                            <div class=" card-body">
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Username" name="username" formControlName="username" class="form-control">
+                                </div>
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-lock-circle"></i>
+                                        </div>
+                                    </div>
+                                    <input type="password" placeholder="Password" name="password" formControlName="password" class="form-control">
+                                </div>
+                                <div class="row">
+                                    <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
+                                        <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Neispravno korisnicko ime/lozinka!</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" card-footer">
+                                <button type="submit" [disabled]="!loginForm.valid" class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
+                                <div class=" pull-left">
+                                    <h6>
+                                        <a class="#/register" href="javascript:void(0)"> Create Account </a>
+                                    </h6>
+                                </div>
+                                <div class=" pull-right">
+                                    <h6>
+                                        <a class=" link footer-link" href="javascript:void(0)"> Need Help? </a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -9,8 +9,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from "./app.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
-import { RegistrationLayoutRoutes } from "./layouts/registration-layout/registration-layout.routing";
-
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
