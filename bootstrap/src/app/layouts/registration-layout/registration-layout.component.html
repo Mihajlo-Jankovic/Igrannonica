@@ -33,7 +33,7 @@
                                     </div>
                                     <input type="text" placeholder="First Name" name="firstname" formControlName="firstname" class="form-control">
                                 </div>
-                                <div *ngIf="m.firstname.touched && m.firstname.invalid">
+                                <div *ngIf="m.firstname.touched && m.firstname.invalid" class="input-group">
                                     <div *ngIf="m.firstname.errors?.required">Popunite prazno polje!</div>
                                     <div *ngIf="m.firstname.errors?.pattern">*Dozvoljena su velika slova, mala slova, broj karaktera(2, 20)</div>
                                 </div>
@@ -45,7 +45,7 @@
                                     </div>
                                     <input type="text" placeholder="Last Name" name="lastname" formControlName="lastname" class="form-control">
                                 </div>
-                                <div *ngIf="m.lastname.touched && m.lastname.invalid">
+                                <div *ngIf="m.lastname.touched && m.lastname.invalid" class="input-group">
                                     <div *ngIf="m.lastname.errors?.required">Molim vas unesite prezime!</div>
                                     <div *ngIf="m.lastname.errors?.pattern">*Dozvoljena su velika slova, mala slova, broj karaktera(2, 20)</div>
                                 </div>
@@ -57,7 +57,7 @@
                                     </div>
                                     <input type="email" placeholder="Email" name="email" formControlName="email" class="form-control">
                                 </div>
-                                <div *ngIf="m.email.touched && m.email.invalid">
+                                <div *ngIf="m.email.touched && m.email.invalid" class="input-group">
                                     <div *ngIf="m.email.errors?.required">Molim vas unesite email!</div>
                                     <div *ngIf="m.email.errors?.pattern">Format je neispravan!</div>
                                 </div>
@@ -69,7 +69,7 @@
                                     </div>
                                     <input type="text" placeholder="Username" name="username" formControlName="username" class="form-control">
                                 </div>
-                                <div *ngIf="m.username.touched && m.username.invalid">
+                                <div *ngIf="m.username.touched && m.username.invalid" class="input-group">
                                     <div *ngIf="m.username.errors?.required">Molim vas unesite korisnicko ime!</div>
                                     <div *ngIf="m.username.errors?.pattern">Format je neispravan!</div>
                                 </div>
@@ -83,7 +83,7 @@
                                     </div>
                                     <input type="password" placeholder="Password" name="password" formControlName="password" class="form-control">
                                 </div>
-                                <div *ngIf="m.password.touched && m.password.invalid">
+                                <div *ngIf="m.password.touched && m.password.invalid" class="input-group">
                                     <div *ngIf="m.password.errors?.required">Molim vas unesite sifru!</div>
                                     <div *ngIf="m.password.errors?.pattern">*Obavezno: veliko slovo, malo slovo, broj ili karakter, broj karaktera(8, 20)</div>
                                 </div>

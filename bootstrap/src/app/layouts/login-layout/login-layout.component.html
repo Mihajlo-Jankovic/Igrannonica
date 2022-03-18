@@ -41,7 +41,7 @@
                                     </div>
                                     <input type="password" placeholder="Password" name="password" formControlName="password" class="form-control">
                                 </div>
-                                <div class="row">
+                                <div class="input-group">
                                     <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
                                         <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Neispravno korisnicko ime/lozinka!</div>
                                     </div>
