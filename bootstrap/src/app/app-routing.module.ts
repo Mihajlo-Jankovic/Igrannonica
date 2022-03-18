@@ -47,10 +47,6 @@ const routes: Routes = [
   {
     path: "**",
     redirectTo: "dashboard"
-  },
-  {
-    path: 'upload',
-    component: UploadComponent
   }
 ];
 
