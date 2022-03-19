@@ -20,16 +20,20 @@ export class TablesComponent {
   numberData: any = [];
   numberLines: any = [];
   rowLines: any = [];
+  selectedType : string = "All";
+  selectedRow : number = 0;
 
   constructor(private tableService: TableService) {
-    this.tableService.getAll().subscribe(
+      this.showTable(this.selectedType, this.selectedRow)
+  }
+
+  showTable(type : string, rows : number)
+  {
+    this.tableService.getAll(type, rows).subscribe(
       (response) => {
         this.data = response;
-        console.log(this.data)
         let headersArray: any = [];
-        console.log(this.data['columns'])
         for (let i = 0; i < this.data['columns'].length; i++) {
-          console.log(this.data['columns'][i]);
           headersArray.push(this.data['columns'][i])
         }
         this.headingLines.push(headersArray);
@@ -52,6 +56,27 @@ export class TablesComponent {
         }
         this.rowLines.push(rowsArray);
       })
-
   }
+
+  public onSelectedType(event: any) {
+    const value = event.target.value;
+    this.selectedType = value;
+    this.reset();
+    this.showTable(this.selectedType, this.selectedRow);
+ }
+
+ public onSelectedRow(event: any) {
+  const value = event.target.value;
+  this.selectedRow = value;
+  this.reset();
+  this.showTable(this.selectedType, this.selectedRow);
+}
+
+reset()
+{
+  this.headingLines  = [];
+  this.numberData = [];
+  this.numberLines = [];
+  this.rowLines = [];
+}
 }

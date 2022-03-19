@@ -5,6 +5,20 @@
       <div class=" card">
         <div class=" card-header">
           <h4 class=" card-title">Simple Table</h4>
+          <div>
+            <select class='select-option' [(ngModel)]="selectedType" (change)='onSelectedType($event)' >
+              <option class='option' value="all">All</option>
+              <option class='option' value="null">Null</option>
+              <option class='option' value="not null">Not Null</option>
+          </select>
+          <select class='select-option' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' >
+            <option class='option' value="10">10</option>
+            <option class='option' value="20">20</option>
+            <option class='option' value="50">50</option>
+            <option class='option' value="100">100</option>
+            <option class='option' value="0">All</option>
+        </select>
+          </div>
         </div>
         <div class=" card-body">
           <div class=" table-responsive">
