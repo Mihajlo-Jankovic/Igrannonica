@@ -3,6 +3,8 @@ import { ROUTES } from "../sidebar/sidebar.component";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { CookieService } from "ngx-cookie-service";
+import { LoginService } from "src/app/services/login.service";
 
 @Component({
   selector: "app-navbar",
@@ -15,6 +17,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   mobile_menu_visible: any = 0;
   private toggleButton: any;
   private sidebarVisible: boolean;
+  loggedUser: boolean;
 
   public isCollapsed = true;
 
@@ -24,7 +27,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     location: Location,
     private element: ElementRef,
     private router: Router,
-    private modalService: NgbModal
+    private loginService: LoginService,
+    private modalService: NgbModal,
+    private cookieService : CookieService
   ) {
     this.location = location;
     this.sidebarVisible = false;
@@ -40,7 +45,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
        navbar.classList.add('navbar-transparent');
      }
    };
+
+   get(){
+    return sessionStorage.getItem('username');
+  } 
+
   ngOnInit() {
+    this.loggedUser = this.loginService.isAuthenticated();
+    if(!(this.get())) //this.router.navigate(["/dashboard"]);
+    this.onLogout();
+
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
@@ -53,6 +67,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.mobile_menu_visible = 0;
       }
     });
+  }
+
+  onLogout() {
+    this.cookieService.deleteAll();
   }
 
   collapse() {

@@ -29,6 +29,7 @@ export class UploadComponent implements OnInit {
   headingLines: any = [];
   rowLines: any = [];
 
+  
 
 public uploadFile(files : any)
 {
@@ -43,6 +44,7 @@ public uploadFile(files : any)
   else{
     const formData = new FormData();
     formData.append('file', file, file.name);
+
 
     this.http.post('https://localhost:7219/api/Upload', formData).subscribe(err =>
     {

@@ -1,11 +1,15 @@
-<div>
-    <input type="file" #file (change)="uploadFile(file.files)" accept=".csv" style="display: none;">
-    <button type="button" name="upload" (click)="file.click()">Upload files</button>
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <input type="file" #file (change)="uploadFile(file.files)" accept=".csv" style="display: none;">
+      <button type="button" name="upload" (click)="file.click()">Upload files</button>
 
 
-    <div *ngIf="loggedUser" id="listOfFiles" style="color: white;">
-      <ul>
+      <div *ngIf="loggedUser" id="listOfFiles" style="color: white;">
+        <ul>
           <li *ngFor="let f of files" style="color: white;">{{f}}</li>
-      </ul>
+        </ul>
+      </div>
     </div>
+  </div>
 </div>

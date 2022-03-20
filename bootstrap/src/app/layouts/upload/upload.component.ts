@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -11,48 +12,59 @@ import { UserService } from 'src/app/services/user.service';
 export class UploadComponent implements OnInit {
 
   loggedUser: boolean;
-  files: any [];
-  
-  constructor(private http : HttpClient, private loginService: LoginService, private userService: UserService) { }
+  files: any[];
+
+  save(fileName: string) {
+    sessionStorage.setItem('fileName', fileName);
+  }
+
+  get() {
+    return sessionStorage.getItem('fileName');
+  }
+
+  constructor(private router: Router, private http: HttpClient, private loginService: LoginService, private userService: UserService) { }
+
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     console.log(this.loggedUser);
+    if (!(this.get())) {
+      console.log("1245");
+    }
 
     /*
     this.userService.getAllFilesFromUser(1).subscribe(data => {
       this.files.push(data);
     }) */
-    
+
   }
 
   headingLines: any = [];
   rowLines: any = [];
 
 
-public uploadFile(files : any)
-{
-  if(files.length === 0)
-    return;
-  
-  let file = <File>files[0];
-  var fileSize = file.size;
-  console.log(fileSize);
-  if(fileSize / 1048576 > 500)
-    alert("Maximum file size is 500MB");
-  else{
-    const formData = new FormData();
-    formData.append('file', file, file.name);
+  public uploadFile(files: any) {
+    if (files.length === 0)
+      return;
 
-    this.http.post('https://localhost:7219/api/Upload', formData).subscribe(err =>
-    {
-      if(err)
-      {
-        console.log(err);
-      }
-    })
+    let file = <File>files[0];
+    var fileSize = file.size;
+    console.log(fileSize);
+    if (fileSize / 1048576 > 500)
+      alert("Maximum file size is 500MB");
+    else {
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+
+      this.save(file.name);
+
+      this.http.post('https://localhost:7219/api/Upload', formData).subscribe(err => {
+        if (err) {
+          console.log(err);
+        }
+      })
+    }
   }
-}
 
 
 
