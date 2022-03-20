@@ -1,4 +1,13 @@
-
+<style>
+  .table-td-input {
+    color: rgba(255,255,255,.7)!important;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    text-align: center;
+    /*box-sizing: border-box;*/
+  }
+</style>
 <div class=" content">
   <div class=" row">
     <div class=" col-md-12">
@@ -26,18 +35,18 @@
           </div>
         </div>
         <div class=" card-body">
-          <div class=" table-responsive">
+          <div class=" table-responsive" style="height: 500px;">
             <table class=" table tablesorter" id="">
               <thead>
                 <tr>
                   <th></th>
-                  <th *ngFor="let item of headingLines[0]; let i = index">{{item}}</th>           
+                  <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>           
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let item of rowLines[0]; let i = index">
                   <td><input type="checkbox"></td>
-                  <td *ngFor="let itemm of headingLines[0]; let j = index">{{item[j]}}</td>
+                  <td *ngFor="let itemm of headingLines[0]; let j = index"><input type="text" value="{{item[j]}}" class="table-td-input"></td>
                 </tr>
               </tbody>
             </table>
