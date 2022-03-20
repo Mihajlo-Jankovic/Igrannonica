@@ -9,9 +9,14 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class HomeComponent implements OnInit {
 
+  
   constructor(private router: Router, private cookie: CookieService) { }
 
+  get(){
+    return sessionStorage.getItem('username');
+  }
   ngOnInit(): void {
+    if(!(this.get())) this.onLogout();
   }
 
   onLogout() {

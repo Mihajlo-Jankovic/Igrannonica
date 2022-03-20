@@ -13,8 +13,8 @@
 
 .box {
     width: 460px;
-    height: 380px;
-    padding: 10px;
+    height: 490px;
+    padding: 16px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -67,4 +67,9 @@
 
 #link {
     color: darkgrey;
+}
+
+#porukaObavestenja {
+    color: red;
+    font-size: 12px;
 }
