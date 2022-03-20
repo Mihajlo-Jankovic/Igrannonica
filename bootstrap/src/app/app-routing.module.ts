@@ -4,7 +4,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { Routes, RouterModule } from "@angular/router";
 
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
-import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
+import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
+import { UploadComponent } from "./layouts/upload/upload.component";
 
 const routes: Routes = [
   {
@@ -21,13 +23,24 @@ const routes: Routes = [
         loadChildren: () => import ("./layouts/admin-layout/admin-layout.module").then(m => m.AdminLayoutModule)
       }
     ]
-  }, {
+  },
+  {
     path: "",
-    component: AuthLayoutComponent,
+    component: LoginLayoutComponent,
     children: [
       {
         path: "",
-        loadChildren: () => import ("./layouts/auth-layout/auth-layout.module").then(m => m.AuthLayoutModule)
+        loadChildren: () => import ("./layouts/login-layout/login-layout.module").then(m => m.LoginLayoutModule)
+      }
+    ]
+  },
+  {
+    path: "",
+    component: RegistrationLayoutComponent,
+    children: [
+      {
+        path: "",
+        loadChildren: () => import ("./layouts/registration-layout/registration-layout.module").then(m => m.RegistrationLayoutModule)
       }
     ]
   },

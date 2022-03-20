@@ -5,21 +5,39 @@
       <div class=" card">
         <div class=" card-header">
           <h4 class=" card-title">Simple Table</h4>
+          <div>
+            <div style="float: left;">
+              <select class='select-option' [(ngModel)]="selectedType" (change)='onSelectedType($event)' >
+                <option class='option' value="all">All</option>
+                <option class='option' value="null">Null</option>
+                <option class='option' value="not null">Not Null</option>
+              </select>
+              <select class='select-option' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' >
+                <option class='option' value="10">10</option>
+                <option class='option' value="20">20</option>
+                <option class='option' value="50">50</option>
+                <option class='option' value="100">100</option>
+                <option class='option' value="0">All</option>
+              </select>
+            </div>
+            <div style="float: right;">
+              <input type="button"  class="button" value="Delete">
+            </div>
+          </div>
         </div>
         <div class=" card-body">
           <div class=" table-responsive">
             <table class=" table tablesorter" id="">
               <thead>
                 <tr>
-                  <th *ngFor="let item of headingLines[0]; let i = index">{{item}}</th>
-                  <th colspan="2"></th>
+                  <th></th>
+                  <th *ngFor="let item of headingLines[0]; let i = index">{{item}}</th>           
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let item of rowLines[0]; let i = index">
+                  <td><input type="checkbox"></td>
                   <td *ngFor="let itemm of headingLines[0]; let j = index">{{item[j]}}</td>
-                  <td><input type="button" class="button" value="Edit"> </td>
-                  <td><input type="button"  class="button" value="Delete"></td>
                 </tr>
               </tbody>
             </table>
