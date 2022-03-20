@@ -1,18 +1,10 @@
-﻿using Igrannonica.Models;
-using LumenWorks.Framework.IO.Csv;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using Sylvan.Data.Csv;
-using System.Data;
-using System.Net.Http.Headers;
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace LargeFilesSample.Controllers
@@ -24,7 +16,6 @@ namespace LargeFilesSample.Controllers
     [Route("api/[controller]")]
     public class FileUploadController : ControllerBase
     {
-        [HttpPost, DisableRequestSizeLimit]
         private readonly ILogger<FileUploadController> _logger;
 
         public FileUploadController(ILogger<FileUploadController> logger)
@@ -40,7 +31,7 @@ namespace LargeFilesSample.Controllers
         /// because this is a no-argument action
         /// </remarks>
         /// <returns></returns>
-        [DisableRequestSizeLimit] 
+        [DisableRequestSizeLimit]
         [HttpPost]
         [Route(nameof(Upload))]
         public async Task<IActionResult> Upload()
@@ -64,31 +55,6 @@ namespace LargeFilesSample.Controllers
             // Make changes according to your needs in actual use
             while (section != null)
             {
-                CSVFile DBFile = new CSVFile();
-                var client = new MongoClient("mongodb://localhost:27017");
-                var database = client.GetDatabase("IgrannonicaDB");
-                var file = Request.Form.Files[0];
-
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fileStream = file.OpenReadStream();
-                    DataTable csvTable = new DataTable();
-                    using (CsvReader csvReader =
-                        new CsvReader(new StreamReader(fileStream), true))
-                    {
-                        csvTable.Load(csvReader);
-                    }
-
-                    await SaveDataTableToCollection(csvTable, fileName);
-
-                    return Ok("okej");
-                }
-                return BadRequest("nema fajla");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition,
                     out var contentDisposition);
 
@@ -103,14 +69,16 @@ namespace LargeFilesSample.Controllers
                     // Get the temporary folder, and combine a random file name with it
                     var folderName = Path.Combine("Resources", "CSVFiles");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                    var fileName = "asdasdasdasd.csv";
+                    var fileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
                     var fullPath = Path.Combine(pathToSave, fileName);
 
+                    var trustedFileNameForDisplay = WebUtility.HtmlEncode(
+                            contentDisposition.FileName.Value);
                     using (var targetStream = new FileStream(fullPath, FileMode.Create))
                     {
                         await section.Body.CopyToAsync(targetStream);
+                        targetStream.Dispose();
                     }
-
                     return Ok();
                 }
 
@@ -119,24 +87,6 @@ namespace LargeFilesSample.Controllers
 
             // If the code runs to this location, it means that no files have been saved
             return BadRequest("No files data in the request.");
-        }
-
-        [NonAction]
-        public async Task SaveDataTableToCollection(DataTable dt, string fileName)
-        {
-            var client = new MongoClient("mongodb://localhost:27017");
-            var database = client.GetDatabase("IgrannonicaDB");
-            database.CreateCollection(fileName);
-            var collection = database.GetCollection<BsonDocument>(fileName);
-
-            List<BsonDocument> batch = new List<BsonDocument>();
-            foreach (DataRow dr in dt.Rows)
-            {
-                var dictionary = dr.Table.Columns.Cast<DataColumn>().ToDictionary(col => col.ColumnName, col => dr[col.ColumnName]);
-                batch.Add(new BsonDocument(dictionary));
-            }
-
-            await collection.InsertManyAsync(batch.AsEnumerable());
         }
     }
 }
