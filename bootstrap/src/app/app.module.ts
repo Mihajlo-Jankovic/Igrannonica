@@ -14,6 +14,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
 import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
+import { LocationStrategy, PathLocationStrategy } from "@angular/common";
 
 @NgModule({
   imports: [
@@ -34,7 +35,7 @@ import { RegistrationLayoutComponent } from "./layouts/registration-layout/regis
     LoginLayoutComponent,
     RegistrationLayoutComponent
   ],
-  providers: [],
+  providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
