@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Igrannonica.Models;
+using Igrannonica.Services.UserService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace LargeFilesSample.Controllers
@@ -16,10 +19,14 @@ namespace LargeFilesSample.Controllers
     public class FileUploadController : ControllerBase
     {
         private readonly ILogger<FileUploadController> _logger;
+        private readonly IUserService _userService;
+        private readonly MySqlContext _context;
 
-        public FileUploadController(ILogger<FileUploadController> logger)
+        public FileUploadController(ILogger<FileUploadController> logger, IUserService userService, MySqlContext context)
         {
             _logger = logger;
+            _userService = userService;
+            _context = context;
         }
 
         /// <summary>
@@ -31,12 +38,29 @@ namespace LargeFilesSample.Controllers
         /// </remarks>
         /// <returns></returns>
         [DisableRequestSizeLimit] 
-        [HttpPost]
+        [HttpPost, Authorize]
         [Route(nameof(Upload))]
         public async Task<IActionResult> Upload()
         {
             var request = HttpContext.Request;
+            string userName = _userService.GetUsername();
 
+            User user = _context.User.Where(u => u.username == userName).FirstOrDefault();
+            Igrannonica.Models.File file = new Igrannonica.Models.File();
+            file.RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            var task = UploadFile(request, file.RandomFileName);
+            if(task.Result == "los tip fajla" || task.Result == "No files data in the request.")
+                return BadRequest(task.Result);
+            file.FileName = task.Result;
+            file.UserForeignKey = user.id;
+            await _context.File.AddAsync(file);
+            await _context.SaveChangesAsync();
+            return Ok("fajl uspesno uploadovan");
+
+        }
+
+        private async Task<string> UploadFile(HttpRequest request, string filename)
+        {
             // validation of Content-Type
             // 1. first, it must be a form-data request
             // 2. a boundary should be found in the Content-Type
@@ -44,7 +68,7 @@ namespace LargeFilesSample.Controllers
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                return new UnsupportedMediaTypeResult();
+                return "los tip fajla";
             }
 
             var reader = new MultipartReader(mediaTypeHeader.Boundary.Value, request.Body);
@@ -68,22 +92,25 @@ namespace LargeFilesSample.Controllers
                     // Get the temporary folder, and combine a random file name with it
                     var folderName = Path.Combine("Resources", "CSVFiles");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                    var fileName = "asdasdasdasd.csv";
+                    var fileName = filename;
                     var fullPath = Path.Combine(pathToSave, fileName);
 
+                    var trustedFileNameForDisplay = WebUtility.HtmlEncode(
+                            contentDisposition.FileName.Value);
                     using (var targetStream = new FileStream(fullPath, FileMode.Create))
                     {
                         await section.Body.CopyToAsync(targetStream);
+                        targetStream.Dispose();
                     }
-
-                    return Ok();
+                    return contentDisposition.FileName.Value;
                 }
 
                 section = await reader.ReadNextSectionAsync();
             }
-
             // If the code runs to this location, it means that no files have been saved
-            return BadRequest("No files data in the request.");
+            return "No files data in the request.";
         }
+        
     }
+
 }

@@ -38,13 +38,13 @@ public uploadFile(files : any)
   let file = <File>files[0];
   var fileSize = file.size;
   console.log(fileSize);
-  if(fileSize / 1048576 > 500)
+  if(fileSize / 1048576 > 5000)
     alert("Maximum file size is 500MB");
   else{
     const formData = new FormData();
     formData.append('file', file, file.name);
 
-    this.http.post('https://localhost:7219/api/Upload', formData).subscribe(err =>
+    this.http.post('https://localhost:7219/api/FileUpload/Upload', formData).subscribe(err =>
     {
       if(err)
       {

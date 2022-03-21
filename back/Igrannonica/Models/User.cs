@@ -15,9 +15,12 @@ namespace Igrannonica.Models
         public string email { get; set; }
         [Column(TypeName = "nvarchar(50)")]
         public string username { get; set; }
+
         [Column(TypeName = "nvarchar(500)")]
         public byte[] passwordHash { get; set; }
         [Column(TypeName = "nvarchar(500)")]
         public byte[] passwordSalt { get; set; }
+
+        public List<File> Files { get; set; }
     }
 }
