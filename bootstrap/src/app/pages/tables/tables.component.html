@@ -1,49 +1,53 @@
-
 <div class=" content">
-  <div class=" row">
-    <div class=" col-md-12">
-      <div class=" card">
-        <div class=" card-header">
-          <h4 class=" card-title">Simple Table</h4>
-          <div>
-            <div style="float: left;">
-              <select class='select-option' [(ngModel)]="selectedType" (change)='onSelectedType($event)' >
-                <option class='option' value="all">All</option>
-                <option class='option' value="null">Null</option>
-                <option class='option' value="not null">Not Null</option>
-              </select>
-              <select class='select-option' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' >
-                <option class='option' value="10">10</option>
-                <option class='option' value="20">20</option>
-                <option class='option' value="50">50</option>
-                <option class='option' value="100">100</option>
-                <option class='option' value="0">All</option>
-              </select>
+    <div class=" row">
+        <div class=" col-md-12">
+            <div class=" card">
+                <div class=" card-header">
+                    <h4 class=" card-title">Uploaded data</h4>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-3">
+                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
+                              <option class='option' value="All">All</option>
+                              <option class='option' value="Null">Null</option>
+                              <option class='option' value="Not null">Not Null</option>
+                            </select>
+                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
+                                <option class='option' value="10">10</option>
+                                <option class='option' value="20">20</option>
+                                <option class='option' value="50">50</option>
+                                <option class='option' value="100">100</option>
+                                <option class='option' value="0">All</option>
+                              </select>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-3">
+
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-3">
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body">
+                                <i class="tim-icons icon-trash-simple"> </i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class=" card-body">
+                    <div class=" table-responsive" style="height: 500px;" id="table">
+                        <table class=" table tablesorter">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of rowLines[0]; let i = index">
+                                    <td><input type="checkbox" class="check"></td>
+                                    <td *ngFor="let itemm of headingLines[0]; let j = index"><input type="text" value="{{item[j]}}" class="table-td-input"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div style="float: right;">
-              <input type="button"  class="button" value="Delete">
-            </div>
-          </div>
         </div>
-        <div class=" card-body">
-          <div class=" table-responsive">
-            <table class=" table tablesorter" id="">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th *ngFor="let item of headingLines[0]; let i = index">{{item}}</th>           
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of rowLines[0]; let i = index">
-                  <td><input type="checkbox"></td>
-                  <td *ngFor="let itemm of headingLines[0]; let j = index">{{item[j]}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
