@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Igrannonica.DataTransferObjects;
+using Igrannonica.Services.UserService;
 
 namespace Igrannonica.Controllers
 {
@@ -22,11 +23,13 @@ namespace Igrannonica.Controllers
     {
         private User user = new User();
         private readonly IConfiguration _configuration;
-        private readonly UserContext _context;
+        private readonly IUserService _userService;
+        private readonly MySqlContext _context;
 
-        public UserController(UserContext context, IConfiguration configuration)
+        public UserController(MySqlContext context, IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
+            _userService = userService;
             _context = context;
         }
 
@@ -64,6 +67,13 @@ namespace Igrannonica.Controllers
             return Ok(this.user);
         }
 
+        [HttpGet("getme"), Authorize]
+        public ActionResult<string> GetMe()
+        {
+            var userName = _userService.GetUsername();
+            return Ok(userName);
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<TokenDTO>> Login(LoginDTO loginDTO)
         {
@@ -80,7 +90,7 @@ namespace Igrannonica.Controllers
                 return Ok(token);
             }
             token.token = CreateToken(user);
-
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token.token);
             return Ok(token);
         }
 
@@ -127,11 +137,11 @@ namespace Igrannonica.Controllers
 
 
         // GET: api/User
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
-        {
-            return await _context.User.ToListAsync();
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        //{
+        //    return await _context.User.ToListAsync();
+        //}
 
         // GET: api/User/5
         [HttpGet("{id}")]
