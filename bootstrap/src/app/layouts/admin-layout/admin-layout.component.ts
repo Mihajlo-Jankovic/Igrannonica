@@ -13,13 +13,13 @@ export class AdminLayoutComponent implements OnInit {
     var sidebar = document.getElementsByClassName('sidebar')[0];
     var mainPanel = document.getElementsByClassName('main-panel')[0];
 
-    this.sidebarColor = color;
+    //this.sidebarColor = color;
 
     if(sidebar != undefined){
-        sidebar.setAttribute('data',color);
+        //sidebar.setAttribute('data',color);
     }
     if(mainPanel != undefined){
-        mainPanel.setAttribute('data',color);
+        //mainPanel.setAttribute('data',color);
     }
   }
   changeDashboardColor(color){

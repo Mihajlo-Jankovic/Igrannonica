@@ -3,12 +3,12 @@
         <div _ngcontent-lhv-c2="" class=" container-fluid">
             <div _ngcontent-lhv-c2="" class=" navbar-wrapper">
                 <div _ngcontent-lhv-c2="" class=" navbar-toggle d-inline"><button _ngcontent-lhv-c2="" class=" navbar-toggler" type="button"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar1"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar2"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar3"></span></button></div>
-                <a _ngcontent-lhv-c2="" class=" navbar-brand" href="#/register"> Register </a>
+                <a _ngcontent-lhv-c2="" class=" navbar-brand" href="/register"> Register </a>
             </div><button _ngcontent-lhv-c2="" aria-label="Toggle navigation" class=" navbar-toggler" id="navigation" type="button" aria-expanded="false"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span></button>
             <div _ngcontent-lhv-c2="" class="navbar-collapse collapse" id="navigation" aria-expanded="false" aria-hidden="true" style="display: none;">
                 <ul _ngcontent-lhv-c2="" class=" navbar-nav ml-auto">
-                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link" href="#/login"><i _ngcontent-lhv-c2="" class=" tim-icons icon-single-02"></i> Login </a></li>
-                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link text-primary" href="#/dashboard"><i _ngcontent-lhv-c2="" class=" tim-icons icon-minimal-left"></i> Back to Dashboard </a></li>
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link" href="/login"><i _ngcontent-lhv-c2="" class=" tim-icons icon-single-02"></i> Login </a></li>
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link text-primary" href="/dashboard"><i _ngcontent-lhv-c2="" class=" tim-icons icon-minimal-left"></i> Back to Dashboard </a></li>
                 </ul>
             </div>
         </div>
@@ -90,15 +90,15 @@
                                 <!-- format za sifru: obavezno je bar jedno veliko, bar jedno malo slovo i jedan broj, broj karaktera(8, 20) -->
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" [disabled]="!registerForm.valid" class="btn btn-primary btn-lg btn-block mb-3">Register</button>
+                                <button type="submit" [disabled]="!registerForm.valid" class="btn btn-primary btn-lg btn-block mr-1">Register</button>
                                 <div class=" pull-left">
                                     <h6>
-                                        <a class="#/login" href="#/login"> Already have an account? </a>
+                                        <a class="text-primary" href="/login"> Already have an account? </a>
                                     </h6>
                                 </div>
                                 <div class=" pull-right">
                                     <h6>
-                                        <a class=" link footer-link" href="javascript:void(0)"> Need Help? </a>
+                                        <a class="text-primary" href="javascript:void(0)"> Need Help? </a>
                                     </h6>
                                 </div>
                             </div>
