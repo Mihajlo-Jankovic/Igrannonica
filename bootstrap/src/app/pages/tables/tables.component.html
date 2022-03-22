@@ -3,15 +3,15 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class=" card-header">
-                    <h4 class=" card-title">Simple Table</h4>
+                    <h4 class=" card-title">Uploaded data</h4>
                     <div class="row">
                         <div class="col-lg-4 col-md-6 col-sm-3">
-                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type">
+                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
                               <option class='option' value="All">All</option>
                               <option class='option' value="Null">Null</option>
                               <option class='option' value="Not null">Not Null</option>
                             </select>
-                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows">
+                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
                                 <option class='option' value="10">10</option>
                                 <option class='option' value="20">20</option>
                                 <option class='option' value="50">50</option>
@@ -22,8 +22,10 @@
                         <div class="col-lg-4 col-md-6 col-sm-3">
 
                         </div>
-                        <div style="float: right;">
-                            <input type="button" class="button" value="Delete">
+                        <div class="col-lg-4 col-md-6 col-sm-3">
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body">
+                                <i class="tim-icons icon-trash-simple"> </i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -38,7 +40,7 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let item of rowLines[0]; let i = index">
-                                    <td><input type="checkbox"></td>
+                                    <td><input type="checkbox" class="check"></td>
                                     <td *ngFor="let itemm of headingLines[0]; let j = index"><input type="text" value="{{item[j]}}" class="table-td-input"></td>
                                 </tr>
                             </tbody>

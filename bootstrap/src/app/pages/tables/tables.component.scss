@@ -10,22 +10,20 @@
 .dropdown {
     font-size: 13px;
     padding: 10px 8px 10px 14px;
-    background: #d450d9;
-    border: 1px solid #1e1e2e;
+    background: transparent;
+    border: 1px solid #7d3c8b;
     border-radius: 6px;
     overflow: hidden;
-    position: relative;
     color: white;
-}
-
-.dropdown {
+    margin-right: 20px;
+    margin-top: 8px;
+    height: 42px;
     width: 30%;
-    background: 'icon-minimal-down' no-repeat;
-    background-position: 80% center;
+    position: relative;
+    bottom: 0;
 }
 
-.dropdown select {
-    background: #d450d9;
+.option {
     line-height: 1;
     border: 0;
     padding: 0;
@@ -34,4 +32,22 @@
     position: relative;
     z-index: 10;
     font-size: 1em;
+    color: white;
+    background: #27293d;
+}
+
+.icon-trash-simple {
+    color: #7d3c8b;
+}
+
+button {
+    float: right;
+    height: 100%;
+    vertical-align: top;
+    padding: 0px;
+}
+
+i {
+    font-size: 3em;
+    padding: 0px;
 }
