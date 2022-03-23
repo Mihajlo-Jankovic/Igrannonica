@@ -6,16 +6,16 @@
                     <h4 class=" card-title">Uploaded data</h4>
                     <div class="row">
                         <div class="col-lg-4 col-md-6 col-sm-3">
-                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
-                              <option class='option' value="All">All</option>
+                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' ngbTooltip="Data type">
+                              <option class='option' value="All" selected>All</option>
                               <option class='option' value="Null">Null</option>
                               <option class='option' value="Not null">Not Null</option>
                             </select>
-                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
+                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' ngbTooltip="Number of rows per page">
                                 <option class='option' value="10">10</option>
                                 <option class='option' value="20">20</option>
                                 <option class='option' value="50">50</option>
-                                <option class='option' value="100">100</option>
+                                <option class='option' value="100" selected>100</option>
                                 <option class='option' value="0">All</option>
                               </select>
                         </div>

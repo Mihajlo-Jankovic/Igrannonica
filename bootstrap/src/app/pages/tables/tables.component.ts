@@ -22,7 +22,7 @@ export class TablesComponent {
   numberLines: any = [];
   rowLines: any = [];
   selectedType : string = "All";
-  selectedRow : number = 0;
+  selectedRow : number = 100;
 
   constructor(private tableService: TableService) {
       this.showTable(this.selectedType, this.selectedRow)

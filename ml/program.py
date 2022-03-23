@@ -224,8 +224,6 @@ def filterCSV(path, rowNum, dataType):
 
     return df
 
-df = openCSV('csv\\salesRecords.csv',0)
-print(df)
 
 '''
 df = openCSV(path,0)
