@@ -1,27 +1,35 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
+import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss']
+  styleUrls: ['./upload.component.css']
 })
 export class UploadComponent implements OnInit {
 
   loggedUser: boolean;
   files: any[];
-  token: string;
 
-  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService) { }
+  save(fileName: string) {
+    sessionStorage.setItem('fileName', fileName);
+  }
+
+  get() {
+    return sessionStorage.getItem('fileName');
+  }
+
+  constructor(private router: Router, private http: HttpClient, private loginService: LoginService, private userService: UserService) { }
+
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     console.log(this.loggedUser);
-    if (this.loggedUser) {
-      this.token = this.cookie.get('token');
+    if (!(this.get())) {
+      console.log("1245");
     }
 
     /*
@@ -34,7 +42,6 @@ export class UploadComponent implements OnInit {
   headingLines: any = [];
   rowLines: any = [];
 
-  
 
   public uploadFile(files: any) {
     if (files.length === 0)
@@ -49,16 +56,17 @@ export class UploadComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', file, file.name);
 
-      let headers = new HttpHeaders({
-        'Authorization': 'bearer ' + this.token
-      });
-      let options = { headers: headers };
+      this.save(file.name);
 
-      this.http.post('https://localhost:7219/api/FileUpload', formData, options).subscribe(err => {
+      this.http.post('https://localhost:7219/api/Upload', formData).subscribe(err => {
         if (err) {
           console.log(err);
         }
       })
     }
   }
+
+
+
+
 }
