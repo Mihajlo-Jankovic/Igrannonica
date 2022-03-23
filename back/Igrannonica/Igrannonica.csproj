@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Resources\CSVFiles\" />
+    <Folder Include="Resources\CSVFilesUnauthorized\" />
   </ItemGroup>
 
 </Project>
