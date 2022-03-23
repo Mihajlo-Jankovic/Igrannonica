@@ -67,6 +67,41 @@ namespace Igrannonica.Controllers
             return Ok(this.user);
         }
 
+        [HttpPost("EditUserName"), Authorize]
+        public async Task<ActionResult<User>> EditUserName(UpdateUserNameDTO request)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            if(userOriginal == null)
+                return BadRequest("JWT is bad!");
+            userOriginal.firstname = request.firstname;
+            userOriginal.lastname = request.lastname;
+
+            _context.User.Update(userOriginal);
+            await _context.SaveChangesAsync();
+
+            return Ok("Success!");
+        }
+
+        [HttpPost("EditUserPassword"), Authorize]
+        public async Task<ActionResult<User>> EditUserPassword(UpdateUserPasswordDTO request)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            if (userOriginal == null)
+                return BadRequest("JWT is bad!");
+            if (!VerifyPasswordHash(request.oldPassword, userOriginal.passwordHash, userOriginal.passwordSalt))
+                return BadRequest("Wrong password");
+            CreatePasswordHash(request.newPassword, out byte[] newPasswordHash, out byte[] newPasswordSalt);
+            userOriginal.passwordHash = newPasswordHash;
+            userOriginal.passwordSalt = newPasswordSalt;
+
+            _context.User.Update(userOriginal);
+            await _context.SaveChangesAsync();
+
+            return Ok("Success!");
+        }
+
         [HttpGet("getme"), Authorize]
         public ActionResult<string> GetMe()
         {

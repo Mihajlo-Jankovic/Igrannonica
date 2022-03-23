@@ -9,7 +9,7 @@ using Microsoft.Net.Http.Headers;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace LargeFilesSample.Controllers
+namespace Igrannonica.Controllers
 {
     /// <summary>
     /// controller for upload large file
@@ -39,14 +39,13 @@ namespace LargeFilesSample.Controllers
         /// <returns></returns>
         [DisableRequestSizeLimit] 
         [HttpPost, Authorize]
-        [Route(nameof(Upload))]
-        public async Task<IActionResult> Upload()
+        public async Task<IActionResult> UploadAuthorized()
         {
             var request = HttpContext.Request;
             string userName = _userService.GetUsername();
 
             User user = _context.User.Where(u => u.username == userName).FirstOrDefault();
-            Igrannonica.Models.File file = new Igrannonica.Models.File();
+            Models.File file = new Igrannonica.Models.File();
             file.RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             var task = UploadFile(request, file.RandomFileName);
             if(task.Result == "los tip fajla" || task.Result == "No files data in the request.")
