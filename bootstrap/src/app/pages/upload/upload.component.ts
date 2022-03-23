@@ -35,6 +35,7 @@ export class UploadComponent implements OnInit {
   headingLines: any = [];
   rowLines: any = [];
 
+  
 
 public uploadFile(files : any)
 {

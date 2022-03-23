@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import Chart from 'chart.js';
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "app-dashboard",
@@ -15,9 +17,16 @@ export class DashboardComponent implements OnInit {
   public clicked1: boolean = false;
   public clicked2: boolean = false;
 
-  constructor() {}
+  get(){
+    return sessionStorage.getItem('username');
+  }
+  constructor(public cookieService: CookieService,private router: Router) {}
 
+  onLogout() {
+    this.cookieService.deleteAll();
+  }
   ngOnInit() {
+    if(!(this.get())) this.onLogout();
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,
       legend: {
