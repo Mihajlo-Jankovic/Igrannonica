@@ -7,7 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.css']
+  styleUrls: ['./upload.component.scss']
 })
 export class UploadComponent implements OnInit {
 
@@ -29,7 +29,7 @@ export class UploadComponent implements OnInit {
     this.userService.getAllFilesFromUser(1).subscribe(data => {
       this.files.push(data);
     }) */
-    
+
   }
 
   headingLines: any = [];
@@ -63,5 +63,4 @@ public uploadFile(files : any)
       }
     })
   }
-}
 }

@@ -1,3 +1,4 @@
+@use "sass:math";
 .table-td-input {
     color: rgba(255, 255, 255, .7)!important;
     background-color: transparent;
@@ -5,6 +6,10 @@
     width: 100%;
     text-align: center;
     /*box-sizing: border-box;*/
+}
+
+.field:hover {
+    background: #1e1e2e;
 }
 
 .dropdown {
@@ -86,7 +91,7 @@ $duration: .2s;
         height: 0;
     }
     100% {
-        height: $checkbox-height/2;
+        height: math.div($checkbox-height, 2);
     }
 }
 
@@ -95,7 +100,7 @@ $duration: .2s;
         height: 0;
     }
     100% {
-        height: $checkbox-height/2;
+        height: math.div($checkbox-height, 2);
     }
 }
 
@@ -104,7 +109,7 @@ $duration: .2s;
         height: 0;
     }
     100% {
-        height: $checkbox-height/2;
+        height: math.div($checkbox-height, 2);
     }
 }
 
@@ -159,10 +164,10 @@ input[type=checkbox] {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    -moz-transition: border-color ease $duration/2;
-    -o-transition: border-color ease $duration/2;
-    -webkit-transition: border-color ease $duration/2;
-    transition: border-color ease $duration/2;
+    -moz-transition: border-color ease math.div($duration, 2);
+    -o-transition: border-color ease math.div($duration, 2);
+    -webkit-transition: border-color ease math.div($duration, 2);
+    transition: border-color ease math.div($duration, 2);
     cursor: pointer;
     &::before,
     &::after {
@@ -211,10 +216,10 @@ input[type=checkbox]:checked+.check-box,
     border-color: $checked-color;
     &::after {
         height: $checkbox-height * .5;
-        -moz-animation: dothabottomcheck $duration/2 ease 0s forwards;
-        -o-animation: dothabottomcheck $duration/2 ease 0s forwards;
-        -webkit-animation: dothabottomcheck $duration/2 ease 0s forwards;
-        animation: dothabottomcheck $duration/2 ease 0s forwards;
+        -moz-animation: dothabottomcheck math.div($duration, 2) ease 0s forwards;
+        -o-animation: dothabottomcheck math.div($duration, 2) ease 0s forwards;
+        -webkit-animation: dothabottomcheck math.div($duration, 2) ease 0s forwards;
+        animation: dothabottomcheck math.div($duration, 2) ease 0s forwards;
     }
     &::before {
         height: $checkbox-height * 1.2;
