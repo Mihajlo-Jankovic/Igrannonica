@@ -61,8 +61,9 @@ def statistics(df,colIndex):
 path = 'csv\movies.csv'
 
 def openCSV(path,rowNum):
+    #header = True
     with open(path) as f: 
-        header = csv.Sniffer().has_header(f.read(1024)) # Proverava da li u fajlu postoji header
+        header = csv.Sniffer().has_header(f.read(10)) # Proverava da li u fajlu postoji header
 
     if(header): 
         if(rowNum != 0): df = pd.read_csv(path, index_col = 0, nrows = rowNum) 
@@ -222,6 +223,9 @@ def filterCSV(path, rowNum, dataType):
         df = df[~df.index.isin(na_free.index)]
 
     return df
+
+df = openCSV('csv\\salesRecords.csv',0)
+print(df)
 
 '''
 df = openCSV(path,0)

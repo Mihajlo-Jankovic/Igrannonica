@@ -19,7 +19,7 @@ namespace Igrannonica.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(CsvDTO csv)
+        public async Task<IActionResult> Edit(CsvDTO csv)
         {
 
             Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
@@ -30,40 +30,42 @@ namespace Igrannonica.Controllers
             var fileName = file.RandomFileName;
             var fullPath = Path.Combine(pathToSave, fileName);
 
-            using(var streamReader = new StreamReader(fullPath))
+            using var streamReader = new StreamReader(fullPath);
+            using var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture);
+            var records =  csvReader.GetRecords<dynamic>();
+            var iterator = records.GetEnumerator();
+            for (int i = 0; i < csv.rowNumber; i++)
             {
-                using(var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                var moved = iterator.MoveNext();
+                if (moved == false)
                 {
-                    var records = csvReader.GetRecords<dynamic>();
-                    var iterator = records.GetEnumerator();
-                    for (int i = 0; i < csv.rowNumber; i++)
-                    {
-                        var moved = iterator.MoveNext();
-                        if (moved == false)
-                        {
-                            return BadRequest("zadat veci red od ukupno redova");
-                        }
-                    }
-                    var record = iterator.Current;
-                    var result = new RouteValueDictionary(record);
-                    result[csv.columnName] = csv.value;
-                    streamReader.Close();
-                    using (var targetStream = new StreamWriter(fullPath))
-                    {
-                        using (var csvWriter = new CsvWriter(targetStream, CultureInfo.InvariantCulture))
-                        {
-                            csvWriter.WriteRecords(records);
-                        }
-                        targetStream.Dispose();
-                    }
-                    return Ok(result);
-                    //while(iterator.MoveNext())
-                    //{
-                    //    var record = iterator.Current;
-                        
-                    //}
+                    return BadRequest("zadat veci red od ukupno redova");
                 }
             }
+            var record = iterator.Current;
+            var result = new RouteValueDictionary(record);
+            result[csv.columnName] = csv.value;
+
+
+            fileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            fullPath = Path.Combine(pathToSave, fileName);
+            file.RandomFileName = fileName;
+            _mySqlContext.Update(file);
+            await _mySqlContext.SaveChangesAsync();
+            using (var targetStream = new StreamWriter(fullPath))
+            {
+                using (var csvWriter = new CsvWriter(targetStream, CultureInfo.InvariantCulture))
+                {
+                    await csvWriter.WriteRecordsAsync(records);
+                }
+                targetStream.Dispose();
+            }
+            return Ok(fileName);
+            //while(iterator.MoveNext())
+            //{
+            //    var record = iterator.Current;
+
+            //}
             //return Ok(csv);
         }
 
