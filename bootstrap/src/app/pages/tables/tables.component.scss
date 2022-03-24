@@ -28,6 +28,10 @@
     bottom: 0;
 }
 
+.dropdown:focus {
+    border-color: #7d3c8b;
+}
+
 .option {
     line-height: 1;
     border: 0;

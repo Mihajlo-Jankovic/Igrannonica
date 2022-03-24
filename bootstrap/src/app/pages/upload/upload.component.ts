@@ -19,7 +19,6 @@ export class UploadComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
-    console.log(this.loggedUser);
     if (!(this.get())) {
       console.log("1245");
     }
@@ -52,7 +51,6 @@ export class UploadComponent implements OnInit {
 
     let file = <File>files[0];
     var fileSize = file.size;
-    console.log(fileSize);
     if (fileSize / 1048576 > 500)
       alert("Maximum file size is 500MB");
     else {
@@ -70,7 +68,6 @@ export class UploadComponent implements OnInit {
 
         this.http.post<string>('https://localhost:7219/api/FileUpload', formData, options).subscribe(name => {
          this.cookie.set("filename", file.name);
-         //console.log(name)
       })
       }
 

@@ -23,7 +23,7 @@ export class TablesComponent {
   numberLines: any = [];
   rowLines: any = [];
   selectedType : string = "All";
-  selectedRow : number = 0;
+  selectedRow : number = 100;
 
   constructor(private tableService: TableService, private cookie : CookieService) {
       this.showTable(this.selectedType, this.selectedRow)
@@ -32,7 +32,6 @@ export class TablesComponent {
   showTable(type : string, rows : number)
   {
     let filename = this.cookie.get('filename');
-    console.log(filename)
     this.tableService.getAll(filename,type, rows).subscribe(
       (response) => {
         this.data = response;
