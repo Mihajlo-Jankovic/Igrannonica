@@ -1,6 +1,7 @@
 from flask import Flask, request
 import json
 import program
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -18,7 +19,9 @@ def process_json():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
 
-        df = program.filterCSV('csv' + "\\" + json['FileName'], int(json['Rows']), json['DataType'])
+       # df = program.filterCSV('https://localhost:7219/api/Csv/' + json['FileName'], int(json['Rows']), json['DataType'])
+        print(json['FileName'])
+        df = pd.read_csv('https://localhost:7219/api/Csv/' +json['FileName'])
 
         return df.to_json(orient = 'split')
         

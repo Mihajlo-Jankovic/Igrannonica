@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { LoginService } from 'src/app/services/login.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -12,8 +13,9 @@ export class UploadComponent implements OnInit {
 
   loggedUser: boolean;
   files: any[];
+  token : string;
 
-  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService) { }
+  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie : CookieService) { }
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
@@ -43,11 +45,22 @@ export class UploadComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', file, file.name);
 
-      this.http.post('https://localhost:7219/api/Upload', formData).subscribe(err => {
-        if (err) {
-          console.log(err);
-        }
+     
+
+      if(this.cookie.check('token'))
+      {
+        this.token = this.cookie.get('token');
+        let headers = new HttpHeaders({
+          'Authorization': 'bearer ' + this.token });
+        let options = { headers: headers };
+
+        this.http.post<string>('https://localhost:7219/api/FileUpload', formData, options).subscribe(name => {
+         this.cookie.set("filename", file.name);
+         //console.log(name)
       })
+      }
+
+      
     }
   }
 }

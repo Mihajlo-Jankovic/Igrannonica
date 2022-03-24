@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { TableService } from 'src/app/services/table.service';
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "app-tables",
@@ -24,13 +25,15 @@ export class TablesComponent {
   selectedType : string = "All";
   selectedRow : number = 0;
 
-  constructor(private tableService: TableService) {
+  constructor(private tableService: TableService, private cookie : CookieService) {
       this.showTable(this.selectedType, this.selectedRow)
   }
 
   showTable(type : string, rows : number)
   {
-    this.tableService.getAll(type, rows).subscribe(
+    let filename = this.cookie.get('filename');
+    console.log(filename)
+    this.tableService.getAll(filename,type, rows).subscribe(
       (response) => {
         this.data = response;
         let headersArray: any = [];

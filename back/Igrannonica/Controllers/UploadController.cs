@@ -58,11 +58,14 @@ namespace Igrannonica.Controllers
             var task = UploadFile(request, fullPath);
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
+            file.RandomFileName = RandomFileName;
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
-            return Ok("fajl uspesno uploadovan");
+            EncryptedFileNameDTO encryptedFileName = new EncryptedFileNameDTO();
+            encryptedFileName.filename = AesOperation.EncryptString(_configuration.GetSection("AppSettings:Key").Value, RandomFileName);
+            return Ok(encryptedFileName);
 
         }
 

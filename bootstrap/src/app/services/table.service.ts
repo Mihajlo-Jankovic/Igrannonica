@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class TableService {
   constructor(private http:HttpClient) { }
 
-  getAll(dataType : string, rows : number):Observable<any>{
-    return this.http.post("https://localhost:7219/api/PythonComm/getTableData",{"FileName" : "movies.csv", "DataType" : dataType, "Rows" : rows});
+  getAll(filename: string, dataType : string, rows : number):Observable<any>{
+    return this.http.post("https://localhost:7219/api/PythonComm/getTableData",{"FileName" : filename, "DataType" : dataType, "Rows" : rows});
   }
 }
