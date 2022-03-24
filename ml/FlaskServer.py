@@ -19,9 +19,9 @@ def process_json():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
 
-       # df = program.filterCSV('https://localhost:7219/api/Csv/' + json['FileName'], int(json['Rows']), json['DataType'])
-        print(json['FileName'])
-        df = pd.read_csv('https://localhost:7219/api/Csv/' +json['FileName'])
+        df = program.filterCSV('https://localhost:7219/api/Csv/' + json['FileName'], int(json['Rows']), json['DataType'])
+        #print(json['FileName'])
+        #df = pd.read_csv('https://localhost:7219/api/Csv/' +json['FileName'])
 
         return df.to_json(orient = 'split')
         

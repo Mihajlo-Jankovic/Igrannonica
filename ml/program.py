@@ -6,6 +6,7 @@ from keras.regularizers import L1, L2
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import category_encoders as ce
+import requests
 
 '''
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
@@ -62,7 +63,7 @@ path = 'csv\movies.csv'
 
 def openCSV(path,rowNum):
     #header = True
-    with open(path) as f: 
+    with requests.get(path) as f: 
         header = csv.Sniffer().has_header(f.read(10)) # Proverava da li u fajlu postoji header
 
     if(header): 
@@ -223,7 +224,6 @@ def filterCSV(path, rowNum, dataType):
         df = df[~df.index.isin(na_free.index)]
 
     return df
-
 
 '''
 df = openCSV(path,0)
