@@ -3,19 +3,19 @@
         <div class=" navbar-wrapper">
             <div class=" navbar-toggle d-inline">
                 <button class=" navbar-toggler" type="button" (click)="sidebarToggle()">
-          <span class=" navbar-toggler-bar bar1"> </span>
-          <span class=" navbar-toggler-bar bar2"> </span>
-          <span class=" navbar-toggler-bar bar3"> </span>
-        </button>
+                    <span class=" navbar-toggler-bar bar1"> </span>
+                    <span class=" navbar-toggler-bar bar2"> </span>
+                    <span class=" navbar-toggler-bar bar3"> </span>
+                </button>
             </div>
             <a class=" navbar-brand" href="javascript:void(0)"> {{ getTitle() }} </a>
         </div>
         <button aria-label="Toggle navigation" class=" navbar-toggler" (click)="collapse()" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample" id="navigation" type="button">
-      <span class=" navbar-toggler-bar navbar-kebab"> </span>
-      <span class=" navbar-toggler-bar navbar-kebab"> </span>
-      <span class=" navbar-toggler-bar navbar-kebab"> </span>
-    </button>
-        <div class=" navbar-collapse" [ngbCollapse]="isCollapsed" id="navigation">
+            <span class=" navbar-toggler-bar navbar-kebab"> </span>
+            <span class=" navbar-toggler-bar navbar-kebab"> </span>
+            <span class=" navbar-toggler-bar navbar-kebab"> </span>
+        </button>
+        <div class="  navbar-collapse">
             <ul class=" navbar-nav ml-auto">
                 <!--
                 <li class=" search-bar input-group">
@@ -59,7 +59,7 @@
                     </ul>
                 </li>
                 -->
-                <li class=" nav-item" ngbDropdown>
+                <li class=" nav-item navbar-collapse" ngbDropdown *ngIf="session" [ngbCollapse]="isCollapsed" id="navigation">
                     <a class=" nav-link" data-toggle="dropdown" href="javascript:void(0)" ngbDropdownToggle>
                         <div class=" photo">
                             <img alt="Profile Photo" src="assets/img/anime3.png" />
@@ -75,9 +75,18 @@
                         </li>
                         <li class=" dropdown-divider"></li>
                         <li class=" nav-link">
-                            <a class=" nav-item" href="#" ngbDropdownItem>
-                            Log out
-                        </a>
+                            <a class=" nav-item" (click)="onLogout()" href="#" ngbDropdownItem>
+                                Log out
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class=" nav-item  navbar-collapse" *ngIf="!session" [ngbCollapse]="isCollapsed" id="navigation">
+                    <ul class=" navbar-nav ml-auto">
+                        <li class=" nav-link">
+                            <a class="login" href="/login" ngbDropdownItem>
+                                LOG IN
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -92,8 +101,8 @@
         <input class=" form-control" id="inlineFormInputGroup" placeholder="SEARCH" type="text" />
 
         <button aria-label="Close" class=" close" data-dismiss="modal" type="button" (click)="modal.dismiss('Cross click')">
-      <i class=" tim-icons icon-simple-remove"> </i>
-    </button>
+            <i class=" tim-icons icon-simple-remove"> </i>
+        </button>
     </div>
 
 </ng-template>

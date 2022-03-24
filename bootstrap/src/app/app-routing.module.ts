@@ -10,7 +10,7 @@ import { RegistrationLayoutComponent } from "./layouts/registration-layout/regis
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "dashboard",
+    redirectTo: "upload",
     pathMatch: "full"
   },
   {
@@ -45,7 +45,7 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: "dashboard"
+    redirectTo: "upload"
   }
 ];
 

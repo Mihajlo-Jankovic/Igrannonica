@@ -10,6 +10,7 @@ import { AppComponent } from "./app.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { UserComponent } from "./pages/user/user.component";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
@@ -27,13 +28,15 @@ import { LocationStrategy, PathLocationStrategy } from "@angular/common";
     RouterModule,
     AppRoutingModule,
     BrowserModule,
+    ReactiveFormsModule,
     ToastrModule.forRoot()
   ],
   declarations: [
     AppComponent, 
     AdminLayoutComponent, 
     LoginLayoutComponent,
-    RegistrationLayoutComponent
+    RegistrationLayoutComponent, 
+    UserComponent
   ],
   providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   bootstrap: [AppComponent]

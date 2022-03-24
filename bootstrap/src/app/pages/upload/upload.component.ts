@@ -20,6 +20,10 @@ export class UploadComponent implements OnInit {
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     console.log(this.loggedUser);
+    if (!(this.get())) {
+      console.log("1245");
+    }
+
 
     /*
     this.userService.getAllFilesFromUser(1).subscribe(data => {
@@ -27,6 +31,16 @@ export class UploadComponent implements OnInit {
     }) */
 
   }
+
+  save(fileName:string){
+    sessionStorage.setItem('fileName',fileName);
+  }
+  
+
+  get() {
+    return sessionStorage.getItem('fileName');
+  }
+
 
   headingLines: any = [];
   rowLines: any = [];
@@ -45,7 +59,7 @@ export class UploadComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', file, file.name);
 
-     
+      this.save(file.name);
 
       if(this.cookie.check('token'))
       {

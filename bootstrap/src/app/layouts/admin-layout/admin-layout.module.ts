@@ -6,7 +6,6 @@ import { FormsModule } from "@angular/forms";
 
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
-import { UserComponent } from "../../pages/user/user.component";
 import { TablesComponent } from "../../pages/tables/tables.component";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -22,7 +21,6 @@ import { UploadComponent } from "../../pages/upload/upload.component";
   ],
   declarations: [
     DashboardComponent,
-    UserComponent,
     TablesComponent,
     UploadComponent
   ]

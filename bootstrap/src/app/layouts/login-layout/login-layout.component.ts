@@ -31,6 +31,12 @@ export class LoginLayoutComponent implements OnInit {
     return this.loginForm.controls;
   }
 
+  save(username:string,password:string){
+    sessionStorage.setItem('username',username);
+    sessionStorage.setItem('password', password);
+  }
+
+
   login(form: FormGroup) {
     if (form.value.username && form.value.password) {
       this.loginService.login(form.value.username, form.value.password).subscribe(token => {
@@ -41,8 +47,9 @@ export class LoginLayoutComponent implements OnInit {
         else if (StringToken == "Wrong password")
           alert("Pogresna sifra");
         else {
+          this.save(form.value.username,form.value.password);
           this.cookie.set("token", StringToken);
-          this.router.navigate(['/home']);
+          this.router.navigate(['upload']);
         }
       })
     }

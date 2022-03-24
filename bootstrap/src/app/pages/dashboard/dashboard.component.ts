@@ -1,12 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import Chart from 'chart.js';
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "app-dashboard",
   templateUrl: "dashboard.component.html"
 })
 export class DashboardComponent implements OnInit {
-  public canvas : any;
+  public canvas: any;
   public ctx;
   public datasets: any;
   public data: any;
@@ -15,9 +16,19 @@ export class DashboardComponent implements OnInit {
   public clicked1: boolean = false;
   public clicked2: boolean = false;
 
-  constructor() {}
+  constructor(private cookieService:CookieService) { }
+
+  get() {
+    return sessionStorage.getItem('username');
+  }
+
+  onLogout() {
+    this.cookieService.deleteAll();
+  }
+
 
   ngOnInit() {
+    if (!(this.get())) this.onLogout();
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,
       legend: {
@@ -431,7 +442,7 @@ export class DashboardComponent implements OnInit {
 
 
     this.canvas = document.getElementById("CountryChart");
-    this.ctx  = this.canvas.getContext("2d");
+    this.ctx = this.canvas.getContext("2d");
     var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
