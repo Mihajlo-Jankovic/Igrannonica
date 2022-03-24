@@ -6,7 +6,7 @@ from keras.regularizers import L1, L2
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import category_encoders as ce
-import requests
+import urllib.request
 
 '''
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
@@ -62,9 +62,10 @@ def statistics(df,colIndex):
 path = 'csv\movies.csv'
 
 def openCSV(path,rowNum):
-    #header = True
-    with requests.get(path) as f: 
-        header = csv.Sniffer().has_header(f.read(10)) # Proverava da li u fajlu postoji header
+    with urllib.request.urlopen(path) as f: 
+        #print(f)
+        #header = True
+        header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
     if(header): 
         if(rowNum != 0): df = pd.read_csv(path, index_col = 0, nrows = rowNum) 
