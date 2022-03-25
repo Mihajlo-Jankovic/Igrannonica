@@ -102,11 +102,25 @@ namespace Igrannonica.Controllers
             return Ok("Success!");
         }
 
-        [HttpGet("getme"), Authorize]
-        public ActionResult<string> GetMe()
+        [HttpGet("GetNameSurnameEmail"), Authorize]
+        public ActionResult<object> GetNameSurnameEmail()
         {
             var userName = _userService.GetUsername();
-            return Ok(userName);
+            User user = _context.User.Where(u => u.username == userName).FirstOrDefault(); 
+            if (user == null)
+            {
+                return Ok("User not found");
+            }
+
+
+            return Ok(new
+            {
+                user.email,
+                user.firstname,
+                user.lastname,
+            });
+           
+            
         }
 
         [HttpPost("login")]

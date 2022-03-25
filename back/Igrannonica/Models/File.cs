@@ -12,8 +12,10 @@ namespace Igrannonica.Models
 
         public string FileName { get; set; }
 
-        public int UserForeignKey { get; set; }
+        public bool IsPublic { get; set; }
+        public int? SessionID { get; set; }
 
-        public User User { get; set; }
+        public int? UserForeignKey { get; set; }
+        public User? User { get; set; }
     }
 }

@@ -61,6 +61,7 @@ namespace Igrannonica.Controllers
             file.RandomFileName = RandomFileName;
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
+            file.IsPublic = true;
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
             EncryptedFileNameDTO encryptedFileName = new EncryptedFileNameDTO();
@@ -84,6 +85,12 @@ namespace Igrannonica.Controllers
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
             EncryptedFileNameDTO efn = new EncryptedFileNameDTO();
+            Models.File file = new();
+            file.RandomFileName = RandomFileName;
+            file.FileName = task.Result;
+            file.IsPublic = false;
+            file.UserForeignKey = null;
+            //file.SessionID = sessionID;
             efn.filename = encryptedFileName;
             return Ok(efn);
 

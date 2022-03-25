@@ -10,9 +10,13 @@ namespace Igrannonica.Models
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<File>()
-            .HasOne(p => p.User)
-            .WithMany(b => b.Files)
-            .HasForeignKey(p => p.UserForeignKey);
+                .HasOne(p => p.User)
+                .WithMany(b => b.Files)
+                .HasForeignKey(p => p.UserForeignKey);
+            builder.Entity<File>(entity =>
+            {
+                entity.HasIndex(e => e.RandomFileName).IsUnique();
+            });
 
             builder.Entity<User>(entity => {
                 entity.HasIndex(e => e.username).IsUnique();
