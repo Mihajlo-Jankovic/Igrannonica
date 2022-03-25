@@ -3,6 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
 
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
@@ -18,6 +19,7 @@ import { UploadComponent } from "../../pages/upload/upload.component";
     FormsModule,
     HttpClientModule,
     NgbModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   declarations: [
     DashboardComponent,

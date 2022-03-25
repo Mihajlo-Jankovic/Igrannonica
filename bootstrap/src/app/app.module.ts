@@ -29,7 +29,7 @@ import { LocationStrategy, PathLocationStrategy } from "@angular/common";
     AppRoutingModule,
     BrowserModule,
     ReactiveFormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
   ],
   declarations: [
     AppComponent, 

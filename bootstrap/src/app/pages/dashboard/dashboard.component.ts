@@ -1,10 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import Chart from 'chart.js';
 import { CookieService } from "ngx-cookie-service";
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: "app-dashboard",
-  templateUrl: "dashboard.component.html"
+  templateUrl: "dashboard.component.html",
+  styleUrls: ["dashboard.component.scss"]
 })
 export class DashboardComponent implements OnInit {
   public canvas: any;
@@ -16,6 +18,22 @@ export class DashboardComponent implements OnInit {
   public clicked1: boolean = false;
   public clicked2: boolean = false;
 
+  public problemType: string = "Regression";
+  public activationFunction: string = "sigmoid";
+  public optimizer: string = "Adam";
+  public learningRate: number = 0.0001;
+  public regularization: string = "None";
+  public regularizationRate: number = 0;
+  public lossFunction: string;
+  public metrics: any = [];
+  public epochs: number = 1;
+  public range: number = 50;
+  public fileName: string = this.cookieService.get('filename');
+
+  dropdownList = [];
+  selectedItems = [];
+  dropdownSettings:IDropdownSettings = {};
+
   constructor(private cookieService:CookieService) { }
 
   get() {
@@ -26,8 +44,59 @@ export class DashboardComponent implements OnInit {
     this.cookieService.deleteAll();
   }
 
+  checkProblemType() {
+    if(this.problemType == "Regression"){
+      this.lossFunction = "mean_squared_error";
+      this.dropdownList = [
+        {item_id: "mse", item_text: 'Mean Squared Error'},
+        {item_id: "msle", item_text: 'Mean Squared Logarithmic Error'},
+        {item_id: "mae", item_text: 'Mean Absolute Error'},
+        {item_id: "mape", item_text: 'Mean Absolute Percentage Error'},
+        {item_id: "cosine", item_text: 'Cosine Proximity'},
+        {item_id: "logcosh", item_text: 'Log Cosh Error'}
+      ];
+      this.selectedItems = [];
+      this.metrics = this.selectedItems;
+    }
+    else {
+      this.lossFunction = "binary_crossentropy";
+      this.dropdownList = [
+        {item_id: "binary_accuracy", item_text: 'Binary Accuracy'},
+        {item_id: "categorical_accuracy", item_text: 'Categorical Accuracy'},
+        {item_id: "sparse_categorical_accuracy", item_text: 'Sparse Categorical Accuracy'},
+        {item_id: "top_k_accuracy", item_text: 'Top K Accuracy'},
+        {item_id: "sparse_top_k_categorical_accuracy", item_text: 'Sparse Top K Categorical Accuracy'},
+        {item_id: "accuracy", item_text: 'Accuracy'}
+      ];
+      this.selectedItems = [];
+      this.metrics = this.selectedItems;
+    }
+  }
+
+  multiselect(){
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'item_id',
+      textField: 'item_text',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 6,
+      allowSearchFilter: false
+    };
+  }
+
+  onItemSelect(item: any) {
+    console.log(item);
+  }
+  onSelectAll(items: any) {
+    console.log(items);
+  }
 
   ngOnInit() {
+    
+    this.multiselect();
+    this.checkProblemType();
+
     if (!(this.get())) this.onLogout();
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {
       maintainAspectRatio: false,
