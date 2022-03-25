@@ -1,14 +1,20 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Renderer2, ViewChild, ElementRef } from "@angular/core";
 import Chart from 'chart.js';
 import { CookieService } from "ngx-cookie-service";
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { layer } from "src/app/models/layer.model";
+import { neuron } from "src/app/models/neuron.model";
 
 @Component({
   selector: "app-dashboard",
   templateUrl: "dashboard.component.html",
   styleUrls: ["dashboard.component.scss"]
 })
+
 export class DashboardComponent implements OnInit {
+
+  @ViewChild('sidebar', {static: true}) div;
+
   public canvas: any;
   public ctx;
   public datasets: any;
@@ -28,13 +34,24 @@ export class DashboardComponent implements OnInit {
   public metrics: any = [];
   public epochs: number = 1;
   public range: number = 50;
+
+  public layersLabel: number = 1;
+  public neurons: any = [];
+
+  layer = new layer();
+  neuron = new neuron();
+
+  layerList = [];
+  neuronsList = [1,1,1,1,1,1];
+  neuronsMatrix = [[],[],[],[],[],[],[],[]];
+
   public fileName: string = this.cookieService.get('filename');
 
   dropdownList = [];
   selectedItems = [];
   dropdownSettings:IDropdownSettings = {};
 
-  constructor(private cookieService:CookieService) { }
+  constructor(private cookieService:CookieService, private renderer: Renderer2) { }
 
   get() {
     return sessionStorage.getItem('username');
@@ -42,6 +59,40 @@ export class DashboardComponent implements OnInit {
 
   onLogout() {
     this.cookieService.deleteAll();
+  }
+
+  increaseLayers(){
+    if(this.layersLabel < 6) {
+      this.layersLabel++;
+      this.layer = new layer();
+      this.layer.id = this.layersLabel;
+      this.layerList.push(this.layer);
+    }
+  }
+
+  decreaseLayers(index){
+    if(this.layersLabel > 1) {
+      this.layersLabel--;
+      this.layerList.splice(index);
+      this.neuronsList[index] = 1;
+      this.neuronsMatrix[index].splice(1);
+    }
+  }
+
+  increaseNeurons(index){
+    if(this.neuronsList[index] < 8) {
+      this.neuronsList[index]++;
+      this.neuron = new neuron();
+      this.neuron.id = this.neuronsList[index];
+      this.neuronsMatrix[index].push(this.neuron);
+    }
+  }
+
+  decreaseNeurons(index, i){
+    if(this.neuronsList[index] > 1){
+      this.neuronsList[index]--;
+      this.neuronsMatrix[index].splice(i-1);
+    }
   }
 
   checkProblemType() {
@@ -96,6 +147,14 @@ export class DashboardComponent implements OnInit {
     
     this.multiselect();
     this.checkProblemType();
+    this.layer.id = 1;
+    this.layerList.push(this.layer);
+    
+    for (let i = 0; i < this.neuronsMatrix.length; i++) {
+      this.neuron = new neuron();
+      this.neuron.id = 1; 
+      this.neuronsMatrix[i].push(neuron);
+    }
 
     if (!(this.get())) this.onLogout();
     var gradientChartOptionsConfigurationWithTooltipBlue: any = {

@@ -80,3 +80,50 @@ input[type=range]::-moz-range-thumb {
     background: #7d3c8b;
     cursor: pointer;
 }
+
+.plus {
+    background: #7d3c8b !important;
+}
+
+.plus:hover {
+    background: #d450d9 !important;
+}
+
+.minus {
+    border-color: #7d3c8b !important;
+    color: #7d3c8b !important;
+}
+
+.minus:hover {
+    border-color: #d450d9 !important;
+    color: #d450d9 !important;
+}
+
+.layerContainer {
+    display: flex;
+    min-height: 100px;
+    overflow: hidden;
+}
+
+.layer {
+    height: auto;
+    position: relative;
+    float: left;
+    padding: 1rem;
+    border: 2px solid #7d3c8b;
+    min-height: 100px;
+    overflow: hidden;
+}
+
+.buttons {
+    height: 40px;
+}
+
+.neuron {
+    background-color: white;
+    margin-top: 1rem;
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
