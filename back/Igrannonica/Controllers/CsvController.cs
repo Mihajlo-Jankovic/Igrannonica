@@ -7,6 +7,7 @@ using System.Globalization;
 using Microsoft.Net.Http.Headers;
 using System.Net;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 
 namespace Igrannonica.Controllers
 {
@@ -29,16 +30,21 @@ namespace Igrannonica.Controllers
             if (file == null)
                 return BadRequest("no file with that name");
 
-            using (var client = new HttpClient())
+            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+            var folderName = Path.Combine("Resources", "CSVFiles");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var fileName = "prvipokusaj.csv";
+            var fullPath = Path.Combine(pathToSave, fileName);
+            HttpClient client = new HttpClient();
+            var response = await client.GetAsync(endpoint);
+            using (var fs = new FileStream(
+                fullPath,
+                FileMode.CreateNew))
             {
-                var endpoint = new Uri("http://127.0.0.1:5000/simpleget");
-                var result = client.GetAsync(endpoint).Result;
-                //var json = result.;
-                //return Ok(json);
-                return Ok(result);
+                await response.Content.CopyToAsync(fs);
             }
+            return Ok();
 
-            
         }
 
         [HttpGet("{filename}")]
@@ -59,60 +65,15 @@ namespace Igrannonica.Controllers
         [HttpPost("updatefilecall")]
         public async Task<IActionResult> UpdateFileCall()
         {
-            using (var client = new HttpClient())
-            {
-                var endpoint = new Uri("http://127.0.0.1:5000/editcell");
-                var request = HttpContext.Request;// validation of Content-Type
-                                                  // 1. first, it must be a form-data request
-                                                  // 2. a boundary should be found in the Content-Type
-                if (!request.HasFormContentType ||
-                    !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
-                    string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
-                {
-                    return Ok("los tip fajla");
-                }
-
-                var reader = new MultipartReader(mediaTypeHeader.Boundary.Value, request.Body);
-                var section = await reader.ReadNextSectionAsync();
-
-                // This sample try to get the first file from request and save it
-                // Make changes according to your needs in actual use
-                while (section != null)
-                {
-                    var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition,
-                        out var contentDisposition);
-
-                    if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
-                        !string.IsNullOrEmpty(contentDisposition.FileName.Value))
-                    {
-                        // Don't trust any file name, file extension, and file data from the request unless you trust them completely
-                        // Otherwise, it is very likely to cause problems such as virus uploading, disk filling, etc
-                        // In short, it is necessary to restrict and verify the upload
-                        // Here, we just use the temporary folder and a random file name
-
-                        // Get the temporary folder, and combine a random file name with it
-
-                        var trustedFileNameForDisplay = WebUtility.HtmlEncode(
-                                contentDisposition.FileName.Value);
-                        var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
-                        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                        var RandomFileName = contentDisposition.FileName.Value;
-                        var fullPath = Path.Combine(pathToSave, RandomFileName);
-                        using (var targetStream = new FileStream(fullPath, FileMode.Create))
-                        {
-                            await section.Body.CopyToAsync(targetStream);
-                            targetStream.Dispose();
-                        }
-                        return Ok(contentDisposition.FileName.Value);
-                    }
-
-                    section = await reader.ReadNextSectionAsync();
-                }
-                // If the code runs to this location, it means that no files have been saved
-                return BadRequest("No files data in the request.");
-            }
+            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+            var folderName = Path.Combine("Resources", "CSVFiles");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var fileName = "prvipokusaj.csv";
+            var fullPath = Path.Combine(pathToSave, fileName);
+            WebClient webClient = new WebClient();
+            await webClient.DownloadFileTaskAsync(endpoint, fullPath);
+            return Ok();
         }
 
-        
     }
 }
