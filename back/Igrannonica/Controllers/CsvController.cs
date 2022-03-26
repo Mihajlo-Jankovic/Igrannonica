@@ -56,6 +56,18 @@ namespace Igrannonica.Controllers
             return File(bytes, "csv/plain", Path.GetFileName(fullPath));
         }
 
+        [HttpPost("updatefilecall")]
+        public IActionResult UpdateFileCall()
+        {
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+                var result = client.GetAsync(endpoint).Result;
+                var json = result.Content.ReadAsStringAsync().Result;
+                return Ok(json);
+            }
+        }
+
         [HttpPost("updateFile/{filename}")]
         public async Task<IActionResult> UpdateFile()
         {
@@ -93,7 +105,7 @@ namespace Igrannonica.Controllers
                             contentDisposition.FileName.Value);
                     var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                    var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+                    var RandomFileName = contentDisposition.FileName.Value;
                     var fullPath = Path.Combine(pathToSave, RandomFileName);
                     using (var targetStream = new FileStream(fullPath, FileMode.Create))
                     {
