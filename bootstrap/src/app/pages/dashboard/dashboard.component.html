@@ -8,7 +8,7 @@
                 <div class="card-body" style="padding-left: 0; padding-right: 0;">
                     <div class="hyperparameter">
                         <h6>File Name : </h6>
-                        <button class="btn btn-primary btn-lg btn-block mb-3" type="submit" style="height : 42px; margin-top: 16px;">START TRAINING</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3" type="submit" style="height : 42px; margin-top: 16px;" (click)="proba()">START TRAINING</button>
                     </div>
                     <div class="hyperparameter">
                         <h6>Problem type</h6>
@@ -130,12 +130,12 @@
                         </button>
                     </div>
                     <div style="position: relative; float: left; width: 100px; text-align: center;">
-                        <h2 [(ngModel)]="layersLabel" class="card-title" style="padding: 3px;">{{layersLabel}}</h2>
+                        <h2 class="card-title" style="padding: 3px;">{{layerList.length}}</h2>
                     </div>
                 </div>
 
                 <div class="card-body layerContainer">
-                    <div class="col-2 layer" *ngFor="let layer of layerList" [(ngModel)]="layer.id">
+                    <div class="col-2 layer" *ngFor="let layer of layerList" div>
                         <div class="buttons">
                             <div class=" btn-group" style="position: relative; float: left;">
                                 <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseNeurons(layer.id-1, neuronsList[layer.id-1])">
@@ -145,16 +145,18 @@
                                     <i class=" tim-icons icon-simple-add"></i>
                                 </button>
                             </div>
-                            <h2 style="position: relative; float: right;">{{neuronsList[layer.id-1]}}</h2>
+                            <h2 style="position: relative; float: right;">{{neuronsMatrix[layer.id-1].length}}</h2>
                         </div>
-                        <div class="neuron" *ngFor="let neuron of neuronsMatrix[layer.id-1]" [(ngModel)]="neuron.id">
+                        <div>
+                            <div class="neuron" *ngFor="let neuron of neuronsMatrix[layer.id-1]">
 
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <!--
     <div class=" row">
         <div class=" col-12">
             <div class=" card card-chart">
@@ -257,4 +259,5 @@
             </div>
         </div>
     </div>
-</div>
+    -->
+    </div>

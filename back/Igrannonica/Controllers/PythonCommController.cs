@@ -40,5 +40,18 @@ namespace Igrannonica.Controllers
                 return Ok(result);
             }
         }
+
+        [HttpGet("testiranje")]
+        public async Task<ActionResult<string>> TestiranjeIstorije()
+        {
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri("http://127.0.0.1:5000/testiranje");
+                var result = client.GetAsync(endpoint).Result;
+                var json = result.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(json);
+                return Ok(json);
+            }
+        }
     }
 }
