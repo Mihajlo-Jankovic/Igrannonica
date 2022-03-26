@@ -15,6 +15,7 @@ export class UserComponent implements OnInit {
 
   username: string;
   messageEditProfile: string;
+  indicator : string;
 
   getUsername() {
     return sessionStorage.getItem('username');
@@ -32,6 +33,10 @@ export class UserComponent implements OnInit {
 
   public get m() {
     return this.editForm.controls;
+  }
+
+  editProfile(){
+    this.indicator = "edit";
   }
   
   edit(form: FormGroup) {
