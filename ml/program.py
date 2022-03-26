@@ -226,6 +226,19 @@ def filterCSV(path, rowNum, dataType):
 
     return df
 
+def editCell(df, rowNum, colName, value):
+    df.at[rowNum,colName] = value
+
+    return df
+
+def deleteRow(df,rowNum):
+    df.drop(rowNum, axis = 0, inplace=True)
+    return df
+
+#df = pd.read_csv(path, index_col = 0, nrows = 10) 
+#editCell(df,2,'Votes',21)
+#print(df)
+
 '''
 df = openCSV(path,0)
 X_train, X_test, y_train, y_test = prepare_data(df, ['title','genre'], ['metascore'], 'label', 0.2)
