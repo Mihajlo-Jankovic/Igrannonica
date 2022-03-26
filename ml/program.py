@@ -241,7 +241,7 @@ def testiranje():
     X_train, X_test, y_train, y_test = prepare_data(df, ['Title','Genre'], ['Metascore'], 'label', 0.2)
     print(X_train, X_test, y_train, y_test)
 
-    m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse'])
+    m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse', 'mae'])
     print(m)
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
     return model.history
