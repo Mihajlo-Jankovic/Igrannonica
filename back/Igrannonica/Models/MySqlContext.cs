@@ -16,6 +16,7 @@ namespace Igrannonica.Models
             builder.Entity<File>(entity =>
             {
                 entity.HasIndex(e => e.RandomFileName).IsUnique();
+                entity.HasIndex(e => e.SessionID).IsUnique();
             });
 
             builder.Entity<User>(entity => {

@@ -37,9 +37,13 @@ namespace Igrannonica.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RandomFileName = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     FileName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserForeignKey = table.Column<int>(type: "int", nullable: false)
+                    IsPublic = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    SessionID = table.Column<int>(type: "int", nullable: true),
+                    UserForeignKey = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,10 +52,21 @@ namespace Igrannonica.Migrations
                         name: "FK_File_User_UserForeignKey",
                         column: x => x.UserForeignKey,
                         principalTable: "User",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_File_RandomFileName",
+                table: "File",
+                column: "RandomFileName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_File_SessionID",
+                table: "File",
+                column: "SessionID",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_File_UserForeignKey",
