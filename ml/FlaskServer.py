@@ -50,6 +50,29 @@ def edit_cell():
             
     '''else:
         return content_type'''
+
+@app.route('/editcellPOST', methods=['POST'])
+def edit_cell_post():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json; charset=utf-8'):
+        json = request.json
+
+        df = pd.read_csv('csv\movies.csv', index_col = 0, nrows = 10) 
+        #df = program.editCell(df,2,'Title',"string")
+
+            #df.to_csv('https://localhost:7219/api/Csv/updateFile/5fnoop501qs.csv')
+
+            #df = program.openCSV('https://localhost:7219/api/Csv/' + json['FileName'], 0)
+        df = program.editCell(df,int(json['rowNumber']), json['columnName'], json['value'])
+
+        file = io.BytesIO()
+        df.to_csv(file,mode='b')
+        file.seek(0)
+        return send_file(file,download_name=json['fileName'])
+            
+    else:
+        return content_type
+
 '''
 @app.delete_row('/deleterow', methods=['POST'])
 def delete_row():

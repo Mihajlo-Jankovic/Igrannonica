@@ -8,6 +8,7 @@ using Microsoft.Net.Http.Headers;
 using System.Net;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Igrannonica.Controllers
 {
@@ -22,24 +23,26 @@ namespace Igrannonica.Controllers
             _mySqlContext = mySqlContext;
         }
 
-        [HttpPost]
+        [DisableRequestSizeLimit]
+        [HttpPost("updatefilecallPOST")]
         public async Task<IActionResult> Edit(CsvEditRowDTO csv)
         {
 
-            Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
+            /*Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
             if (file == null)
-                return BadRequest("no file with that name");
+                return BadRequest("no file with that name");*/
 
-            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+            var endpoint = new Uri("http://127.0.0.1:5000/editcellPOST");
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var fileName = "prvipokusaj.csv";
+            var fileName = csv.fileName;
             var fullPath = Path.Combine(pathToSave, fileName);
-            HttpClient client = new HttpClient();
-            var response = await client.GetAsync(endpoint);
+            HttpClient client = new HttpClient(); 
+            var csvJson = JsonConvert.SerializeObject(csv);
+            var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
             using (var fs = new FileStream(
                 fullPath,
-                FileMode.CreateNew))
+                FileMode.OpenOrCreate,FileAccess.Write))
             {
                 await response.Content.CopyToAsync(fs);
             }
