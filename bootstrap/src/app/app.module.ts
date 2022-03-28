@@ -16,6 +16,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
 import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
 import { LocationStrategy, PathLocationStrategy } from "@angular/common";
+import { NgApexchartsModule } from "ng-apexcharts";
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { LocationStrategy, PathLocationStrategy } from "@angular/common";
     AppRoutingModule,
     BrowserModule,
     ReactiveFormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    NgApexchartsModule
   ],
   declarations: [
     AppComponent, 

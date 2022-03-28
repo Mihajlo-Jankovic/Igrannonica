@@ -1,5 +1,102 @@
 <div class=" content">
     <div class=" row">
+        <div class=" col-lg-4">
+            <div class=" card">
+              <div class=" card-header">
+                <h5 class=" card-category">Statistics</h5>
+                <div>
+                  <select class='select-option' (change)='onSelectedCol($event)'>
+                    <option *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class=" card-body">
+                <div class=" table-full-width">
+                  <table class=" table">
+                <!--
+                    <thead>
+                      <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                      <tr>
+                    </thead>
+                -->  
+                    <tbody>
+                      <tr>
+                        <td>MIN</td>
+                        <td>{{min}}</td>
+                      <tr>
+                      <tr>
+                        <td>Q1</td>
+                        <td>{{firstQ}}</td>
+                      </tr>
+                      <tr>
+                        <td>MEAN</td>
+                        <td>{{avg}}</td>
+                      </tr>
+                      <tr>
+                        <td>MEDIAN</td>
+                        <td>{{med}}</td>
+                      </tr>
+                      <tr>
+                        <td>Q3</td>
+                        <td>{{thirdQ}}</td>
+                      </tr>
+                      <tr>
+                        <td>MAX</td>
+                        <td>{{max}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div class=" col-lg-4">
+                <div class=" card card-chart">
+                    <div class=" card-header">
+                        <h5 class=" card-category">Boxplot</h5>
+                        <h3 class=" card-title">
+                        </h3>
+                    </div>
+                    <div class=" card-body">
+                      <div id="chart" *ngIf="selectedCol">
+                        <apx-chart
+                          [series]="chartOptions.series"
+                          [chart]="chartOptions.chart"
+                          [plotOptions]="chartOptions.plotOptions"
+                          [title]="chartOptions.title"
+                          [stroke]="chartOptions.stroke"
+                        ></apx-chart>
+                      </div>          
+                    </div>
+                </div>
+            </div>
+          <div class=" col-lg-4">
+            <div class=" card">
+              <div class=" card-header">
+                <h5 class=" card-category">Correlation Matrix</h5>
+            </div>
+              <div class=" card-body">
+                <div class=" table-responsive">
+                  <table class=" table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>{{selectedColName}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of numArray; let i = index">
+                        <td>{{numericValuesArray[i][0]}}</td>
+                        <td>{{item}}</td>
+                      <tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         <div class=" col-md-12">
             <div class=" card">
                 <div class=" card-header">

@@ -4,9 +4,8 @@ import pandas as pd
 import csv
 from keras.regularizers import L1, L2
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
 import category_encoders as ce
-import urllib.request
+import urllib
 
 '''
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
@@ -44,27 +43,43 @@ with open(path,'r') as infile:
         print(row[0])
 '''
 
+def numberOfPages(df,rowNum):
+    numOfPages = len(df)
+    rowNum = rowNum+1
+    if(numOfPages % rowNum != 0):
+        numOfPages //= rowNum
+        numOfPages += 1
+
+    else:
+        numOfPages /= rowNum
+        numOfPages = int(numOfPages)
+
+    return numOfPages
+
 # Izracunavanje statistika za odredjenu kolonu iz tabele
 def statistics(df,colIndex):
     col = df.columns[colIndex]
 
     rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
-    min = df[col].min() # Minimum
-    max = df[col].max() # Maksimum
+    min = float(df[col].min()) # Minimum
+    max = float(df[col].max()) # Maksimum
     avg = df[col].mean() # Srednja vrednost
     med = df[col].median() # Mediana
     firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
     corrMatrix = df.corr() # Korelaciona matrica
 
-    return (rowsNum,min,max,avg,med,firstQ,thirdQ,corrMatrix)
+    corrArr = []
+    for value in corrMatrix[df.columns[colIndex]]:
+        corrArr.append(value)
+
+    return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
+                "firstQ": firstQ, "thirdQ": thirdQ, "corrMatrix": {colIndex: corrArr}}
 
 
 path = 'csv\movies.csv'
 
 def openCSV(path,rowNum):
     with urllib.request.urlopen(path) as f: 
-        #print(f)
-        #header = True
         header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
     if(header): 
@@ -214,7 +229,7 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
     return (X_train, X_test, y_train, y_test)
 
 # Filtriranje CSV fajlova prema parametrima klijenta
-def filterCSV(path, rowNum, dataType):
+def filterCSV(path, rowNum, dataType, pageNum):
     df = openCSV(path,rowNum)
 
     if(dataType == 'not null'):
@@ -224,7 +239,22 @@ def filterCSV(path, rowNum, dataType):
         na_free = df.dropna()
         df = df[~df.index.isin(na_free.index)]
 
-    return df
+    numOfPages = numberOfPages(df,rowNum)
+
+    return [df,numOfPages]
+
+def numericValues(path):
+    colList = []
+    indexList = []
+
+    df = openCSV(path,0)
+
+    for col in df:
+        if(df[col].dtypes != object):
+            colList.append(col)
+            indexList.append(df.columns.get_loc(col))
+
+    return {'index': indexList, 'col': colList}
 
 '''
 df = openCSV(path,0)

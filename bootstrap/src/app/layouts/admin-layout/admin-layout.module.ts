@@ -10,6 +10,7 @@ import { TablesComponent } from "../../pages/tables/tables.component";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UploadComponent } from "../../pages/upload/upload.component";
+import { NgApexchartsModule } from "ng-apexcharts";
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { UploadComponent } from "../../pages/upload/upload.component";
     FormsModule,
     HttpClientModule,
     NgbModule,
+    NgApexchartsModule
   ],
   declarations: [
     DashboardComponent,

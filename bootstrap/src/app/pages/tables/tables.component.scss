@@ -233,3 +233,14 @@ input[type=checkbox]:checked+.check-box,
         animation: dothatopcheck $duration ease 0s forwards;
     }
 }
+
+th{
+    text-align: center;
+  }
+  td{
+    text-align: center;
+  }
+  #chart {
+    max-width: 650px;
+    margin: 35px auto;
+}
