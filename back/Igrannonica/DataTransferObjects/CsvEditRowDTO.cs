@@ -1,6 +1,6 @@
 ﻿namespace Igrannonica.DataTransferObjects
 {
-    public class CsvDTO
+    public class CsvEditRowDTO
     {
         public string fileName { get; set; }
         public int rowNumber { get; set; }
