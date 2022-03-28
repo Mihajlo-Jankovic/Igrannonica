@@ -24,7 +24,8 @@
                             <div class=" block block-four"></div>
                             <img alt="..." class=" avatar" src="assets/img/profile.jpg" />
 
-                            <h5 class=" title">{{username}}</h5><br><br>
+                            <h5 class=" title">{{username}}</h5>
+                            <h5 class=" title">{{userInfo.email}}</h5><br><br>
                             <p class=" description"></p><br>
 
                             <button class="btn btn-primary btn-lg btn-block mb-3"  (click)="editProfile()">Edit Profile</button>
@@ -41,11 +42,11 @@
                                 <h5 class=" title">Edit Profile</h5>
                                 <form class="form" [formGroup]="editForm" (ngSubmit)="edit(editForm)">
                                     <div class=" input-group">
-                                        <input class=" form-control" placeholder="First Name" name="firstname"
+                                        <input class=" form-control" placeholder="{{userInfo.firstname}}" name="firstname"
                                             formControlName="firstname" type="text" />
                                     </div>
                                     <div class=" input-group">
-                                        <input class=" form-control" placeholder="Last Name" name="lastname"
+                                        <input class=" form-control" placeholder="{{userInfo.lastname}}" name="lastname"
                                             formControlName="lastname" type="text" />
                                     </div>
     
