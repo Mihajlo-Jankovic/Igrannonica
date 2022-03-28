@@ -106,7 +106,7 @@
                     </div>
                     <div class="hyperparameter" style="width : 98.3%;">
                         <h6>Metrics</h6>
-                        <ng-multiselect-dropdown [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+                        <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
                         </ng-multiselect-dropdown>
                     </div>
                     <!--<div>{{range}}</div>-->
@@ -172,7 +172,7 @@
                         </div>
                     </div>
                 </div>
-                <div class=" card-body">
+                <div class=" card-body" [hidden]="!trained">
                     <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
                 </div>
             </div>

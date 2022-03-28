@@ -17,8 +17,10 @@ export class DashboardComponent implements OnInit {
   public canvas: any;
   public ctx;
   public data: any;
+  public val_data: any;
   public chart_labels: any;
   public label: string = "loss";
+  public val_label: string = "val_loss";
   public myChartData;
   public buttons: any = [];
 
@@ -34,6 +36,7 @@ export class DashboardComponent implements OnInit {
   public range: number = 50;
 
   public modelHistory: any;
+  public trained: boolean = false;
 
   public layersLabel: number = 1;
   public neurons: any = [];
@@ -105,7 +108,7 @@ export class DashboardComponent implements OnInit {
         {item_id: "cosine", item_text: 'Cosine Proximity'},
         {item_id: "logcosh", item_text: 'Log Cosh Error'}
       ];
-      this.selectedItems = [];
+      this.selectedItems = this.dropdownList;
       this.metrics = this.selectedItems;
     }
     else {
@@ -118,7 +121,7 @@ export class DashboardComponent implements OnInit {
         {item_id: "sparse_top_k_categorical_accuracy", item_text: 'Sparse Top K Categorical Accuracy'},
         {item_id: "accuracy", item_text: 'Accuracy'}
       ];
-      this.selectedItems = [];
+      this.selectedItems = this.dropdownList;
       this.metrics = this.selectedItems;
     }
   }
@@ -138,10 +141,12 @@ export class DashboardComponent implements OnInit {
   proba(){
     this.http.get("https://localhost:7219/api/PythonComm/testiranje").subscribe(
       (response) => {
+        this.trained = true;
         this.modelHistory = response;
-        console.log(Object.keys(this.modelHistory));
         this.buttons = Object.keys(this.modelHistory);
+        this.buttons.splice(this.buttons.length/2);
         this.data = this.modelHistory['loss'];
+        this.val_data = this.modelHistory['val_loss'];
         this.chart_labels = [];
         for (let i = 0; i < this.data.length; i++) {
           this.chart_labels[i] = i + 1;
@@ -153,7 +158,9 @@ export class DashboardComponent implements OnInit {
 
   changeData(name){
     this.data = this.modelHistory[name];
+    this.val_data = this.modelHistory['val_' + name];
     this.label = name;
+    this.val_label = 'val_' + name;
     this.updateOptions();
   }
 
@@ -177,12 +184,12 @@ export class DashboardComponent implements OnInit {
     }
 
   
-  if (!(this.get())) this.onLogout();
+    if (!(this.get())) this.onLogout();
 
     var gradientChartOptionsConfigurationWithTooltipRed: any = {
       maintainAspectRatio: false,
       legend: {
-        display: false
+        display: true
       },
 
       tooltips: {
@@ -205,10 +212,8 @@ export class DashboardComponent implements OnInit {
             zeroLineColor: "transparent",
           },
           ticks: {
-            suggestedMin: 60,
-            suggestedMax: 125,
             padding: 20,
-            fontColor: "#9a9a9a"
+            fontColor: "#ffffff"
           }
         }],
 
@@ -221,7 +226,7 @@ export class DashboardComponent implements OnInit {
           },
           ticks: {
             padding: 20,
-            fontColor: "#9a9a9a"
+            fontColor: "#ffffff"
           }
         }]
       }
@@ -233,10 +238,15 @@ export class DashboardComponent implements OnInit {
     this.ctx = this.canvas.getContext("2d");
 
     var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+    var val_gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStroke.addColorStop(1, 'rgba(212,80,217,0.2)');
     gradientStroke.addColorStop(0.4, 'rgba(212,80,217,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(212,80,217,0)'); //red colors
+    gradientStroke.addColorStop(0, 'rgba(212,80,217,0)'); //pink colors
+
+    val_gradientStroke.addColorStop(1, 'rgba(14,134,212,0.2)');
+    val_gradientStroke.addColorStop(0.4, 'rgba(14,134,212,0.0)');
+    val_gradientStroke.addColorStop(0, 'rgba(14,134,212,0)'); //blue colors
 
     var config = {
       type: 'line',
@@ -244,6 +254,22 @@ export class DashboardComponent implements OnInit {
         labels: this.chart_labels,
         datasets: [{
           label: this.label,
+          fill: true,
+          backgroundColor: val_gradientStroke,
+          borderColor: '#0e86d4',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: '#0e86d4',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: '#0e86d4',
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: this.data,
+        },{
+          label: this.val_label,
           fill: true,
           backgroundColor: gradientStroke,
           borderColor: '#d450d9',
@@ -257,17 +283,19 @@ export class DashboardComponent implements OnInit {
           pointHoverRadius: 4,
           pointHoverBorderWidth: 15,
           pointRadius: 4,
-          data: this.data,
+          data: this.val_data,
         }]
       },
       options: gradientChartOptionsConfigurationWithTooltipRed
     };
     this.myChartData = new Chart(this.ctx, config);
   }
+
   public updateOptions() {
     this.myChartData.data.datasets[0].data = this.data;
     this.myChartData.data.datasets[0].label = this.label;
-    console.log(this.label);
+    this.myChartData.data.datasets[1].data = this.val_data;
+    this.myChartData.data.datasets[1].label = this.val_label;
     this.myChartData.data.labels = this.chart_labels;
     this.myChartData.update();
   }

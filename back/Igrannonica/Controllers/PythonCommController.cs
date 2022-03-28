@@ -49,7 +49,6 @@ namespace Igrannonica.Controllers
                 var endpoint = new Uri("http://127.0.0.1:5000/testiranje");
                 var result = client.GetAsync(endpoint).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
-                Console.WriteLine(json);
                 return Ok(json);
             }
         }

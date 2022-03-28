@@ -53,7 +53,7 @@ input[type=range] {
     height: 10px;
     border-radius: 5px;
     outline: none;
-    opacity: 0.7;
+    opacity: 1;
     -webkit-transition: .2s;
     transition: opacity .2s;
     margin-top: 20px;
@@ -103,16 +103,22 @@ input[type=range]::-moz-range-thumb {
     display: flex;
     min-height: 100px;
     overflow: hidden;
+    padding-left: 0px;
 }
 
 .layer {
     height: auto;
+    max-width: none;
+    min-width: 0;
+    flex: auto;
     position: relative;
     float: left;
     padding: 1rem;
     border: 2px solid #7d3c8b;
     min-height: 100px;
     overflow: hidden;
+    margin-left: 1rem;
+    border-radius: 3px;
 }
 
 .buttons {
@@ -120,7 +126,8 @@ input[type=range]::-moz-range-thumb {
 }
 
 .neuron {
-    background-color: white;
+    background-color: #0e86d4;
+    border-radius: 3px;
     margin-top: 1rem;
     width: 50px;
     height: 50px;
