@@ -26,7 +26,7 @@ def table_data():
         filterList = program.filterCSV(PATH + jsonObject['FileName'], int(jsonObject['Rows']), jsonObject['DataType'], jsonObject['PageNum'])
         df = filterList[0]
         numOfPages = filterList[1]
-        numericValues = program.numericValues('https://localhost:7219/api/Csv/' + jsonObject['FileName'])
+        numericValues = program.numericValues(PATH + jsonObject['FileName'])
 
         return {'csv': json.loads(df.to_json(orient = 'split')), 'numericValues': numericValues, 'numOfPages': numOfPages}
         
@@ -40,7 +40,7 @@ def statistics():
     if (content_type == 'application/json; charset=utf-8'):
         jsonObject = request.json
 
-        dictionary = program.statistics(program.openCSV('https://localhost:7219/api/Csv/' + jsonObject['FileName'],0),int(jsonObject['ColIndex']))
+        dictionary = program.statistics(program.openCSV(PATH + jsonObject['FileName'],0),int(jsonObject['ColIndex']))
         json_object = json.dumps(dictionary) 
         
         return json_object
