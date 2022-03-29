@@ -7,7 +7,7 @@
             <input type="password" placeholder="Lozinka" name="password" formControlName="password">
 
             <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
-                <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Neispravno korisnicko ime/lozinka!</div>
+                <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern" id="porukaObavestenja">Neispravan format!</div>
             </div>
  
             <button type="submit" [disabled]="!loginForm.valid">Prijavi se</button>

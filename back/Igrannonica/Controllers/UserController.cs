@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Igrannonica.DataTransferObjects;
+using Igrannonica.Services.UserService;
 
 namespace Igrannonica.Controllers
 {
@@ -22,11 +23,13 @@ namespace Igrannonica.Controllers
     {
         private User user = new User();
         private readonly IConfiguration _configuration;
-        private readonly UserContext _context;
+        private readonly IUserService _userService;
+        private readonly MySqlContext _context;
 
-        public UserController(UserContext context, IConfiguration configuration)
+        public UserController(MySqlContext context, IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
+            _userService = userService;
             _context = context;
         }
 
@@ -64,6 +67,62 @@ namespace Igrannonica.Controllers
             return Ok(this.user);
         }
 
+        [HttpPost("EditUserName"), Authorize]
+        public async Task<ActionResult<User>> EditUserName(UpdateUserNameDTO request)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            if(userOriginal == null)
+                return BadRequest("JWT is bad!");
+            userOriginal.firstname = request.firstname;
+            userOriginal.lastname = request.lastname;
+
+            _context.User.Update(userOriginal);
+            await _context.SaveChangesAsync();
+
+            return Ok("Success!");
+        }
+
+        [HttpPost("EditUserPassword"), Authorize]
+        public async Task<ActionResult<User>> EditUserPassword(UpdateUserPasswordDTO request)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            if (userOriginal == null)
+                return BadRequest("JWT is bad!");
+            if (!VerifyPasswordHash(request.oldPassword, userOriginal.passwordHash, userOriginal.passwordSalt))
+                return BadRequest("Wrong password");
+            CreatePasswordHash(request.newPassword, out byte[] newPasswordHash, out byte[] newPasswordSalt);
+            userOriginal.passwordHash = newPasswordHash;
+            userOriginal.passwordSalt = newPasswordSalt;
+
+            _context.User.Update(userOriginal);
+            await _context.SaveChangesAsync();
+
+            return Ok("Success!");
+        }
+
+        [HttpGet("GetNameSurnameEmail"), Authorize]
+        public ActionResult<object> GetNameSurnameEmail()
+        {
+            var userName = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == userName).FirstOrDefault(); 
+            if (user == null)
+            {
+                return Ok("User not found");
+            }
+
+
+            return Ok(new
+            {
+                user.email,
+                user.firstname,
+                user.lastname,
+            });
+           
+            
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<TokenDTO>> Login(LoginDTO loginDTO)
         {
@@ -80,7 +139,7 @@ namespace Igrannonica.Controllers
                 return Ok(token);
             }
             token.token = CreateToken(user);
-
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token.token);
             return Ok(token);
         }
 
@@ -127,11 +186,11 @@ namespace Igrannonica.Controllers
 
 
         // GET: api/User
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
-        {
-            return await _context.User.ToListAsync();
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        //{
+        //    return await _context.User.ToListAsync();
+        //}
 
         // GET: api/User/5
         [HttpGet("{id}")]

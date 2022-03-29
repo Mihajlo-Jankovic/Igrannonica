@@ -32,11 +32,33 @@ namespace Igrannonica.Controllers
                 {
                     FileName = parameters.FileName,
                     DataType = parameters.DataType, //all, null, not null
-                    Rows = parameters.Rows
+                    Rows = parameters.Rows,
+                    PageNum = parameters.PageNum
                 };
                 var newPostJson = JsonConvert.SerializeObject(newPost);
                 var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
+                return Ok(result);
+            }
+        }
+
+        [HttpPost("getStatistics")]
+        public async Task<ActionResult<string>> GetStatistics(StatisticsDTO parameters)
+        {
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri("http://127.0.0.1:5000/statistics");
+
+                var newPost = new StatisticsDTO()
+                {
+                    FileName = parameters.FileName,
+                    ColIndex = parameters.ColIndex
+                };
+
+                var newPostJson = JsonConvert.SerializeObject(newPost);
+                var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
+                var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
+
                 return Ok(result);
             }
         }

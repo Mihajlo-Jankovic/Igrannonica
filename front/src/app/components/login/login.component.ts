@@ -57,6 +57,12 @@ export class LoginComponent implements OnInit {
   public get m(){
     return this.loginForm.controls;
   }
+  
+  save(username:string,password:string){
+    sessionStorage.setItem('username',username);
+    sessionStorage.setItem('password', password);
+  }
+  
 
   login(form: FormGroup) {
     if (form.value.username && form.value.password) {
@@ -69,6 +75,7 @@ export class LoginComponent implements OnInit {
           alert("Pogresna sifra");
         else
         {
+          this.save(form.value.username,form.value.password);
           this.cookie.set("token",StringToken);
           this.router.navigate(['/home']);
         }
