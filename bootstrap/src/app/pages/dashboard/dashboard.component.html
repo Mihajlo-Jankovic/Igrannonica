@@ -1,20 +1,33 @@
 <div class=" content">
+    <div class="trainingBody" [hidden]="!training">
+        <!---->
+        <div class="training">
+            <h1 style="top: 50%;">Training in progress...</h1>
+            <div class="loading"> </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h2 class=" card-title">Configure hyperparameters</h2>
+                    <h2 class=" card-title" style="position: relative; float: left;">Configure hyperparameters</h2>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="proba()">START TRAINING</button>
                 </div>
                 <div class="card-body" style="padding-left: 0; padding-right: 0;">
-                    <div class="hyperparameter">
-                        <h6>File Name : </h6>
-                        <button class="btn btn-primary btn-lg btn-block mb-3" type="submit" style="height : 42px; margin-top: 16px;" (click)="proba()">START TRAINING</button>
-                    </div>
                     <div class="hyperparameter">
                         <h6>Problem type</h6>
                         <select class='dropdown' [(ngModel)]="problemType" ngbTooltip="Problem type" (change)='checkProblemType()'>
                             <option class='option' value="Regression">Regression</option>
                             <option class='option' value="Classification">Classification</option>
+                        </select>
+                    </div>
+                    <div class="hyperparameter">
+                        <h6>Encoding type</h6>
+                        <select class='dropdown' [(ngModel)]="encodingType" ngbTooltip="Encoding type">
+                            <option class='option' value="label">Label</option>
+                            <option class='option' value="one-hot">One-Hot</option>
+                            <option class='option' value="binary">Binary</option>
+                            <option class='option' value="frequency">Frequency</option>
                         </select>
                     </div>
                     <div class="hyperparameter">
@@ -130,7 +143,7 @@
                         </button>
                     </div>
                     <div style="position: relative; float: left; width: 100px; text-align: center;">
-                        <h2 class="card-title" style="padding: 3px;">{{layerList.length}}</h2>
+                        <h2 style="padding: 3px;">{{layerList.length}}</h2>
                     </div>
                 </div>
 
@@ -145,7 +158,7 @@
                                     <i class=" tim-icons icon-simple-add"></i>
                                 </button>
                             </div>
-                            <h2 style="position: relative; float: right;">{{neuronsMatrix[layer.id-1].length}}</h2>
+                            <h2 style="position: relative; float: right; padding: 3px;">{{neuronsMatrix[layer.id-1].length}}</h2>
                         </div>
                         <div>
                             <div class="neuron" *ngFor="let neuron of neuronsMatrix[layer.id-1]">

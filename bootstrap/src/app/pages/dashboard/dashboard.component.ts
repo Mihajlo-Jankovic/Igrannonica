@@ -25,6 +25,7 @@ export class DashboardComponent implements OnInit {
   public buttons: any = [];
 
   public problemType: string = "Regression";
+  public encodingType: string = "label";
   public activationFunction: string = "sigmoid";
   public optimizer: string = "Adam";
   public learningRate: number = 0.0001;
@@ -37,6 +38,7 @@ export class DashboardComponent implements OnInit {
 
   public modelHistory: any;
   public trained: boolean = false;
+  public training: boolean = false;
 
   public layersLabel: number = 1;
   public neurons: any = [];
@@ -139,9 +141,11 @@ export class DashboardComponent implements OnInit {
   }
 
   proba(){
+    this.training = true;
     this.http.get("https://localhost:7219/api/PythonComm/testiranje").subscribe(
       (response) => {
         this.trained = true;
+        this.training = false;
         this.modelHistory = response;
         this.buttons = Object.keys(this.modelHistory);
         this.buttons.splice(this.buttons.length/2);
