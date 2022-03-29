@@ -3,6 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
 
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
@@ -19,7 +20,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     FormsModule,
     HttpClientModule,
     NgbModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   declarations: [
     DashboardComponent,

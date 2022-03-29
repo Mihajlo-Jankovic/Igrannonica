@@ -1,0 +1,193 @@
+.hyperparameter {
+    width: 18.975%;
+    height: 80px;
+    display: block;
+    float: left;
+    flex: auto;
+    margin-left: 1em;
+    margin-top: 1em;
+}
+
+.train {
+    width: 18.975%;
+    height: 42px;
+    margin-left: auto;
+    padding: 0px;
+}
+
+h6 {
+    text-align: center;
+}
+
+.dropdown {
+    font-size: 13px;
+    padding: 10px 8px 10px 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-right: 20px;
+    margin-top: 8px;
+    height: 42px;
+    width: 30%;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown:focus {
+    border-color: #7d3c8b;
+}
+
+.option {
+    line-height: 1;
+    border: 0;
+    padding: 0;
+    border-radius: 6px;
+    width: 120%;
+    position: relative;
+    z-index: 10;
+    font-size: 1em;
+    color: white;
+    background: #27293d;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    outline: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    margin-top: 20px;
+}
+
+input[type=range]:hover {
+    opacity: 1;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #7d3c8b;
+    cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #7d3c8b;
+    cursor: pointer;
+}
+
+.plus {
+    background: #7d3c8b !important;
+}
+
+.plus:hover {
+    background: #d450d9 !important;
+}
+
+.minus {
+    border-color: #7d3c8b !important;
+    color: #7d3c8b !important;
+}
+
+.minus:hover {
+    border-color: #d450d9 !important;
+    color: #d450d9 !important;
+}
+
+.layerContainer {
+    display: flex;
+    min-height: 100px;
+    overflow: hidden;
+    padding-left: 0px;
+}
+
+.layer {
+    height: auto;
+    max-width: none;
+    min-width: 0;
+    flex: auto;
+    position: relative;
+    float: left;
+    padding: 1rem;
+    border: 2px solid #7d3c8b;
+    min-height: 100px;
+    overflow: hidden;
+    margin-left: 1rem;
+    border-radius: 3px;
+}
+
+.buttons {
+    height: 40px;
+}
+
+.neuron {
+    background-color: #0e86d4;
+    border-radius: 3px;
+    margin-top: 1rem;
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.trainingBody {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.training {
+    width: 500px;
+    height: auto;
+    background: #1e1e2e;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    border: 3px solid #fff;
+    border-radius: 3px;
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+}
+
+$base-line-height: 40px;
+$white: rgb(255, 255, 255);
+$off-white: rgba($white, 0.2);
+$spin-duration: 1s;
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading {
+    margin: auto;
+    border-radius: 50%;
+    width: $base-line-height;
+    height: $base-line-height;
+    border: .25rem solid $off-white;
+    border-top-color: $white;
+    animation: spin $spin-duration infinite linear;
+}

@@ -85,7 +85,10 @@ def delete_row():
     else:
         return content_type
 
-
+@app.route('/testiranje', methods=['GET'])
+def probaIspisa():
+    history = program.testiranje()
+    return history
 
 if __name__ == '__main__':
     app.run()
