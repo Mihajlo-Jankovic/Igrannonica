@@ -32,7 +32,8 @@ namespace Igrannonica.Controllers
                 {
                     FileName = parameters.FileName,
                     DataType = parameters.DataType, //all, null, not null
-                    Rows = parameters.Rows
+                    Rows = parameters.Rows,
+                    PageNum = parameters.PageNum
                 };
                 var newPostJson = JsonConvert.SerializeObject(newPost);
                 var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");

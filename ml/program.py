@@ -45,7 +45,7 @@ with open(path,'r') as infile:
 
 def numberOfPages(df,rowNum):
     numOfPages = len(df)
-    rowNum = rowNum+1
+    
     if(numOfPages % rowNum != 0):
         numOfPages //= rowNum
         numOfPages += 1
@@ -78,21 +78,19 @@ def statistics(df,colIndex):
 
 path = 'csv\movies.csv'
 
-def openCSV(path,rowNum):
+def openCSV(path):
     with urllib.request.urlopen(path) as f: 
         header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
     if(header): 
-        if(rowNum != 0): df = pd.read_csv(path, index_col = 0, nrows = rowNum) 
-        else: df = pd.read_csv(path, index_col = 0) 
+        df = pd.read_csv(path, index_col = 0) 
 
-        df.columns = [col.lower() for col in df]
-        df.columns = [col.strip('-$%') for col in df]
-        df.columns = [col.strip() for col in df]
-        df.columns = [col.replace(' ','_') for col in df]
+        #df.columns = [col.lower() for col in df]
+        #df.columns = [col.strip('-$%') for col in df]
+        #df.columns = [col.strip() for col in df]
+        #df.columns = [col.replace(' ','_') for col in df]
     else: 
-        if(rowNum != 0): df = pd.read_csv(path, header = None, nrows = rowNum) 
-        else: df = pd.read_csv(path, header = None) 
+        df = pd.read_csv(path, header = None) 
 
     return df
 
@@ -228,10 +226,14 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 
     return (X_train, X_test, y_train, y_test)
 
+def paging(df,rowNum,pageNum):
+    row = rowNum * (pageNum - 1) + 1    
+    return df.loc[np.r_[row:row+rowNum], :]
+
 # Filtriranje CSV fajlova prema parametrima klijenta
 def filterCSV(path, rowNum, dataType, pageNum):
-    df = openCSV(path,rowNum)
-
+    df = openCSV(path)
+    
     if(dataType == 'not null'):
         df = df.dropna()
 
@@ -241,13 +243,15 @@ def filterCSV(path, rowNum, dataType, pageNum):
 
     numOfPages = numberOfPages(df,rowNum)
 
+    paging(df,rowNum,pageNum)
+
     return [df,numOfPages]
 
 def numericValues(path):
     colList = []
     indexList = []
 
-    df = openCSV(path,0)
+    df = openCSV(path)
 
     for col in df:
         if(df[col].dtypes != object):
