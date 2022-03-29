@@ -37,3 +37,80 @@
 .filelist {
     padding: 0rem .5rem 0rem .5rem;
 }
+.dropdown {
+    font-size: 13px;
+    padding: 10px 8px 10px 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-right: 20px;
+    margin-top: 8px;
+    height: 42px;
+    width: 15%;
+    position: relative;
+    bottom: 0;
+}
+
+.dropdown:focus {
+    border-color: #7d3c8b;
+}
+
+.option {
+    line-height: 1;
+    border: 0;
+    padding: 0;
+    border-radius: 6px;
+    width: 120%;
+    position: relative;
+    z-index: 10;
+    font-size: 1em;
+    color: white;
+    background: #27293d;
+}
+h2 {
+    padding: 15px;
+  }
+
+  h4 {
+    padding: 5px;
+    margin-left: 10px;
+    margin-right: 120px;
+  }
+
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+    
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+    margin-bottom: 15px;
+  }
