@@ -73,14 +73,18 @@ export class TablesComponent {
 
   selectedColDiv: boolean = false;
 
+  page : number = 1;
+  maxPage : any = 1000;
+
   constructor(private tableService: TableService, private cookie : CookieService) {
-      this.showTable(this.selectedType, this.selectedRow)
+      this.showTable(this.selectedType, this.selectedRow, this.page)
   }
 
-  showTable(type : string, rows : number)
+  showTable(type : string, rows : number, page : number)
   {
+    console.log("ee");
     let filename = this.cookie.get('filename');
-    this.tableService.getAll(filename,type, rows).subscribe(
+    this.tableService.getAll(filename,type, rows, page).subscribe(
       (response) => {
         this.csv = response;
         //console.log(this.csv);
@@ -88,6 +92,8 @@ export class TablesComponent {
         let dataCSV: any = {};
         dataCSV = this.csv['csv'];
         this.data = dataCSV;
+
+        this.maxPage=this.csv['numOfPages'];
 
         let headersArray: any = [];
         for (let i = 0; i < this.data['columns'].length; i++) {
@@ -139,14 +145,14 @@ export class TablesComponent {
     const value = event.target.value;
     this.selectedType = value;
     this.reset();
-    this.showTable(this.selectedType, this.selectedRow);
+    this.showTable(this.selectedType, this.selectedRow, this.page);
  }
 
  public onSelectedRow(event: any) {
   const value = event.target.value;
   this.selectedRow = value;
   this.reset();
-  this.showTable(this.selectedType, this.selectedRow);
+  this.showTable(this.selectedType, this.selectedRow, this.page);
 }
 
 reset()
@@ -300,4 +306,35 @@ rowsNum: number;
     return series;
   }
 
+  nextPage(i: number) {
+    if(this.page + i <= this.maxPage){
+      this.page += i;
+      this.reset();
+      this.showTable(this.selectedType, this.selectedRow, this.page);
+    }
+  }
+
+  previousPage(i : number) {
+    if(this.page - i >= 1){
+      this.page -= i;
+      this.reset();
+      this.showTable(this.selectedType, this.selectedRow, this.page);
+    }
+  }
+
+  firstPage(){
+    if(this.page != 1){
+      this.page = 1;
+      this.reset();
+      this.showTable(this.selectedType, this.selectedRow, this.page);
+    }
+  }
+
+  lastPage(){
+    if(this.page != this.maxPage){
+      this.page = this.maxPage;
+      this.reset();
+      this.showTable(this.selectedType, this.selectedRow, this.page);
+    }
+  }
 }
