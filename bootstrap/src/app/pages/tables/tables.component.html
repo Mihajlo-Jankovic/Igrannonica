@@ -1,127 +1,148 @@
 <div class=" content">
     <div class=" row">
         <div class=" col-lg-4">
-            <div class=" card" style="height: 370px;">
-              <div class=" card-header">
-                <h5 class=" card-category">Statistics</h5>
-                <div>
-                  <select class='select-option' (change)='onSelectedCol($event)'>
-                    <option *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
-                  </select>
-                </div>
-              </div>
-              <div class=" card-body">
-                <div class=" table-full-width">
-                  <table class=" table">
-                <!--
-                    <thead>
-                      <tr>
-                        <th>Key</th>
-                        <th>Value</th>
-                      <tr>
-                    </thead>
-                -->  
-                    <tbody>
-                      <tr>
-                        <td>MIN</td>
-                        <td>{{min}}</td>
-                      <tr>
-                      <tr>
-                        <td>Q1</td>
-                        <td>{{firstQ}}</td>
-                      </tr>
-                      <tr>
-                        <td>MEAN</td>
-                        <td>{{avg}}</td>
-                      </tr>
-                      <tr>
-                        <td>MEDIAN</td>
-                        <td>{{med}}</td>
-                      </tr>
-                      <tr>
-                        <td>Q3</td>
-                        <td>{{thirdQ}}</td>
-                      </tr>
-                      <tr>
-                        <td>MAX</td>
-                        <td>{{max}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-            <div class=" col-lg-4">
-                <div class=" card card-chart" style="height: 370px;">
-                    <div class=" card-header">
-                        <h5 class=" card-category">Boxplot</h5>
-                        <h3 class=" card-title">
-                        </h3>
+            <div class=" card" style="height: 390px;">
+                <div class=" card-header">
+                    <h4 class=" card-category" style="color: white;">Statistics</h4>
+                    <div>
+                        <select class='dropdown' (change)='onSelectedCol($event)'>
+                          <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
+                        </select>
                     </div>
-                    <div class=" card-body">
-                      <div id="chart" *ngIf="selectedColDiv">
-                        <apx-chart
-                          [series]="chartOptions.series"
-                          [chart]="chartOptions.chart"
-                          [plotOptions]="chartOptions.plotOptions"
-                          [title]="chartOptions.title"
-                          [stroke]="chartOptions.stroke"
-                        ></apx-chart>
-                      </div>          
+                </div>
+                <div class=" card-body">
+                    <div class=" table-full-width">
+                        <table class=" table">
+                            <!--
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Value</th>
+              <tr>
+            </thead>
+            -->
+                            <tbody>
+                                <tr>
+                                    <td>MIN</td>
+                                    <td>{{min}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Q1</td>
+                                    <td>{{firstQ}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MEAN</td>
+                                    <td>{{avg}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MEDIAN</td>
+                                    <td>{{med}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Q3</td>
+                                    <td>{{thirdQ}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MAX</td>
+                                    <td>{{max}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-          <div class=" col-lg-4">
-            <div class=" card" style="height: 370px;">
-              <div class=" card-header">
-                <h5 class=" card-category">Correlation Matrix</h5>
-            </div>
-              <div class=" card-body">
-                <div class=" table-responsive" style="height: 300px;">
-                  <table class=" table">
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th>{{selectedColName}}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let item of numArray; let i = index">
-                        <td>{{numericValuesArray[i][0]}}</td>
-                        <td>{{item}}</td>
-                      <tr>
-                    </tbody>
-                  </table>
+        </div>
+        <div class=" col-lg-4">
+            <div class=" card card-chart" style="height: 390px;">
+                <div class=" card-header">
+                    <h4 class=" card-category" style="color: white;">Boxplot</h4>
+                    <h3 class=" card-title">
+                    </h3>
                 </div>
-              </div>
+                <div class=" card-body">
+                    <div id="chart" *ngIf="selectedColDiv">
+                        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions" [title]="chartOptions.title" [stroke]="chartOptions.stroke"></apx-chart>
+                    </div>
+                </div>
             </div>
-          </div>
+        </div>
+        <div class=" col-lg-4">
+            <div class=" card" style="height: 390px;">
+                <div class=" card-header">
+                    <h4 class=" card-category" style="color: white;">Correlation Matrix</h4>
+                </div>
+                <div class=" card-body">
+                    <div class=" table-responsive" style="height: 300px;" id="corr">
+                        <table class=" table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{{selectedColName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of numArray; let i = index">
+                                    <td>{{numericValuesArray[i][0]}}</td>
+                                    <td>{{item}}</td>
+                                    <tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class=" col-md-12">
             <div class=" card">
                 <div class=" card-header">
                     <h4 class=" card-title">Uploaded data</h4>
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 col-sm-3">
+                        <div class="col-lg-4 col-md-6 col-sm-3" style="padding-top: 8px;">
                             <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
                               <option class='option' value="All">All</option>
                               <option class='option' value="Null">Null</option>
                               <option class='option' value="Not null">Not Null</option>
                             </select>
                             <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
-                                <option class='option' value="10">10</option>
-                                <option class='option' value="20">20</option>
-                                <option class='option' value="50">50</option>
-                                <option class='option' value="100">100</option>
-                                <option class='option' value="0">All</option>
-                              </select>
+                              <option class='option' value="10">10</option>
+                              <option class='option' value="20">20</option>
+                              <option class='option' value="50">50</option>
+                              <option class='option' value="100">100</option>
+                              <option class='option' value="0">All</option>
+                            </select>
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-3">
 
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-3">
-                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body">
-                                <i class="tim-icons icon-trash-simple"> </i>
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" style="padding-left: 2rem;">
+                              <i class="tim-icons icon-trash-simple"> </i>
+                            </button>
+                            <button class=" btn btn-link page" style="max-width: 42px; padding-left: 0;" (click)="lastPage()">
+                              <i class="tim-icons icon-double-right"></i>
+                            </button>
+                            <button class=" btn btn-link page" style="max-width: 42px; padding-left: 0;" (click)="nextPage(1)">
+                              <i class="tim-icons icon-minimal-right"></i>
+                            </button>
+                            <button class=" btn btn-link page" style="padding-right: 0px;" (click)="nextPage(2)" [hidden]="page >= maxPage-1">
+                              {{page+2}}
+                            </button>
+                            <button class=" btn btn-link page" (click)="nextPage(1)" [hidden]="page == maxPage">
+                              {{page+1}}
+                            </button>
+                            <button class=" btn btn-link page" style="color: white;">
+                              {{page}}
+                            </button>
+                            <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="page == 1">
+                              {{page-1}}
+                            </button>
+                            <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="page < 3">
+                              {{page-2}}
+                            </button>
+                            <button class=" btn btn-link page" style="max-width: 42px;" (click)="previousPage(1)">
+                              <i class="tim-icons icon-minimal-left"></i>
+                            </button>
+                            <button class=" btn btn-link page" style="max-width: 42px;" (click)="firstPage()">
+                              <i class="tim-icons icon-double-left"></i>
                             </button>
                         </div>
                     </div>

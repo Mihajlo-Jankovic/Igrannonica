@@ -61,6 +61,27 @@ i {
     padding: 0px;
 }
 
+#corr::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#corr::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#corr::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #7d3c8b;
+}
+
 #table::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -234,13 +255,20 @@ input[type=checkbox]:checked+.check-box,
     }
 }
 
-th{
+th {
     text-align: center;
 }
-td{
+
+td {
     text-align: center;
 }
+
 #chart {
     max-width: 650px;
     margin: 35px auto;
+}
+
+.page {
+    padding: 0.5rem;
+    color: #7d3c8b;
 }

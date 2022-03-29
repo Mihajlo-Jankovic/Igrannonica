@@ -36,6 +36,7 @@ namespace Igrannonica.Controllers
                     PageNum = parameters.PageNum
                 };
                 var newPostJson = JsonConvert.SerializeObject(newPost);
+
                 var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
                 return Ok(result);
