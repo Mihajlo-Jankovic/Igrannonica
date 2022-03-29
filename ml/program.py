@@ -243,7 +243,7 @@ def filterCSV(path, rowNum, dataType, pageNum):
 
     numOfPages = numberOfPages(df,rowNum)
 
-    paging(df,rowNum,pageNum)
+    df = paging(df,rowNum,pageNum)
 
     return [df,numOfPages]
 
