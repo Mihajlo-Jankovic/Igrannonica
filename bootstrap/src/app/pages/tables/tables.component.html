@@ -98,16 +98,15 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6" style="padding-top: 8px;">
                             <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
-                              <option class='option' value="All">All</option>
-                              <option class='option' value="Null">Null</option>
-                              <option class='option' value="Not null">Not Null</option>
+                              <option class='option' value="all">All</option>
+                              <option class='option' value="null">Null</option>
+                              <option class='option' value="not null">Not Null</option>
                             </select>
                             <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
                               <option class='option' value="10">10</option>
                               <option class='option' value="20">20</option>
                               <option class='option' value="50">50</option>
                               <option class='option' value="100">100</option>
-                              <option class='option' value="0">All</option>
                             </select>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">

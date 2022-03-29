@@ -66,8 +66,8 @@ export class TablesComponent {
   rowLines: any = [];
   numericValuesArray: any = [];
 
-  selectedType : string = "All";
-  selectedRow : number = 100;
+  selectedType : string = "all";
+  selectedRow : number = 10;
   selectedColName: string = "";
   selectedCol: number;
 
