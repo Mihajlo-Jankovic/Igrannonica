@@ -71,6 +71,8 @@ export class TablesComponent {
   selectedColName: string = "";
   selectedCol: number;
 
+  selectedColDiv: boolean = false;
+
   constructor(private tableService: TableService, private cookie : CookieService) {
       this.showTable(this.selectedType, this.selectedRow)
   }
@@ -127,6 +129,7 @@ export class TablesComponent {
 
         this.selectedColName = this.numericValuesArray[0][0];
         this.selectedCol = this.numericValuesArray[0][1];
+        this.selectedColDiv = true;
         this.showStatistics(this.selectedCol);
         this.boxPlotFun();
       })
@@ -227,7 +230,41 @@ rowsNum: number;
       chart: {
         height: 223,
         type: "candlestick",
-        //type: "boxPlot"
+        foreColor: '#ced4da',
+
+        toolbar: {
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: false,
+            zoomout: false,
+            pan: true,
+            reset: true,
+            customIcons: []
+          },
+          export: {
+            csv: {
+              filename: "boxplot",
+              columnDelimiter: ',',
+              headerCategory: 'category',
+              headerValue: 'value',
+              dateFormatter(timestamp) {
+              return new Date(timestamp).toDateString()
+            }
+            },
+            svg: {
+              filename: "boxplot"
+            },
+            png: {
+              filename: "boxplot"
+              }
+            },
+            autoSelected: 'zoom'
+          }
       },
       title: {
         text: "",
@@ -235,7 +272,6 @@ rowsNum: number;
       },
       plotOptions: {
         bar: {
-          //horizontal: true
         },
         boxPlot: {
           colors: {

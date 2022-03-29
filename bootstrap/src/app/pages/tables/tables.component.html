@@ -1,7 +1,7 @@
 <div class=" content">
     <div class=" row">
         <div class=" col-lg-4">
-            <div class=" card">
+            <div class=" card" style="height: 370px;">
               <div class=" card-header">
                 <h5 class=" card-category">Statistics</h5>
                 <div>
@@ -53,14 +53,14 @@
             </div>
           </div>
             <div class=" col-lg-4">
-                <div class=" card card-chart">
+                <div class=" card card-chart" style="height: 370px;">
                     <div class=" card-header">
                         <h5 class=" card-category">Boxplot</h5>
                         <h3 class=" card-title">
                         </h3>
                     </div>
                     <div class=" card-body">
-                      <div id="chart" *ngIf="selectedCol">
+                      <div id="chart" *ngIf="selectedColDiv">
                         <apx-chart
                           [series]="chartOptions.series"
                           [chart]="chartOptions.chart"
@@ -73,12 +73,12 @@
                 </div>
             </div>
           <div class=" col-lg-4">
-            <div class=" card">
+            <div class=" card" style="height: 370px;">
               <div class=" card-header">
                 <h5 class=" card-category">Correlation Matrix</h5>
             </div>
               <div class=" card-body">
-                <div class=" table-responsive">
+                <div class=" table-responsive" style="height: 300px;">
                   <table class=" table">
                     <thead>
                       <tr>
