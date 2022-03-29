@@ -9,6 +9,7 @@ using System.Net;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using Newtonsoft.Json;
+using Igrannonica.Services.UserService;
 
 namespace Igrannonica.Controllers
 {
@@ -16,11 +17,13 @@ namespace Igrannonica.Controllers
     [ApiController]
     public class CsvController : ControllerBase
     {
+        private User user = new User();
         private readonly MySqlContext _mySqlContext;
-
-        public CsvController(MySqlContext mySqlContext)
+        private readonly IUserService _userService;
+        public CsvController(MySqlContext mySqlContext, IUserService userService)
         {
             _mySqlContext = mySqlContext;
+            _userService = userService;
         }
 
         [DisableRequestSizeLimit]
@@ -76,6 +79,21 @@ namespace Igrannonica.Controllers
             WebClient webClient = new WebClient();
             await webClient.DownloadFileTaskAsync(endpoint, fullPath);
             return Ok();
+        }
+
+        [HttpGet("getCSV")]
+        public async Task<ActionResult<string>> GetCSV(StatisticsDTO parameters)
+        {
+            using (var client = new HttpClient())
+            {
+                var usernameOriginal = _userService.GetUsername();
+                User userOriginal = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+                if (userOriginal == null)
+                    return BadRequest("JWT is bad!");
+
+                var json = result.Content.ReadAsStringAsync().Result;
+                return Ok(json);
+            }
         }
 
     }
