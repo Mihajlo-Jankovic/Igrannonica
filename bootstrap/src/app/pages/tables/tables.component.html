@@ -96,7 +96,7 @@
                 <div class=" card-header">
                     <h4 class=" card-title">Uploaded data</h4>
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 col-sm-3" style="padding-top: 8px;">
+                        <div class="col-lg-6 col-md-6 col-sm-6" style="padding-top: 8px;">
                             <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
                               <option class='option' value="All">All</option>
                               <option class='option' value="Null">Null</option>
@@ -110,10 +110,7 @@
                               <option class='option' value="0">All</option>
                             </select>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-3">
-
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-3">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" style="padding-left: 2rem;">
                               <i class="tim-icons icon-trash-simple"> </i>
                             </button>
