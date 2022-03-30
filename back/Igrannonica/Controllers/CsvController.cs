@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using Newtonsoft.Json;
 using Igrannonica.Services.UserService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Igrannonica.Controllers
 {
@@ -81,18 +82,29 @@ namespace Igrannonica.Controllers
             return Ok();
         }
 
-        [HttpGet("getCSV")]
-        public async Task<ActionResult<string>> GetCSV(StatisticsDTO parameters)
+        [HttpGet("getCSVAuthorized"), Authorize]
+        public async Task<ActionResult<List<Models.File>>> GetCSV()
         {
             using (var client = new HttpClient())
             {
                 var usernameOriginal = _userService.GetUsername();
-                User userOriginal = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
-                if (userOriginal == null)
+                User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+                
+                if (user == null)
                     return BadRequest("JWT is bad!");
 
-                var json = result.Content.ReadAsStringAsync().Result;
-                return Ok(json);
+                List < Models.File > tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id || u.IsPublic == true).ToList();
+
+                List<dynamic> files = new List<dynamic>();
+
+                foreach (var tmp in tmpList)
+                {
+                    tmp.User = null;
+                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, isPublic = tmp.IsPublic };
+                    files.Add(file);
+                }
+
+                return Ok(files);
             }
         }
 
