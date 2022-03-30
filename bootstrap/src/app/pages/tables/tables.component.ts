@@ -337,4 +337,24 @@ rowsNum: number;
       this.showTable(this.selectedType, this.selectedRow, this.page);
     }
   }
+
+  selectedRows : Array<number> = [];
+
+  selectedID(id : number){
+    console.log(id);
+    this.selectedRows.push(id);
+  }
+
+  deleteRows()
+  {
+    console.log(this.selectedRows)
+      this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
+        {
+          if(err)
+            console.log(err);
+        });
+
+    this.showTable(this.selectedType, this.selectedRow, this.page);
+  }
+
 }

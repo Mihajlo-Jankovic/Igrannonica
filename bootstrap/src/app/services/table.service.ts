@@ -15,4 +15,10 @@ export class TableService {
   getStatistics(filename: string, colIndex: number):Observable<any> {
     return this.http.post("https://localhost:7219/api/PythonComm/getStatistics",{"FileName" : filename, "ColIndex": colIndex});
   }
+
+  deleteRows(filename:string, rownum : number[])
+  {
+    console.log("iz servisa " + rownum)
+    return this.http.post("https://localhost:7219/api/Csv/deletefilerow", {"fileName" : filename, "rowNumber" : rownum});
+  }
 }
