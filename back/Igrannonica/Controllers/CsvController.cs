@@ -99,7 +99,7 @@ namespace Igrannonica.Controllers
 
                 foreach (var tmp in tmpList)
                 {
-                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmp.User.username, isPublic = tmp.IsPublic };
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmp.User.username, isPublic = tmp.IsPublic };
                     files.Add(file);
                 }
 
