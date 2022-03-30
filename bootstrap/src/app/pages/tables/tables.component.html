@@ -1,6 +1,6 @@
 <div class=" content">
     <div class=" row">
-        <div class=" col-lg-4">
+        <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
                     <h4 class=" card-category" style="color: white;">Statistics</h4>
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class=" col-lg-4">
+        <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card card-chart" style="height: 390px;">
                 <div class=" card-header">
                     <h4 class=" card-category" style="color: white;">Boxplot</h4>
@@ -58,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <div class=" col-lg-4">
+        <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
                     <h4 class=" card-category" style="color: white;">Correlation Matrix</h4>

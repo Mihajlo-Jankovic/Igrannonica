@@ -80,6 +80,8 @@ export class TablesComponent {
   page : number = 1;
   maxPage : any = 1000;
 
+  showStatisticDiv: boolean = false;
+
   constructor(private tableService: TableService, private cookie : CookieService) {
       this.showTable(this.selectedType, this.selectedRow, this.page)
       this.boxPlotFun();
@@ -144,7 +146,10 @@ export class TablesComponent {
         this.selectedCol = this.numericValuesArray[0][1];
         this.selectedColDiv = true;
    
-        this.showStatistics(this.selectedCol);
+        if(this.numericValues['col'].length > 0) {
+          this.showStatisticDiv = true;
+          this.showStatistics(this.selectedCol);
+        }
       })
   }
 
