@@ -99,8 +99,7 @@ namespace Igrannonica.Controllers
 
                 foreach (var tmp in tmpList)
                 {
-                    tmp.User = null;
-                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, isPublic = tmp.IsPublic };
+                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmp.User.username, isPublic = tmp.IsPublic };
                     files.Add(file);
                 }
 
@@ -119,13 +118,13 @@ namespace Igrannonica.Controllers
 
                 foreach (var tmp in tmpList)
                 {
-                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, isPublic = tmp.IsPublic };
+
+                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmp.User.username, isPublic = tmp.IsPublic };
                     files.Add(file);
                 }
 
                 return Ok(files);
             }
         }
-
     }
 }
