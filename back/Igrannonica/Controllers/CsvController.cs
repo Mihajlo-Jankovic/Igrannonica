@@ -126,5 +126,28 @@ namespace Igrannonica.Controllers
                 return Ok(files);
             }
         }
+
+        [HttpPost("updateVisibility"), Authorize]
+        public async Task<ActionResult<string>> UpdateVisibility(VisibilityDTO request)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            
+            if (user == null)
+                return BadRequest("JWT is bad!");
+
+            Models.File file = _mySqlContext.File.Where(f => f.Id == request.Id).FirstOrDefault();
+
+            if (file.UserForeignKey != user.id)
+                return BadRequest("JWT is bad!");
+
+            file.IsPublic = request.IsVisible;
+
+            _mySqlContext.File.Update(file);
+            await _mySqlContext.SaveChangesAsync();
+
+            return Ok("Success!");
+        }
+
     }
 }
