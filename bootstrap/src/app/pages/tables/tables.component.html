@@ -156,7 +156,7 @@
                                 <tr *ngFor="let item of rowLines[0]; let i = index">
                                     <td>
                                         <div style="position: relative; top: 5px">
-                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID(i)">
+                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID(i +1)">
                                             <label for="{{ 'check' + i }}" class="check-box"></label>
                                         </div>
                                     </td>

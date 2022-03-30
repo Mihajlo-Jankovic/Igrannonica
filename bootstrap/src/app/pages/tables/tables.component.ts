@@ -82,7 +82,6 @@ export class TablesComponent {
 
   showTable(type : string, rows : number, page : number)
   {
-    console.log("ee");
     let filename = this.cookie.get('filename');
     this.tableService.getAll(filename,type, rows, page).subscribe(
       (response) => {
@@ -354,6 +353,7 @@ rowsNum: number;
             console.log(err);
         });
 
+    this.reset()
     this.showTable(this.selectedType, this.selectedRow, this.page);
   }
 
