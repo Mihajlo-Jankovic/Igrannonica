@@ -78,6 +78,7 @@ export class TablesComponent {
 
   constructor(private tableService: TableService, private cookie : CookieService) {
       this.showTable(this.selectedType, this.selectedRow, this.page)
+      this.boxPlotFun();
   }
 
   showTable(type : string, rows : number, page : number)
@@ -136,8 +137,8 @@ export class TablesComponent {
         this.selectedColName = this.numericValuesArray[0][0];
         this.selectedCol = this.numericValuesArray[0][1];
         this.selectedColDiv = true;
+   
         this.showStatistics(this.selectedCol);
-        this.boxPlotFun();
       })
   }
 
@@ -336,5 +337,42 @@ rowsNum: number;
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page);
     }
+  }
+
+
+  showIO: boolean = false;
+  showIOFun() {
+    if(this.showIO == false)
+      this.showIO = true;
+    else
+      this.showIO = false;
+  }
+
+  listCheckedI: any = [];
+  disabledOutput: any;
+  inputCheckedFun(event: any) {
+    var value = event.target.value;
+
+    var exists = false;
+    for (let i = 0; i < this.listCheckedI.length; i++) {
+      if(this.listCheckedI[i] == value) {
+        var index = i; 
+        exists = true;
+      }
+    }
+
+    if(exists == true)
+      this.listCheckedI.splice(index, 1);
+    else
+      this.listCheckedI.push(value);
+
+    console.log(this.listCheckedI);
+  }
+
+  selectedOutput: any;
+  selectedOutputFun(event: any) {
+    var value = event.target.value;
+    this.selectedOutput = value;
+    console.log(this.selectedOutput);
   }
 }
