@@ -83,7 +83,7 @@ namespace Igrannonica.Controllers
         }
 
         [HttpGet("getCSVAuthorized"), Authorize]
-        public async Task<ActionResult<List<Models.File>>> GetCSV()
+        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized()
         {
             using (var client = new HttpClient())
             {
@@ -100,6 +100,25 @@ namespace Igrannonica.Controllers
                 foreach (var tmp in tmpList)
                 {
                     tmp.User = null;
+                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, isPublic = tmp.IsPublic };
+                    files.Add(file);
+                }
+
+                return Ok(files);
+            }
+        }
+
+        [HttpGet("getCSVUnauthorized")]
+        public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized()
+        {
+            using (var client = new HttpClient())
+            {
+                List<Models.File> tmpList = _mySqlContext.File.Where(u => u.IsPublic == true).ToList();
+
+                List<dynamic> files = new List<dynamic>();
+
+                foreach (var tmp in tmpList)
+                {
                     var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, isPublic = tmp.IsPublic };
                     files.Add(file);
                 }
