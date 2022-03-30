@@ -11,6 +11,7 @@ import {
   ApexAxisChartSeries,
   ApexStroke
 } from "ng-apexcharts";
+import { AnyForUntypedForms } from "@angular/forms";
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -66,6 +67,9 @@ export class TablesComponent {
   rowLines: any = [];
   numericValuesArray: any = [];
 
+  radios: any = [];
+  checks: any = [];
+
   selectedType : string = "all";
   selectedRow : number = 10;
   selectedColName: string = "";
@@ -98,7 +102,9 @@ export class TablesComponent {
 
         let headersArray: any = [];
         for (let i = 0; i < this.data['columns'].length; i++) {
-          headersArray.push(this.data['columns'][i])
+          headersArray.push(this.data['columns'][i]);
+          this.radios[i] = false;
+          this.checks[i] = false;
         }
         this.headingLines.push(headersArray);
 
@@ -365,7 +371,8 @@ rowsNum: number;
       this.listCheckedI.splice(index, 1);
     else
       this.listCheckedI.push(value);
-
+    
+    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
     console.log(this.listCheckedI);
   }
 
@@ -373,6 +380,19 @@ rowsNum: number;
   selectedOutputFun(event: any) {
     var value = event.target.value;
     this.selectedOutput = value;
+    sessionStorage.setItem('output', this.selectedOutput);
     console.log(this.selectedOutput);
+  }
+
+  disableOutput(id : number) {
+    this.radios[id] = !this.radios[id];
+  }
+  checked : any;
+  disableInput(id : number) {
+    if(this.checked != undefined) {
+      this.checks[this.checked] = !this.checks[this.checked];
+    }
+    this.checks[id] = !this.checks[id];
+    this.checked = id;
   }
 }
