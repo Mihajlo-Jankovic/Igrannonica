@@ -340,6 +340,7 @@ rowsNum: number;
   selectedRows : Array<number> = [];
 
   selectedID(id : number){
+    id = id + (this.page + 1)*this.selectedRow
     console.log(id);
     this.selectedRows.push(id);
   }
@@ -352,6 +353,20 @@ rowsNum: number;
           if(err)
             console.log(err);
         });
+
+    this.reset()
+    this.showTable(this.selectedType, this.selectedRow, this.page);
+  }
+
+  editCell(id : number, value : any, columnName : string)
+  {
+    id = id + (this.page + 1)*this.selectedRow;
+
+    this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
+      
+      if(err)
+      console.log(err);
+    })
 
     this.reset()
     this.showTable(this.selectedType, this.selectedRow, this.page);

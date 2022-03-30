@@ -21,4 +21,9 @@ export class TableService {
     console.log("iz servisa " + rownum)
     return this.http.post("https://localhost:7219/api/Csv/deletefilerow", {"fileName" : filename, "rowNumber" : rownum});
   }
+
+  editCell(fileName: string, rowNumber: number, columnName: string,value: string)
+  {
+    return this.http.post("https://localhost:7219/api/Csv/updatefilerow" , {"fileName" : fileName, "rowNumber": rowNumber, "columnName": columnName,"value": value});
+  }
 }
