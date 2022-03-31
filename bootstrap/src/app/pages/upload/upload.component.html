@@ -23,10 +23,6 @@
                             <option class='option' value="true">Public</option>
                             <option class='option' value="false">Private</option>
                         </select>
-                        <select *ngIf="!session" class='dropdown' [(ngModel)]="selectedPrivacyTypeUnauthorized" (change)='onSelectedTypeUnauthorized($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy">
-                            <option class='option' value="public">Public</option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="card-body">

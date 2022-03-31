@@ -19,7 +19,6 @@ export class UploadComponent implements OnInit {
   listOfFilesAuthorized: any = [];
   listOfFilesUnauthorized: any = [];
   selectedPrivacyType: string = "all";
-  selectedPrivacyTypeUnauthorized: string = "public";
   session :any;
   publicFiles: any = [];
   privateFiles: any = [];
@@ -28,6 +27,9 @@ export class UploadComponent implements OnInit {
 
   constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService) {
     this.session = this.getUsername();
+    
+    this.privacy();
+    this.unauthorized();
   }
 
   getUsername(){
@@ -47,6 +49,9 @@ export class UploadComponent implements OnInit {
      // this.FilesList = data;
     })
 
+    
+  }
+  privacy(){
     this.FilesList = files;
     for (let i = 0; i < this.FilesList.length; i++) {
       if (this.FilesList[i]['isPublic'])
@@ -54,28 +59,23 @@ export class UploadComponent implements OnInit {
       else this.privateFiles.push(this.FilesList[i]);
     }
     console.log(this.publicFiles);
-    console.log(this.privateFiles);
+   }
 
-
-
+  unauthorized(){
+    console.log("1");
+    if(!this.session)
+    this.FilesList = this.publicFiles;
   }
 
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedPrivacyType = value;
-    this.FilesList = files;
     if (this.selectedPrivacyType == "true") {
       this.FilesList = this.publicFiles;
     }
     else if (this.selectedPrivacyType == 'false') {
       this.FilesList = this.privateFiles;
     }
-  }
-  public onSelectedTypeUnauthorized(event: any) {
-    const value = event.target.value;
-    this.selectedPrivacyType = value;
-    if(this.selectedPrivacyType=="public")
-      this.FilesList = this.publicFiles;
   }
 
   save(fileName: string) {
