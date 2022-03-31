@@ -99,7 +99,9 @@ namespace Igrannonica.Controllers
 
                 foreach (var tmp in tmpList)
                 {
-                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmp.User.username, isPublic = tmp.IsPublic };
+                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic };
                     files.Add(file);
                 }
 
@@ -119,7 +121,9 @@ namespace Igrannonica.Controllers
                 foreach (var tmp in tmpList)
                 {
 
-                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmp.User.username, isPublic = tmp.IsPublic };
+                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+
+                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic };
                     files.Add(file);
                 }
 
