@@ -11,6 +11,7 @@ import {
   ApexAxisChartSeries,
   ApexStroke
 } from "ng-apexcharts";
+import { AnyForUntypedForms } from "@angular/forms";
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -66,6 +67,9 @@ export class TablesComponent {
   rowLines: any = [];
   numericValuesArray: any = [];
 
+  radios: any = [];
+  checks: any = [];
+
   selectedType : string = "all";
   selectedRow : number = 10;
   selectedColName: string = "";
@@ -76,8 +80,11 @@ export class TablesComponent {
   page : number = 1;
   maxPage : any = 1000;
 
+  showStatisticDiv: boolean = false;
+
   constructor(private tableService: TableService, private cookie : CookieService) {
       this.showTable(this.selectedType, this.selectedRow, this.page)
+      this.boxPlotFun();
   }
 
   showTable(type : string, rows : number, page : number)
@@ -97,7 +104,9 @@ export class TablesComponent {
 
         let headersArray: any = [];
         for (let i = 0; i < this.data['columns'].length; i++) {
-          headersArray.push(this.data['columns'][i])
+          headersArray.push(this.data['columns'][i]);
+          this.radios[i] = false;
+          this.checks[i] = false;
         }
         this.headingLines.push(headersArray);
 
@@ -136,8 +145,11 @@ export class TablesComponent {
         this.selectedColName = this.numericValuesArray[0][0];
         this.selectedCol = this.numericValuesArray[0][1];
         this.selectedColDiv = true;
-        this.showStatistics(this.selectedCol);
-        this.boxPlotFun();
+   
+        if(this.numericValues['col'].length > 0) {
+          this.showStatisticDiv = true;
+          this.showStatistics(this.selectedCol);
+        }
       })
   }
 
@@ -336,5 +348,56 @@ rowsNum: number;
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page);
     }
+  }
+
+
+  showIO: boolean = false;
+  showIOFun() {
+    if(this.showIO == false)
+      this.showIO = true;
+    else
+      this.showIO = false;
+  }
+
+  listCheckedI: any = [];
+  disabledOutput: any;
+  inputCheckedFun(event: any) {
+    var value = event.target.value;
+
+    var exists = false;
+    for (let i = 0; i < this.listCheckedI.length; i++) {
+      if(this.listCheckedI[i] == value) {
+        var index = i; 
+        exists = true;
+      }
+    }
+
+    if(exists == true)
+      this.listCheckedI.splice(index, 1);
+    else
+      this.listCheckedI.push(value);
+    
+    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+    console.log(this.listCheckedI);
+  }
+
+  selectedOutput: any;
+  selectedOutputFun(event: any) {
+    var value = event.target.value;
+    this.selectedOutput = value;
+    sessionStorage.setItem('output', this.selectedOutput);
+    console.log(this.selectedOutput);
+  }
+
+  disableOutput(id : number) {
+    this.radios[id] = !this.radios[id];
+  }
+  checked : any;
+  disableInput(id : number) {
+    if(this.checked != undefined) {
+      this.checks[this.checked] = !this.checks[this.checked];
+    }
+    this.checks[id] = !this.checks[id];
+    this.checked = id;
   }
 }
