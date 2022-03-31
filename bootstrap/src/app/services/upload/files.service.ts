@@ -12,7 +12,7 @@ export class FilesService {
   token: string;
   constructor(private http: HttpClient, private loginService: LoginService, private cookie: CookieService) { }
 
-  edit(){
+  filesAuthorized(){
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
       this.token = this.cookie.get('token');
@@ -21,6 +21,18 @@ export class FilesService {
       'Authorization': 'bearer ' + this.token
     });
     let options = { headers: headers };
-    return this.http.get('https://localhost:7219/api/User/EditUserPassword',options)
+    return this.http.get<any>('https://localhost:7219/api/Csv/getCSVAuthorized',options)
+  }
+
+  filesUnauthorized(){
+    this.loggedUser = this.loginService.isAuthenticated();
+    if (this.loggedUser) {
+      this.token = this.cookie.get('token');
+    }
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + this.token
+    });
+    let options = { headers: headers };
+    return this.http.get<any>('https://localhost:7219/api/Csv/getCSVUnauthorized',options)
   }
 }

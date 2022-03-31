@@ -14,7 +14,6 @@
     border-style: solid;
     box-shadow: inset 0px 0px 0px 0.25em #7d3c8b;
   }
-
   .file-input {
     position: absolute;
     top: 0;
@@ -29,8 +28,8 @@
 
 .file {
   background: #1e1e28;
-  height: 125px;
-  width: 20%;
+  height: 170px;
+  width: 23%;
   border-radius: .5rem;
   margin: .5rem;
   padding: .5rem;
@@ -78,11 +77,14 @@ h2 {
 }
 
 h4 {
-  padding: 5px;
-  margin-left: 10px;
+  margin-left: 15px;
   margin-right: 120px;
 }
 
+b{
+  margin-left: 15px;
+  margin-right: 120px;
+}
 
 .switch {
   position: absolute;
