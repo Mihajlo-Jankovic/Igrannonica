@@ -2,7 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { LoginService } from 'src/app/services/login.service';
+import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
+import files from 'src/files.json';
 
 @Component({
   selector: 'app-upload',
@@ -13,36 +15,78 @@ export class UploadComponent implements OnInit {
 
   loggedUser: boolean;
   files: any[];
-  token : string;
+  token: string;
+  listOfFilesAuthorized: any = [];
+  listOfFilesUnauthorized: any = [];
+  selectedPrivacyType: string = "all";
+  session: any;
+  publicFiles: any = [];
+  publicFilesUnauthorized: any = [];
+  privateFiles: any = [];
+  allFiles: any = [];
 
-  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie : CookieService) { }
+  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
+  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
+
+  constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService) {
+    this.session = this.getUsername();
+  }
+
+  getUsername() {
+    return sessionStorage.getItem('username');
+  }
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     if (!(this.get())) {
       console.log("1245");
     }
+    if (this.session) {
+      this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
+        this.FilesList = data;
+        for (let i = 0; i < this.FilesList.length; i++) {
+          this.allFiles.push(this.FilesList[i]);
+          if (this.FilesList[i]['isPublic'])
+            this.publicFiles.push(this.FilesList[i]);
+          else this.privateFiles.push(this.FilesList[i]);
+        }
+      })
+    }
+    else {
+      this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {
+        this.FilesListUnauthorized = data;
+        for (let i = 0; i < this.FilesListUnauthorized.length; i++) {
+          if (this.FilesListUnauthorized[i]['isPublic'])
+            this.publicFilesUnauthorized.push(this.FilesListUnauthorized[i]);
+        }
+        console.log(this.publicFilesUnauthorized);
 
-
-    /*
-    this.userService.getAllFilesFromUser(1).subscribe(data => {
-      this.files.push(data);
-    }) */
-
+      })
+    }
   }
 
-  save(fileName:string){
-    sessionStorage.setItem('fileName',fileName);
+  public onSelectedType(event: any) {
+    const value = event.target.value;
+    this.selectedPrivacyType = value;
+    if (this.selectedPrivacyType == "true") {
+      this.FilesList = this.publicFiles;
+    }
+    else if (this.selectedPrivacyType == 'false') {
+      this.FilesList = this.privateFiles;
+    }
+    else if (this.selectedPrivacyType == "all")
+      this.FilesList = this.allFiles;
   }
-  
+
+  save(fileName: string) {
+    sessionStorage.setItem('fileName', fileName);
+  }
+
 
   get() {
     return sessionStorage.getItem('fileName');
   }
 
-
-  headingLines: any = [];
-  rowLines: any = [];
 
 
   public uploadFile(files: any) {
@@ -59,19 +103,30 @@ export class UploadComponent implements OnInit {
 
       this.save(file.name);
 
-      if(this.cookie.check('token'))
-      {
+      if (this.cookie.check('token')) {
         this.token = this.cookie.get('token');
         let headers = new HttpHeaders({
-          'Authorization': 'bearer ' + this.token });
+          'Authorization': 'bearer ' + this.token
+        });
         let options = { headers: headers };
 
         this.http.post<string>('https://localhost:7219/api/FileUpload', formData, options).subscribe(name => {
-         this.cookie.set("filename", file.name);
-      })
+          this.cookie.set("filename", file.name);
+        })
       }
-
-      
     }
   }
+
+  filesAuthorized() {
+    this.filesService.filesAuthorized().subscribe(token => {
+      let JSONtoken: string = JSON.stringify(token);
+    })
+  }
+  filesUnauthorized() {
+    this.filesService.filesUnauthorized().subscribe(token => {
+      let JSONtoken: string = JSON.stringify(token);
+    })
+  }
+
+
 }

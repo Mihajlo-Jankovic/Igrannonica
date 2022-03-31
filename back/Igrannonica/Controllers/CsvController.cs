@@ -9,6 +9,8 @@ using System.Net;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using Newtonsoft.Json;
+using Igrannonica.Services.UserService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Igrannonica.Controllers
 {
@@ -16,11 +18,13 @@ namespace Igrannonica.Controllers
     [ApiController]
     public class CsvController : ControllerBase
     {
+        private User user = new User();
         private readonly MySqlContext _mySqlContext;
-
-        public CsvController(MySqlContext mySqlContext)
+        private readonly IUserService _userService;
+        public CsvController(MySqlContext mySqlContext, IUserService userService)
         {
             _mySqlContext = mySqlContext;
+            _userService = userService;
         }
 
         [DisableRequestSizeLimit]
@@ -103,6 +107,80 @@ namespace Igrannonica.Controllers
             WebClient webClient = new WebClient();
             await webClient.DownloadFileTaskAsync(endpoint, fullPath);
             return Ok();
+        }
+
+        
+        [HttpGet("getCSVAuthorized"), Authorize]
+        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized()
+        {
+            using (var client = new HttpClient())
+            {
+                var usernameOriginal = _userService.GetUsername();
+                User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+                
+                if (user == null)
+                    return BadRequest("JWT is bad!");
+
+                List < Models.File > tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id || u.IsPublic == true).ToList();
+
+                List<dynamic> files = new List<dynamic>();
+
+                foreach (var tmp in tmpList)
+                {
+                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic };
+                    files.Add(file);
+                }
+
+                return Ok(files);
+            }
+        }
+        
+
+        
+        [HttpGet("getCSVUnauthorized")]
+        public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized()
+        {
+            using (var client = new HttpClient())
+            {
+                List<Models.File> tmpList = _mySqlContext.File.Where(u => u.IsPublic == true).ToList();
+
+                List<dynamic> files = new List<dynamic>();
+
+                foreach (var tmp in tmpList)
+                {
+
+                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+
+                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic };
+                    files.Add(file);
+                }
+
+                return Ok(files);
+            }
+        }
+        
+        [HttpPost("updateVisibility"), Authorize]
+        public async Task<ActionResult<string>> UpdateVisibility(VisibilityDTO request)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            
+            if (user == null)
+                return BadRequest("JWT is bad!");
+
+            Models.File file = _mySqlContext.File.Where(f => f.Id == request.Id).FirstOrDefault();
+
+            if (file.UserForeignKey != user.id)
+                return BadRequest("JWT is bad!");
+
+            file.IsPublic = request.IsVisible;
+
+            _mySqlContext.File.Update(file);
+            await _mySqlContext.SaveChangesAsync();
+
+            return Ok("Success!");
         }
 
     }
