@@ -19,20 +19,20 @@ export class UploadComponent implements OnInit {
   listOfFilesAuthorized: any = [];
   listOfFilesUnauthorized: any = [];
   selectedPrivacyType: string = "all";
-  session :any;
+  session: any;
   publicFiles: any = [];
+  publicFilesUnauthorized: any = [];
   privateFiles: any = [];
+  allFiles: any = [];
 
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
+  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
 
   constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService) {
     this.session = this.getUsername();
-    
-    this.privacy();
-    this.unauthorized();
   }
 
-  getUsername(){
+  getUsername() {
     return sessionStorage.getItem('username');
   }
 
@@ -41,30 +41,28 @@ export class UploadComponent implements OnInit {
     if (!(this.get())) {
       console.log("1245");
     }
-
-    this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
-      // this.FilesList=data;
-    })
-    this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {
-     // this.FilesList = data;
-    })
-
-    
-  }
-  privacy(){
-    this.FilesList = files;
-    for (let i = 0; i < this.FilesList.length; i++) {
-      if (this.FilesList[i]['isPublic'])
-        this.publicFiles.push(this.FilesList[i]);
-      else this.privateFiles.push(this.FilesList[i]);
+    if (this.session) {
+      this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
+        this.FilesList = data;
+        for (let i = 0; i < this.FilesList.length; i++) {
+          this.allFiles.push(this.FilesList[i]);
+          if (this.FilesList[i]['isPublic'])
+            this.publicFiles.push(this.FilesList[i]);
+          else this.privateFiles.push(this.FilesList[i]);
+        }
+      })
     }
-    console.log(this.publicFiles);
-   }
+    else {
+      this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {
+        this.FilesListUnauthorized = data;
+        for (let i = 0; i < this.FilesListUnauthorized.length; i++) {
+          if (this.FilesListUnauthorized[i]['isPublic'])
+            this.publicFilesUnauthorized.push(this.FilesListUnauthorized[i]);
+        }
+        console.log(this.publicFilesUnauthorized);
 
-  unauthorized(){
-    console.log("1");
-    if(!this.session)
-    this.FilesList = this.publicFiles;
+      })
+    }
   }
 
   public onSelectedType(event: any) {
@@ -76,6 +74,8 @@ export class UploadComponent implements OnInit {
     else if (this.selectedPrivacyType == 'false') {
       this.FilesList = this.privateFiles;
     }
+    else if (this.selectedPrivacyType == "all")
+      this.FilesList = this.allFiles;
   }
 
   save(fileName: string) {
