@@ -12,58 +12,78 @@
                 </div>
             </div>
         </div>
-        <div class=" col-md-4">
-            <div class=" card card-user">
-                <div class=" card-body">
-                    <p class=" card-text"></p>
-                    <div class=" author">
-                        <div class=" block block-one"></div>
-                        <div class=" block block-two"></div>
-                        <div class=" block block-three"></div>
-                        <div class=" block block-four"></div>
-                        <img alt="..." class=" avatar" src="assets/img/profile.jpg" />
+       
+            <div class=" col-md-4">
+                <div class=" card card-user">
+                    <div class=" card-body">
+                        <p class=" card-text"></p>
+                        <div class=" author">
+                            <div class=" block block-one"></div>
+                            <div class=" block block-two"></div>
+                            <div class=" block block-three"></div>
+                            <div class=" block block-four"></div>
+                            <img alt="..." class=" avatar" src="assets/img/profile.jpg" />
 
-                        <h5 class=" title">{{username}}</h5><br><br>
-                        <p class=" description"></p><br>
-                        <h5 class=" title">Edit Profile</h5>
-                        <form class="form" [formGroup]="editForm" (ngSubmit)="edit(editForm)">
-                            <div class=" input-group">
-                                <input class=" form-control" placeholder="First Name" name="firstname" formControlName="firstname" type="text" />
-                            </div>
-                            <div class=" input-group">
-                                <input class=" form-control" placeholder="Last Name" name="lastname" formControlName="lastname" type="text" />
-                            </div>
+                            <h5 class=" title">{{username}}</h5>
+                            <h5 class=" title">{{userInfo.email}}</h5><br><br>
+                            <p class=" description"></p><br>
 
-                            <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button><br>
+                            <button class="btn btn-primary btn-lg btn-block mb-3"  (click)="editProfile()">Edit Profile</button>
 
-                            <label>{{messageEditProfile}}</label>
-
-                        </form>
-
-
-
-                        <br><br>
-                        <div class=" card-header1">
-                            <h6 class=" title">Edit Password</h6>
-                        </div><br>
-                        <form class="form" [formGroup]="editPasswordForm" (ngSubmit)="editPassword(editPasswordForm)">
-                            <div class=" input-group">
-                                <input class=" form-control" placeholder="Old password" type="password" name="currentPassword" formControlName="currentPassword" />
-                            </div>
-                            <!-- <div class=" row">
-              <div class=" col-md-6 pr-md-1">
-                <div class=" form-group"> -->
-                            <div class=" input-group">
-                                <input class=" form-control" placeholder="New password" type="password" name="newPassword" formControlName="newPassword" />
-                            </div>
-
-                            <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
-                <div class=" card-footer">
+                    <div class=" card card-user" *ngIf="indicator">
+                        <div class=" card-body">
+                            <p class=" card-text"></p>
+                            <div class=" author">
+    
+    
+                                <h5 class=" title">Edit Profile</h5>
+                                <form class="form" [formGroup]="editForm" (ngSubmit)="edit(editForm)">
+                                    <div class=" input-group">
+                                        <input class=" form-control" placeholder="{{userInfo.firstname}}" name="firstname"
+                                            formControlName="firstname" type="text" />
+                                    </div>
+                                    <div class=" input-group">
+                                        <input class=" form-control" placeholder="{{userInfo.lastname}}" name="lastname"
+                                            formControlName="lastname" type="text" />
+                                    </div>
+    
+                                    <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button><br>
+    
+                                    <label>{{messageEditProfile}}</label>
+    
+                                </form>
+    
+    
+    
+                                <br><br>
+                                <div class=" card-header1">
+                                    <h6 class=" title">Edit Password</h6>
+                                </div><br>
+                                <form class="form" [formGroup]="editPasswordForm"
+                                    (ngSubmit)="editPassword(editPasswordForm)">
+                                    <div class=" input-group">
+                                        <input class=" form-control" placeholder="Old password" type="password"
+                                            name="currentPassword" formControlName="currentPassword" />
+                                    </div>
+                                    <div class=" input-group">
+                                        <input class=" form-control" placeholder="New password" type="password"
+                                            name="newPassword" formControlName="newPassword" />
+                                    </div>
+    
+                                    <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class=" card-footer">
+                        </div>
+    
+    
+                        <div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+           

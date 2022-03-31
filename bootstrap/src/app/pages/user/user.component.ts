@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { EditService } from "src/app/services/edit/edit.service";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EditPasswordService } from "src/app/services/edit/edit-password.service";
+import { UserInfoService } from "src/app/services/edit/user-info.service";
 
 @Component({
   selector: "app-user",
@@ -15,23 +16,33 @@ export class UserComponent implements OnInit {
 
   username: string;
   messageEditProfile: string;
+  indicator : string;
+  userInfo : any;
 
   getUsername() {
     return sessionStorage.getItem('username');
   }
 
 
-  constructor(private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
+  constructor(private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
     this.username = this.getUsername();
     this.messageEditProfile = "";
     this.editForm = formBuilder.group({firstname:"", lastname:""});
     this.editPasswordForm = formBuilder.group({currentPassword:"",newPassword:""});
   }
+
   ngOnInit() {
+    this.userInfo = this.userInfoService.info().subscribe(data=> {
+      this.userInfo = data;
+    })
   }
 
   public get m() {
     return this.editForm.controls;
+  }
+
+  editProfile(){
+    this.indicator = "edit";
   }
   
   edit(form: FormGroup) {
@@ -50,5 +61,6 @@ export class UserComponent implements OnInit {
       })
     }
   }
-
+  
+ 
 }
