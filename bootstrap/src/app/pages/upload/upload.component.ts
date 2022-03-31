@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { LoginService } from 'src/app/services/login.service';
 import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
+import files from 'src/files.json';
 
 @Component({
   selector: 'app-upload',
@@ -16,7 +17,9 @@ export class UploadComponent implements OnInit {
   files: any[];
   token : string;
   listOfFilesAuthorized : any=[];
-  headingLines: any = [];
+  selectedPrivacyType : string = "all";
+  publicFiles:any = [];
+  privateFiles:any = [];
 
   public FilesList:{fileId:number, fileName:string, userId:number, username:string, isPublic:boolean}[];
 
@@ -30,27 +33,38 @@ export class UploadComponent implements OnInit {
       console.log("1245");
     }
 
-    let headersArray = [];
+    let pubFiles = [];
+    let privFiles = [];
     this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data=> {
-      this.FilesList=data;
-      
-
-      for (let i = 0; i < data.length; i++) {
-        headersArray.push(data[i]);
-    }
-    this.headingLines.push(headersArray);
-    console.log(this.headingLines);
+     // this.FilesList=data;
     })
     
+    this.FilesList=files;
+    for(let i=0;i<this.FilesList.length;i++){
+      if(this.FilesList[i]['isPublic'])
+      this.publicFiles.push(this.FilesList[i]);
+      else this.privateFiles.push(this.FilesList[i]);
+    }
+    console.log(this.publicFiles);
+    console.log(this.privateFiles);
 
 
-
-    /*
-    this.userService.getAllFilesFromUser(1).subscribe(data => {
-      this.files.push(data);
-    }) */
 
   }
+
+  public onSelectedType(event: any) {
+    const value = event.target.value;
+    this.selectedPrivacyType = value;
+    this.FilesList=files;
+    if(this.selectedPrivacyType=="true"){
+      this.FilesList = this.publicFiles;
+      console.log(this.publicFiles);
+    }
+    else if(this.selectedPrivacyType=='false'){
+    this.FilesList = this.privateFiles;
+    console.log(this.FilesList);
+    }
+ }
 
   save(fileName:string){
     sessionStorage.setItem('fileName',fileName);

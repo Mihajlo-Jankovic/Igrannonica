@@ -82,6 +82,7 @@ namespace Igrannonica.Controllers
             return Ok();
         }
 
+        /*
         [HttpGet("getCSVAuthorized"), Authorize]
         public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized()
         {
@@ -106,6 +107,7 @@ namespace Igrannonica.Controllers
                 return Ok(files);
             }
         }
+        */
 
         [HttpGet("getCSVUnauthorized")]
         public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized()
