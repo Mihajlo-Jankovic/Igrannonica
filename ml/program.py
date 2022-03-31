@@ -94,7 +94,7 @@ def openCSV(path):
 
     return df
 
-def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, inputs, problemType, outputs, lossFunction, metric):
+def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, problemType, outputs, lossFunction, metric):
     model = tf.keras.Sequential()
     # Namestanje regularizera
     if(regularizer == 'L1'):
@@ -113,7 +113,7 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
             model.add(tf.keras.layers.Dense(neurons[i], activation=activation))
     # Output layer
     if(problemType == 'Regression'):
-        model.add(tf.keras.layers.Dense(1, activation='linear'))
+        model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
     else:
         model.add(tf.keras.layers.Dense(outputs, activation='softmax'))
     # Odabir optimizera i podesavanje learning rate-a
@@ -215,7 +215,7 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 
     df = df.dropna()
     
-    tmpTrain = df.sample(frac=0.8, random_state=0)
+    tmpTrain = df.sample(frac=1 - testSize, random_state=0)
     tmpTest = df.drop(tmpTrain.index)
 
     X_train = tmpTrain.copy()
@@ -288,7 +288,16 @@ def testiranje():
     X_train, X_test, y_train, y_test = prepare_data(df, ['Title','Genre'], ['Metascore'], 'label', 0.2)
     print(X_train, X_test, y_train, y_test)
 
-    m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 2, 'Regression', 10, 'mean_squared_error', ['mse', 'mae'])
+    m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 'Regression', 10, 'mean_squared_error', ['mse', 'mae'])
     print(m)
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
+    return model.history
+
+def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
+    PATH = 'https://localhost:7219/api/Csv/'
+    df = openCSV(PATH + fileName)
+    X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
+
+    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, 10, lossFunction, metrics)
+    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs)
     return model.history

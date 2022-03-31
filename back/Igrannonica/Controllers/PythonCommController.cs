@@ -63,7 +63,22 @@ namespace Igrannonica.Controllers
                 return Ok(result);
             }
         }
-        
+
+        [HttpPost("startTraining")]
+        public async Task<ActionResult<string>> startTraining(TrainingDTO parameters)
+        {
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri("http://127.0.0.1:5000/startTraining");
+
+                var newPostJson = JsonConvert.SerializeObject(parameters);
+                var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
+                var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
+
+                return Ok(result);
+            }
+        }
+
         [HttpGet("testiranje")]
         public async Task<ActionResult<string>> TestiranjeIstorije()
         {

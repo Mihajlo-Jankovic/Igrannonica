@@ -160,6 +160,41 @@ export class DashboardComponent implements OnInit {
     )
   }
 
+  startTraining() {
+    if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
+      window.alert("Input or output not selected");
+      return;
+    }
+    let fileName = this.cookieService.get('filename');
+    let inputList = JSON.parse(sessionStorage.getItem('inputList'));
+    let output = sessionStorage.getItem('output');
+    let layerList = [];
+    for (let i = 0; i < this.layersLabel; i++){
+      layerList[i] = this.neuronsList[i];
+    }
+    let metrics = [];
+    for (let i = 0; i < this.selectedItems.length; i++) {
+      metrics[i] = this.selectedItems[i].item_id;
+    }
+    console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
+    this.http.post("https://localhost:7219/api/PythonComm/startTraining",{"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
+      (response) => {
+        this.trained = true;
+        this.training = false;
+        this.modelHistory = response;
+        this.buttons = Object.keys(this.modelHistory);
+        this.buttons.splice(this.buttons.length/2);
+        this.data = this.modelHistory['loss'];
+        this.val_data = this.modelHistory['val_loss'];
+        this.chart_labels = [];
+        for (let i = 0; i < this.data.length; i++) {
+          this.chart_labels[i] = i + 1;
+        }
+        this.updateOptions();
+      }
+    );
+  }
+
   changeData(name){
     this.data = this.modelHistory[name];
     this.val_data = this.modelHistory['val_' + name];
