@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { LoginService } from 'src/app/services/login.service';
+import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -14,14 +15,34 @@ export class UploadComponent implements OnInit {
   loggedUser: boolean;
   files: any[];
   token : string;
+  listOfFilesAuthorized : any=[];
+  headingLines: any = [];
 
-  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie : CookieService) { }
+  public FilesList:{fileId:number, fileName:string, userId:number, username:string, isPublic:boolean}[];
+
+  constructor(private filesService:FilesService,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie : CookieService) {
+    
+  }
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     if (!(this.get())) {
       console.log("1245");
     }
+
+    let headersArray = [];
+    this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data=> {
+      this.FilesList=data;
+      
+
+      for (let i = 0; i < data.length; i++) {
+        headersArray.push(data[i]);
+    }
+    this.headingLines.push(headersArray);
+    console.log(this.headingLines);
+    })
+    
+
 
 
     /*
@@ -40,9 +61,6 @@ export class UploadComponent implements OnInit {
     return sessionStorage.getItem('fileName');
   }
 
-
-  headingLines: any = [];
-  rowLines: any = [];
 
 
   public uploadFile(files: any) {
@@ -70,8 +88,14 @@ export class UploadComponent implements OnInit {
          this.cookie.set("filename", file.name);
       })
       }
-
-      
     }
   }
+
+  filesAuthorized() {
+      this.filesService.filesAuthorized().subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+      })
+  }
+  
+
 }

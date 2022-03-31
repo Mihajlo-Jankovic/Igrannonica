@@ -38,75 +38,26 @@
                         </ul>
                     </div>
                     -->
-                    <div class="row filelist">
+                    <div *ngFor="let item of FilesList">
+                    <div class="row filelist" >
                         <div class="file">
 
                             <div class=" row">
-                            <h4 class="card-title">Filename</h4>
+                            <h4 class="card-title">Filename:</h4>
+                            <b> {{item.fileName}}</b>
+                            
                             <label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider round"></span>
                               </label>
-                            </div><br>
+                            </div>
 
-                            <p>Uploaded by:</p>
+                            <p>Uploaded by:  {{item.username}}</p>    
                             <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
                                     class=" pull-right">DOWNLOAD</a></span>
                         </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        <div class="file">
-                            <h4 class="card-title">Filename</h4>
-                            <p>Uploaded by:</p>
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
+                        
+                    </div>
                     </div>
                 </div>
             </div>
