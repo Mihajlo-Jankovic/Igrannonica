@@ -80,7 +80,7 @@ namespace Igrannonica.Controllers
         [HttpGet("{filename}")]
         public async Task<IActionResult> downloadfile(string filename)
         {
-            Models.File? file = _mySqlContext.File.Where(f => f.FileName == filename).FirstOrDefault();
+            Models.File? file = _mySqlContext.File.Where(f => f.RandomFileName == filename).FirstOrDefault();
             if (file == null)
                 return BadRequest("no file with that name");
             var folderName = Path.Combine("Resources", "CSVFiles");
