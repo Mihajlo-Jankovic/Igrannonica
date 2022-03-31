@@ -23,55 +23,48 @@
                             <option class='option' value="true">Public</option>
                             <option class='option' value="false">Private</option>
                         </select>
-                </div>
-
-                <div class="card-body" *ngIf="session">
-                    <div *ngFor="let item of FilesList">
-                    <div class="row filelist" >
-                        <div class="file">
-
-                            <div class=" row">
-                            <h4 class="card-title">Filename:</h4>
-                            <b> {{item.fileName}}</b>
-                            
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider round"></span>
-                              </label>
-                            </div>
-
-                            <p>Uploaded by:  {{item.username}}</p>    
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
-                        </div>
-                        
-                    </div>
                     </div>
                 </div>
-                <div class="card-body" *ngIf="!session">
-                    <div *ngFor="let item of FilesListUnauthorized">
-                    <div class="row filelist" >
-                        <div class="file">
+                <div class="card-body" style="padding-right: 0;">
+                    <div class="authorized" *ngIf="session">
+                        <div *ngFor="let item of FilesList">
+                            <div class="file">
+                                <div class=" row">
+                                    <h4 class="card-title">Filename:</h4>
+                                    <b> {{item.fileName}}</b>
 
-                            <div class=" row">
-                            <h4 class="card-title">Filename:</h4>
-                            <b> {{item.fileName}}</b>
-                            
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider round"></span>
-                              </label>
+                                    <label class="switch pull-right">
+                                            <input type="checkbox" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                </div>
+
+                                <p>Uploaded by: {{item.username}}</p>
+                                <span class=" pull-left"><a href="#">USE THIS</a></span><span>
+                                    <a href="#" class=" pull-right">DOWNLOAD</a></span>
                             </div>
-
-                            <p>Uploaded by:  {{item.username}}</p>    
-                            <span class=" pull-left"><a href="#">USE THIS</a></span><span><a href="#"
-                                    class=" pull-right">DOWNLOAD</a></span>
                         </div>
-                        
                     </div>
+                    <div class="unauthorized" *ngIf="!session">
+                        <div *ngFor="let item of FilesListUnauthorized">
+                            <div class="file">
+
+                                <div class=" row">
+                                    <h4 class="card-title">Filename:</h4>
+                                    <b> {{item.fileName}}</b>
+                                    <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                </div>
+
+                                <p>Uploaded by: {{item.username}}</p>
+                                <span class=" pull-left"><a href="#">USE THIS</a></span>
+                                <span><a href="#" class=" pull-right">DOWNLOAD</a></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
