@@ -23,4 +23,16 @@ export class FilesService {
     let options = { headers: headers };
     return this.http.get<any>('https://localhost:7219/api/Csv/getCSVAuthorized',options)
   }
+
+  filesUnauthorized(){
+    this.loggedUser = this.loginService.isAuthenticated();
+    if (this.loggedUser) {
+      this.token = this.cookie.get('token');
+    }
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + this.token
+    });
+    let options = { headers: headers };
+    return this.http.get<any>('https://localhost:7219/api/Csv/getCSVUnauthorized',options)
+  }
 }

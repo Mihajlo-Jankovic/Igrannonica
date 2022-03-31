@@ -15,16 +15,23 @@ export class UploadComponent implements OnInit {
 
   loggedUser: boolean;
   files: any[];
-  token : string;
-  listOfFilesAuthorized : any=[];
-  selectedPrivacyType : string = "all";
-  publicFiles:any = [];
-  privateFiles:any = [];
+  token: string;
+  listOfFilesAuthorized: any = [];
+  listOfFilesUnauthorized: any = [];
+  selectedPrivacyType: string = "all";
+  selectedPrivacyTypeUnauthorized: string = "public";
+  session :any;
+  publicFiles: any = [];
+  privateFiles: any = [];
 
-  public FilesList:{fileId:number, fileName:string, userId:number, username:string, isPublic:boolean}[];
+  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
 
-  constructor(private filesService:FilesService,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie : CookieService) {
-    
+  constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService) {
+    this.session = this.getUsername();
+  }
+
+  getUsername(){
+    return sessionStorage.getItem('username');
   }
 
   ngOnInit(): void {
@@ -33,16 +40,17 @@ export class UploadComponent implements OnInit {
       console.log("1245");
     }
 
-    let pubFiles = [];
-    let privFiles = [];
-    this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data=> {
-     // this.FilesList=data;
+    this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
+      // this.FilesList=data;
     })
-    
-    this.FilesList=files;
-    for(let i=0;i<this.FilesList.length;i++){
-      if(this.FilesList[i]['isPublic'])
-      this.publicFiles.push(this.FilesList[i]);
+    this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {
+     // this.FilesList = data;
+    })
+
+    this.FilesList = files;
+    for (let i = 0; i < this.FilesList.length; i++) {
+      if (this.FilesList[i]['isPublic'])
+        this.publicFiles.push(this.FilesList[i]);
       else this.privateFiles.push(this.FilesList[i]);
     }
     console.log(this.publicFiles);
@@ -55,21 +63,25 @@ export class UploadComponent implements OnInit {
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedPrivacyType = value;
-    this.FilesList=files;
-    if(this.selectedPrivacyType=="true"){
+    this.FilesList = files;
+    if (this.selectedPrivacyType == "true") {
       this.FilesList = this.publicFiles;
-      console.log(this.publicFiles);
     }
-    else if(this.selectedPrivacyType=='false'){
-    this.FilesList = this.privateFiles;
-    console.log(this.FilesList);
+    else if (this.selectedPrivacyType == 'false') {
+      this.FilesList = this.privateFiles;
     }
- }
-
-  save(fileName:string){
-    sessionStorage.setItem('fileName',fileName);
   }
-  
+  public onSelectedTypeUnauthorized(event: any) {
+    const value = event.target.value;
+    this.selectedPrivacyType = value;
+    if(this.selectedPrivacyType=="public")
+      this.FilesList = this.publicFiles;
+  }
+
+  save(fileName: string) {
+    sessionStorage.setItem('fileName', fileName);
+  }
+
 
   get() {
     return sessionStorage.getItem('fileName');
@@ -91,25 +103,30 @@ export class UploadComponent implements OnInit {
 
       this.save(file.name);
 
-      if(this.cookie.check('token'))
-      {
+      if (this.cookie.check('token')) {
         this.token = this.cookie.get('token');
         let headers = new HttpHeaders({
-          'Authorization': 'bearer ' + this.token });
+          'Authorization': 'bearer ' + this.token
+        });
         let options = { headers: headers };
 
         this.http.post<string>('https://localhost:7219/api/FileUpload', formData, options).subscribe(name => {
-         this.cookie.set("filename", file.name);
-      })
+          this.cookie.set("filename", file.name);
+        })
       }
     }
   }
 
   filesAuthorized() {
-      this.filesService.filesAuthorized().subscribe(token => {
-        let JSONtoken: string = JSON.stringify(token);
-      })
+    this.filesService.filesAuthorized().subscribe(token => {
+      let JSONtoken: string = JSON.stringify(token);
+    })
   }
-  
+  filesUnauthorized() {
+    this.filesService.filesUnauthorized().subscribe(token => {
+      let JSONtoken: string = JSON.stringify(token);
+    })
+  }
+
 
 }

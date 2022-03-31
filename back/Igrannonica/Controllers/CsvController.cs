@@ -109,6 +109,7 @@ namespace Igrannonica.Controllers
         }
         */
 
+        /*
         [HttpGet("getCSVUnauthorized")]
         public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized()
         {
@@ -128,7 +129,7 @@ namespace Igrannonica.Controllers
                 return Ok(files);
             }
         }
-
+        */
         [HttpPost("updateVisibility"), Authorize]
         public async Task<ActionResult<string>> UpdateVisibility(VisibilityDTO request)
         {

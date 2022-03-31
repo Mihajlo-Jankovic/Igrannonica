@@ -6,11 +6,6 @@
                     <h2 class="card-title">Upload a new file</h2>
                 </div>
                 <div class="card-body">
-                    <!--
-                        <input type="file" #file (change)="uploadFile(file.files)" accept=".csv" style="display: none;">
-                        <button type="button" name="upload" (click)="file.click()">Upload files</button>
-                    -->
-
                     <div class="file-upload">
                         <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv">
                         <div class="card-subtitle">Drag n Drop your file here</div>
@@ -23,22 +18,18 @@
                 <div class="card-header">
                     <div class=" row">
                         <h2 class="card-title"> Choose an existing file</h2>
-                        <select class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy">
+                        <select *ngIf="session" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy">
                             <option class='option' value="all">All</option>
                             <option class='option' value="true">Public</option>
                             <option class='option' value="false">Private</option>
+                        </select>
+                        <select *ngIf="!session" class='dropdown' [(ngModel)]="selectedPrivacyTypeUnauthorized" (change)='onSelectedTypeUnauthorized($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy">
+                            <option class='option' value="public">Public</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <!--
-                    <div *ngIf="loggedUser" id="listOfFiles" style="color: white;">     
-                        <ul>
-                            <li *ngFor="let f of files" style="color: white;">{{f}}</li>
-                        </ul>
-                    </div>
-                    -->
                     <div *ngFor="let item of FilesList">
                     <div class="row filelist" >
                         <div class="file">
