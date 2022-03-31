@@ -340,8 +340,8 @@ rowsNum: number;
   selectedRows : Array<number> = [];
 
   selectedID(id : number){
-    id = id + (this.page + 1)*this.selectedRow
-    console.log(id);
+    id = id + (this.page - 1)*this.selectedRow
+    console.log("edit" + id);
     this.selectedRows.push(id);
   }
 
@@ -360,7 +360,8 @@ rowsNum: number;
 
   editCell(id : number, value : any, columnName : string)
   {
-    id = id + (this.page + 1)*this.selectedRow;
+    id = id + (this.page - 1)*this.selectedRow;
+    console.log(this.cookie.get('filename') + "-" + id + " - " + value + " - " + columnName)
 
     this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
       
