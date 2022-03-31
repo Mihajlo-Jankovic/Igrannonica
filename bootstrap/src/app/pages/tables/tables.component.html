@@ -86,10 +86,10 @@
         <div class=" col-lg-12">
             <div class=" card">
                 <div class=" card-header" (click)="showIOFun()">
-                    <h4 class=" card-category" style="color: white;">I/O</h4>
+                    <h4 class=" card-category" style="color: white;">Input/Output</h4>
                 </div>
                 <div class=" card-body" *ngIf="showIO" style="padding:2%; display: flex; justify-content: center;">
-                    <div style="width: 350px; ">
+                    <div class="divInput">
                         <h4>Input</h4>
                         <div *ngFor="let item of headingLines[0]; let i = index">
                             <div style="position: relative; top: 5px;">
@@ -98,11 +98,12 @@
                             </div>
                         </div>
                     </div>
-                    <div style="width: 350px;">
+                    <div class="divOutput">
                         <h4>Output</h4>
                         <div *ngFor="let item of headingLines[0]; let i = index">
                             <div style="position: relative; height: 31px;">
-                                <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]">{{item}}
+                                <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]">
+                                <label for="{{ 'radio' + i }}" class="radio-button"></label> {{item}}
                             </div>
                         </div>
                     </div>

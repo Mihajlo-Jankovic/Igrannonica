@@ -378,7 +378,7 @@ rowsNum: number;
       this.listCheckedI.push(value);
     
     sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
-    console.log(this.listCheckedI);
+    //console.log(this.listCheckedI);
   }
 
   selectedOutput: any;
@@ -386,7 +386,7 @@ rowsNum: number;
     var value = event.target.value;
     this.selectedOutput = value;
     sessionStorage.setItem('output', this.selectedOutput);
-    console.log(this.selectedOutput);
+    //console.log(this.selectedOutput);
   }
 
   disableOutput(id : number) {
