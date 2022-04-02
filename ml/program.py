@@ -61,16 +61,18 @@ def statistics(df,colIndex):
     col = df.columns[colIndex]
 
     rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
-    min = float(df[col].min()) # Minimum
-    max = float(df[col].max()) # Maksimum
-    avg = df[col].mean() # Srednja vrednost
-    med = df[col].median() # Mediana
+    min = round(float(df[col].min()), 3) # Minimum
+    max = round(float(df[col].max()), 3) # Maksimum
+    avg = round(df[col].mean(), 3) # Srednja vrednost
+    med = round(df[col].median(), 3) # Mediana
     firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
+    round(firstQ,3)
+    round(thirdQ,3)
     corrMatrix = df.corr() # Korelaciona matrica
 
     corrArr = []
     for value in corrMatrix[df.columns[colIndex]]:
-        corrArr.append(value)
+        corrArr.append(round(value,3))
 
     return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
                 "firstQ": firstQ, "thirdQ": thirdQ, "corrMatrix": {colIndex: corrArr}}
