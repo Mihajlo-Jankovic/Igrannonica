@@ -341,36 +341,27 @@ rowsNum: number;
 
   selectedID(id : number){
     id = id + (this.page - 1)*this.selectedRow
-    console.log("edit" + id);
     this.selectedRows.push(id);
   }
 
-  deleteRows()
+  async deleteRows()
   {
-    console.log(this.selectedRows)
-      this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
+      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
         {
-          if(err)
-            console.log(err);
+          this.reset()
+          this.showTable(this.selectedType, this.selectedRow, this.page);
         });
 
-    this.reset()
-    this.showTable(this.selectedType, this.selectedRow, this.page);
   }
 
-  editCell(id : number, value : any, columnName : string)
+  async editCell(id : number, value : any, columnName : string)
   {
     id = id + (this.page - 1)*this.selectedRow;
-    console.log(this.cookie.get('filename') + "-" + id + " - " + value + " - " + columnName)
 
-    this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
-      
-      if(err)
-      console.log(err);
+    await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
+      this.reset()
+      this.showTable(this.selectedType, this.selectedRow, this.page);
     })
-
-    this.reset()
-    this.showTable(this.selectedType, this.selectedRow, this.page);
   }
 
 }
