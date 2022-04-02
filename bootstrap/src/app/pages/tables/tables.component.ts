@@ -350,6 +350,8 @@ rowsNum: number;
         {
           this.reset()
           this.showTable(this.selectedType, this.selectedRow, this.page);
+          this.resetStatistic();
+          this.showStatistics(this.selectedCol);
         });
 
   }
@@ -361,6 +363,8 @@ rowsNum: number;
     await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
       this.reset()
       this.showTable(this.selectedType, this.selectedRow, this.page);
+      this.resetStatistic();
+      this.showStatistics(this.selectedCol);
     })
   }
 
