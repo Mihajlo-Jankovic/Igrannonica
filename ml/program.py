@@ -236,6 +236,10 @@ def paging(df,rowNum,pageNum):
 def filterCSV(path, rowNum, dataType, pageNum):
     df = openCSV(path)
     
+    numOfPages = numberOfPages(df,rowNum)
+
+    df = paging(df,rowNum,pageNum)
+
     if(dataType == 'not null'):
         df = df.dropna()
 
@@ -243,9 +247,7 @@ def filterCSV(path, rowNum, dataType, pageNum):
         na_free = df.dropna()
         df = df[~df.index.isin(na_free.index)]
 
-    numOfPages = numberOfPages(df,rowNum)
-
-    df = paging(df,rowNum,pageNum)
+    
 
     return [df,numOfPages]
 
