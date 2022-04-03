@@ -50,14 +50,14 @@ def openCSV(path):
         header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
     if(header): 
-        df = pd.read_csv(path, index_col = 0, engine = 'python') 
+        df = pd.read_csv(path, index_col = None, engine = 'python') 
 
         #df.columns = [col.lower() for col in df]
         #df.columns = [col.strip('-$%') for col in df]
         #df.columns = [col.strip() for col in df]
         #df.columns = [col.replace(' ','_') for col in df]
     else: 
-        df = pd.read_csv(path, header = None, engine = 'python') 
+        df = pd.read_csv(path, index_col = None, header = None, engine = 'python') 
 
     return df
 
