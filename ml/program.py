@@ -7,42 +7,9 @@ from sklearn.preprocessing import LabelEncoder
 import category_encoders as ce
 import urllib
 
-'''
-(X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
-X_train.shape, y_train.shape, X_test.shape, y_test.shape
+path = 'csv\movies.csv'
 
-X_train = X_train / 255
-X_test = X_test / 255
-'''
-
-#tf.enable_eager_execution()
-
-#defaults = [tf.int32] * 55
-#dataset = tf.contrib.data.CsvDataset(path, defaults)
-
-'''
-tmp = [21,22,-108,31,-1,32,34,31]
-dataset = tf.data.Dataset.from_tensor_slices(tmp)
-
-print()
-print()
-print()
-print(dataset)
-
-for i in dataset:
-    print(i)
-'''
-
-
-'''
-with open(path,'r') as infile:
-    reader = csv.reader(infile, delimiter=',')
-    header = next(reader)
-
-    for row in reader:
-        print(row[0])
-'''
-
+# Proveravanje broja stranica
 def numberOfPages(df,rowNum):
     numOfPages = len(df)
     
@@ -77,25 +44,24 @@ def statistics(df,colIndex):
     return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
                 "firstQ": firstQ, "thirdQ": thirdQ, "corrMatrix": {colIndex: corrArr}}
 
-
-path = 'csv\movies.csv'
-
+# Citanje CSV fajla
 def openCSV(path):
     with urllib.request.urlopen(path) as f: 
         header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
     if(header): 
-        df = pd.read_csv(path, index_col = 0) 
+        df = pd.read_csv(path, index_col = 0, engine = 'python') 
 
         #df.columns = [col.lower() for col in df]
         #df.columns = [col.strip('-$%') for col in df]
         #df.columns = [col.strip() for col in df]
         #df.columns = [col.replace(' ','_') for col in df]
     else: 
-        df = pd.read_csv(path, header = None) 
+        df = pd.read_csv(path, header = None, engine = 'python') 
 
     return df
 
+# Pravljenje modela za treniranje
 def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, problemType, outputs, lossFunction, metric):
     model = tf.keras.Sequential()
     # Namestanje regularizera
@@ -251,6 +217,7 @@ def filterCSV(path, rowNum, dataType, pageNum):
 
     return [df,numOfPages]
 
+# Odredjivanje numerickih kolona
 def numericValues(path):
     colList = []
     indexList = []
@@ -264,11 +231,13 @@ def numericValues(path):
 
     return {'index': indexList, 'col': colList}
 
+# Izmena reda u CSV fajlu
 def editCell(df, rowNum, colName, value):
     df.at[rowNum,colName] = value
 
     return df
 
+#Brisanje reda iz CSV fajl-a
 def deleteRow(df,rowNum):
     df.drop(rowNum, axis = 0, inplace=True)
     return df
