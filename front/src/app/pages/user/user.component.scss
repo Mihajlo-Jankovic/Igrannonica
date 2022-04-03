@@ -1,0 +1,24 @@
+.container {
+    height: auto;
+    max-width: none;
+    min-width: 0px;
+    flex: auto;
+    position: relative;
+    border: 1px solid #7d3c8b;
+    min-height: 30px;
+    overflow: hidden;
+    //border-radius: 3px;
+}
+
+.b {
+    background-color: #7d3c8b;
+    color: #ffff;
+}
+
+i {
+    color: #ffff;
+}
+
+i:hover {
+    color: #7d3c8b;
+}
