@@ -8,12 +8,14 @@ using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Igrannonica.Services.UserService;
+using Microsoft.AspNetCore.SignalR;
+using Igrannonica.Hubs;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -84,6 +86,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseCors(myAllowSpecificOrigins);
+
+
+
+
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -94,5 +100,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
