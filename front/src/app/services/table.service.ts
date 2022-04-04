@@ -15,4 +15,14 @@ export class TableService {
   getStatistics(filename: string, colIndex: number):Observable<any> {
     return this.http.post("https://localhost:7219/api/PythonComm/getStatistics",{"FileName" : filename, "ColIndex": colIndex});
   }
+
+  deleteRows(filename:string, rownum : number[])
+  {
+    return this.http.post("https://localhost:7219/api/Csv/deletefilerow", {"fileName" : filename, "rowNumber" : rownum});
+  }
+
+  editCell(fileName: string, rowNumber: number, columnName: string,value: string)
+  {
+    return this.http.post("https://localhost:7219/api/Csv/updatefilerow" , {"fileName" : fileName, "rowNumber": rowNumber, "columnName": columnName,"value": value});
+  }
 }

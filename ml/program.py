@@ -50,14 +50,14 @@ def openCSV(path):
         header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
     if(header): 
-        df = pd.read_csv(path, index_col = None, engine = 'python') 
+        df = pd.read_csv(path, index_col = False, engine = 'python') 
 
         #df.columns = [col.lower() for col in df]
         #df.columns = [col.strip('-$%') for col in df]
         #df.columns = [col.strip() for col in df]
         #df.columns = [col.replace(' ','_') for col in df]
     else: 
-        df = pd.read_csv(path, index_col = None, header = None, engine = 'python') 
+        df = pd.read_csv(path, index_col = False, header = None, engine = 'python') 
 
     return df
 
@@ -195,7 +195,7 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
     return (X_train, X_test, y_train, y_test)
 
 def paging(df,rowNum,pageNum):
-    row = rowNum * (pageNum - 1) + 1    
+    row = rowNum * (pageNum - 1)   
     return df.loc[np.r_[row:row+rowNum], :]
 
 # Filtriranje CSV fajlova prema parametrima klijenta
@@ -233,6 +233,7 @@ def numericValues(path):
 
 # Izmena reda u CSV fajlu
 def editCell(df, rowNum, colName, value):
+    print(rowNum)
     df.at[rowNum,colName] = value
 
     return df
@@ -240,6 +241,7 @@ def editCell(df, rowNum, colName, value):
 #Brisanje reda iz CSV fajl-a
 def deleteRow(df,rowNum):
     df.drop(rowNum, axis = 0, inplace=True)
+
     return df
 
 #df = pd.read_csv(path, index_col = 0, nrows = 10) 

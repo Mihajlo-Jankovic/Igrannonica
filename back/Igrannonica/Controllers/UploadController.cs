@@ -64,9 +64,10 @@ namespace Igrannonica.Controllers
             file.IsPublic = true;
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
-            EncryptedFileNameDTO encryptedFileName = new EncryptedFileNameDTO();
-            encryptedFileName.filename = AesOperation.EncryptString(_configuration.GetSection("AppSettings:Key").Value, RandomFileName);
-            return Ok(encryptedFileName);
+            return Ok(new
+            {
+                randomFileName = RandomFileName
+            }) ;
 
         }
 

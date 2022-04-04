@@ -129,7 +129,7 @@
                             </select>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" style="padding-left: 2rem;">
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" style="padding-left: 2rem;" (click)="deleteRows()" >
                               <i class="tim-icons icon-trash-simple"> </i>
                             </button>
                             <button class=" btn btn-link page" style="max-width: 42px; padding-left: 0;" (click)="lastPage()">
@@ -175,11 +175,11 @@
                                 <tr *ngFor="let item of rowLines[0]; let i = index">
                                     <td>
                                         <div style="position: relative; top: 5px">
-                                            <input type="checkbox" id="{{ 'check' + i }}">
+                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID(i)">
                                             <label for="{{ 'check' + i }}" class="check-box"></label>
                                         </div>
                                     </td>
-                                    <td *ngFor="let itemm of headingLines[0]; let j = index" class="field"><input type="text" value="{{item[j]}}" class="table-td-input"></td>
+                                    <td *ngFor="let itemm of headingLines[0]; let j = index" class="field"><input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(i,$event.target.value,itemm)"></td>
                                 </tr>
                             </tbody>
                         </table>

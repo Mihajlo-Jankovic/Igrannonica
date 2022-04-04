@@ -54,11 +54,11 @@ def edit_cell():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
 
-        df = program.openCSV(PATH + json['FileName'])
+        df = program.openCSV(PATH + json['fileName'])
         df = program.editCell(df,int(json['rowNumber']), json['columnName'], json['value'])
 
         file = io.BytesIO()
-        df.to_csv(file, mode='b')
+        df.to_csv(file, mode='b', index = False)
         file.seek(0)
 
         return send_file(file, download_name=json['fileName'])
@@ -73,11 +73,11 @@ def delete_row():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
 
-        df = program.openCSV(PATH + json['FileName'])
+        df = program.openCSV(PATH + json['fileName'])
         df = program.deleteRow(df,json['rowNumber'])
 
         file = io.BytesIO()
-        df.to_csv(file, mode='b')
+        df.to_csv(file, mode='b', index = False)
         file.seek(0)
 
         return send_file(file, download_name=json['fileName'])

@@ -89,7 +89,6 @@ export class TablesComponent {
 
   showTable(type : string, rows : number, page : number)
   {
-    console.log("ee");
     let filename = this.cookie.get('filename');
     this.tableService.getAll(filename,type, rows, page).subscribe(
       (response) => {
@@ -400,4 +399,36 @@ rowsNum: number;
     this.checks[id] = !this.checks[id];
     this.checked = id;
   }
+  selectedRows : Array<number> = [];
+
+  selectedID(id : number){
+    id = id + (this.page - 1)*this.selectedRow
+    this.selectedRows.push(id);
+  }
+
+  async deleteRows()
+  {
+      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
+        {
+          this.reset()
+          this.showTable(this.selectedType, this.selectedRow, this.page);
+          this.resetStatistic();
+          this.showStatistics(this.selectedCol);
+          this.selectedRows = [];
+        });
+
+  }
+
+  async editCell(id : number, value : any, columnName : string)
+  {
+    id = id + (this.page - 1)*this.selectedRow;
+
+    await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
+      this.reset()
+      this.showTable(this.selectedType, this.selectedRow, this.page);
+      this.resetStatistic();
+      this.showStatistics(this.selectedCol);
+    })
+  }
+
 }
