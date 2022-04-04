@@ -1,44 +1,60 @@
-import { Component, ModuleWithProviders, NgModule } from '@angular/core';
-import { Router, RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegistrationComponent } from './components/registration/registration.component';
-import { UploadComponent } from './components/upload/upload.component';
-import { AuthGuardService } from './services/auth-guard/auth-guard.service';
-import { LoginService } from './services/login.service';
-import { TableComponent } from './components/table/table.component';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { BrowserModule } from "@angular/platform-browser";
+import { Routes, RouterModule } from "@angular/router";
+
+import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
+import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
+import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
 
 const routes: Routes = [
   {
-    path: 'home',
-    component: HomeComponent,
-    canActivate: [AuthGuardService]
+    path: "",
+    redirectTo: "upload",
+    pathMatch: "full"
   },
   {
-    path: 'registration',
-    component: RegistrationComponent
-  },
-  
-  {
-    path: 'login',
-    component: LoginComponent
-  },
-  {
-    path: 'upload',
-    component: UploadComponent
+    path: "",
+    component: AdminLayoutComponent,
+    children: [
+      {
+        path: "",
+        loadChildren: () => import ("./layouts/admin-layout/admin-layout.module").then(m => m.AdminLayoutModule)
+      }
+    ]
   },
   {
-    path: 'table',
-    component: TableComponent
+    path: "",
+    component: LoginLayoutComponent,
+    children: [
+      {
+        path: "",
+        loadChildren: () => import ("./layouts/login-layout/login-layout.module").then(m => m.LoginLayoutModule)
+      }
+    ]
+  },
+  {
+    path: "",
+    component: RegistrationLayoutComponent,
+    children: [
+      {
+        path: "",
+        loadChildren: () => import ("./layouts/registration-layout/registration-layout.module").then(m => m.RegistrationLayoutModule)
+      }
+    ]
+  },
+  {
+    path: "**",
+    redirectTo: "upload"
   }
-
-
 ];
 
-
-
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    RouterModule.forRoot(routes)
+  ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
