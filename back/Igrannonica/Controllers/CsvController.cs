@@ -24,7 +24,7 @@ namespace Igrannonica.Controllers
         }
 
         [DisableRequestSizeLimit]
-        [HttpPost("updatefilecallPOST")]
+        [HttpPost("updatefilerow")]
         public async Task<IActionResult> Edit(CsvEditRowDTO csv)
         {
 
@@ -32,7 +32,7 @@ namespace Igrannonica.Controllers
             if (file == null)
                 return BadRequest("no file with that name");*/
 
-            var endpoint = new Uri("http://127.0.0.1:5000/editcellPOST");
+            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var fileName = csv.fileName;
@@ -78,5 +78,31 @@ namespace Igrannonica.Controllers
             return Ok();
         }
 
+        [DisableRequestSizeLimit]
+        [HttpPost("deletefilerow")]
+        public async Task<IActionResult> Delete(CsvDeleteRowDTO csv)
+        {
+
+            /*Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
+            if (file == null)
+                return BadRequest("no file with that name");*/
+
+            var endpoint = new Uri("http://127.0.0.1:5000/deleterow");
+            var folderName = Path.Combine("Resources", "CSVFiles");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var fileName = csv.fileName;
+            var fullPath = Path.Combine(pathToSave, fileName);
+            HttpClient client = new HttpClient();
+            var csvJson = JsonConvert.SerializeObject(csv);
+            var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
+            using (var fs = new FileStream(
+                fullPath,
+                FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                await response.Content.CopyToAsync(fs);
+            }
+            return Ok();
+
+        }
     }
 }
