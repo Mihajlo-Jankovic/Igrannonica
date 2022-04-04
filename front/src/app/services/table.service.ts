@@ -18,7 +18,6 @@ export class TableService {
 
   deleteRows(filename:string, rownum : number[])
   {
-    console.log("iz servisa " + rownum)
     return this.http.post("https://localhost:7219/api/Csv/deletefilerow", {"fileName" : filename, "rowNumber" : rownum});
   }
 

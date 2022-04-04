@@ -160,7 +160,7 @@
                                             <label for="{{ 'check' + i }}" class="check-box"></label>
                                         </div>
                                     </td>
-                                    <td *ngFor="let itemm of headingLines[0]; let j = index" class="field"><input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(j,$event.target.value,itemm)"></td>
+                                    <td *ngFor="let itemm of headingLines[0]; let j = index" class="field"><input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(i,$event.target.value,itemm)"></td>
                                 </tr>
                             </tbody>
                         </table>
