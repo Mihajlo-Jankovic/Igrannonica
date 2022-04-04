@@ -58,7 +58,7 @@ def edit_cell():
         df = program.editCell(df,int(json['rowNumber']), json['columnName'], json['value'])
 
         file = io.BytesIO()
-        df.to_csv(file, mode='b')
+        df.to_csv(file, mode='b', index = False)
         file.seek(0)
 
         return send_file(file, download_name=json['fileName'])
@@ -77,11 +77,23 @@ def delete_row():
         df = program.deleteRow(df,json['rowNumber'])
 
         file = io.BytesIO()
-        df.to_csv(file, mode='b')
+        df.to_csv(file, mode='b', index = False)
         file.seek(0)
 
         return send_file(file, download_name=json['fileName'])
         
+    else:
+        return content_type
+
+@app.route('/startTraining', methods=['POST'])
+def startTraining():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json; charset=utf-8'):
+        json = request.json
+
+        modelHistory = program.startTraining(json['fileName'], json['inputList'], json['output'], json['encodingType'], json['ratio'], json['numLayers'], json['layerList'], json['activationFunction'], json['regularization'], json['regularizationRate'], json['optimizer'], json['learningRate'], json['problemType'], json['lossFunction'], json['metrics'], json['numEpochs'])
+        return modelHistory
+    
     else:
         return content_type
 
