@@ -1,3 +1,5 @@
+<style>
+</style>
 <div class=" content">
     <div class=" row">
         <div class=" col-md-8">
@@ -6,17 +8,75 @@
                     <h3 class="card-title">Projects</h3>
                 </div>
                 <div class=" card-body">
-                    <div class=" card-body container b">
-                        File Name
+                    <div class=" container b">
+                        Project Name
                     </div>
-                    <div class=" card-body container">
+                    <div class=" container">
                         <div style="min-height: 40px;">
                             <div style="position: relative; float: left;"><h5>movies.csv</h5></div>
                             <div *ngIf="!clcDiv" style="position: relative; float: right;" (click)="openDiv()"><i class="tim-icons icon-minimal-down"></i></div>
                             <div *ngIf="clcDiv" style="position: relative; float: right;" (click)="openDiv()"><i class="tim-icons icon-minimal-up"></i></div>
                         </div>
-                        <div *ngIf="clcDiv">
-                            <div>Rezultat treniranja</div>
+                        <div *ngIf="clcDiv" class="box">
+                            <div class="hyperparameter">
+                                <h6>File name</h6>
+                                <input type="text" class="dropdown" value="movies.csv" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Inputs</h6>
+                                <select class="dropdown">
+                                    <option class="option">Ulaz1</option>
+                                </select>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Output</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Problem type</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Encoding type</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Optimizer</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Regularization</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Loss Function</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Ratio of training</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Activation function</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Learning rate</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Regularization rate</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Number of epochc</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Metrics</h6>
+                                <select class="dropdown">
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
