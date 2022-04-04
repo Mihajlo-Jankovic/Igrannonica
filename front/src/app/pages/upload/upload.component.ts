@@ -111,7 +111,9 @@ export class UploadComponent implements OnInit {
         let options = { headers: headers };
 
         this.http.post<string>('https://localhost:7219/api/FileUpload', formData, options).subscribe(name => {
-          this.cookie.set("filename", file.name);
+          let JSONname: string = JSON.stringify(name);
+          let StringName = JSON.parse(JSONname).randomFileName;
+         this.cookie.set("filename", StringName);
         })
       }
     }

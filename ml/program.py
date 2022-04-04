@@ -33,8 +33,8 @@ def statistics(df,colIndex):
     avg = round(df[col].mean(), 3) # Srednja vrednost
     med = round(df[col].median(), 3) # Mediana
     firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
-    round(firstQ,3)
-    round(thirdQ,3)
+    firstQ = round(firstQ,3)
+    thirdQ = round(thirdQ,3)
     corrMatrix = df.corr() # Korelaciona matrica
 
     corrArr = []
