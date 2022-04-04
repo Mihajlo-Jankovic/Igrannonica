@@ -352,6 +352,7 @@ rowsNum: number;
           this.showTable(this.selectedType, this.selectedRow, this.page);
           this.resetStatistic();
           this.showStatistics(this.selectedCol);
+          this.selectedRows = [];
         });
 
   }
