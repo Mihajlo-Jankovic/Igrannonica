@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
   public val_label: string = "val_loss";
   public myChartData;
   public buttons: any = [];
+  public ngbTooltip : any;
 
   public problemType: string = "Regression";
   public encodingType: string = "label";
@@ -337,5 +338,26 @@ export class DashboardComponent implements OnInit {
     this.myChartData.data.datasets[1].label = this.val_label;
     this.myChartData.data.labels = this.chart_labels;
     this.myChartData.update();
+  }
+
+  showTooltip(name)
+  {
+    if(name == "mse")
+    this.ngbTooltip = "Mean Squared Error";
+    else if(name == "mae")
+    this.ngbTooltip = "Mean Absolute Error";
+    else if(name == "mape")
+    this.ngbTooltip = "Mean Absolute Percentage Error";
+    else if(name == "loss")
+    this.ngbTooltip = "Loss Function";
+    else if(name == "cosine")
+    this.ngbTooltip = "Cosine Proximity";
+    else if(name == "logcosh")
+    this.ngbTooltip = "Log Cosh Error";
+    else if(name == "msle")
+    this.ngbTooltip = "Mean Squared Logarithmic Error";
+
+    return this.ngbTooltip;
+     
   }
 }
