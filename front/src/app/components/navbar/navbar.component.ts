@@ -49,16 +49,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   }
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
-   updateColor = () => {
-   var navbar = document.getElementsByClassName('navbar')[0];
-     if (window.innerWidth < 993 && !this.isCollapsed) {
-       navbar.classList.add('bg-darkslategrey');
-       navbar.classList.remove('navbar-transparent');
-     } else {
-       navbar.classList.remove('bg-darkslategrey');
-       navbar.classList.add('navbar-transparent');
-     }
-   };
+  updateColor = () => {
+    var navbar = document.getElementsByClassName('navbar')[0];
+    if (window.innerWidth < 993 && !this.isCollapsed) {
+      navbar.classList.add('bg-darkslategrey');
+      navbar.classList.remove('navbar-transparent');
+    } else {
+      navbar.classList.remove('bg-darkslategrey');
+      navbar.classList.add('navbar-transparent');
+    }
+  };
   ngOnInit() {
     this.loggedUser = this.loginService.isAuthenticated();
     if(this.loggedUser)
@@ -216,6 +216,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy(){
-     window.removeEventListener("resize", this.updateColor);
+    window.removeEventListener("resize", this.updateColor);
   }
 }
