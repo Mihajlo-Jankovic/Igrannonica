@@ -52,10 +52,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
    updateColor = () => {
    var navbar = document.getElementsByClassName('navbar')[0];
      if (window.innerWidth < 993 && !this.isCollapsed) {
-       navbar.classList.add('bg-white');
+       navbar.classList.add('bg-darkslategrey');
        navbar.classList.remove('navbar-transparent');
      } else {
-       navbar.classList.remove('bg-white');
+       navbar.classList.remove('bg-darkslategrey');
        navbar.classList.add('navbar-transparent');
      }
    };
@@ -85,10 +85,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const navbar = document.getElementsByTagName("nav")[0];
     if (!this.isCollapsed) {
       navbar.classList.remove("navbar-transparent");
-      navbar.classList.add("bg-white");
+      navbar.classList.add("bg-darkslategrey");
     } else {
       navbar.classList.add("navbar-transparent");
-      navbar.classList.remove("bg-white");
+      navbar.classList.remove("bg-darkslategrey");
     }
   }
 
