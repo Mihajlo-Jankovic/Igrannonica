@@ -107,7 +107,6 @@ export class DashboardComponent implements OnInit {
         {item_id: "msle", item_text: 'Mean Squared Logarithmic Error'},
         {item_id: "mae", item_text: 'Mean Absolute Error'},
         {item_id: "mape", item_text: 'Mean Absolute Percentage Error'},
-        {item_id: "cosine", item_text: 'Cosine Proximity'},
         {item_id: "logcosh", item_text: 'Log Cosh Error'}
       ];
       this.selectedItems = this.dropdownList;
@@ -138,26 +137,6 @@ export class DashboardComponent implements OnInit {
       itemsShowLimit: 6,
       allowSearchFilter: false
     };
-  }
-
-  proba(){
-    this.training = true;
-    this.http.get("https://localhost:7219/api/PythonComm/testiranje").subscribe(
-      (response) => {
-        this.trained = true;
-        this.training = false;
-        this.modelHistory = response;
-        this.buttons = Object.keys(this.modelHistory);
-        this.buttons.splice(this.buttons.length/2);
-        this.data = this.modelHistory['loss'];
-        this.val_data = this.modelHistory['val_loss'];
-        this.chart_labels = [];
-        for (let i = 0; i < this.data.length; i++) {
-          this.chart_labels[i] = i + 1;
-        }
-        this.updateOptions();
-      }
-    )
   }
 
   startTraining() {

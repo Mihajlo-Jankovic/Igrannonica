@@ -1,11 +1,21 @@
 .hyperparameter {
-    width: 18.975%;
+    width: 20%;
+    padding: 1rem;
     height: 80px;
     display: block;
     float: left;
     flex: auto;
-    margin-left: 1em;
-    margin-top: 1em;
+    margin-bottom: 0.5rem;
+}
+
+.hyperparameterMetrics {
+    width: 100%;
+    padding: 1rem;
+    height: 80px;
+    display: block;
+    float: left;
+    flex: auto;
+    margin-bottom: 0.5rem;
 }
 
 .train {
@@ -190,4 +200,28 @@ $spin-duration: 1s;
     border: .25rem solid $off-white;
     border-top-color: $white;
     animation: spin $spin-duration infinite linear;
+}
+
+@media(max-width: 1366px) {
+    .hyperparameter {
+        width: 25%;
+    }
+}
+
+@media(max-width: 1024px) {
+    .hyperparameter {
+        width: 33.3%;
+    }
+}
+
+@media(max-width: 768px) {
+    .hyperparameter {
+        width: 50%;
+    }
+}
+
+@media(max-width: 528px) {
+    .hyperparameter {
+        width: 100%;
+    }
 }

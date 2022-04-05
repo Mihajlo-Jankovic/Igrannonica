@@ -117,7 +117,7 @@
                         <h6>Number of Epochs</h6>
                         <input class="dropdown" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs">
                     </div>
-                    <div class="hyperparameter" style="width : 98.3%;">
+                    <div class="hyperparameterMetrics">
                         <h6>Metrics</h6>
                         <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
                         </ng-multiselect-dropdown>
