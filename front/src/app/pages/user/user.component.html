@@ -1,5 +1,3 @@
-<style>
-</style>
 <div class=" content">
     <div class=" row">
         <div class=" col-md-8">
@@ -11,28 +9,29 @@
                     <div class=" container b">
                         Project Name
                     </div>
-                    <div class=" container">
-                        <div style="min-height: 40px;">
-                            <div style="position: relative; float: left;"><h5>movies.csv</h5></div>
-                            <div *ngIf="!clcDiv" style="position: relative; float: right;" (click)="openDiv()"><i class="tim-icons icon-minimal-down"></i></div>
-                            <div *ngIf="clcDiv" style="position: relative; float: right;" (click)="openDiv()"><i class="tim-icons icon-minimal-up"></i></div>
+                    <div class=" container" *ngFor="let user of niz; index as i">
+                        <div style="min-height: 20px;">
+                            <div style="position: relative; float: left; margin-top: 15px;"><h5>Eksperiment1</h5></div>
+                            <div *ngIf="!clcDiv[i]" style="position: relative; float: right; margin-top: 15px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-down"></i></div>
+                            <div *ngIf="clcDiv[i]" style="position: relative; float: right; margin-top: 15px;"  (click)="openDiv(i)"><i class="tim-icons icon-minimal-up"></i></div>
                         </div>
-                        <div *ngIf="clcDiv" class="box">
-                            <div class="hyperparameter">
+                        <div *ngIf="clcDiv[i]" class="box" style="margin-top: 30px;">
+                            <div class="parameter" style="margin-left: 0em;">
                                 <h6>File name</h6>
                                 <input type="text" class="dropdown" value="movies.csv" disabled>
                             </div>
-                            <div class="hyperparameter">
+                            <div class="parameter" style="margin-left: 0em; clear: both;">
                                 <h6>Inputs</h6>
                                 <select class="dropdown">
                                     <option class="option">Ulaz1</option>
                                 </select>
                             </div>
-                            <div class="hyperparameter">
+                            <div class="parameter">
                                 <h6>Output</h6>
                                 <input type="text" class="dropdown" disabled>
                             </div>
-                            <div class="hyperparameter">
+                            <div class="titleDiv"><h4>Hyperparameters</h4></div>
+                            <div class="hyperparameter" style="clear: both;">
                                 <h6>Problem type</h6>
                                 <input type="text" class="dropdown" disabled>
                             </div>
@@ -76,6 +75,14 @@
                                 <h6>Metrics</h6>
                                 <select class="dropdown">
                                 </select>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Number of layers</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="hyperparameter">
+                                <h6>Number of neurons</h6>
+                                <input type="text" class="dropdown" disabled>
                             </div>
                         </div>
                     </div>

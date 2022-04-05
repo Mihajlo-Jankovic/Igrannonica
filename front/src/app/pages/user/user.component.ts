@@ -24,7 +24,6 @@ export class UserComponent implements OnInit {
     return sessionStorage.getItem('username');
   }
 
-
   constructor(private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
     this.username = this.getUsername();
     this.messageEditProfile = "";
@@ -63,14 +62,17 @@ export class UserComponent implements OnInit {
     }
   }
   
-  clcDiv: boolean = false;
+  niz: any= [1, 2, 3];
+  clcDiv: any = [false, false, false];
 
-  openDiv() {
-    if(this.clcDiv == false) {
-      this.clcDiv = true;
+  openDiv(index1:number) {
+    
+    if(this.clcDiv[index1] == false) {
+      this.clcDiv[index1] = true;
     }
     else {
-      this.clcDiv = false;
+      this.clcDiv[index1] = false;
     }
   }
+
 }

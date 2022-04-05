@@ -23,6 +23,16 @@ i:hover {
     color: #7d3c8b;
 }
 
+.parameter {
+    width: auto;
+    height: 80px;
+    display: block;
+    float: left;
+    flex: auto;
+    margin-left: 1em;
+    margin-top: 1em;
+}
+
 .hyperparameter {
     width: auto;
     height: 80px;
@@ -70,4 +80,9 @@ i:hover {
 
 h6 {
     text-align: left;
+}
+
+.titleDiv {
+    clear: both;
+    margin-top: 2em;
 }
