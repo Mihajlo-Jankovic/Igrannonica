@@ -225,3 +225,14 @@ $spin-duration: 1s;
         width: 100%;
     }
 }
+
+.experimentName {
+    float: left;
+    margin: 5px 0 0 30px;
+    background: transparent;
+    border: 3px solid #7d3c8b;
+    border-radius: 3px;
+    height: 35px;
+    width: 250px;
+    color: white;
+}

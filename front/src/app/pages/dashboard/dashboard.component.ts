@@ -33,8 +33,9 @@ export class DashboardComponent implements OnInit {
   public regularizationRate: number = 0;
   public lossFunction: string;
   public metrics: any = [];
-  public epochs: number = 1;
+  public epochs: number = 10;
   public range: number = 50;
+  public experimentName: string = "";
 
   public modelHistory: any;
   public trained: boolean = false;
@@ -174,6 +175,46 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  saveExperiment() {
+    let fileName = this.cookieService.get('filename');
+    let inputList = JSON.parse(sessionStorage.getItem('inputList'));
+    let output = sessionStorage.getItem('output');
+    let layerList = [];
+    for (let i = 0; i < this.layersLabel; i++){
+      layerList[i] = this.neuronsList[i];
+    }
+    let metrics = [];
+    for (let i = 0; i < this.selectedItems.length; i++) {
+      metrics[i] = this.selectedItems[i].item_id;
+    }
+    let today = new Date();
+    let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
+    let experiment = {
+      'name' : this.experimentName,
+      'date' : date,
+      'fileName' : fileName, 
+      'inputList' : inputList, 
+      'output' : output, 
+      'encodingType' : this.encodingType, 
+      'ratio' : 1 - (1 * (this.range/100)), 
+      'numLayers' : this.layersLabel, 
+      'layerList' : layerList, 
+      'activationFunction' : this.activationFunction, 
+      'regularization' : this.regularization, 
+      'regularizationRate' : this.regularizationRate, 
+      'optimizer' : this.optimizer, 
+      'learningRate' : this.learningRate, 
+      'problemType' : this.problemType, 
+      'lossFunction' : this.lossFunction, 
+      'metrics' : metrics, 
+      'numEpochs' : this.epochs
+    }
+    /*
+          SLANJE ZAHTEVA
+    */
+    console.log(experiment);
+  }
+
   changeData(name){
     this.data = this.modelHistory[name];
     this.val_data = this.modelHistory['val_' + name];
@@ -190,7 +231,6 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    
     this.multiselect();
     this.checkProblemType();
     this.layer.id = 1;
