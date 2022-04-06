@@ -50,7 +50,6 @@ export class SidebarComponent implements OnInit {
 
   isUploaded(name)
   {
-    console.log(name)
     if(name == 'Upload')
       return true;
     else{

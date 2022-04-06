@@ -5,6 +5,7 @@ import { CookieService } from "ngx-cookie-service";
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { layer } from "src/app/models/layer.model";
 import { neuron } from "src/app/models/neuron.model";
+import { Configuration } from "src/app/configuration";
 
 @Component({
   selector: "app-dashboard",
@@ -58,6 +59,8 @@ export class DashboardComponent implements OnInit {
   dropdownSettings:IDropdownSettings = {};
 
   constructor(private cookieService:CookieService, private http:HttpClient) { }
+
+  configuration = new Configuration();
 
   get() {
     return sessionStorage.getItem('username');
@@ -143,7 +146,7 @@ export class DashboardComponent implements OnInit {
 
   proba(){
     this.training = true;
-    this.http.get("https://localhost:7219/api/PythonComm/testiranje").subscribe(
+    this.http.get(this.configuration.testiranje).subscribe(
       (response) => {
         this.trained = true;
         this.training = false;
@@ -178,7 +181,7 @@ export class DashboardComponent implements OnInit {
       metrics[i] = this.selectedItems[i].item_id;
     }
     console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
-    this.http.post("https://localhost:7219/api/PythonComm/startTraining",{"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
+    this.http.post(this.configuration.startTesting,{"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
       (response) => {
         this.trained = true;
         this.training = false;
