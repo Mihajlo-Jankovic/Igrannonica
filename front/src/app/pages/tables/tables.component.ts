@@ -87,6 +87,13 @@ export class TablesComponent {
       this.boxPlotFun();
   }
 
+  clearStorage()
+  {
+    sessionStorage.removeItem('csv');
+    sessionStorage.removeItem('numOfPages');
+    sessionStorage.removeItem('numericValues');
+  }
+
   showTable(type : string, rows : number, page : number)
   {
     if(sessionStorage.getItem('csv') != null)
@@ -186,9 +193,7 @@ export class TablesComponent {
  public onSelectedRow(event: any) {
   const value = event.target.value;
   this.selectedRow = value;
-  sessionStorage.removeItem('csv');
-  sessionStorage.removeItem('numOfPages');
-  sessionStorage.removeItem('numericValues');
+  this.clearStorage();
   this.reset();
   this.showTable(this.selectedType, this.selectedRow, this.page);
 }
@@ -228,6 +233,7 @@ rowsNum: number;
 
         sessionStorage.setItem('statistics', JSON.stringify(this.statisticData));
         this.loadStatistics();
+        this.boxPlotFun();
       })
     }
   }
@@ -252,8 +258,6 @@ rowsNum: number;
     for (let i = 0; i < this.statisticData['corrMatrix'][this.selectedCol].length; i++) {
       this.numArray.push(this.statisticData['corrMatrix'][this.selectedCol][i]);
     }
-
-    this.boxPlotFun();
   }
 
   public onSelectedCol(event: any) {
@@ -360,6 +364,7 @@ rowsNum: number;
   nextPage(i: number) {
     if(this.page + i <= this.maxPage){
       this.page += i;
+      this.clearStorage();
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page);
     }
@@ -368,6 +373,7 @@ rowsNum: number;
   previousPage(i : number) {
     if(this.page - i >= 1){
       this.page -= i;
+      this.clearStorage();
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page);
     }
@@ -376,6 +382,7 @@ rowsNum: number;
   firstPage(){
     if(this.page != 1){
       this.page = 1;
+      this.clearStorage();
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page);
     }
@@ -384,6 +391,7 @@ rowsNum: number;
   lastPage(){
     if(this.page != this.maxPage){
       this.page = this.maxPage;
+      this.clearStorage();
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page);
     }
@@ -450,9 +458,7 @@ rowsNum: number;
   {
       await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
         {
-          sessionStorage.removeItem('csv');
-          sessionStorage.removeItem('numOfPages');
-          sessionStorage.removeItem('numericValues');
+          this.clearStorage();
           sessionStorage.removeItem('statistics');
           this.reset()
           this.showTable(this.selectedType, this.selectedRow, this.page);
@@ -468,9 +474,7 @@ rowsNum: number;
     id = id + (this.page - 1)*this.selectedRow;
 
     await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
-      sessionStorage.removeItem('csv');
-      sessionStorage.removeItem('numOfPages');
-      sessionStorage.removeItem('numericValues');
+      this.clearStorage();
       sessionStorage.removeItem('statistics');
       this.reset()
       this.showTable(this.selectedType, this.selectedRow, this.page);
