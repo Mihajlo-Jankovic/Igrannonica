@@ -14,6 +14,9 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Igrannonica.DataTransferObjects;
 using Igrannonica.Services.UserService;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Bson;
 
 namespace Igrannonica.Controllers
 {
@@ -21,6 +24,8 @@ namespace Igrannonica.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly string mongoConnString = "mongodb://localhost:27017";
+
         private User user = new User();
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
@@ -267,6 +272,25 @@ namespace Igrannonica.Controllers
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.id == id);
+        }
+
+        [HttpPost("saveExperiment"), Authorize]
+        public async Task<ActionResult<string>> SaveExperiment(ExperimentDTO experiment)
+        {
+            var username = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == username).FirstOrDefault();
+
+            if (user == null) return BadRequest("JWT is bad!");
+
+            experiment.userId = user.id;
+
+            var client = new MongoClient(mongoConnString);
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<ExperimentDTO>("experiment");
+
+            collection.InsertOne(experiment);    
+
+            return Ok("Success!");
         }
     }
 }
