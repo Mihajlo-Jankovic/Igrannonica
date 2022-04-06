@@ -14,6 +14,7 @@ export class Configuration
     public editUsername : string = this.port + "/api/User/EditUserName";
     public editPassword : string = this.port + "/api/User/EditUserPassword";
     public fileUpload : string = this.port + "/api/FileUpload";
+    public fileUploadUnauthorized = this.port + "/api/FileUpload/unauthorized";
     public testiranje : string = this.port + "/api/PythonComm/testiranje";
     public startTesting : string = this.port + "/api/PythonComm/startTraining";
 }

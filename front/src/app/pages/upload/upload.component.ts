@@ -119,6 +119,13 @@ export class UploadComponent implements OnInit {
          this.cookie.set("filename", StringName);
         })
       }
+      else{
+        this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name=>{
+          let JSONname: string = JSON.stringify(name);
+          let StringName = JSON.parse(JSONname).randomFileName;
+         this.cookie.set("filename", StringName);
+        })
+      }
     }
   }
 
