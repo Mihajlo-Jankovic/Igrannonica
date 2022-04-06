@@ -96,6 +96,11 @@ export class UploadComponent implements OnInit {
     if (files.length === 0)
       return;
 
+      sessionStorage.removeItem('csv');
+      sessionStorage.removeItem('numOfPages');
+      sessionStorage.removeItem('numericValues');
+      sessionStorage.removeItem('statistics');
+
     let file = <File>files[0];
     var fileSize = file.size;
     if (fileSize / 1048576 > 500)

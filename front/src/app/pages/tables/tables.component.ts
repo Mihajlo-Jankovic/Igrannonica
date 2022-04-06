@@ -89,8 +89,18 @@ export class TablesComponent {
 
   showTable(type : string, rows : number, page : number)
   {
-    let filename = this.cookie.get('filename');
-    this.tableService.getAll(filename,type, rows, page).subscribe(
+    if(sessionStorage.getItem('csv') != null)
+    {
+      let dataCSV: any = {};
+      dataCSV = JSON.parse(sessionStorage.getItem('csv'));
+      this.data = dataCSV;
+      this.maxPage=sessionStorage.getItem('numOfPages');
+      this.numericValues = JSON.parse(sessionStorage.getItem('numericValues'));
+      this.loadTable();
+    }
+    else{
+      let filename = this.cookie.get('filename');
+      this.tableService.getAll(filename,type, rows, page).subscribe(
       (response) => {
         this.csv = response;
         //console.log(this.csv);
@@ -99,62 +109,76 @@ export class TablesComponent {
         dataCSV = this.csv['csv'];
         this.data = dataCSV;
 
+        sessionStorage.setItem('csv', JSON.stringify(this.data));
+
         this.maxPage=this.csv['numOfPages'];
-
-        let headersArray: any = [];
-        for (let i = 0; i < this.data['columns'].length; i++) {
-          headersArray.push(this.data['columns'][i]);
-          this.radios[i] = false;
-          this.checks[i] = false;
-        }
-        this.headingLines.push(headersArray);
-
-        let index = [];
-        for (let i = 0; i < this.data['index'].length; i++) {
-          index.push([i]);
-        }
-        this.numberLines.push(index);
-
-        let dataArr = [];
-        for (let i = 0; i < this.data['columns'].length; i++) {
-          dataArr.push([i]);
-        }
-        this.numberData.push(dataArr);
-
-        let rowsArray = [];
-        for (let i = 0; i < this.data['data'].length; i++) {
-          rowsArray.push(this.data['data'][i]);
-        }
-        this.rowLines.push(rowsArray);
+        sessionStorage.setItem('numOfPages', this.maxPage);
 
         //ucitavanje numericValues
         let numerValuesCSV: any = {};
         numerValuesCSV = this.csv['numericValues'];
         this.numericValues = numerValuesCSV;
+        console.log("numeric values " + this.numericValues)
 
-        let numValueIndexArray: any = [];
-        this.numericValuesArray = [];
-        for (let i = 0; i < this.numericValues['col'].length; i++) {
-          numValueIndexArray = [];
-          numValueIndexArray.push(this.numericValues['col'][i]);
-          numValueIndexArray.push(this.numericValues['index'][i]);
-          this.numericValuesArray.push(numValueIndexArray);
-        }
-
-        this.selectedColName = this.numericValuesArray[0][0];
-        this.selectedCol = this.numericValuesArray[0][1];
-        this.selectedColDiv = true;
-   
-        if(this.numericValues['col'].length > 0) {
-          this.showStatisticDiv = true;
-          this.showStatistics(this.selectedCol);
-        }
+        sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
+        this.loadTable();
       })
+    }
+  }
+
+  public loadTable()
+  {
+    let headersArray: any = [];
+    for (let i = 0; i < this.data['columns'].length; i++) {
+      headersArray.push(this.data['columns'][i]);
+      this.radios[i] = false;
+      this.checks[i] = false;
+    }
+    this.headingLines.push(headersArray);
+
+    let index = [];
+    for (let i = 0; i < this.data['index'].length; i++) {
+      index.push([i]);
+    }
+    this.numberLines.push(index);
+
+    let dataArr = [];
+    for (let i = 0; i < this.data['columns'].length; i++) {
+      dataArr.push([i]);
+    }
+    this.numberData.push(dataArr);
+
+    let rowsArray = [];
+    for (let i = 0; i < this.data['data'].length; i++) {
+      rowsArray.push(this.data['data'][i]);
+    }
+    this.rowLines.push(rowsArray);
+
+    let numValueIndexArray: any = [];
+    this.numericValuesArray = [];
+    for (let i = 0; i < this.numericValues['col'].length; i++) {
+      numValueIndexArray = [];
+      numValueIndexArray.push(this.numericValues['col'][i]);
+      numValueIndexArray.push(this.numericValues['index'][i]);
+      this.numericValuesArray.push(numValueIndexArray);
+    }
+
+    this.selectedColName = this.numericValuesArray[0][0];
+    this.selectedCol = this.numericValuesArray[0][1];
+    this.selectedColDiv = true;
+
+    if(this.numericValues['col'].length > 0) {
+      this.showStatisticDiv = true;
+      this.showStatistics(this.selectedCol);
+    }
   }
 
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedType = value;
+    sessionStorage.removeItem('csv');
+    sessionStorage.removeItem('numOfPages');
+    sessionStorage.removeItem('numericValues');
     this.reset();
     this.showTable(this.selectedType, this.selectedRow, this.page);
  }
@@ -162,6 +186,9 @@ export class TablesComponent {
  public onSelectedRow(event: any) {
   const value = event.target.value;
   this.selectedRow = value;
+  sessionStorage.removeItem('csv');
+  sessionStorage.removeItem('numOfPages');
+  sessionStorage.removeItem('numericValues');
   this.reset();
   this.showTable(this.selectedType, this.selectedRow, this.page);
 }
@@ -187,33 +214,46 @@ rowsNum: number;
   
   showStatistics(col : number)
   {
+    if(sessionStorage.getItem('statistics'))
+    {
+      this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
+      this.loadStatistics();
+    }
+    else{
     let filename = this.cookie.get('filename');
     this.tableService.getStatistics(filename, col).subscribe(
       (response) => {
         this.statisticData = response;
         //console.log(this.statisticData);
-        
-        this.mixArray = [];
-        this.rowsNum = this.statisticData['rowsNum'];
-        this.min = this.statisticData['min'];
-        this.mixArray.push(this.min);
-        this.firstQ = this.statisticData['firstQ'];
-        this.mixArray.push(this.firstQ);
-        this.avg = this.statisticData['avg'];
-        this.med = this.statisticData['med'];
-        this.mixArray.push(this.med);
-        this.thirdQ = this.statisticData['thirdQ'];
-        this.mixArray.push(this.thirdQ);
-        this.max = this.statisticData['max'];
-        this.mixArray.push(this.max);
 
-        this.numArray = [];
-        for (let i = 0; i < this.statisticData['corrMatrix'][this.selectedCol].length; i++) {
-          this.numArray.push(this.statisticData['corrMatrix'][this.selectedCol][i]);
-        }
-
-        this.boxPlotFun();
+        sessionStorage.setItem('statistics', JSON.stringify(this.statisticData));
+        this.loadStatistics();
       })
+    }
+  }
+
+  public loadStatistics()
+  {
+    this.mixArray = [];
+    this.rowsNum = this.statisticData['rowsNum'];
+    this.min = this.statisticData['min'];
+    this.mixArray.push(this.min);
+    this.firstQ = this.statisticData['firstQ'];
+    this.mixArray.push(this.firstQ);
+    this.avg = this.statisticData['avg'];
+    this.med = this.statisticData['med'];
+    this.mixArray.push(this.med);
+    this.thirdQ = this.statisticData['thirdQ'];
+    this.mixArray.push(this.thirdQ);
+    this.max = this.statisticData['max'];
+    this.mixArray.push(this.max);
+
+    this.numArray = [];
+    for (let i = 0; i < this.statisticData['corrMatrix'][this.selectedCol].length; i++) {
+      this.numArray.push(this.statisticData['corrMatrix'][this.selectedCol][i]);
+    }
+
+    this.boxPlotFun();
   }
 
   public onSelectedCol(event: any) {
@@ -410,6 +450,10 @@ rowsNum: number;
   {
       await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
         {
+          sessionStorage.removeItem('csv');
+          sessionStorage.removeItem('numOfPages');
+          sessionStorage.removeItem('numericValues');
+          sessionStorage.removeItem('statistics');
           this.reset()
           this.showTable(this.selectedType, this.selectedRow, this.page);
           this.resetStatistic();
@@ -424,6 +468,10 @@ rowsNum: number;
     id = id + (this.page - 1)*this.selectedRow;
 
     await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
+      sessionStorage.removeItem('csv');
+      sessionStorage.removeItem('numOfPages');
+      sessionStorage.removeItem('numericValues');
+      sessionStorage.removeItem('statistics');
       this.reset()
       this.showTable(this.selectedType, this.selectedRow, this.page);
       this.resetStatistic();
