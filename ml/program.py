@@ -37,6 +37,18 @@ def statistics(df,colIndex):
     thirdQ = round(thirdQ,3)
     corrMatrix = df.corr() # Korelaciona matrica
 
+    iqr = thirdQ - firstQ
+
+    lower_bound = firstQ - 1.5 * iqr
+    upper_bound = thirdQ + 1.5 * iqr
+
+    outliers = []
+    for value in df[col]:
+        if(value < lower_bound or value > upper_bound): 
+            outliers.append(value)
+
+    print(outliers)
+
     corrArr = []
     for value in corrMatrix[df.columns[colIndex]]:
         corrArr.append(round(value,3))
@@ -53,7 +65,8 @@ def statistics(df,colIndex):
         valArr.append(tmpArr)
 
     return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
-            "firstQ": firstQ, "thirdQ": thirdQ, "corrMatrix": {colIndex: corrArr},
+            "firstQ": firstQ, "thirdQ": thirdQ, "outliers": outliers, 
+            "corrMatrix": {colIndex: corrArr},
             "fullCorrMatrix": {"columns": colArr, "values": valArr}}
 
 # Citanje CSV fajla
