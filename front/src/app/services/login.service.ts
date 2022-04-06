@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Configuration } from '../configuration';
 
 
 const jwtHelper = new JwtHelperService()
@@ -13,11 +14,11 @@ export class LoginService {
 
   constructor(private http: HttpClient, private cookieService: CookieService) { }
 
-  
+  configuration = new Configuration();
   
   login(username : any, password : any)
   {
-    return this.http.post<string>('https://localhost:7219/api/User/login',
+    return this.http.post<string>(this.configuration.login,
     {
       "username": username,
       "password": password

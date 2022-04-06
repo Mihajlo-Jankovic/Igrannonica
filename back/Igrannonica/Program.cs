@@ -8,6 +8,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Igrannonica.Services.UserService;
+using Igrannonica.Services.FileService;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -94,5 +95,9 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthorization();
 
 app.MapControllers();
+
+FileService fileService = new FileService();
+Thread t1 = new Thread(new ThreadStart(fileService.DeleteAllExpiredFiles));
+t1.Start();
 
 app.Run();

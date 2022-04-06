@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { Configuration } from 'src/app/configuration';
 import { LoginService } from 'src/app/services/login.service';
 import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
@@ -24,6 +25,8 @@ export class UploadComponent implements OnInit {
   publicFilesUnauthorized: any = [];
   privateFiles: any = [];
   allFiles: any = [];
+
+  configuration = new Configuration();
 
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
@@ -93,6 +96,11 @@ export class UploadComponent implements OnInit {
     if (files.length === 0)
       return;
 
+      sessionStorage.removeItem('csv');
+      sessionStorage.removeItem('numOfPages');
+      sessionStorage.removeItem('numericValues');
+      sessionStorage.removeItem('statistics');
+
     let file = <File>files[0];
     var fileSize = file.size;
     if (fileSize / 1048576 > 500)
@@ -110,7 +118,14 @@ export class UploadComponent implements OnInit {
         });
         let options = { headers: headers };
 
-        this.http.post<string>('https://localhost:7219/api/FileUpload', formData, options).subscribe(name => {
+        this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
+          let JSONname: string = JSON.stringify(name);
+          let StringName = JSON.parse(JSONname).randomFileName;
+         this.cookie.set("filename", StringName);
+        })
+      }
+      else{
+        this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name=>{
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
          this.cookie.set("filename", StringName);

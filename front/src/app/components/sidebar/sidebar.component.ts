@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { CookieService } from "ngx-cookie-service";
 
 declare interface RouteInfo {
   path: string;
@@ -35,7 +36,7 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   menuItems: any[];
 
-  constructor() {}
+  constructor(private cookie : CookieService) {}
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
@@ -45,5 +46,16 @@ export class SidebarComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  isUploaded(name)
+  {
+    if(name == 'Upload')
+      return true;
+    else{
+    if(this.cookie.get('filename'))
+      return true;
+    return false;
+    }
   }
 }
