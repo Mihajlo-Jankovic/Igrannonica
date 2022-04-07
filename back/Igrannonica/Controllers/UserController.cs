@@ -148,6 +148,39 @@ namespace Igrannonica.Controllers
             return Ok(token);
         }
 
+        [HttpGet("refreshToken/{jwt}")]
+        public async Task<ActionResult<TokenDTO>> RefreshToken(string jwtString)
+        {
+            var claims = ValidateToken(jwtString);
+            if(claims == null)
+            {
+                return Ok(new { token = "Token not valid" });
+            }
+            var username = claims.FindFirst("Name").Value;
+            User user = _context.User.Where(u => u.username == username).FirstOrDefault();
+            if (user == null)
+            {
+                return Ok(new { token = "Token not valid" });
+            }
+            return Ok(new { token = CreateToken(user) });
+        }
+
+        public static ClaimsPrincipal ValidateToken(string jwtToken)
+        {
+
+            SecurityToken validatedToken;
+            TokenValidationParameters validationParameters = new TokenValidationParameters();
+
+            validationParameters.ValidateLifetime = true;
+
+            validationParameters.IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Secret));
+
+            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
+
+
+            return principal;
+        }
+
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>

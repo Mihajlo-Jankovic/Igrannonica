@@ -85,22 +85,22 @@ namespace Igrannonica.Controllers
             var task = UploadFile(request, fullPath);
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
-            EncryptedFileNameDTO efn = new EncryptedFileNameDTO();
             Models.File file = new();
             file.RandomFileName = RandomFileName;
             file.FileName = task.Result;
             file.IsPublic = false;
             file.UserForeignKey = null;
             //file.SessionID = sessionID;
-            efn.filename = encryptedFileName;
-            return Ok(efn);
+            return Ok(new
+            {
+                randomFileName = RandomFileName
+            });
 
         }
 
         [HttpGet("delete-unauthorized/{filename}")]
-        public IActionResult DeleteFileUnauthorized(EncryptedFileNameDTO efn)
+        public IActionResult DeleteFileUnauthorized(string filename)
         {
-            var filename = AesOperation.DecryptString(_configuration.GetSection("AppSettings:Key").Value, efn.filename);
             var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var fullPath = Path.Combine(pathToSave, filename);
