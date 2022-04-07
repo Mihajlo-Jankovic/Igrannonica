@@ -1,20 +1,22 @@
 <div class=" content">
     <div class=" row">
         <div class=" col-md-8">
-            <div class=" card">
+            <div class=" card" style="min-width:480px;">
                 <div class=" card-header">
                     <h3 class="card-title">My Projects</h3>
                 </div>
                 <div class=" card-body">
-                    <div class=" container b">
+                    <div class=" container b" style="padding-top:4px;">
                         Project Name
                     </div>
 
                     <div class=" container" *ngFor="let user of niz; index as i">
                         <div style="min-height: 20px;">
-                            <div style="position: relative; float: left; margin-top: 15px;"><h5>Eksperiment1</h5></div>
+                            <div style="position: relative; float: left; margin-top: 15px;">
+                                <h5>Eksperiment1</h5>
+                            </div>
                             <div *ngIf="!clcDiv[i]" style="position: relative; float: right; margin-top: 15px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-down"></i></div>
-                            <div *ngIf="clcDiv[i]" style="position: relative; float: right; margin-top: 15px;"  (click)="openDiv(i)"><i class="tim-icons icon-minimal-up"></i></div>
+                            <div *ngIf="clcDiv[i]" style="position: relative; float: right; margin-top: 15px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-up"></i></div>
                         </div>
                         <div *ngIf="clcDiv[i]" class="box" style="margin-top: 30px;">
                             <div class="filenameparameter" style="margin-left: 0em;">
@@ -32,14 +34,16 @@
                             <div class="parameter" style="margin-left: 0em; clear: both;">
                                 <h6>Inputs</h6>
                                 <select class="dropdown">
-                                    <option class="option">Ulaz1</option>
+                                    <option class="option"></option>
                                 </select>
                             </div>
                             <div class="parameter">
                                 <h6>Output</h6>
                                 <input type="text" class="dropdown" disabled>
                             </div>
-                            <div class="titleDiv"><h4>Hyperparameters</h4></div>
+                            <div class="titleDiv">
+                                <h4>Hyperparameters</h4>
+                            </div>
                             <div class="hyperparameter" style="clear: both;">
                                 <h6>Problem type</h6>
                                 <input type="text" class="dropdown" disabled>
@@ -81,11 +85,6 @@
                                 <input type="text" class="dropdown" disabled>
                             </div>
                             <div class="hyperparameter">
-                                <h6>Metrics</h6>
-                                <select class="dropdown">
-                                </select>
-                            </div>
-                            <div class="hyperparameter">
                                 <h6>Number of layers</h6>
                                 <input type="text" class="dropdown" disabled>
                             </div>
@@ -93,7 +92,14 @@
                                 <h6>Number of neurons</h6>
                                 <input type="text" class="dropdown" disabled>
                             </div>
-                            <div class="titleDiv"><h4>Performance</h4></div>
+
+                            <div class="hyperparameter" style="width: 79.5%;">
+                                <h6>Metrics</h6>
+                                <input type="text" class="dropdown" disabled>
+                            </div>
+                            <div class="titleDiv">
+                                <h4>Performance</h4>
+                            </div>
                             <div class="hyperparameter" style="clear: both;">
                                 <h6>logcosh</h6>
                                 <input type="text" class="dropdown" disabled>
