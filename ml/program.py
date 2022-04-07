@@ -24,7 +24,53 @@ def numberOfPages(df,rowNum):
     return numOfPages
 
 # Izracunavanje statistika za odredjenu kolonu iz tabele
-def statistics(df):
+def statistics(df,colIndex):
+    col = df.columns[colIndex]
+
+    rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
+    min = round(float(df[col].min()), 3) # Minimum
+    max = round(float(df[col].max()), 3) # Maksimum
+    avg = round(df[col].mean(), 3) # Srednja vrednost
+    med = round(df[col].median(), 3) # Mediana
+    firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
+    firstQ = round(firstQ,3)
+    thirdQ = round(thirdQ,3)
+    corrMatrix = df.corr() # Korelaciona matrica
+
+    iqr = thirdQ - firstQ
+
+    lower_bound = firstQ - 1.5 * iqr
+    upper_bound = thirdQ + 1.5 * iqr
+
+    outliers = []
+    for value in df[col]:
+        if(value < lower_bound or value > upper_bound): 
+            outliers.append(value)
+
+    print(outliers)
+
+    corrArr = []
+    for value in corrMatrix[df.columns[colIndex]]:
+        corrArr.append(round(value,3))
+
+    colArr = []
+    valArr = []
+    for col in corrMatrix:
+        colArr.append(col)
+
+        tmpArr = []
+        for value in corrMatrix[col]:
+            tmpArr.append(round(value,3))
+        
+        valArr.append(tmpArr)
+
+    return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
+            "firstQ": firstQ, "thirdQ": thirdQ, "outliers": outliers, 
+            "corrMatrix": {colIndex: corrArr},
+            "fullCorrMatrix": {"columns": colArr, "values": valArr}}
+
+
+    '''
     colList = []
     jsonList = []
 
@@ -73,6 +119,7 @@ def statistics(df):
                          "fullCorrMatrix": {"columns": colArr, "values": valArr}})
     
     return { "colList:": colList, "jsonList": jsonList }
+    '''
 
 # Citanje CSV fajla
 def openCSV(path):
