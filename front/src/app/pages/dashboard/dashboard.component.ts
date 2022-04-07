@@ -1,11 +1,14 @@
 import { Component, OnInit} from "@angular/core";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import Chart from 'chart.js';
 import { CookieService } from "ngx-cookie-service";
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { layer } from "src/app/models/layer.model";
 import { neuron } from "src/app/models/neuron.model";
 import { Configuration } from "src/app/configuration";
+import { LoginService } from "src/app/services/login.service";
+import { ToastrService } from "ngx-toastr";
+import { NotificationsService } from "src/app/services/notifications.service";
 
 @Component({
   selector: "app-dashboard",
@@ -59,7 +62,7 @@ export class DashboardComponent implements OnInit {
   selectedItems = [];
   dropdownSettings:IDropdownSettings = {};
 
-  constructor(private cookieService:CookieService, private http:HttpClient) { }
+  constructor(private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
   configuration = new Configuration();
 
@@ -160,7 +163,7 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < this.selectedItems.length; i++) {
       metrics[i] = this.selectedItems[i].item_id;
     }
-    console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
+    //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
     this.http.post(this.configuration.startTesting,{"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
       (response) => {
         this.trained = true;
@@ -180,6 +183,19 @@ export class DashboardComponent implements OnInit {
   }
 
   saveExperiment() {
+    let loggedUser: boolean;
+    let token: string;
+
+    loggedUser = this.loginService.isAuthenticated();
+    if (loggedUser) {
+      token = this.cookieService.get('token');
+    }
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + token
+    });
+    
+    let options = { headers: headers };
+
     let fileName = this.cookieService.get('filename');
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
     let output = sessionStorage.getItem('output');
@@ -194,6 +210,7 @@ export class DashboardComponent implements OnInit {
     let today = new Date();
     let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
     let experiment = {
+      'userId' : 0,
       'name' : this.experimentName,
       'date' : date,
       'fileName' : fileName, 
@@ -211,12 +228,16 @@ export class DashboardComponent implements OnInit {
       'problemType' : this.problemType, 
       'lossFunction' : this.lossFunction, 
       'metrics' : metrics, 
-      'numEpochs' : this.epochs
+      'numEpochs' : +this.epochs
     }
     /*
           SLANJE ZAHTEVA
     */
-    console.log(experiment);
+    this.http.post("https://localhost:7219/api/User/saveExperiment", experiment, options).subscribe(
+      (response) => {
+        this.notify.showNotification("Experiment saved to your profile successfully!");
+      }
+    );
   }
 
   changeData(name){
@@ -380,6 +401,6 @@ export class DashboardComponent implements OnInit {
     this.ngbTooltip = "Mean Squared Logarithmic Error";
 
     return this.ngbTooltip;
-     
+    
   }
 }

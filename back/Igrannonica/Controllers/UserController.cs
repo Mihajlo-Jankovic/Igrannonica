@@ -324,7 +324,7 @@ namespace Igrannonica.Controllers
 
             collection.InsertOne(experiment);    
 
-            return Ok("Success!");
+            return Ok(experiment);
         }
     }
 }
