@@ -25,6 +25,14 @@
     padding: 0px;
 }
 
+.save {
+    width: 300px;
+    height: 35px;
+    float: right;
+    padding: 0px;
+    margin: 0 !important;
+}
+
 h6 {
     text-align: center;
 }
@@ -227,12 +235,29 @@ $spin-duration: 1s;
 }
 
 .experimentName {
-    float: left;
-    margin: 5px 0 0 30px;
+    //margin: 5px 0 0 30px;
     background: transparent;
     border: 3px solid #7d3c8b;
     border-radius: 3px;
     height: 35px;
-    width: 250px;
+    width: 100%;
     color: white;
+}
+
+.expContainer {
+    min-width: 350px;
+    width: 33.3%;
+    height: 67px;
+    margin: 0px;
+    float: left;
+    padding: 1rem 1rem 1rem 1rem;
+}
+
+@media(max-width: 1359px) {
+    .expContainer {
+        width: 100%;
+    }
+    .save {
+        width: 100%;
+    }
 }

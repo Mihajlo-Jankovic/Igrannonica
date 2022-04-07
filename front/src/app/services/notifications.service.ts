@@ -9,7 +9,7 @@ export class NotificationsService {
   constructor(private toastr: ToastrService) { }
 
   showNotification(message : string) {
-    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>' + message + '</b>.', '', {
+    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>' + message + '</b>', '', {
       disableTimeOut: false,
       closeButton: true,
       enableHtml: true,

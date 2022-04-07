@@ -194,10 +194,16 @@
     <div class="row" [hidden]="!trained">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h2 class=" card-title" style="position: relative; float: left; margin-top: 6px;">Save your experiment</h2>
-                    <input type="text" class="experimentName" ngbTooltip="Enter experiment name" [(ngModel)]="experimentName">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="saveExperiment()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>
+                <div class="card-header" style="padding:0px !important;">
+                    <div class="expContainer">
+                        <h2 class=" card-title saveTitle">Save your experiment</h2>
+                    </div>
+                    <div class="expContainer">
+                        <input type="text" class="experimentName" ngbTooltip="Enter experiment name" [(ngModel)]="experimentName">
+                    </div>
+                    <div class="expContainer">
+                        <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveExperiment()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>
+                    </div>
                 </div>
             </div>
         </div>
