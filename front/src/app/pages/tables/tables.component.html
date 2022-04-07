@@ -1,4 +1,25 @@
 <div class=" content">
+    <div class="corrMatrixBody" [hidden]="!opndMatrix">
+    <div class="corrMatrix" style="padding: 0.5%;">
+        <h2 style="float:left">Correlation Matrix</h2>
+        <button class="btn btn-primary btn-lg btn-block mb-3 train" style="float: right;" type="submit" (click)="close()">Close</button>
+        <div class=" table-responsive" id="corr">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of fullCorrColNamesArray; let i = index">
+                        <td>{{item}}</td>
+                        <td *ngFor="let item1 of fullCorrValArray[i]; let j = index">{{item1}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div></div>
     <div class=" row">
         <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card" style="height: 390px;">
@@ -56,11 +77,12 @@
             </div>
         </div>
         <div class=" col-lg-4" *ngIf="showStatisticDiv">
-            <div class=" card" style="height: 390px;">
-                <div class=" card-header">
-                    <h4 class=" card-category" style="color: white;">Correlation Matrix</h4>
-                </div>
-                <div class=" card-body">
+                <div class=" card" style="height: 390px;">
+                    <div class=" card-header">
+                        <h4 class=" card-category" style="color: white;float: left;">Correlation Matrix</h4>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="previewMatrix()">Review</button>
+                    </div>
+                 <div class=" card-body">
                     <div class=" table-responsive" style="height: 300px;" id="corr">
                         <table class=" table">
                             <thead>

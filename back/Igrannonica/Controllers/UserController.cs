@@ -148,7 +148,7 @@ namespace Igrannonica.Controllers
             return Ok(token);
         }
 
-        [HttpGet("refreshToken/{jwt}")]
+        /*[HttpGet("refreshToken/{jwt}")]
         public async Task<ActionResult<TokenDTO>> RefreshToken(string jwtString)
         {
             var claims = ValidateToken(jwtString);
@@ -179,7 +179,7 @@ namespace Igrannonica.Controllers
 
 
             return principal;
-        }
+        }*/
 
         private string CreateToken(User user)
         {

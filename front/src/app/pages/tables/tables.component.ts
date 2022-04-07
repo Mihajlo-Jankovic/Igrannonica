@@ -56,7 +56,13 @@ export class TablesComponent {
     'med': 0,
     'firstQ': 0,
     'thirdQ': 0,
-    'corrMatrix': {}
+    'corrMatrix': {},
+    'fullCorrMatrix': {}
+  }
+
+  fullMatrixData = {
+    'columns': [],
+    'values': []
   }
 
   //data: any = { "columns": ["title", "genre", "description", "director", "actors", "year", "runtime_(minutes)", "rating", "votes", "revenue_(millions)", "metascore"], "index": [1, 2, 3, 4, 5], "data": [["Guardians of the Galaxy", "Action,Adventure,Sci-Fi", "A group of intergalactic criminals are forced to work together to stop a fanatical warrior from taking control of the universe.", "James Gunn", "Chris Pratt, Vin Diesel, Bradley Cooper, Zoe Saldana", 2014, 121, 8.1, 757074, 333.13, 76], ["Prometheus", "Adventure,Mystery,Sci-Fi", "Following clues to the origin of mankind, a team finds a structure on a distant moon, but they soon realize they are not alone.", "Ridley Scott", "Noomi Rapace, Logan Marshall-Green, Michael Fassbender, Charlize Theron", 2012, 124, 7.0, 485820, 126.46, 65], ["Split", "Horror,Thriller", "Three girls are kidnapped by a man with a diagnosed 23 distinct personalities. They must try to escape before the apparent emergence of a frightful new 24th.", "M. Night Shyamalan", "James McAvoy, Anya Taylor-Joy, Haley Lu Richardson, Jessica Sula", 2016, 117, 7.3, 157606, 138.12, 62], ["Sing", "Animation,Comedy,Family", "In a city of humanoid animals, a hustling theater impresario's attempt to save his theater with a singing competition becomes grander than he anticipates even as its finalists' find that their lives will never be the same.", "Christophe Lourdelet", "Matthew McConaughey,Reese Witherspoon, Seth MacFarlane, Scarlett Johansson", 2016, 108, 7.2, 60545, 270.32, 59], ["Suicide Squad", "Action,Adventure,Fantasy", "A secret government agency recruits some of the most dangerous incarcerated super-villains to form a defensive task force. Their first mission: save the world from the apocalypse.", "David Ayer", "Will Smith, Jared Leto, Margot Robbie, Viola Davis", 2016, 123, 6.2, 393727, 325.02, 40]] }
@@ -66,6 +72,8 @@ export class TablesComponent {
   numberLines: any = [];
   rowLines: any = [];
   numericValuesArray: any = [];
+  fullCorrColNamesArray: any = []; //niz za kor matricu (nazivi kolona)
+  fullCorrValArray: any = []; // niz za kor matricu (vrednosti)
 
   radios: any = [];
   checks: any = [];
@@ -260,6 +268,29 @@ rowsNum: number;
     for (let i = 0; i < this.statisticData['corrMatrix'][this.selectedCol].length; i++) {
       this.numArray.push(this.statisticData['corrMatrix'][this.selectedCol][i]);
     }
+
+    let fullMatrix: any = {};
+        fullMatrix = this.statisticData['fullCorrMatrix'];
+        this.fullMatrixData = fullMatrix;
+        console.log(this.fullMatrixData);
+
+        this.fullCorrColNamesArray = [];
+        for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
+          this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
+        }
+
+        this.fullCorrValArray = [];
+        let valArray: any = [];
+        for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
+            valArray = [];
+
+            for(let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
+              valArray.push(this.fullMatrixData['values'][i][j]);
+            }
+            //console.log(valArray);
+            this.fullCorrValArray.push(valArray);
+        }
+
   }
 
   public onSelectedCol(event: any) {
@@ -296,7 +327,7 @@ rowsNum: number;
         foreColor: '#ced4da',
 
         toolbar: {
-          show: true,
+          show: false,
           offsetX: 0,
           offsetY: 0,
           tools: {
@@ -483,6 +514,18 @@ rowsNum: number;
       this.resetStatistic();
       this.showStatistics(this.selectedCol);
     })
+  }
+
+  opndMatrix: boolean = false;
+
+  previewMatrix() {
+   // this.showToolBar = false;
+   // this.boxPlotFun();
+    this.opndMatrix = true;
+  }
+
+  close() {
+    this.opndMatrix = false;
   }
 
 }
