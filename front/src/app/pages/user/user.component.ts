@@ -6,7 +6,8 @@ import { UserInfoService } from "src/app/services/edit/user-info.service";
 
 @Component({
   selector: "app-user",
-  templateUrl: "user.component.html"
+  templateUrl: "user.component.html",
+  styleUrls: ["user.component.scss"]
 })
 export class UserComponent implements OnInit {
 
@@ -22,7 +23,6 @@ export class UserComponent implements OnInit {
   getUsername() {
     return sessionStorage.getItem('username');
   }
-
 
   constructor(private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
     this.username = this.getUsername();
@@ -62,5 +62,17 @@ export class UserComponent implements OnInit {
     }
   }
   
- 
+  niz: any= [1, 2, 3];
+  clcDiv: any = [false, false, false];
+
+  openDiv(index1:number) {
+    
+    if(this.clcDiv[index1] == false) {
+      this.clcDiv[index1] = true;
+    }
+    else {
+      this.clcDiv[index1] = false;
+    }
+  }
+
 }
