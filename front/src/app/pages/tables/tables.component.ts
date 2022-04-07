@@ -9,7 +9,8 @@ import {
   ApexPlotOptions,
   ApexTitleSubtitle,
   ApexAxisChartSeries,
-  ApexStroke
+  ApexStroke,
+  ApexTooltip
 } from "ng-apexcharts";
 import { AnyForUntypedForms } from "@angular/forms";
 
@@ -19,6 +20,7 @@ export type ChartOptions = {
   title: ApexTitleSubtitle;
   plotOptions: ApexPlotOptions;
   stroke: ApexStroke;
+  tooltip: ApexTooltip
 };
 
 @Component({
@@ -226,6 +228,7 @@ rowsNum: number;
   corrMatrix: any = {};
   mixArray: any = []; //niz za boxplot
   numArray: any= []; //niz za kor matricu
+  outliers : any = [];
   
   showStatistics(col : number)
   {
@@ -269,10 +272,14 @@ rowsNum: number;
       this.numArray.push(this.statisticData['corrMatrix'][this.selectedCol][i]);
     }
 
+    this.outliers = [];
+    for(let i=0;i<this.statisticData['outliers'].length;i++){
+      this.outliers.push(this.statisticData['outliers'][i]);
+    }
+
     let fullMatrix: any = {};
         fullMatrix = this.statisticData['fullCorrMatrix'];
         this.fullMatrixData = fullMatrix;
-        console.log(this.fullMatrixData);
 
         this.fullCorrColNamesArray = [];
         for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
@@ -287,7 +294,6 @@ rowsNum: number;
             for(let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
               valArray.push(this.fullMatrixData['values'][i][j]);
             }
-            //console.log(valArray);
             this.fullCorrValArray.push(valArray);
         }
 
@@ -298,6 +304,7 @@ rowsNum: number;
     var splitted = value.split("|", 2);
     this.selectedColName = splitted[0];
     this.selectedCol = parseInt(splitted[1]);
+    sessionStorage.removeItem('statistics');
     this.resetStatistic();
     this.showStatistics(this.selectedCol);
   }
@@ -305,6 +312,7 @@ rowsNum: number;
   resetStatistic() {
     this.numArray = [];
     this.mixArray = [];
+    this.outliers = [];
   }
 
   boxPlotFun()  {
@@ -312,18 +320,28 @@ rowsNum: number;
     this.chartOptions = {
       series: [
         {
+          name : "box",
           type: "boxPlot",
           data: [
             {
               x: this.selectedColName,
               y: [this.mixArray[0], this.mixArray[1], this.mixArray[2], this.mixArray[3], this.mixArray[4]]
-            }
+            },
+          ]
+        },
+        {
+          name: 'outliers',
+          type: 'scatter',
+          data: [{
+            x : this.selectedColName,
+            y : this.outliers
+          }
           ]
         }
       ],
       chart: {
         height: 223,
-        type: "candlestick",
+        type: "boxPlot",
         foreColor: '#ced4da',
 
         toolbar: {
@@ -376,6 +394,10 @@ rowsNum: number;
       },
       stroke: {
         colors: ["#FA4443"]
+      },
+      tooltip: {
+        shared: false,
+        intersect: true
       }
     };
   }
