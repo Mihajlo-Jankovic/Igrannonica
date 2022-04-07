@@ -24,37 +24,55 @@ def numberOfPages(df,rowNum):
     return numOfPages
 
 # Izracunavanje statistika za odredjenu kolonu iz tabele
-def statistics(df,colIndex):
-    col = df.columns[colIndex]
+def statistics(df):
+    colList = []
+    jsonList = []
 
-    rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
-    min = round(float(df[col].min()), 3) # Minimum
-    max = round(float(df[col].max()), 3) # Maksimum
-    avg = round(df[col].mean(), 3) # Srednja vrednost
-    med = round(df[col].median(), 3) # Mediana
-    firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
-    firstQ = round(firstQ,3)
-    thirdQ = round(thirdQ,3)
-    corrMatrix = df.corr() # Korelaciona matrica
+    for col in df:
+        if(df[col].dtypes == object): continue
 
-    corrArr = []
-    for value in corrMatrix[df.columns[colIndex]]:
-        corrArr.append(round(value,3))
+        rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
+        min = round(float(df[col].min()), 3) # Minimum
+        max = round(float(df[col].max()), 3) # Maksimum
+        avg = round(df[col].mean(), 3) # Srednja vrednost
+        med = round(df[col].median(), 3) # Mediana
+        firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
+        firstQ = round(firstQ,3)
+        thirdQ = round(thirdQ,3)
+        corrMatrix = df.corr() # Korelaciona matrica
 
-    colArr = []
-    valArr = []
-    for col in corrMatrix:
-        colArr.append(col)
+        iqr = thirdQ - firstQ
 
-        tmpArr = []
+        lower_bound = firstQ - 1.5 * iqr
+        upper_bound = thirdQ + 1.5 * iqr
+
+        outliers = []
+        for value in df[col]:
+            if(value < lower_bound or value > upper_bound): 
+                outliers.append(value)
+                
+        corrArr = []
         for value in corrMatrix[col]:
-            tmpArr.append(round(value,3))
+            corrArr.append(round(value,3))
         
-        valArr.append(tmpArr)
+        colArr = []
+        valArr = []
+        for column in corrMatrix:
+            colArr.append(column)
 
-    return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
-            "firstQ": firstQ, "thirdQ": thirdQ, "corrMatrix": {colIndex: corrArr},
-            "fullCorrMatrix": {"columns": colArr, "values": valArr}}
+            tmpArr = []
+            for value in corrMatrix[column]:
+                tmpArr.append(round(value,3))
+            
+            valArr.append(tmpArr)
+        
+        colList.append(col)
+        jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
+                         "firstQ": firstQ, "thirdQ": thirdQ, "outliers": outliers, 
+                         "corrMatrix": {col: corrArr},
+                         "fullCorrMatrix": {"columns": colArr, "values": valArr}})
+    
+    return { "colList:": colList, "jsonList": jsonList }
 
 # Citanje CSV fajla
 def openCSV(path):

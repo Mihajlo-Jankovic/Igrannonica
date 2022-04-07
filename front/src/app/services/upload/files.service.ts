@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { Configuration } from 'src/app/configuration';
 import { LoginService } from '../login.service';
 
 @Injectable({
@@ -12,6 +13,8 @@ export class FilesService {
   token: string;
   constructor(private http: HttpClient, private loginService: LoginService, private cookie: CookieService) { }
 
+  configuration = new Configuration();
+
   filesAuthorized(){
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
@@ -21,7 +24,7 @@ export class FilesService {
       'Authorization': 'bearer ' + this.token
     });
     let options = { headers: headers };
-    return this.http.get<any>('https://localhost:7219/api/Csv/getCSVAuthorized',options)
+    return this.http.get<any>(this.configuration.authorizedFiles,options)
   }
 
   filesUnauthorized(){
@@ -33,6 +36,6 @@ export class FilesService {
       'Authorization': 'bearer ' + this.token
     });
     let options = { headers: headers };
-    return this.http.get<any>('https://localhost:7219/api/Csv/getCSVUnauthorized',options)
+    return this.http.get<any>(this.configuration.unauthorizedFiles,options)
   }
 }

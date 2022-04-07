@@ -5,6 +5,7 @@ import { CookieService } from "ngx-cookie-service";
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { layer } from "src/app/models/layer.model";
 import { neuron } from "src/app/models/neuron.model";
+import { Configuration } from "src/app/configuration";
 
 @Component({
   selector: "app-dashboard",
@@ -23,6 +24,7 @@ export class DashboardComponent implements OnInit {
   public val_label: string = "val_loss";
   public myChartData;
   public buttons: any = [];
+  public ngbTooltip : any;
 
   public problemType: string = "Regression";
   public encodingType: string = "label";
@@ -58,6 +60,8 @@ export class DashboardComponent implements OnInit {
   dropdownSettings:IDropdownSettings = {};
 
   constructor(private cookieService:CookieService, private http:HttpClient) { }
+
+  configuration = new Configuration();
 
   get() {
     return sessionStorage.getItem('username');
@@ -157,7 +161,7 @@ export class DashboardComponent implements OnInit {
       metrics[i] = this.selectedItems[i].item_id;
     }
     console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
-    this.http.post("https://localhost:7219/api/PythonComm/startTraining",{"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
+    this.http.post(this.configuration.startTesting,{"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
       (response) => {
         this.trained = true;
         this.training = false;
@@ -356,5 +360,26 @@ export class DashboardComponent implements OnInit {
     this.myChartData.data.datasets[1].label = this.val_label;
     this.myChartData.data.labels = this.chart_labels;
     this.myChartData.update();
+  }
+
+  showTooltip(name)
+  {
+    if(name == "mse")
+    this.ngbTooltip = "Mean Squared Error";
+    else if(name == "mae")
+    this.ngbTooltip = "Mean Absolute Error";
+    else if(name == "mape")
+    this.ngbTooltip = "Mean Absolute Percentage Error";
+    else if(name == "loss")
+    this.ngbTooltip = "Loss Function";
+    else if(name == "cosine")
+    this.ngbTooltip = "Cosine Proximity";
+    else if(name == "logcosh")
+    this.ngbTooltip = "Log Cosh Error";
+    else if(name == "msle")
+    this.ngbTooltip = "Mean Squared Logarithmic Error";
+
+    return this.ngbTooltip;
+     
   }
 }
