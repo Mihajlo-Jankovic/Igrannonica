@@ -83,6 +83,8 @@ export class TablesComponent {
   showStatisticDiv: boolean = false;
 
   constructor(private tableService: TableService, private cookie : CookieService) {
+    this.clearStorage();
+    sessionStorage.removeItem('statistics');
       this.showTable(this.selectedType, this.selectedRow, this.page)
       this.boxPlotFun();
   }
