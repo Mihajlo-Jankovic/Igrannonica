@@ -40,7 +40,7 @@ def statistics():
     if (content_type == 'application/json; charset=utf-8'):
         jsonObject = request.json
 
-        dictionary = program.statistics(program.openCSV(PATH + jsonObject['FileName']),int(jsonObject['ColIndex']))
+        dictionary = program.statistics(program.openCSV(PATH + jsonObject['FileName']))
         json_object = json.dumps(dictionary) 
         
         return json_object
