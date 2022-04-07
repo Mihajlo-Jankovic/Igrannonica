@@ -36,6 +36,6 @@ export class FilesService {
       'Authorization': 'bearer ' + this.token
     });
     let options = { headers: headers };
-    return this.http.get<any>(this.configuration.unauthorizedFiles,options)
+    return this.http.get<any>(this.configuration.unauthorizedFiles)
   }
 }

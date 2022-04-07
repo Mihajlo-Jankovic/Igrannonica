@@ -66,7 +66,7 @@ namespace Igrannonica.Controllers
             var fullPath = Path.Combine(pathToSave, fileName);
 
             var bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
-            return File(bytes, "csv/plain", Path.GetFileName(fullPath));
+            return File(bytes, "csv/plain", file.FileName);
         }
 
         [HttpPost("updatefilecall")]

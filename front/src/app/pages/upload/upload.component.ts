@@ -29,8 +29,8 @@ export class UploadComponent implements OnInit {
 
   configuration = new Configuration();
 
-  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
-  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
+  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string}[];
+  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string}[];
 
   constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
     this.session = this.getUsername();
@@ -42,12 +42,20 @@ export class UploadComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
-    if (!(this.get())) {
-      console.log("1245");
-    }
     if (this.session) {
       this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
         this.FilesList = data;
+
+        for (let i = 0; i < this.FilesList.length; i++) {
+          if (this.FilesList[i]['username'] == this.getUsername()) {
+            this.FilesList[i]['thisUser'] = this.getUsername();
+          }
+          if(this.FilesList[i]['isPublic'] == true) {
+            this.FilesList[i]['Public']="true";
+          }
+        } 
+
+
         for (let i = 0; i < this.FilesList.length; i++) {
           this.allFiles.push(this.FilesList[i]);
           if (this.FilesList[i]['isPublic'])
@@ -63,8 +71,6 @@ export class UploadComponent implements OnInit {
           if (this.FilesListUnauthorized[i]['isPublic'])
             this.publicFilesUnauthorized.push(this.FilesListUnauthorized[i]);
         }
-        console.log(this.publicFilesUnauthorized);
-
       })
     }
   }
@@ -146,6 +152,111 @@ export class UploadComponent implements OnInit {
       let JSONtoken: string = JSON.stringify(token);
     })
   }
+
+  download(event, item) {
+    if (this.cookie.check('token')) {
+      this.token = this.cookie.get('token');
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      const baseUrl = 'https://localhost:7219/api/Csv/';
+      this.http.get<any>('https://localhost:7219/api/Csv/'+item.randomFileName, {headers, responseType:'blob' as 'json'}).subscribe((response:any) => {
+        let dataType = response.type;
+        let binaryData=[];
+        binaryData.push(response);
+        let downloadLink=document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData,{type:dataType}));
+        if(item.randomFileName){
+          downloadLink.setAttribute('download',item.randomFileName);
+        }
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      })
+    }
+  }
+
+  downloadUn(event, item) {
+    this.http.get<any>('https://localhost:7219/api/Csv/' + item.randomFileName, { responseType: 'blob' as 'json' }).subscribe((response: any) => {
+
+      let dataType = response.type;
+      let binaryData = [];
+      binaryData.push(response);
+      let downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
+      if (item.randomFileName) {
+        downloadLink.setAttribute('download', item.randomFileName);
+      }
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+    })
+  }
+
+  useThis(event, item) {
+    this.cookie.set("filename", item.randomFileName);
+  }
+  useThisUn(event, item) {
+    this.cookie.set("filename", item.randomFileName);
+  }
+
+  delete(event, item) {
+    this.loggedUser = this.loginService.isAuthenticated();
+    if (this.loggedUser) {
+      this.token = this.cookie.get('token');
+    }
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + this.token
+    });
+    let options = { headers: headers };
+    this.http.get<any>('https://localhost:7219/api/FileUpload/delete-authorized/' + item.randomFileName, options).subscribe(token => {
+      let JSONtoken: string = JSON.stringify(token);
+      location.reload();
+    })
+  }
+
+  onCheckboxChange(event: any,item) {
+    if(!event.target.checked){
+      item.isPublic = false;
+      this.loggedUser = this.loginService.isAuthenticated();
+      if (this.loggedUser) {
+        this.token = this.cookie.get('token');
+      }
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      this.http.post<string>('https://localhost:7219/api/Csv/updateVisibility',
+      {
+        "id" : item.fileId,
+        "isVisible" : item.isPublic
+      }, options).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        location.reload();
+      })
+      location.reload();
+    }
+    else if(event.target.checked){
+      item.isPublic = true;
+      this.loggedUser = this.loginService.isAuthenticated();
+      if (this.loggedUser) {
+        this.token = this.cookie.get('token');
+      }
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      this.http.post<string>('https://localhost:7219/api/Csv/updateVisibility' ,
+      {
+        "id" : item.fileId,
+        "isVisible" : item.isPublic
+      }, options).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        location.reload();
+      })
+      location.reload();
+    }
+  }
+
 
   uploadNotification() {
     this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>File uploaded successfully</b>.', '', {

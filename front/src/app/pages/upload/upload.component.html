@@ -31,17 +31,27 @@
                             <div class="file">
                                 <div class="fileContent">
                                     <div class=" row">
-                                        <h4 class="card-title" style="margin-bottom:0">Filename:</h4>
+                                        <div class="titleHeader">
+                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 100px; float: left;">Filename:</h4>
+                                            <div *ngIf="item.thisUser" class="settings">
+                                                <button class=" btn btn-link" (click)="delete($event,item)" placement="left" ngbTooltip="Delete file" container="body">
+                                                    <i class="tim-icons icon-trash-simple"> </i>
+                                                </button>
+                                                <label class="switch">
+                                                    <input type="checkbox" *ngIf="item.Public" (change)="onCheckboxChange($event,item)" checked>
+                                                    <input type="checkbox" *ngIf="!item.Public" (change)="onCheckboxChange($event,item)">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
                                         <div class="pull-right fileName">{{item.fileName}}</div>
-                                        <!-- <label class="switch pull-right">
-                                                <input type="checkbox" checked>
-                                                <span class="slider round"></span>
-                                            </label> -->
+
                                     </div>
                                     <p>Uploaded by: {{item.username}}</p>
-                                    <div style="height:30px; background: transparent;">
-                                        <a href="#" class=" pull-left">USE THIS</a>
-                                        <a href="#" class=" pull-right">DOWNLOAD</a>
+                                    <div style="height:30px; background: transparent;" class=" download">
+                                        <a href="/tables" class=" pull-left" (click)="useThis($event,item)">USE THIS</a>
+                                        <a class=" pull-right" (click)="download($event,item)">DOWNLOAD</a>
                                     </div>
                                 </div>
                             </div>
@@ -54,15 +64,11 @@
                                     <div class=" row">
                                         <h4 class="card-title" style="margin-bottom:0">Filename:</h4>
                                         <div class="pull-right fileName">{{item.fileName}}</div>
-                                        <!-- <label class="switch pull-right">
-                                                <input type="checkbox" checked>
-                                                <span class="slider round"></span>
-                                            </label> -->
                                     </div>
                                     <p>Uploaded by: {{item.username}}</p>
                                     <div style="height:30px; background: transparent;">
-                                        <a href="#" class=" pull-left" style="bottom : 0;">USE THIS</a>
-                                        <a href="#" class=" pull-right">DOWNLOAD</a>
+                                        <a href="/tables" class=" pull-left" (click)="useThisUn($event,item)">USE THIS</a>
+                                        <a href="#" class=" pull-right" (click)="downloadUn($event,item)">DOWNLOAD</a>
                                     </div>
                                 </div>
                             </div>
