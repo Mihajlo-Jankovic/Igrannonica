@@ -25,11 +25,20 @@
     }
 }
 
+.fileName {
+    font-weight: bold;
+    height: 2.5rem;
+    width: 100%;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
 .fileContent {
     background-color: #1e1e28;
     height: auto;
     border-radius: .5rem;
     padding: 0.5rem;
+    min-width: 160px;
 }
 
 .file {
@@ -189,4 +198,12 @@ input:checked+.slider:before {
 .authorized,
 .unauthorized {
     width: 100%;
+}
+
+#toast-container>.toast-info {
+    background-color: #7d3c8b !important;
+    background-image: none !important;
+    color: white !important;
+    content: "\f004" !important;
+    color: crimson !important;
 }

@@ -5,6 +5,7 @@ import { Configuration } from 'src/app/configuration';
 import { LoginService } from 'src/app/services/login.service';
 import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
+import { ToastrService } from 'ngx-toastr';
 import files from 'src/files.json';
 
 @Component({
@@ -31,7 +32,7 @@ export class UploadComponent implements OnInit {
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean }[];
 
-  constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService) {
+  constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
     this.session = this.getUsername();
   }
 
@@ -121,17 +122,18 @@ export class UploadComponent implements OnInit {
         this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
-         this.cookie.set("filename", StringName);
+          this.cookie.set("filename", StringName);
         })
       }
       else{
         this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name=>{
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
-         this.cookie.set("filename", StringName);
+          this.cookie.set("filename", StringName);
         })
       }
     }
+    this.uploadNotification();
   }
 
   filesAuthorized() {
@@ -145,5 +147,13 @@ export class UploadComponent implements OnInit {
     })
   }
 
-
+  uploadNotification() {
+    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>File uploaded successfully</b>.', '', {
+      disableTimeOut: false,
+      closeButton: true,
+      enableHtml: true,
+      toastClass: "alert alert-info alert-with-icon",
+      positionClass: 'toast-top-center'
+    });
+  }
 }

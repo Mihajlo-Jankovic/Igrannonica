@@ -210,3 +210,9 @@
         box-shadow: 0 0 0 2px #7d3c8b !important;
     }
 }
+
+#toast-container>.toast-info {
+    background-color: #7d3c8b !important;
+    background-image: none !important;
+    color: white !important;
+}
