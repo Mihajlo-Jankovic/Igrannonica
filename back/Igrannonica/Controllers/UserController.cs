@@ -17,6 +17,7 @@ using Igrannonica.Services.UserService;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Bson;
+using System.Text;
 
 namespace Igrannonica.Controllers
 {
@@ -165,7 +166,7 @@ namespace Igrannonica.Controllers
             return Ok(new { token = CreateToken(user) });
         }
 
-        public static ClaimsPrincipal ValidateToken(string jwtToken)
+        private ClaimsPrincipal ValidateToken(string jwtToken)
         {
 
             SecurityToken validatedToken;
@@ -173,7 +174,7 @@ namespace Igrannonica.Controllers
 
             validationParameters.ValidateLifetime = true;
 
-            validationParameters.IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Secret));
+            validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
 
             ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
 
