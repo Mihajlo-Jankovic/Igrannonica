@@ -166,7 +166,7 @@ namespace Igrannonica.Controllers
             return Ok(new { token = CreateToken(user) });
         }
 
-        public ClaimsPrincipal ValidateToken(string jwtToken)
+        private ClaimsPrincipal ValidateToken(string jwtToken)
         {
 
             SecurityToken validatedToken;
