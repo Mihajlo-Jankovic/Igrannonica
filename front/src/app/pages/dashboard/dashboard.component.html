@@ -11,7 +11,6 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class=" card-title" style="position: relative; float: left;">Configure hyperparameters</h2>
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining()">START TRAINING</button>
                 </div>
                 <div class="card-body" style="padding-left: 0; padding-right: 0;">
                     <div class="hyperparameter">
@@ -113,7 +112,7 @@
                             <option class='option' value="10">10</option>
                         </select>
                     </div>
-                    <div class="hyperparameter">
+                    <div class="hyperparameter" style="margin-bottom: 1rem;">
                         <h6>Number of Epochs</h6>
                         <input class="dropdown" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs">
                     </div>
@@ -131,7 +130,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <div style="width : 300px; position: relative; float: left;">
+                    <div style="width : 250px; position: relative; float: left;">
                         <h2 class=" card-title">Configure layers</h2>
                     </div>
                     <div class=" btn-group" style="position: relative; float: left;">
@@ -142,7 +141,7 @@
                             <i class=" tim-icons icon-simple-add"></i>
                         </button>
                     </div>
-                    <div style="position: relative; float: left; width: 100px; text-align: center;">
+                    <div style="position: relative; float: left; width: 50px; text-align: center;">
                         <h2 style="padding: 3px;">{{layerList.length}}</h2>
                     </div>
                 </div>
@@ -166,6 +165,15 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining()">START TRAINING</button>
                 </div>
             </div>
         </div>
