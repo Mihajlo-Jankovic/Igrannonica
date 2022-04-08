@@ -139,7 +139,7 @@ def openCSV(path):
     return df
 
 # Pravljenje modela za treniranje
-def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, problemType, outputs, lossFunction, metric):
+def build_model(layers, neurons, activation, regularizer, regRate, optimizerType, learningRate, problemType, inputs, outputs, lossFunction, metric):
     model = tf.keras.Sequential()
     # Namestanje regularizera
     if(regularizer == 'L1'):
@@ -147,6 +147,7 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     elif(regularizer == 'L2'):
         reg = L2(regRate)
     # Input layer
+    tf.keras.layers.InputLayer(input_shape=(inputs,)),
     #model.add(tf.keras.layers.Input((inputs,)))
     #model.add(tf.keras.layers.Flatten())
     # Hidden layers
@@ -340,9 +341,9 @@ def testiranje():
     X_train, X_test, y_train, y_test = prepare_data(df, ['Title','Genre'], ['Metascore'], 'label', 0.2)
     print(X_train, X_test, y_train, y_test)
 
-    m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 'Regression', 10, 'mean_squared_error', ['mse', 'mae'])
+    m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 'Regression', 2, 10, 'mean_squared_error', ['mse', 'mae'])
     print(m)
-    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
+    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=100)
     return model.history
 
 def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
@@ -350,6 +351,7 @@ def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, l
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
 
-    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, 10, lossFunction, metrics)
+    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(inputList), 10, lossFunction, metrics)
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs)
     return model.history
+
