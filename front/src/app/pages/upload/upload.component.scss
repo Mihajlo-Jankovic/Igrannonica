@@ -68,7 +68,7 @@
     flex-wrap: wrap;
 }
 
-@media(max-width: 1024px) {
+@media(max-width: 1250px) {
     .file {
         width: 33.3%;
     }
@@ -80,8 +80,17 @@
     }
 }
 
+@media(max-width: 620px) {
+    .dropdown {
+        width: 100%;
+    }
+}
+
 @media(max-width: 528px) {
     .file {
+        width: 100%;
+    }
+    .dropdown {
         width: 100%;
     }
 }
