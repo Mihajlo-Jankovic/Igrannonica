@@ -58,15 +58,25 @@ namespace Igrannonica.Controllers
         public async Task<IActionResult> downloadfile(string filename)
         {
             Models.File? file = _mySqlContext.File.Where(f => f.RandomFileName == filename).FirstOrDefault();
-            if (file == null)
-                return BadRequest("no file with that name");
+          /*  if (file == null)
+                return BadRequest("no file with that name");*/
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var fileName = file.RandomFileName;
+            var fileName = filename;
             var fullPath = Path.Combine(pathToSave, fileName);
 
-            var bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
-            return File(bytes, "csv/plain", file.FileName);
+            byte[] bytes;
+            if (System.IO.File.Exists(fullPath))
+                bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+            else
+            {
+                folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
+                pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                fileName = filename;
+                fullPath = Path.Combine(pathToSave, fileName);
+                bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+            }
+            return File(bytes, "csv/plain", filename);
         }
 
         [HttpPost("updatefilecall")]
