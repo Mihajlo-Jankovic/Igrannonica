@@ -150,7 +150,7 @@ namespace Igrannonica.Controllers
             return Ok(token);
         }
 
-        /*[HttpGet("refreshToken/{jwt}")]
+        [HttpGet("refreshToken/{jwtString}")]
         public async Task<ActionResult<TokenDTO>> RefreshToken(string jwtString)
         {
             var claims = ValidateToken(jwtString);
@@ -158,7 +158,7 @@ namespace Igrannonica.Controllers
             {
                 return Ok(new { token = "Token not valid" });
             }
-            var username = claims.FindFirst("Name").Value;
+            var username = claims.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value;
             User user = _context.User.Where(u => u.username == username).FirstOrDefault();
             if (user == null)
             {
@@ -171,17 +171,21 @@ namespace Igrannonica.Controllers
         {
 
             SecurityToken validatedToken;
-            TokenValidationParameters validationParameters = new TokenValidationParameters();
+            TokenValidationParameters validationParameters = new TokenValidationParameters
+            {
+                ValidateActor = false,
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateLifetime = true,
 
-            validationParameters.ValidateLifetime = true;
-
-            validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value))
+            };
 
             ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
 
 
             return principal;
-        }*/
+        }
 
         private string CreateToken(User user)
         {
