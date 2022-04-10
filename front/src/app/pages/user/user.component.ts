@@ -3,6 +3,7 @@ import { EditService } from "src/app/services/edit/edit.service";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EditPasswordService } from "src/app/services/edit/edit-password.service";
 import { UserInfoService } from "src/app/services/edit/user-info.service";
+import { ToastrService } from "ngx-toastr";
 
 
 @Component({
@@ -25,7 +26,7 @@ export class UserComponent implements OnInit {
     return sessionStorage.getItem('username');
   }
 
-  constructor(private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
+  constructor(private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
     this.username = this.getUsername();
     this.messageEditProfile = "";
     this.editForm = formBuilder.group({firstname:"", lastname:""});
@@ -50,7 +51,13 @@ export class UserComponent implements OnInit {
   
   edit(form: FormGroup) {
     if (form.value.firstname && form.value.lastname) {
-      this.messageEditProfile = "Succesfully changed";
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
       this.editService.edit(form.value.firstname, form.value.lastname).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
       })
@@ -59,6 +66,13 @@ export class UserComponent implements OnInit {
 
   editPassword(form: FormGroup) {
     if (form.value.currentPassword && form.value.newPassword) {
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
       this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
       })
