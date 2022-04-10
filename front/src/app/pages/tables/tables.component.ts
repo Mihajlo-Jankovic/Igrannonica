@@ -345,7 +345,7 @@ rowsNum: number;
         foreColor: '#ced4da',
 
         toolbar: {
-          show: false,
+          show: true,
           offsetX: 0,
           offsetY: 0,
           tools: {

@@ -338,8 +338,8 @@ input[type='radio']:checked:after {
     background: transparent;
     top: 0;
     left: 0;
-    z-index: 10;
     backdrop-filter: blur(1px);
+    z-index: 20000;
 }
 
 .corrMatrix {

@@ -114,9 +114,9 @@ def statistics(df,colIndex):
         
         colList.append(col)
         jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
-                         "firstQ": firstQ, "thirdQ": thirdQ, "outliers": outliers, 
-                         "corrMatrix": {col: corrArr},
-                         "fullCorrMatrix": {"columns": colArr, "values": valArr}})
+                        "firstQ": firstQ, "thirdQ": thirdQ, "outliers": outliers, 
+                        "corrMatrix": {col: corrArr},
+                        "fullCorrMatrix": {"columns": colArr, "values": valArr}})
     
     return { "colList:": colList, "jsonList": jsonList }
     '''

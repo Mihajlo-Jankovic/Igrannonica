@@ -152,6 +152,7 @@ export class DashboardComponent implements OnInit {
       window.alert("Input or output not selected");
       return;
     }
+    this.training = true;
     let fileName = this.cookieService.get('filename');
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
     let output = sessionStorage.getItem('output');

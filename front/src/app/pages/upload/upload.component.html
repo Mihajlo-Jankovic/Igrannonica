@@ -49,9 +49,11 @@
 
                                     </div>
                                     <p>Uploaded by: {{item.username}}</p>
-                                    <div style="height:30px; background: transparent;" class=" download">
+                                    <div style="height:30px; background: transparent;">
                                         <a href="/tables" class=" pull-left" (click)="useThis($event,item)">USE THIS</a>
-                                        <a class=" pull-right" (click)="download($event,item)">DOWNLOAD</a>
+                                        <div class=" download">
+                                            <a class=" pull-right" (click)="download($event,item)">DOWNLOAD</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +70,9 @@
                                     <p>Uploaded by: {{item.username}}</p>
                                     <div style="height:30px; background: transparent;">
                                         <a href="/tables" class=" pull-left" (click)="useThisUn($event,item)">USE THIS</a>
-                                        <a href="#" class=" pull-right" (click)="downloadUn($event,item)">DOWNLOAD</a>
+                                        <div class=" download">
+                                            <a class=" pull-right" (click)="downloadUn($event,item)">DOWNLOAD</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
