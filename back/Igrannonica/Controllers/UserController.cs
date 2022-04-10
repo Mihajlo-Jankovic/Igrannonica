@@ -70,7 +70,8 @@ namespace Igrannonica.Controllers
             _context.User.Add(this.user);
             await _context.SaveChangesAsync();
 
-            return Ok(this.user);
+            token.token = "Success";
+            return Ok(token);
         }
 
         [HttpPost("EditUserName"), Authorize]
@@ -325,6 +326,24 @@ namespace Igrannonica.Controllers
             collection.InsertOne(experiment);    
 
             return Ok(experiment);
+        }
+
+        [HttpGet("getUserExperiments"), Authorize]
+        public async Task<ActionResult<List<ExperimentDTO>>> GetUserExperiments()
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+
+            if (user == null)
+                return BadRequest("JWT is bad!");
+
+            var client = new MongoClient(mongoConnString);
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+
+            List<Experiment> experiments = collection.Find(e => e.userId == user.id).ToList();
+
+            return Ok(experiments);
         }
     }
 }

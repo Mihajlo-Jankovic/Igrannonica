@@ -107,6 +107,8 @@ export class UploadComponent implements OnInit {
       sessionStorage.removeItem('numOfPages');
       sessionStorage.removeItem('numericValues');
       sessionStorage.removeItem('statistics');
+      sessionStorage.removeItem('inputList');
+      sessionStorage.removeItem('output');
 
     let file = <File>files[0];
     var fileSize = file.size;
@@ -194,9 +196,11 @@ export class UploadComponent implements OnInit {
 
   useThis(event, item) {
     this.cookie.set("filename", item.randomFileName);
+    sessionStorage.clear();
   }
   useThisUn(event, item) {
     this.cookie.set("filename", item.randomFileName);
+    sessionStorage.clear();
   }
 
   delete(event, item) {

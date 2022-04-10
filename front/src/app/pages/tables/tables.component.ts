@@ -93,10 +93,9 @@ export class TablesComponent {
   showStatisticDiv: boolean = false;
 
   constructor(private tableService: TableService, private cookie : CookieService) {
-    this.clearStorage();
     sessionStorage.removeItem('statistics');
-      this.showTable(this.selectedType, this.selectedRow, this.page)
-      this.boxPlotFun();
+    this.showTable(this.selectedType, this.selectedRow, this.page)
+    this.boxPlotFun();
   }
 
   clearStorage()
@@ -122,7 +121,6 @@ export class TablesComponent {
       this.tableService.getAll(filename,type, rows, page).subscribe(
       (response) => {
         this.csv = response;
-        //console.log(this.csv);
 
         let dataCSV: any = {};
         dataCSV = this.csv['csv'];
