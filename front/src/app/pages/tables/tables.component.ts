@@ -69,6 +69,9 @@ export class TablesComponent {
 
   //data: any = { "columns": ["title", "genre", "description", "director", "actors", "year", "runtime_(minutes)", "rating", "votes", "revenue_(millions)", "metascore"], "index": [1, 2, 3, 4, 5], "data": [["Guardians of the Galaxy", "Action,Adventure,Sci-Fi", "A group of intergalactic criminals are forced to work together to stop a fanatical warrior from taking control of the universe.", "James Gunn", "Chris Pratt, Vin Diesel, Bradley Cooper, Zoe Saldana", 2014, 121, 8.1, 757074, 333.13, 76], ["Prometheus", "Adventure,Mystery,Sci-Fi", "Following clues to the origin of mankind, a team finds a structure on a distant moon, but they soon realize they are not alone.", "Ridley Scott", "Noomi Rapace, Logan Marshall-Green, Michael Fassbender, Charlize Theron", 2012, 124, 7.0, 485820, 126.46, 65], ["Split", "Horror,Thriller", "Three girls are kidnapped by a man with a diagnosed 23 distinct personalities. They must try to escape before the apparent emergence of a frightful new 24th.", "M. Night Shyamalan", "James McAvoy, Anya Taylor-Joy, Haley Lu Richardson, Jessica Sula", 2016, 117, 7.3, 157606, 138.12, 62], ["Sing", "Animation,Comedy,Family", "In a city of humanoid animals, a hustling theater impresario's attempt to save his theater with a singing competition becomes grander than he anticipates even as its finalists' find that their lives will never be the same.", "Christophe Lourdelet", "Matthew McConaughey,Reese Witherspoon, Seth MacFarlane, Scarlett Johansson", 2016, 108, 7.2, 60545, 270.32, 59], ["Suicide Squad", "Action,Adventure,Fantasy", "A secret government agency recruits some of the most dangerous incarcerated super-villains to form a defensive task force. Their first mission: save the world from the apocalypse.", "David Ayer", "Will Smith, Jared Leto, Margot Robbie, Viola Davis", 2016, 123, 6.2, 393727, 325.02, 40]] }
 
+  showIO: boolean = false;
+  opndMatrix: boolean = false;
+
   headingLines: any = [];
   numberData: any = [];
   numberLines: any = [];
@@ -84,13 +87,31 @@ export class TablesComponent {
   selectedRow : number = 10;
   selectedColName: string = "";
   selectedCol: number;
-
   selectedColDiv: boolean = false;
+
+  listCheckedI: any = [];
+  disabledOutput: any;
+
+  selectedOutput: any;
+  checked : any;
+  selectedRows : Array<number> = [];
 
   page : number = 1;
   maxPage : any = 1000;
 
   showStatisticDiv: boolean = false;
+
+  rowsNum: number;
+  min: number;
+  max: number;
+  avg: number;
+  med: number;
+  firstQ: number;
+  thirdQ: number;
+  corrMatrix: any = {};
+  mixArray: any = []; //niz za boxplot
+  numArray: any= []; //niz za kor matricu
+  outliers : any = [];
 
   constructor(private tableService: TableService, private cookie : CookieService) {
     sessionStorage.removeItem('statistics');
@@ -198,35 +219,23 @@ export class TablesComponent {
     sessionStorage.removeItem('numericValues');
     this.reset();
     this.showTable(this.selectedType, this.selectedRow, this.page);
- }
+  } 
 
- public onSelectedRow(event: any) {
+  public onSelectedRow(event: any) {
   const value = event.target.value;
   this.selectedRow = value;
   this.clearStorage();
   this.reset();
   this.showTable(this.selectedType, this.selectedRow, this.page);
-}
+  }
 
-reset()
-{
-  this.headingLines  = [];
-  this.numberData = [];
-  this.numberLines = [];
-  this.rowLines = [];
-}
-
-rowsNum: number;
-  min: number;
-  max: number;
-  avg: number;
-  med: number;
-  firstQ: number;
-  thirdQ: number;
-  corrMatrix: any = {};
-  mixArray: any = []; //niz za boxplot
-  numArray: any= []; //niz za kor matricu
-  outliers : any = [];
+  reset()
+  {
+    this.headingLines  = [];
+    this.numberData = [];
+    this.numberLines = [];
+    this.rowLines = [];
+  }
   
   showStatistics(col : number)
   {
@@ -450,8 +459,6 @@ rowsNum: number;
     }
   }
 
-
-  showIO: boolean = false;
   showIOFun() {
     if(this.showIO == false)
       this.showIO = true;
@@ -459,8 +466,7 @@ rowsNum: number;
       this.showIO = false;
   }
 
-  listCheckedI: any = [];
-  disabledOutput: any;
+  
   inputCheckedFun(event: any) {
     var value = event.target.value;
 
@@ -481,7 +487,7 @@ rowsNum: number;
     //console.log(this.listCheckedI);
   }
 
-  selectedOutput: any;
+  
   selectedOutputFun(event: any) {
     var value = event.target.value;
     this.selectedOutput = value;
@@ -492,7 +498,7 @@ rowsNum: number;
   disableOutput(id : number) {
     this.radios[id] = !this.radios[id];
   }
-  checked : any;
+  
   disableInput(id : number) {
     if(this.checked != undefined) {
       this.checks[this.checked] = !this.checks[this.checked];
@@ -500,7 +506,6 @@ rowsNum: number;
     this.checks[id] = !this.checks[id];
     this.checked = id;
   }
-  selectedRows : Array<number> = [];
 
   selectedID(id : number){
     id = id + (this.page - 1)*this.selectedRow
@@ -535,8 +540,6 @@ rowsNum: number;
       this.showStatistics(this.selectedCol);
     })
   }
-
-  opndMatrix: boolean = false;
 
   previewMatrix() {
    // this.showToolBar = false;
