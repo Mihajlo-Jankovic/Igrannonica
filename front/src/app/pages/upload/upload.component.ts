@@ -7,6 +7,7 @@ import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import files from 'src/files.json';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload',
@@ -32,7 +33,7 @@ export class UploadComponent implements OnInit {
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string}[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string}[];
 
-  constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
+  constructor(private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
     this.session = this.getUsername();
   }
 
@@ -142,6 +143,7 @@ export class UploadComponent implements OnInit {
       }
     }
     this.uploadNotification();
+    this.router.navigate(['tables']);
   }
 
   filesAuthorized() {

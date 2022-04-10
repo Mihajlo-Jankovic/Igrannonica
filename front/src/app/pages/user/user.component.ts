@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EditPasswordService } from "src/app/services/edit/edit-password.service";
 import { UserInfoService } from "src/app/services/edit/user-info.service";
 
+
 @Component({
   selector: "app-user",
   templateUrl: "user.component.html",
@@ -17,7 +18,7 @@ export class UserComponent implements OnInit {
 
   username: string;
   messageEditProfile: string;
-  indicator : string;
+  indicator : boolean=false;
   userInfo : any;
 
   getUsername() {
@@ -42,7 +43,9 @@ export class UserComponent implements OnInit {
   }
 
   editProfile(){
-    this.indicator = "edit";
+    if(this.indicator==true)
+      this.indicator=false;
+    else this.indicator=true;
   }
   
   edit(form: FormGroup) {
