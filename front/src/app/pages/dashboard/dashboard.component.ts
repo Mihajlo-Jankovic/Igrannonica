@@ -267,9 +267,6 @@ export class DashboardComponent implements OnInit {
       this.neuronsMatrix[i].push(neuron);
     }
 
-  
-    if (!(this.get())) this.onLogout();
-
     var gradientChartOptionsConfigurationWithTooltipRed: any = {
       maintainAspectRatio: false,
       legend: {

@@ -3,21 +3,19 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class="card-header">
-                    <h2 class="card-title">Upload a new file</h2>
+                    <h2 class="card-title">Upload a new dataset</h2>
                 </div>
                 <div class="card-body">
                     <div class="file-upload">
                         <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv">
-                        <div class="card-subtitle">Drag n Drop your file here</div>
+                        <div class="card-subtitle">Drag n Drop your file dataset</div>
                     </div>
                 </div>
             </div>
             <div class=" card">
-
-
                 <div class="card-header">
                     <div class=" row">
-                        <h2 class="card-title"> Choose an existing file</h2>
+                        <h2 class="card-title"> Choose an existing dataset</h2>
                         <select *ngIf="session" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy">
                             <option class='option' value="all">All</option>
                             <option class='option' value="true">Public</option>
@@ -32,12 +30,12 @@
                                 <div class="fileContent">
                                     <div class=" row">
                                         <div class="titleHeader">
-                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 100px; float: left;">Filename:</h4>
+                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 100px; float: left;">Dataset:</h4>
                                             <div *ngIf="item.thisUser" class="settings">
-                                                <button class=" btn btn-link" (click)="delete($event,item)" placement="left" ngbTooltip="Delete file" container="body">
+                                                <button class=" btn btn-link trash" (click)="delete($event,item)" placement="left" ngbTooltip="Delete file" container="body">
                                                     <i class="tim-icons icon-trash-simple"> </i>
                                                 </button>
-                                                <label class="switch">
+                                                <label class="switch" ngbTooltip="Change file's privacy by toggling this">
                                                     <input type="checkbox" *ngIf="item.Public" (change)="onCheckboxChange($event,item)" checked>
                                                     <input type="checkbox" *ngIf="!item.Public" (change)="onCheckboxChange($event,item)">
                                                     <span class="slider round"></span>

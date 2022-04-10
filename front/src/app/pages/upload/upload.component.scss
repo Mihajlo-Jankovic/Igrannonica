@@ -154,7 +154,7 @@ b {
     height: auto;
     float: right;
     padding: 0px;
-    margin-right: 1rem;
+    margin-right: 1.5rem;
 }
 
 .switch {
@@ -252,4 +252,12 @@ button {
     height: auto;
     color: #d450d9;
     cursor: pointer;
+}
+
+.trash {
+    padding: 0px;
+    margin: 0px;
+    font-size: large;
+    height: 25px;
+    margin-top: 2px;
 }
