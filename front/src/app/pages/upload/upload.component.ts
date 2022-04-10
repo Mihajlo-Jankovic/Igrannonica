@@ -97,19 +97,32 @@ export class UploadComponent implements OnInit {
     return sessionStorage.getItem('fileName');
   }
 
-
+  clearStorage()
+  {
+    sessionStorage.removeItem('csv');
+    sessionStorage.removeItem('numOfPages');
+    sessionStorage.removeItem('numericValues');
+    sessionStorage.removeItem('statistics');
+    sessionStorage.removeItem('inputList');
+    sessionStorage.removeItem('output');
+    sessionStorage.removeItem('problemType');
+    sessionStorage.removeItem('encoding');
+    sessionStorage.removeItem('optimizer');
+    sessionStorage.removeItem('regularization');
+    sessionStorage.removeItem('lossFunction');
+    sessionStorage.removeItem('range');
+    sessionStorage.removeItem('activationFunction');
+    sessionStorage.removeItem('learningRate');
+    sessionStorage.removeItem('regularizationRate');
+    sessionStorage.removeItem('epochs');
+  }
 
   public uploadFile(files: any) {
     if (files.length === 0)
       return;
-
-      sessionStorage.removeItem('csv');
-      sessionStorage.removeItem('numOfPages');
-      sessionStorage.removeItem('numericValues');
-      sessionStorage.removeItem('statistics');
-      sessionStorage.removeItem('inputList');
-      sessionStorage.removeItem('output');
-
+    
+    this.clearStorage();
+      
     let file = <File>files[0];
     var fileSize = file.size;
     if (fileSize / 1048576 > 5000)
@@ -196,11 +209,11 @@ export class UploadComponent implements OnInit {
 
   useThis(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    sessionStorage.clear();
+    this.clearStorage();
   }
   useThisUn(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    sessionStorage.clear();
+    this.clearStorage();
   }
 
   delete(event, item) {
