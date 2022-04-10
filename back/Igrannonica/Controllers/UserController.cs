@@ -70,7 +70,8 @@ namespace Igrannonica.Controllers
             _context.User.Add(this.user);
             await _context.SaveChangesAsync();
 
-            return Ok(this.user);
+            token.token = "Success";
+            return Ok(token);
         }
 
         [HttpPost("EditUserName"), Authorize]

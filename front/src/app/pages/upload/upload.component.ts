@@ -196,13 +196,11 @@ export class UploadComponent implements OnInit {
 
   useThis(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    sessionStorage.removeItem('inputList');
-    sessionStorage.removeItem('output');
+    sessionStorage.clear();
   }
   useThisUn(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    sessionStorage.removeItem('inputList');
-    sessionStorage.removeItem('output');
+    sessionStorage.clear();
   }
 
   delete(event, item) {

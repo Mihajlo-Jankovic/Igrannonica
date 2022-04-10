@@ -43,8 +43,7 @@ export class RegistrationLayoutComponent implements OnInit {
             alert("Email vec postoji");
           else if (StringToken == "Username already exists!")
             alert("Korisnicko ime vec postoji");
-          else {
-            this.cookie.set("token", StringToken);
+          else if(StringToken == "Success"){
             this.router.navigate(['/login']);
           }
         })
