@@ -61,7 +61,7 @@ namespace Igrannonica.Controllers
             file.RandomFileName = RandomFileName;
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
-            file.IsPublic = true;
+            file.IsPublic = false;
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
             return Ok(new
