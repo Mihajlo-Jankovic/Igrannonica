@@ -34,12 +34,12 @@ i:hover {
 }
 
 .hyperparameter {
-    width: auto;
-    height: 80px;
+    width: 25%;
+    height: 100px;
     display: block;
     float: left;
     flex: auto;
-    margin-right: 1em;
+    padding: 0.5rem;
     margin-top: 1em;
 }
 
@@ -94,8 +94,8 @@ h6 {
     display: block;
     float: left;
     flex: auto;
-    margin-left: 1em;
-    margin-top: 1em;
+    margin-top: 1rem;
+    padding: 0px;
 }
 
 .train {
@@ -115,4 +115,16 @@ h6 {
     bottom: 0;
     width: 100%;
     cursor: pointer;
+}
+
+@media(max-width: 1350px) {
+    .hyperparameter {
+        width: 33.3%;
+    }
+}
+
+@media(max-width: 1110px) {
+    .hyperparameter {
+        width: 50%;
+    }
 }
