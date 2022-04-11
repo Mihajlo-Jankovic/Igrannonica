@@ -72,13 +72,13 @@ namespace Igrannonica.Controllers
 
         [DisableRequestSizeLimit]
         [HttpPost("unauthorized")]
-        public IActionResult UploadUnauthorized()
+        public async Task<IActionResult> UploadUnauthorized()
         {
+            var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             var request = HttpContext.Request;
-
+            
             var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             var encryptedFileName = AesOperation.EncryptString(_configuration.GetSection("AppSettings:Key").Value, RandomFileName);
             var fullPath = Path.Combine(pathToSave, RandomFileName);
             var task = UploadFile(request, fullPath);
@@ -141,6 +141,18 @@ namespace Igrannonica.Controllers
 
                     var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                             contentDisposition.FileName.Value);
+
+                    HttpClient client = new HttpClient();
+                    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+
+                    var endpoint = new Uri("http://127.0.0.1:5000/upload/" + contentDisposition.FileName.Value);
+                    StreamContent content = new StreamContent(request.Body);
+                    var response = await client.PostAsync(endpoint, new MultipartFormDataContent
+                    {
+                        {content, "file", contentDisposition.FileName.Value }
+                    });
+
                     using (var targetStream = new FileStream(fullPath, FileMode.Create))
                     {
                         await section.Body.CopyToAsync(targetStream);
