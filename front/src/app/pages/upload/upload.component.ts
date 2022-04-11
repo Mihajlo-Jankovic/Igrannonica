@@ -95,7 +95,7 @@ export class UploadComponent implements OnInit {
 
     let file = <File>files[0];
     var fileSize = file.size;
-    if (fileSize / 1048576 > 500)
+    if (fileSize / 1048576 > 5000)
       alert("Maximum file size is 500MB");
     else {
       const formData = new FormData();

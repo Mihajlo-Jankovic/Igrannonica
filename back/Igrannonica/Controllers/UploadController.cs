@@ -146,18 +146,13 @@ namespace Igrannonica.Controllers
                     client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
 
 
-                    var endpoint = new Uri("http://127.0.0.1:5000/upload/" + contentDisposition.FileName.Value);
+                    var endpoint = new Uri("http://127.0.0.1:8000/uploadFileAuthorized");
                     StreamContent content = new StreamContent(request.Body);
                     var response = await client.PostAsync(endpoint, new MultipartFormDataContent
                     {
                         {content, "file", contentDisposition.FileName.Value }
                     });
 
-                    using (var targetStream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        await section.Body.CopyToAsync(targetStream);
-                        targetStream.Dispose();
-                    }
                     return contentDisposition.FileName.Value;
                 }
 

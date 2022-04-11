@@ -56,7 +56,7 @@ def upload_file_unauthorized():
         return {'message' : "No selected file."}
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['AUTHORIZED_FOLDER'], filename))
+        file.save(os.path.join(app.config['UNAUTHORIZED_FOLDER'], filename))
         return {'message' : "Upload Successfull!"}
 
 @app.route('/downloadAuthorized/<name>')
@@ -70,3 +70,6 @@ def download_unauthorized_file(name):
 @app.route("/")
 def hello():
     return "Hello World"
+
+if __name__ == '__main__':
+    app.run(port=8000)
