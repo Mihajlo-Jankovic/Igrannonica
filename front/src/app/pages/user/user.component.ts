@@ -3,6 +3,8 @@ import { EditService } from "src/app/services/edit/edit.service";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EditPasswordService } from "src/app/services/edit/edit-password.service";
 import { UserInfoService } from "src/app/services/edit/user-info.service";
+import { HttpClient } from "@angular/common/http";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
   selector: "app-user",
@@ -11,9 +13,30 @@ import { UserInfoService } from "src/app/services/edit/user-info.service";
 })
 export class UserComponent implements OnInit {
 
+  data = {
+    'name' : "",
+    'fileName' : "",
+    'inputList' : [],
+    'output' : "",
+    'problemType' : "",
+    'encodingType' : "",
+    'optimizer' : "",
+    'regularization' : "",
+    'lossFunction' : "",
+    'ratio' : 0,
+    'activationFunction' : "",
+    'learningRate' : 0,
+    'regularizationRate' : 0,
+    'epochs' : 0,
+    'numLayers' : 0,
+    'layerList' : [],
+    'metrics' : []
+  }
 
   public editForm: FormGroup;
   public editPasswordForm: FormGroup;
+
+  experiments : any = []
 
   username: string;
   messageEditProfile: string;
@@ -24,7 +47,7 @@ export class UserComponent implements OnInit {
     return sessionStorage.getItem('username');
   }
 
-  constructor(private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
+  constructor(private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder, private userService : UserService) {
     this.username = this.getUsername();
     this.messageEditProfile = "";
     this.editForm = formBuilder.group({firstname:"", lastname:""});
@@ -35,6 +58,7 @@ export class UserComponent implements OnInit {
     this.userInfo = this.userInfoService.info().subscribe(data=> {
       this.userInfo = data;
     })
+    this.showExperiments()
   }
 
   public get m() {
@@ -62,8 +86,8 @@ export class UserComponent implements OnInit {
     }
   }
   
-  niz: any= [1, 2, 3];
-  clcDiv: any = [false, false, false];
+  niz: any= [1];
+  clcDiv: any = [false];
 
   openDiv(index1:number) {
     
@@ -73,6 +97,20 @@ export class UserComponent implements OnInit {
     else {
       this.clcDiv[index1] = false;
     }
+  }
+
+  showExperiments()
+  {
+    this.userService.getAllUserExperiments().subscribe(exp =>{
+      for(let i = 0; i< exp.length; i++)
+      {
+        let expData : any = {};
+        expData = exp[i];
+        this.data = expData;
+
+        this.experiments.push(this.data)
+      }
+    })
   }
 
 }

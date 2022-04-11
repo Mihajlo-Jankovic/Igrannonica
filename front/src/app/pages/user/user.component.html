@@ -7,13 +7,13 @@
                 </div>
                 <div class=" card-body">
                     <div class=" container b" style="padding-top:4px;">
-                        Project Name
+                        Experiments
                     </div>
 
-                    <div class=" container" *ngFor="let user of niz; index as i">
+                    <div class=" container" *ngFor="let exp of experiments; index as i">
                         <div style="min-height: 20px;">
                             <div style="position: relative; float: left; margin-top: 15px;">
-                                <h5>Eksperiment1</h5>
+                                <h5>{{exp['name']}}</h5>
                             </div>
                             <div *ngIf="!clcDiv[i]" style="position: relative; float: right; margin-top: 15px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-down"></i></div>
                             <div *ngIf="clcDiv[i]" style="position: relative; float: right; margin-top: 15px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-up"></i></div>
@@ -21,7 +21,7 @@
                         <div *ngIf="clcDiv[i]" class="box" style="margin-top: 30px;">
                             <div class="filenameparameter" style="margin-left: 0em;">
                                 <h6>File name</h6>
-                                <input type="text" class="dropdown" value="movies.csv" disabled>
+                                <input type="text" class="dropdown" value="{{exp['fileName']}}" disabled>
                             </div>
                             <div class="filenameparameter" style="float: right; margin-right: 1%;">
                                 <br>
@@ -34,59 +34,59 @@
                             <div class="parameter" style="margin-left: 0em; clear: both;">
                                 <h6>Inputs</h6>
                                 <select class="dropdown">
-                                    <option class="option"></option>
+                                    <option  *ngFor="let item of exp['inputList']; index as j" class="option">{{item}}</option>
                                 </select>
                             </div>
                             <div class="parameter">
                                 <h6>Output</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['output']}}" disabled>
                             </div>
                             <div class="titleDiv">
                                 <h4>Hyperparameters</h4>
                             </div>
                             <div class="hyperparameter" style="clear: both;">
                                 <h6>Problem type</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['problemType']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Encoding type</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['encodingType']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Optimizer</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['optimizer']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Regularization</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['regularization']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Loss Function</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['lossFunction']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Ratio of training</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['ratio']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Activation function</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['activationFunction']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Learning rate</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown"  value="{{exp['learningRate']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Regularization rate</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown"  value="{{exp['regularizationRate']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Number of epochs</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown"  value="{{exp['numEpochs']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Number of layers</h6>
-                                <input type="text" class="dropdown" disabled>
+                                <input type="text" class="dropdown" value="{{exp['numLayers']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Number of neurons</h6>
