@@ -345,5 +345,22 @@ namespace Igrannonica.Controllers
 
             return Ok(experiments);
         }
+
+        [HttpPost("deleteExperiment"), Authorize]
+        public async Task<ActionResult<string>> DeleteExperiment(DeleteDTO obj)
+        {
+            var username = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == username).FirstOrDefault();
+
+            if (user == null) return BadRequest("JWT is bad!");
+
+            var client = new MongoClient(mongoConnString);
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+
+            collection.DeleteOne(e => e._id == obj.Id);
+
+            return Ok(obj.Id);
+        }
     }
 }
