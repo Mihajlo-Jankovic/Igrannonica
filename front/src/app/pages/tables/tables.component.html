@@ -105,8 +105,10 @@
         </div>
         <div class=" col-lg-12">
             <div class=" card">
-                <div class=" card-header" (click)="showIOFun()">
-                    <h4 class=" card-title" style="color: white;">Click here to choose input and output columns</h4>
+                <div class=" card-header">
+                    <h4 class=" card-title" style="color: white; position: relative; float: left;">Click here to choose input and output columns</h4>
+                    <div *ngIf="!showIO" style="position: relative; float: right;" (click)="showIOFun()"><i class="tim-icons icon-minimal-down io"></i></div>
+                    <div *ngIf="showIO" style="position: relative; float: right;" (click)="showIOFun()"><i class="tim-icons icon-minimal-up io"></i></div>
                 </div>
                 <div class=" card-body" *ngIf="showIO" style="padding:2%; display: flex; justify-content: center;">
                     <div class="divInput">
@@ -114,7 +116,7 @@
                         <div *ngFor="let item of headingLines[0]; let i = index">
                             <div class="Ioption">
                                 <div class="checkDIV">
-                                    <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]">
+                                    <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
                                     <label for="{{ 'check' + i }}" class="check-box"></label>
                                 </div>
                                 <p>{{item}}</p>
@@ -126,7 +128,7 @@
                         <div *ngFor="let item of headingLines[0]; let i = index">
                             <div class="Ooption">
                                 <div class="radioDIV">
-                                    <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]">
+                                    <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]" [checked]="radios1[i]">
                                     <label for="{{ 'radio' + i }}" class="radio-button" style="margin: 0px;"></label>
                                 </div>
                                 <p>{{item}}</p>

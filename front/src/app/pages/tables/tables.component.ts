@@ -82,6 +82,9 @@ export class TablesComponent {
 
   radios: any = [];
   checks: any = [];
+  radios1: any = [];
+  checks1: any = [];
+  pret: number = -1;
 
   selectedType : string = "all";
   selectedRow : number = 10;
@@ -169,7 +172,7 @@ export class TablesComponent {
     let headersArray: any = [];
     for (let i = 0; i < this.data['columns'].length; i++) {
       headersArray.push(this.data['columns'][i]);
-      this.radios[i] = false;
+      this.radios[i] = true;
       this.checks[i] = false;
     }
     this.headingLines.push(headersArray);
@@ -209,6 +212,24 @@ export class TablesComponent {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedCol);
     }
+
+    //setovanje I/O
+    for (let i = 0; i < this.data['columns'].length-1; i++) {
+      this.radios1[i] = false;
+      this.checks1[i] = true;
+      this.listCheckedI.push(this.data['columns'][i]);
+    }
+
+    this.checks[this.data['columns'].length-1] = true;
+    this.checks1[this.data['columns'].length-1] = false;
+    this.listCheckedI.splice(this.data['columns'].length-1, 1);
+    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+
+    this.radios[this.data['columns'].length-1] = false;
+    this.radios1[this.data['columns'].length-1] = true;
+    this.selectedOutput = this.data['columns'][this.data['columns'].length-1];
+    sessionStorage.setItem('output', this.selectedOutput);
+    this.pret = this.headingLines[0].length-2;
   }
 
   public onSelectedType(event: any) {
@@ -475,6 +496,7 @@ export class TablesComponent {
       if(this.listCheckedI[i] == value) {
         var index = i; 
         exists = true;
+        break;
       }
     }
 
@@ -490,6 +512,15 @@ export class TablesComponent {
   
   selectedOutputFun(event: any) {
     var value = event.target.value;
+    var ind: number = -1;
+
+    for (let i = 0; i < this.headingLines[0].length; i++) {
+      if(this.selectedOutput == this.headingLines[0][i])
+        ind = i;
+    }
+
+    this.pret = ind;
+    console.log(this.pret);
     this.selectedOutput = value;
     sessionStorage.setItem('output', this.selectedOutput);
     //console.log(this.selectedOutput);
@@ -500,11 +531,11 @@ export class TablesComponent {
   }
   
   disableInput(id : number) {
-    if(this.checked != undefined) {
-      this.checks[this.checked] = !this.checks[this.checked];
-    }
     this.checks[id] = !this.checks[id];
-    this.checked = id;
+    
+    if(this.pret != -1)
+      this.checks[this.pret] = !this.checks[this.pret];
+    console.log(this.pret);
   }
 
   selectedID(id : number){
