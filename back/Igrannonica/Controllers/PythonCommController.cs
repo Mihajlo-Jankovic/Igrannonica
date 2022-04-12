@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
+using Igrannonica.DataTransferObjects;
 
 namespace Igrannonica.Controllers
 {
@@ -89,6 +90,14 @@ namespace Igrannonica.Controllers
                 var json = result.Content.ReadAsStringAsync().Result;
                 return Ok(json);
             }
+        }
+
+        [HttpPost("testLive")]
+        public async Task<ActionResult<string>> LiveTreniranje(Object obj)
+        {
+            Console.WriteLine(obj.ToString());
+
+            return Ok("OK");
         }
     }
 }

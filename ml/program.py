@@ -1,11 +1,17 @@
+from urllib.request import Request
 import tensorflow as tf
 import numpy as np
 import pandas as pd
 import csv
-from keras.regularizers import L1, L2
-from sklearn.preprocessing import LabelEncoder
 import category_encoders as ce
 import urllib
+import threading
+import requests
+import json
+from keras.regularizers import L1, L2
+from sklearn.preprocessing import LabelEncoder
+from tensorflow import keras
+
 
 '''
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
@@ -42,6 +48,20 @@ with open(path,'r') as infile:
     for row in reader:
         print(row[0])
 '''
+
+class CustomCallback(keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        keys = list(logs.keys())
+        modelHistory = {}
+        print(" ")
+        for key in keys:
+            modelHistory[key] = logs[key]
+        print(modelHistory)
+
+        headers = {'content-type': 'application/json'}
+        r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(modelHistory), verify=False)
+        print(r)
+
 
 def numberOfPages(df,rowNum):
     numOfPages = len(df)
@@ -288,11 +308,11 @@ m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
 def testiranje():
     df = pd.read_csv(path)
     X_train, X_test, y_train, y_test = prepare_data(df, ['Title','Genre'], ['Metascore'], 'label', 0.2)
-    print(X_train, X_test, y_train, y_test)
+    #print(X_train, X_test, y_train, y_test)
 
     m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 'Regression', 10, 'mean_squared_error', ['mse', 'mae'])
-    print(m)
-    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10)
+    #print(m)
+    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10, callbacks=[CustomCallback()])
     return model.history
 
 def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
@@ -303,3 +323,8 @@ def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, l
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, 10, lossFunction, metrics)
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs)
     return model.history
+
+t1 = threading.Thread(target=testiranje)
+
+t1.start()
+
