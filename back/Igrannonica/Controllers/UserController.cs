@@ -329,7 +329,7 @@ namespace Igrannonica.Controllers
         }
 
         [HttpGet("getUserExperiments"), Authorize]
-        public async Task<ActionResult<List<ExperimentDTO>>> GetUserExperiments()
+        public async Task<ActionResult<List<Experiment>>> GetUserExperiments()
         {
             var usernameOriginal = _userService.GetUsername();
             User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
@@ -357,6 +357,8 @@ namespace Igrannonica.Controllers
             var client = new MongoClient(mongoConnString);
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
+
+            //MongoDB.Bson.BsonDocument id = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(obj.Id);
 
             collection.DeleteOne(e => e._id == obj.Id);
 
