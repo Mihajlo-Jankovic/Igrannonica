@@ -24,5 +24,6 @@ namespace Igrannonica.Models
         public string lossFunction { get; set; }
         public List<string> metrics { get; set; }
         public int numEpochs { get; set; }
+        public string results { get; set; }
     }
 }
