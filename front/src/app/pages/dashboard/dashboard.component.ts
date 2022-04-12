@@ -133,6 +133,7 @@ export class DashboardComponent implements OnInit {
       this.selectedItems = this.dropdownList;
       this.metrics = this.selectedItems;
     }
+    sessionStorage.setItem('problemType', this.problemType);
   }
 
   multiselect(){
@@ -257,7 +258,54 @@ export class DashboardComponent implements OnInit {
     console.log(items);
   }
 
+  checkStorage()
+  {
+    if(sessionStorage.getItem('problemType'))
+    {
+      this.problemType = sessionStorage.getItem('problemType');
+    }
+    if(sessionStorage.getItem('encoding'))
+    {
+      this.encodingType = sessionStorage.getItem('encoding');
+    }
+    if(sessionStorage.getItem('optimizer'))
+    {
+      this.optimizer = sessionStorage.getItem('optimizer');
+    }
+    if(sessionStorage.getItem('regularization'))
+    {
+      this.regularization = sessionStorage.getItem('regularization');
+    }
+    if(sessionStorage.getItem('lossFunction'))
+    {
+      this.lossFunction = sessionStorage.getItem('lossFunction');
+    }
+    if(sessionStorage.getItem('range'))
+    {
+      this.range = Number(sessionStorage.getItem('range'));
+    }
+    if(sessionStorage.getItem('activationFunction'))
+    {
+      this.activationFunction = sessionStorage.getItem('activationFunction');
+    }
+    if(sessionStorage.getItem('learningRate'))
+    {
+      this.learningRate = Number(sessionStorage.getItem('learningRate'));
+    }
+    if(sessionStorage.getItem('regularizationRate'))
+    {
+      this.regularizationRate = Number(sessionStorage.getItem('regularizationRate'));
+    }
+    if(sessionStorage.getItem('epochs'))
+    {
+      this.epochs = Number(sessionStorage.getItem('epochs'));
+    }
+  }
+
   ngOnInit() {
+
+    this.checkStorage();
+
     this.multiselect();
     this.checkProblemType();
     this.layer.id = 1;
@@ -401,5 +449,57 @@ export class DashboardComponent implements OnInit {
 
     return this.ngbTooltip;
     
+  }
+
+  onSelected(event : any)
+  {
+    const target = event.target.name;
+    console.log(target)
+    const value = event.target.value;
+    if(target == "encodingType")
+    {
+      this.encodingType = value;
+      sessionStorage.setItem('encoding', this.encodingType);
+    }
+    else if(target == "optimizer")
+    {
+      this.optimizer = value;
+      sessionStorage.setItem('optimizer', this.optimizer);
+    }
+    else if(target == "regularization")
+    {
+      this.regularization = value;
+      sessionStorage.setItem('regularization', this.regularization);
+    }
+    else if(target == "lossFunction")
+    {
+      this.lossFunction = value;
+      sessionStorage.setItem('lossFunction', this.lossFunction);
+    }
+    else if(target == "range")
+    {
+      this.range = value;
+      sessionStorage.setItem('range', (this.range).toString());
+    }
+    else if(target == "activationFunction")
+    {
+      this.activationFunction = value;
+      sessionStorage.setItem('activationFunction', this.activationFunction);
+    }
+    else if(target == "learningRate")
+    {
+      this.learningRate = value;
+      sessionStorage.setItem('learningRate', (this.learningRate).toString());
+    }
+    else if(target == "regularizationRate")
+    {
+      this.regularizationRate = value;
+      sessionStorage.setItem('regularizationRate', (this.regularizationRate).toString());
+    }
+    else if(target == "epochs")
+    {
+      this.epochs = value;
+      sessionStorage.setItem('epochs', (this.epochs).toString());
+    }
   }
 }

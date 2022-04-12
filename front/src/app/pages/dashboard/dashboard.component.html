@@ -22,7 +22,7 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>Encoding type</h6>
-                        <select class='dropdown' [(ngModel)]="encodingType" ngbTooltip="Encoding type">
+                        <select class='dropdown' name="encodingType" [(ngModel)]="encodingType" (change)="onSelected($event)" ngbTooltip="Encoding type">
                             <option class='option' value="label">Label</option>
                             <option class='option' value="one-hot">One-Hot</option>
                             <option class='option' value="binary">Binary</option>
@@ -31,7 +31,7 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>Optimizer</h6>
-                        <select class='dropdown' [(ngModel)]="optimizer" ngbTooltip="Optimizer">
+                        <select class='dropdown' name="optimizer" [(ngModel)]="optimizer" ngbTooltip="Optimizer" (change)="onSelected($event)">
                             <option class='option' value="Adam">Adam</option>
                             <option class='option' value="SGD">SGD</option>
                             <option class='option' value="RMSprop">RMSprop</option>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>Regularization</h6>
-                        <select class='dropdown' [(ngModel)]="regularization" ngbTooltip="Regularization">
+                        <select class='dropdown' name="regularization" [(ngModel)]="regularization" ngbTooltip="Regularization" (change)="onSelected($event)">
                             <option class='option' value="None">None</option>
                             <option class='option' value="L1">L1</option>
                             <option class='option' value="L2">L2</option>
@@ -54,14 +54,14 @@
                         <h6>Loss function</h6>
                         <label style="display: none;" *ngIf="problemType == 'Regression'; then thenBlock1 else elseBlock1"></label>
                         <ng-template #thenBlock1>
-                            <select class='dropdown' [(ngModel)]="lossFunction" ngbTooltip="Loss function">
+                            <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="Loss function" (change)="onSelected($event)">
                                 <option class='option' value="mean_squared_error">Mean Squared Error</option>
                                 <option class='option' value="mean_squared_logarithmic_error">Mean Squared Logarithmic Error</option>
                                 <option class='option' value="mean_absolute_error">Mean Absolute Error</option>
                             </select>
                         </ng-template>
                         <ng-template #elseBlock1>
-                            <select class='dropdown' [(ngModel)]="lossFunction" ngbTooltip="Loss function">
+                            <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="Loss function" (change)="onSelected($event)">
                                 <option class='option' value="binary_crossentropy">Binary Cross-Entropy</option>
                                 <option class='option' value="hinge">Hinge Loss</option>
                                 <option class='option' value="squared_hinge">Squared Hinge Loss</option>
@@ -73,11 +73,11 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>Ratio of training to test data - {{range}} : {{100-range}}</h6>
-                        <input type="range" min="10" max="90" step="10" value="50" [(ngModel)]="range" ngbTooltip="Ratio of training to test data">
+                        <input type="range" name="range" min="10" max="90" step="10" value="50" [(ngModel)]="range" ngbTooltip="Ratio of training to test data" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameter">
                         <h6>Activation function</h6>
-                        <select class='dropdown' [(ngModel)]="activationFunction" ngbTooltip="Activation function">
+                        <select class='dropdown' name="activationFunction" [(ngModel)]="activationFunction" ngbTooltip="Activation function" (change)="onSelected($event)">
                             <option class='option' value="sigmoid">Sigmoid</option>
                             <option class='option' value="tanh">Tanh</option>
                             <option class='option' value="relu">Relu</option>
@@ -86,7 +86,7 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>Learning rate</h6>
-                        <select class='dropdown' [(ngModel)]="learningRate" ngbTooltip="Learning rate">
+                        <select class='dropdown' name="learningRate" [(ngModel)]="learningRate" ngbTooltip="Learning rate" (change)="onSelected($event)">
                             <option class='option' value="0.0001">0.0001</option>
                             <option class='option' value="0.001">0.001</option>
                             <option class='option' value="0.01">0.01</option>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>Regularization rate</h6>
-                        <select class='dropdown' [(ngModel)]="regularizationRate" ngbTooltip="Regularization rate">
+                        <select class='dropdown' name="regularizationRate" [(ngModel)]="regularizationRate" ngbTooltip="Regularization rate" (change)="onSelected($event)">
                             <option class='option' value="0">0</option>
                             <option class='option' value="0.001">0.001</option>
                             <option class='option' value="0.01">0.01</option>
@@ -114,7 +114,7 @@
                     </div>
                     <div class="hyperparameter" style="margin-bottom: 1rem;">
                         <h6>Number of Epochs</h6>
-                        <input class="dropdown" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs">
+                        <input class="dropdown" name="epochs" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameterMetrics">
                         <h6>Metrics</h6>

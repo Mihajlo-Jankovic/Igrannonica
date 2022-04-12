@@ -17,4 +17,5 @@ export class Configuration
     public fileUploadUnauthorized = this.port + "/api/FileUpload/unauthorized";
     public testiranje : string = this.port + "/api/PythonComm/testiranje";
     public startTesting : string = this.port + "/api/PythonComm/startTraining";
+    public userExperiments : string = this.port + "/api/User/getUserExperiments";
 }

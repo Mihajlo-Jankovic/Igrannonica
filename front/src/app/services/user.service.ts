@@ -1,19 +1,30 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { identifierName } from '@angular/compiler';
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
+import { Configuration } from '../configuration';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cookie : CookieService) { }
 
-  /*
-  getAllFilesFromUser(id: any): Observable<JSON[]> {
-    return this.http.get<JSON[]>("https://localhost:7219/api/User/"+id);
-  } */
+  configuration = new Configuration();
   
+  getAllUserExperiments()
+  {
+    if (this.cookie.check('token')) {
+      var token = this.cookie.get('token');
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + token
+      });
+      let options = { headers: headers };
+
+      return this.http.get<string>(this.configuration.userExperiments, options);
+    }
+  }
 
 }
