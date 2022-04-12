@@ -52,12 +52,9 @@ namespace Igrannonica.Controllers
 
             User user = _context.User.Where(u => u.username == userName).FirstOrDefault();
             Models.File file = new Models.File();
-            var folderName = Path.Combine("Resources", "CSVFiles");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
-            var fullPath = Path.Combine(pathToSave, RandomFileName);
             file.RandomFileName = RandomFileName;
-            var task = UploadFile(request, RandomFileName, "authorized");
+            var task = UploadFile(request, RandomFileName);
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
             file.FileName = task.Result;
@@ -65,9 +62,7 @@ namespace Igrannonica.Controllers
             file.IsPublic = true;
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
-            EncryptedFileNameDTO encryptedFileName = new EncryptedFileNameDTO();
-            encryptedFileName.filename = AesOperation.EncryptString(_configuration.GetSection("AppSettings:Key").Value, RandomFileName);
-            return Ok(encryptedFileName);
+            return Ok();
 
         }
 
@@ -78,11 +73,7 @@ namespace Igrannonica.Controllers
             var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             var request = HttpContext.Request;
             
-            var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var encryptedFileName = AesOperation.EncryptString(_configuration.GetSection("AppSettings:Key").Value, RandomFileName);
-            var fullPath = Path.Combine(pathToSave, RandomFileName);
-            var task = UploadFile(request, RandomFileName, "unauthorized");
+            var task = UploadFile(request, RandomFileName);
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
             EncryptedFileNameDTO efn = new EncryptedFileNameDTO();
@@ -92,23 +83,24 @@ namespace Igrannonica.Controllers
             file.IsPublic = false;
             file.UserForeignKey = null;
             //file.SessionID = sessionID;
-            efn.filename = encryptedFileName;
-            return Ok(efn);
+            return Ok();
 
         }
 
         [HttpGet("delete-unauthorized/{filename}")]
-        public IActionResult DeleteFileUnauthorized(EncryptedFileNameDTO efn)
+        public async Task<IActionResult> DeleteFileUnauthorized(string filename)
         {
-            var filename = AesOperation.DecryptString(_configuration.GetSection("AppSettings:Key").Value, efn.filename);
-            var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var fullPath = Path.Combine(pathToSave, filename);
-            System.IO.File.Delete(fullPath);
-            return Ok();
+            HttpClient client = new HttpClient();
+            var endpoint = new Uri("http://127.0.0.1:8000/deleteFile/" + filename);
+            var response = await client.GetAsync(endpoint);
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(new
+            {
+                responseMessage = content
+            });
         }
 
-        private async Task<string> UploadFile(HttpRequest request, string randomFileName, string authorized)
+        private async Task<string> UploadFile(HttpRequest request, string randomFileName)
         {
             // validation of Content-Type
             // 1. first, it must be a form-data request
@@ -147,7 +139,7 @@ namespace Igrannonica.Controllers
                     var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                             contentDisposition.FileName.Value);
 
-                    var endpoint = new Uri("http://127.0.0.1:8000/uploadFileAuthorized/" + authorized);
+                    var endpoint = new Uri("http://127.0.0.1:8000/uploadFile");
                     StreamContent content = new StreamContent(section.Body);
                     var response = await client.PostAsync(endpoint, new MultipartFormDataContent
                     {

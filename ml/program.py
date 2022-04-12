@@ -316,7 +316,7 @@ def testiranje():
     return model.history
 
 def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
-    PATH = 'https://localhost:7219/api/Csv/'
+    PATH = 'https://localhost:8000/downloadFile/'
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
 
@@ -324,7 +324,7 @@ def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, l
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs)
     return model.history
 
-t1 = threading.Thread(target=testiranje)
+# t1 = threading.Thread(target=testiranje)
 
-t1.start()
+# t1.start()
 

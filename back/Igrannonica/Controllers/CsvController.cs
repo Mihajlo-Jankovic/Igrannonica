@@ -36,7 +36,7 @@ namespace Igrannonica.Controllers
             if (file == null)
                 return BadRequest("no file with that name");*/
 
-            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+            var endpoint = new Uri("http://127.0.0.1:8000/editcell");
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var fileName = csv.fileName;
@@ -63,7 +63,7 @@ namespace Igrannonica.Controllers
             if (file == null)
                 return BadRequest("no file with that name");*/
 
-            var endpoint = new Uri("http://127.0.0.1:5000/deleterow");
+            var endpoint = new Uri("http://127.0.0.1:8000/deleterow");
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var fileName = csv.fileName;
@@ -88,7 +88,7 @@ namespace Igrannonica.Controllers
             if (file == null)
                 return BadRequest("no file with that name");
             HttpClient client = new HttpClient();
-            var endpoint = new Uri("http://127.0.0.1:8000/downloadFile?" + "name=" + filename + "&authorization=authorized" );
+            var endpoint = new Uri("http://127.0.0.1:8000/downloadFile/" + filename);
             var response = await client.GetAsync(endpoint);
             var bytes = await response.Content.ReadAsByteArrayAsync();
             return File(bytes, "csv/plain", filename);
@@ -97,7 +97,7 @@ namespace Igrannonica.Controllers
         [HttpPost("updatefilecall")]
         public async Task<IActionResult> UpdateFileCall()
         {
-            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+            var endpoint = new Uri("http://127.0.0.1:8000/editcell");
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var fileName = "prvipokusaj.csv";
