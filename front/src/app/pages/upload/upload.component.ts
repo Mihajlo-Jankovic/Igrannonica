@@ -23,8 +23,8 @@ export class UploadComponent implements OnInit {
   selectedPrivacyType: string = "all";
   session: any;
   //publicFiles: any = [];
-  publicFilesUnauthorized: any = [];
   //privateFiles: any = [];
+  publicFilesUnauthorized: any = [];
   allFiles: any = [];
   myFiles: any = [];
 
@@ -47,6 +47,8 @@ export class UploadComponent implements OnInit {
       this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
         this.FilesList = data;
 
+        this.allFiles = [];
+        this.myFiles = [];
         for (let i = 0; i < this.FilesList.length; i++) {
           if (this.FilesList[i]['username'] == this.getUsername()) {
             this.FilesList[i]['thisUser'] = this.getUsername();
@@ -56,14 +58,10 @@ export class UploadComponent implements OnInit {
           }
         } 
 
-
         for (let i = 0; i < this.FilesList.length; i++) {
-          if(this.FilesList[i]['isPublic'] == true) 
+          if(this.FilesList[i]['isPublic'] == true)  {
             this.allFiles.push(this.FilesList[i]);
-
-          /*if (this.FilesList[i]['isPublic'])
-            this.publicFiles.push(this.FilesList[i]);
-          else this.privateFiles.push(this.FilesList[i]);*/
+          }
           if(this.FilesList[i]['username']== this.getUsername()) {
             this.myFiles.push(this.FilesList[i]);
           }
@@ -86,17 +84,39 @@ export class UploadComponent implements OnInit {
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedPrivacyType = value;
-    /*
-    if (this.selectedPrivacyType == "true") {
-      this.FilesList = this.publicFiles;
-    }
-    else if (this.selectedPrivacyType == 'false') {
-      this.FilesList = this.privateFiles;
-    }*/
+
     if (this.selectedPrivacyType == "all")
       this.FilesList = this.allFiles;
     else if(this.selectedPrivacyType == "myFiles")
       this.FilesList = this.myFiles;
+
+    this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
+      this.FilesList = data;
+      this.myFiles = [];
+      this.allFiles = [];
+      for (let i = 0; i < this.FilesList.length; i++) {
+        if (this.FilesList[i]['username'] == this.getUsername()) {
+          this.FilesList[i]['thisUser'] = this.getUsername();
+        }
+        if(this.FilesList[i]['isPublic'] == true) {
+          this.FilesList[i]['Public']="true";
+        }
+      } 
+
+      for (let i = 0; i < this.FilesList.length; i++) {
+        if(this.FilesList[i]['isPublic'] == true) 
+          this.allFiles.push(this.FilesList[i]);
+
+        if(this.FilesList[i]['username']== this.getUsername()) {
+          this.myFiles.push(this.FilesList[i]);
+        }
+      }
+
+      if (this.selectedPrivacyType == "all")
+        this.FilesList = this.allFiles;
+      else if(this.selectedPrivacyType == "myFiles")
+        this.FilesList = this.myFiles;
+      })  
   }
 
   save(fileName: string) {
@@ -248,9 +268,12 @@ export class UploadComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(token);
         location.reload();
       })
-      location.reload();
+      if (this.selectedPrivacyType == "all")
+        location.reload();
+      this.myFiles = [];
+      this.allFiles = [];
     }
-    else if(event.target.checked){
+    if(event.target.checked){
       item.isPublic = true;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
@@ -259,7 +282,8 @@ export class UploadComponent implements OnInit {
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
       });
-      let options = { headers: headers };
+        let options = { headers: headers };
+      
       this.http.post<string>('https://localhost:7219/api/Csv/updateVisibility' ,
       {
         "id" : item.fileId,
@@ -268,7 +292,9 @@ export class UploadComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(token);
         location.reload();
       })
-      location.reload();
+      //location.reload();
+      this.myFiles = [];
+      this.allFiles = [];
     }
   }
 
