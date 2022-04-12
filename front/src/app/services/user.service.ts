@@ -27,4 +27,17 @@ export class UserService {
     }
   }
 
+  deleteExperiment(id)
+  {
+    if (this.cookie.check('token')) {
+      var token = this.cookie.get('token');
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + token
+      });
+      let options = { headers: headers };
+
+      return this.http.post<string>(this.configuration.deleteExperiment, {'Id' : id}, options);
+    }
+  }
+
 }

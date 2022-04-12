@@ -113,4 +113,13 @@ export class UserComponent implements OnInit {
     })
   }
 
+  deleteExperiments(id : any)
+  {
+    this.userService.deleteExperiment(id).subscribe(res => {
+      this.experiments = [];
+      this.showExperiments();
+    })
+    location.reload();
+  }
+
 }

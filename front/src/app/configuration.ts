@@ -18,4 +18,5 @@ export class Configuration
     public testiranje : string = this.port + "/api/PythonComm/testiranje";
     public startTesting : string = this.port + "/api/PythonComm/startTraining";
     public userExperiments : string = this.port + "/api/User/getUserExperiments";
+    public deleteExperiment : string = this.port + "/api/User/deleteExperiment";
 }
