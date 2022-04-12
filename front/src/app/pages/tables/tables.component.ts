@@ -50,6 +50,11 @@ export class TablesComponent {
     'index': []
   }
 
+  statistic = {
+    'colList': [],
+    'jsonList': []
+  }
+
   statisticData = {
     'rowsNum': 0,
     'min': 0,
@@ -145,7 +150,6 @@ export class TablesComponent {
       this.tableService.getAll(filename,type, rows, page).subscribe(
       (response) => {
         this.csv = response;
-
         let dataCSV: any = {};
         dataCSV = this.csv['csv'];
         this.data = dataCSV;
@@ -200,10 +204,10 @@ export class TablesComponent {
     for (let i = 0; i < this.numericValues['col'].length; i++) {
       numValueIndexArray = [];
       numValueIndexArray.push(this.numericValues['col'][i]);
-      numValueIndexArray.push(this.numericValues['index'][i]);
+      numValueIndexArray.push(i);
       this.numericValuesArray.push(numValueIndexArray);
     }
-
+    
     this.selectedColName = this.numericValuesArray[0][0];
     this.selectedCol = this.numericValuesArray[0][1];
     this.selectedColDiv = true;
@@ -262,69 +266,85 @@ export class TablesComponent {
   {
     if(sessionStorage.getItem('statistics'))
     {
-      this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
-      this.loadStatistics();
+      this.statistic = JSON.parse(sessionStorage.getItem('statistics'));
+      this.loadStatistics(col);
     }
     else{
     let filename = this.cookie.get('filename');
     this.tableService.getStatistics(filename, col).subscribe(
       (response) => {
-        this.statisticData = response;
-        //console.log(this.statisticData);
-
-        sessionStorage.setItem('statistics', JSON.stringify(this.statisticData));
-        this.loadStatistics();
+        this.statistic = response;
+        //console.log(this.statistic);
+        sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
+        this.loadStatistics(col);
         this.boxPlotFun();
       })
     }
   }
 
-  public loadStatistics()
+  colListData: any=[];
+  public loadStatistics(col:number)
   {
-    this.mixArray = [];
-    this.rowsNum = this.statisticData['rowsNum'];
-    this.min = this.statisticData['min'];
-    this.mixArray.push(this.min);
-    this.firstQ = this.statisticData['firstQ'];
-    this.mixArray.push(this.firstQ);
-    this.avg = this.statisticData['avg'];
-    this.med = this.statisticData['med'];
-    this.mixArray.push(this.med);
-    this.thirdQ = this.statisticData['thirdQ'];
-    this.mixArray.push(this.thirdQ);
-    this.max = this.statisticData['max'];
-    this.mixArray.push(this.max);
-
-    this.numArray = [];
-    for (let i = 0; i < this.statisticData['corrMatrix'][this.selectedCol].length; i++) {
-      this.numArray.push(this.statisticData['corrMatrix'][this.selectedCol][i]);
+    this.colListData=[];
+    for (let i = 0; i < this.statistic['colList'].length; i++) {
+      this.colListData.push(this.statistic['colList'][i]);
     }
 
-    this.outliers = [];
-    for(let i=0;i<this.statisticData['outliers'].length;i++){
-      this.outliers.push(this.statisticData['outliers'][i]);
+    for (let i = 0; i < this.statistic['jsonList'].length; i++) {
+      if(i == col) {
+        this.statisticData = this.statistic['jsonList'][i];
+        this.mixArray = [];
+        this.rowsNum = this.statisticData['rowsNum'];
+        this.min = this.statisticData['min'];
+        this.mixArray.push(this.min);
+        this.firstQ = this.statisticData['firstQ'];
+        this.mixArray.push(this.firstQ);
+        this.avg = this.statisticData['avg'];
+        this.med = this.statisticData['med'];
+        this.mixArray.push(this.med);
+        this.thirdQ = this.statisticData['thirdQ'];
+        this.mixArray.push(this.thirdQ);
+        this.max = this.statisticData['max'];
+        this.mixArray.push(this.max);
+
+        let permName: string;
+        for (let i = 0; i < this.colListData.length; i++) {
+          if(i == col) {
+            permName = this.colListData[i]; }
+        }
+    
+        this.numArray = [];
+        for (let i = 0; i < this.statisticData['corrMatrix'][permName].length; i++) {
+          this.numArray.push(this.statisticData['corrMatrix'][permName][i]);
+        }
+        
+        this.outliers = [];
+        for(let i=0;i<this.statisticData['outliers'].length;i++){
+          this.outliers.push(this.statisticData['outliers'][i]);
+        }
+
+        let fullMatrix: any = {};
+          fullMatrix = this.statisticData['fullCorrMatrix'];
+          this.fullMatrixData = fullMatrix;
+
+          this.fullCorrColNamesArray = [];
+          for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
+            this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
+          }
+
+          this.fullCorrValArray = [];
+          let valArray: any = [];
+          for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
+          valArray = [];
+
+          for(let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
+            valArray.push(this.fullMatrixData['values'][i][j]);
+          }
+          this.fullCorrValArray.push(valArray);
+        }
+        this.boxPlotFun();
+      }
     }
-
-    let fullMatrix: any = {};
-        fullMatrix = this.statisticData['fullCorrMatrix'];
-        this.fullMatrixData = fullMatrix;
-
-        this.fullCorrColNamesArray = [];
-        for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
-          this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
-        }
-
-        this.fullCorrValArray = [];
-        let valArray: any = [];
-        for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
-            valArray = [];
-
-            for(let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
-              valArray.push(this.fullMatrixData['values'][i][j]);
-            }
-            this.fullCorrValArray.push(valArray);
-        }
-
   }
 
   public onSelectedCol(event: any) {

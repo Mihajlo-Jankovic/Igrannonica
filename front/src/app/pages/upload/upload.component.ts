@@ -58,7 +58,9 @@ export class UploadComponent implements OnInit {
 
 
         for (let i = 0; i < this.FilesList.length; i++) {
-          this.allFiles.push(this.FilesList[i]);
+          if(this.FilesList[i]['isPublic'] == true) 
+            this.allFiles.push(this.FilesList[i]);
+
           /*if (this.FilesList[i]['isPublic'])
             this.publicFiles.push(this.FilesList[i]);
           else this.privateFiles.push(this.FilesList[i]);*/
@@ -66,7 +68,9 @@ export class UploadComponent implements OnInit {
             this.myFiles.push(this.FilesList[i]);
           }
         }
-      })
+        this.selectedPrivacyType = "all";
+        this.FilesList = this.allFiles;
+      })  
     }
     else {
       this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {

@@ -25,6 +25,7 @@ def numberOfPages(df,rowNum):
 
 # Izracunavanje statistika za odredjenu kolonu iz tabele
 def statistics(df,colIndex):
+    '''
     col = df.columns[colIndex]
 
     rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
@@ -118,8 +119,8 @@ def statistics(df,colIndex):
                         "corrMatrix": {col: corrArr},
                         "fullCorrMatrix": {"columns": colArr, "values": valArr}})
     
-    return { "colList:": colList, "jsonList": jsonList }
-    '''
+    return { "colList": colList, "jsonList": jsonList }
+    
 
 # Citanje CSV fajla
 def openCSV(path):
