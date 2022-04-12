@@ -334,14 +334,19 @@ namespace Igrannonica.Controllers
             var usernameOriginal = _userService.GetUsername();
             User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
 
-            if (user == null)
-                return BadRequest("JWT is bad!");
+            if (user == null) return BadRequest("JWT is bad!");
 
             var client = new MongoClient(mongoConnString);
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
 
             List<Experiment> experiments = collection.Find(e => e.userId == user.id).ToList();
+
+            foreach (Experiment experiment in experiments)
+            {
+                Models.File file = _context.File.Where(f => f.RandomFileName == experiment.fileName).FirstOrDefault();
+                experiment.fileName = file.FileName;
+            }
 
             return Ok(experiments);
         }
