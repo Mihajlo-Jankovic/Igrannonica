@@ -229,7 +229,8 @@ export class DashboardComponent implements OnInit {
       'problemType' : this.problemType, 
       'lossFunction' : this.lossFunction, 
       'metrics' : metrics, 
-      'numEpochs' : +this.epochs
+      'numEpochs' : +this.epochs,
+      'results' : JSON.stringify(this.modelHistory)
     }
     /*
           SLANJE ZAHTEVA
