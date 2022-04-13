@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   loggedUser: boolean;
   token : string;
+  cookieCheck:any;
   session :any;
 
   public isCollapsed = true;
@@ -46,6 +47,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.sidebarVisible = false;
 
     this.session = this.get();
+    this.cookieCheck = this.cookie.get('token');
 
   }
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)

@@ -23,6 +23,7 @@ export class UploadComponent implements OnInit {
   listOfFilesUnauthorized: any = [];
   selectedPrivacyType: string = "all";
   session: any;
+  cookieCheck:any;
   publicFiles: any = [];
   publicFilesUnauthorized: any = [];
   privateFiles: any = [];
@@ -34,13 +35,17 @@ export class UploadComponent implements OnInit {
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string}[];
 
   constructor(private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
-    this.session = this.getUsername();
+   // this.username = this.getUsername();
+  
+    this.cookieCheck = this.cookie.get('token');
     this.refreshToken();
   }
 
   getUsername() {
-    return sessionStorage.getItem('username');
+    return this.cookie.get('username');
+    
   }
+
 
   onLogout() {
     this.cookie.deleteAll();
@@ -73,7 +78,7 @@ export class UploadComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
-    if (this.session) {
+    if (this.cookieCheck) {
       this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
         this.FilesList = data;
 

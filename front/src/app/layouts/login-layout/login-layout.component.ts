@@ -64,6 +64,7 @@ export class LoginLayoutComponent implements OnInit {
         else {
           this.save(form.value.username,form.value.password);
           this.cookie.set("token", StringToken);
+          this.cookie.set("username",form.value.username);
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
             disableTimeOut: false,
             closeButton: true,

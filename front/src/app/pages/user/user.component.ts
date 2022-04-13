@@ -27,7 +27,6 @@ export class UserComponent implements OnInit {
   }
 
   constructor(private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
-    this.username = this.getUsername();
     this.messageEditProfile = "";
     this.editForm = formBuilder.group({firstname:"", lastname:""});
     this.editPasswordForm = formBuilder.group({currentPassword:"",newPassword:""});

@@ -59,7 +59,7 @@
                     </ul>
                 </li>
                 -->
-                <li class=" nav-item navbar-collapse" ngbDropdown *ngIf="session" [ngbCollapse]="isCollapsed" id="navigation">
+                <li class=" nav-item navbar-collapse" ngbDropdown *ngIf="cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <a class=" nav-link" data-toggle="dropdown" href="javascript:void(0)" ngbDropdownToggle>
                         <div class=" photo">
                             <img alt="Profile Photo" src="assets/img/anime3.png" />
@@ -81,7 +81,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class=" nav-item  navbar-collapse" *ngIf="!session" [ngbCollapse]="isCollapsed" id="navigation">
+                <li class=" nav-item  navbar-collapse" *ngIf="!cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <ul class=" navbar-nav ml-auto">
                         <li class=" nav-link">
                             <a class="login" href="/login" ngbDropdownItem>

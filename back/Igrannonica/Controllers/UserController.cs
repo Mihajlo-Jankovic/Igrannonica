@@ -122,6 +122,7 @@ namespace Igrannonica.Controllers
 
             return Ok(new
             {
+                user.username,
                 user.email,
                 user.firstname,
                 user.lastname,
