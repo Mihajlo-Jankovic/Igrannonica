@@ -33,7 +33,9 @@
                             "src/assets/scss/black-dashboard.scss",
                             "src/assets/css/nucleo-icons.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "./node_modules/chart.js/dist/Chart.js"
+                        ]
                     },
                     "configurations": {
                         "production": {

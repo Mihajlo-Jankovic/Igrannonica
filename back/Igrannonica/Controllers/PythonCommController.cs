@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
+using Igrannonica.DataTransferObjects;
 
 namespace Igrannonica.Controllers
 {
@@ -15,7 +16,7 @@ namespace Igrannonica.Controllers
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:5000/simpleget");
+                var endpoint = new Uri("http://127.0.0.1:8000/simpleget");
                 var result = client.GetAsync(endpoint).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
                 return Ok(json);
@@ -27,7 +28,7 @@ namespace Igrannonica.Controllers
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:5000/tabledata");
+                var endpoint = new Uri("http://127.0.0.1:8000/tabledata");
                 var newPost = new TableDataDTO()
                 {
                     FileName = parameters.FileName,
@@ -48,7 +49,7 @@ namespace Igrannonica.Controllers
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:5000/statistics");
+                var endpoint = new Uri("http://127.0.0.1:8000/statistics");
 
                 var newPost = new StatisticsDTO()
                 {
@@ -89,6 +90,14 @@ namespace Igrannonica.Controllers
                 var json = result.Content.ReadAsStringAsync().Result;
                 return Ok(json);
             }
+        }
+
+        [HttpPost("testLive")]
+        public async Task<ActionResult<string>> LiveTreniranje(Object obj)
+        {
+            Console.WriteLine(obj.ToString());
+
+            return Ok("OK");
         }
     }
 }

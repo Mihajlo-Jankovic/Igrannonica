@@ -36,7 +36,7 @@ namespace Igrannonica.Controllers
             if (file == null)
                 return BadRequest("no file with that name");*/
 
-            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+            var endpoint = new Uri("http://127.0.0.1:8000/editcell");
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var fileName = csv.fileName;
@@ -54,35 +54,50 @@ namespace Igrannonica.Controllers
 
         }
 
+        [DisableRequestSizeLimit]
+        [HttpPost("deletefilerow")]
+        public async Task<IActionResult> Delete(CsvDeleteRowDTO csv)
+        {
+
+            /*Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
+            if (file == null)
+                return BadRequest("no file with that name");*/
+
+            var endpoint = new Uri("http://127.0.0.1:8000/deleterow");
+            var folderName = Path.Combine("Resources", "CSVFiles");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            var fileName = csv.fileName;
+            var fullPath = Path.Combine(pathToSave, fileName);
+            HttpClient client = new HttpClient();
+            var csvJson = JsonConvert.SerializeObject(csv);
+            var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
+            using (var fs = new FileStream(
+                fullPath,
+                FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                await response.Content.CopyToAsync(fs);
+            }
+            return Ok();
+
+        }
+
         [HttpGet("{filename}")]
         public async Task<IActionResult> downloadfile(string filename)
         {
             Models.File? file = _mySqlContext.File.Where(f => f.RandomFileName == filename).FirstOrDefault();
-          /*  if (file == null)
-                return BadRequest("no file with that name");*/
-            var folderName = Path.Combine("Resources", "CSVFiles");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var fileName = filename;
-            var fullPath = Path.Combine(pathToSave, fileName);
-
-            byte[] bytes;
-            if (System.IO.File.Exists(fullPath))
-                bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
-            else
-            {
-                folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
-                pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                fileName = filename;
-                fullPath = Path.Combine(pathToSave, fileName);
-                bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
-            }
+            if (file == null)
+                return BadRequest("no file with that name");
+            HttpClient client = new HttpClient();
+            var endpoint = new Uri("http://127.0.0.1:8000/downloadFile/" + filename);
+            var response = await client.GetAsync(endpoint);
+            var bytes = await response.Content.ReadAsByteArrayAsync();
             return File(bytes, "csv/plain", filename);
         }
 
         [HttpPost("updatefilecall")]
         public async Task<IActionResult> UpdateFileCall()
         {
-            var endpoint = new Uri("http://127.0.0.1:5000/editcell");
+            var endpoint = new Uri("http://127.0.0.1:8000/editcell");
             var folderName = Path.Combine("Resources", "CSVFiles");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var fileName = "prvipokusaj.csv";

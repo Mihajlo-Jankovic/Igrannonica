@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -51,14 +52,11 @@ namespace Igrannonica.Controllers
 
             User user = _context.User.Where(u => u.username == userName).FirstOrDefault();
             Models.File file = new Models.File();
-            var folderName = Path.Combine("Resources", "CSVFiles");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
-            var fullPath = Path.Combine(pathToSave, RandomFileName);
-            var task = UploadFile(request, fullPath);
+            file.RandomFileName = RandomFileName;
+            var task = UploadFile(request, RandomFileName);
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
-            file.RandomFileName = RandomFileName;
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
             file.IsPublic = true;
@@ -73,16 +71,12 @@ namespace Igrannonica.Controllers
 
         [DisableRequestSizeLimit]
         [HttpPost("unauthorized")]
-        public IActionResult UploadUnauthorized()
+        public async Task<IActionResult> UploadUnauthorized()
         {
-            var request = HttpContext.Request;
-
-            var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
-            var encryptedFileName = AesOperation.EncryptString(_configuration.GetSection("AppSettings:Key").Value, RandomFileName);
-            var fullPath = Path.Combine(pathToSave, RandomFileName);
-            var task = UploadFile(request, fullPath);
+            var request = HttpContext.Request;
+            
+            var task = UploadFile(request, RandomFileName);
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
             Models.File file = new();
@@ -99,41 +93,19 @@ namespace Igrannonica.Controllers
         }
 
         [HttpGet("delete-unauthorized/{filename}")]
-        public IActionResult DeleteFileUnauthorized(string filename)
+        public async Task<IActionResult> DeleteFileUnauthorized(string filename)
         {
-            var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var fullPath = Path.Combine(pathToSave, filename);
-            System.IO.File.Delete(fullPath);
-            return Ok();
+            HttpClient client = new HttpClient();
+            var endpoint = new Uri("http://127.0.0.1:8000/deleteFile/" + filename);
+            var response = await client.GetAsync(endpoint);
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(new
+            {
+                responseMessage = content
+            });
         }
 
-        [HttpGet("delete-authorized/{filename}"), Authorize]
-        public async Task<IActionResult> DeleteFileAuthorized(string filename)
-        {
-            Models.File? file = _context.File.Where(f => f.RandomFileName == filename).FirstOrDefault();
-            if (file == null)
-            {
-                return BadRequest("wrong filename");
-            }
-            string username = _userService.GetUsername();
-            User? user = _context.User.Where(u => u.username == username).FirstOrDefault();
-
-            if (user.Files.Contains(file) == false)
-            {
-                return BadRequest("not your file");
-            }
-            _context.Remove(file);
-            await _context.SaveChangesAsync();
-            var folderName = Path.Combine("Resources", "CSVFiles");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            var fullPath = Path.Combine(pathToSave, filename);
-            System.IO.File.Delete(fullPath);
-            return Ok();
-        }
-
-
-        private async Task<string> UploadFile(HttpRequest request, string fullPath)
+        private async Task<string> UploadFile(HttpRequest request, string randomFileName)
         {
             // validation of Content-Type
             // 1. first, it must be a form-data request
@@ -144,9 +116,13 @@ namespace Igrannonica.Controllers
             {
                 return "los tip fajla";
             }
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
 
             var reader = new MultipartReader(mediaTypeHeader.Boundary.Value, request.Body);
             var section = await reader.ReadNextSectionAsync();
+
 
             // This sample try to get the first file from request and save it
             // Make changes according to your needs in actual use
@@ -167,11 +143,14 @@ namespace Igrannonica.Controllers
 
                     var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                             contentDisposition.FileName.Value);
-                    using (var targetStream = new FileStream(fullPath, FileMode.Create))
+
+                    var endpoint = new Uri("http://127.0.0.1:8000/uploadFile");
+                    StreamContent content = new StreamContent(section.Body);
+                    var response = await client.PostAsync(endpoint, new MultipartFormDataContent
                     {
-                        await section.Body.CopyToAsync(targetStream);
-                        targetStream.Dispose();
-                    }
+                        {content, "file", randomFileName },
+                    });
+
                     return contentDisposition.FileName.Value;
                 }
 
