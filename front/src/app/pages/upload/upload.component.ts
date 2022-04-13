@@ -175,8 +175,7 @@ export class UploadComponent implements OnInit {
         'Authorization': 'bearer ' + this.token
       });
       let options = { headers: headers };
-      const baseUrl = 'https://localhost:7219/api/Csv/';
-      this.http.get<any>('https://localhost:7219/api/Csv/'+item.randomFileName, {headers, responseType:'blob' as 'json'}).subscribe((response:any) => {
+      this.http.get<any>(this.configuration.downloadFile+item.randomFileName, {headers, responseType:'blob' as 'json'}).subscribe((response:any) => {
         let dataType = response.type;
         let binaryData=[];
         binaryData.push(response);
@@ -192,7 +191,7 @@ export class UploadComponent implements OnInit {
   }
 
   downloadUn(event, item) {
-    this.http.get<any>('https://localhost:7219/api/Csv/' + item.randomFileName, { responseType: 'blob' as 'json' }).subscribe((response: any) => {
+    this.http.get<any>(this.configuration.downloadFile + item.randomFileName, { responseType: 'blob' as 'json' }).subscribe((response: any) => {
 
       let dataType = response.type;
       let binaryData = [];
@@ -225,7 +224,7 @@ export class UploadComponent implements OnInit {
       'Authorization': 'bearer ' + this.token
     });
     let options = { headers: headers };
-    this.http.get<any>('https://localhost:7219/api/FileUpload/delete-authorized/' + item.randomFileName, options).subscribe(token => {
+    this.http.get<any>(this.configuration.downloadFileUnauthorized + item.randomFileName, options).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
       location.reload();
     })
@@ -242,7 +241,7 @@ export class UploadComponent implements OnInit {
         'Authorization': 'bearer ' + this.token
       });
       let options = { headers: headers };
-      this.http.post<string>('https://localhost:7219/api/Csv/updateVisibility',
+      this.http.post<string>(this.configuration.updateVisibility,
       {
         "id" : item.fileId,
         "isVisible" : item.isPublic
@@ -262,7 +261,7 @@ export class UploadComponent implements OnInit {
         'Authorization': 'bearer ' + this.token
       });
       let options = { headers: headers };
-      this.http.post<string>('https://localhost:7219/api/Csv/updateVisibility' ,
+      this.http.post<string>(this.configuration.updateVisibility ,
       {
         "id" : item.fileId,
         "isVisible" : item.isPublic

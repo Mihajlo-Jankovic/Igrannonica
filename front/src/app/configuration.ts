@@ -1,6 +1,10 @@
+import { Component, Input } from "@angular/core";
+import { environment } from "src/environments/environment";
+
 export class Configuration
 {
-    public port : string  = "https://localhost:7219";
+    public port : string = environment.url;
+    
 
     public login : string = this.port + "/api/User/login";
     public register : string = this.port + "/api/User/register";
@@ -19,4 +23,8 @@ export class Configuration
     public startTesting : string = this.port + "/api/PythonComm/startTraining";
     public userExperiments : string = this.port + "/api/User/getUserExperiments";
     public deleteExperiment : string = this.port + "/api/User/deleteExperiment";
+    public saveExperiment : string = this.port + "/api/User/saveExperiment";
+    public downloadFile : string = this.port + "/api/Csv/";
+    public downloadFileUnauthorized = this.port + "/api/FileUpload/delete-authorized/";
+    public updateVisibility = this.port + "/api/Csv/updateVisibility";
 }

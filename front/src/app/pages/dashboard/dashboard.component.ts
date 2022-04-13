@@ -236,7 +236,7 @@ export class DashboardComponent implements OnInit {
     /*
           SLANJE ZAHTEVA
     */
-    this.http.post("https://localhost:7219/api/User/saveExperiment", experiment, options).subscribe(
+    this.http.post(this.configuration.saveExperiment, experiment, options).subscribe(
       (response) => {
         this.notify.showNotification("Experiment saved to your profile successfully!");
       }
