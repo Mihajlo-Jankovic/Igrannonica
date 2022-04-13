@@ -2,6 +2,7 @@
 {
     public class TrainingDTO
     {
+        public string connID { get; set; }
         public string fileName { get; set; }
         public string[] inputList { get; set; }
         public string output { get; set; }

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Igrannonica.Models;
+using System.Text;
 
 namespace Igrannonica.Hubs
 {
@@ -26,9 +28,12 @@ namespace Igrannonica.Hubs
             }
             else
             {
-                await Clients.Client(toClient).SendAsync("");
+                await Clients.Client(toClient).SendAsync("ReceiveMessage", message);
             }
         }
+
+
+
         /*public string Get(string target) => $"Hello {target} {Context.ConnectionId}";
 
         public async Task ReceiveStream(IAsyncEnumerable<string> messages, string param)
