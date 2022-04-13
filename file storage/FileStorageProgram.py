@@ -1,18 +1,7 @@
-from urllib.request import Request
-import tensorflow as tf
 import numpy as np
 import pandas as pd
 import csv
-import category_encoders as ce
 import urllib
-import threading
-import requests
-import json
-from keras.regularizers import L1, L2
-from sklearn.preprocessing import LabelEncoder
-from tensorflow import keras
-
-
 
 def numberOfPages(df,rowNum):
     numOfPages = len(df)
@@ -37,39 +26,63 @@ def statistics(df,colIndex):
     avg = round(df[col].mean(), 3) # Srednja vrednost
     med = round(df[col].median(), 3) # Mediana
     firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
-    round(firstQ,3)
-    round(thirdQ,3)
+    firstQ = round(firstQ,3)
+    thirdQ = round(thirdQ,3)
     corrMatrix = df.corr() # Korelaciona matrica
+
+    iqr = thirdQ - firstQ
+
+    lower_bound = firstQ - 1.5 * iqr
+    upper_bound = thirdQ + 1.5 * iqr
+
+    outliers = []
+    for value in df[col]:
+        if(value < lower_bound or value > upper_bound): 
+            outliers.append(value)
+
+    print(outliers)
 
     corrArr = []
     for value in corrMatrix[df.columns[colIndex]]:
         corrArr.append(round(value,3))
 
-    return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
-                "firstQ": firstQ, "thirdQ": thirdQ, "corrMatrix": {colIndex: corrArr}}
+    colArr = []
+    valArr = []
+    for col in corrMatrix:
+        colArr.append(col)
 
+        tmpArr = []
+        for value in corrMatrix[col]:
+            tmpArr.append(round(value,3))
+        
+        valArr.append(tmpArr)
+
+    return {"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
+            "firstQ": firstQ, "thirdQ": thirdQ, "outliers": outliers, 
+            "corrMatrix": {colIndex: corrArr},
+            "fullCorrMatrix": {"columns": colArr, "values": valArr}}
 
 
 def openCSV(path):
-    with urllib.request.urlopen(path) as f: 
-        header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
+    #with open(path) as f: 
+        #header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
-    if(header): 
-        df = pd.read_csv(path, index_col = 0) 
+    if(True): 
+        df = pd.read_csv(path, index_col = False, engine = 'python') 
 
         #df.columns = [col.lower() for col in df]
         #df.columns = [col.strip('-$%') for col in df]
         #df.columns = [col.strip() for col in df]
         #df.columns = [col.replace(' ','_') for col in df]
     else: 
-        df = pd.read_csv(path, header = None) 
+        df = pd.read_csv(path, index_col = False, header = None, engine = 'python') 
 
     return df
 
 
 
 def paging(df,rowNum,pageNum):
-    row = rowNum * (pageNum - 1) + 1    
+    row = rowNum * (pageNum - 1)
     return df.loc[np.r_[row:row+rowNum], :]
 
 # Filtriranje CSV fajlova prema parametrima klijenta
@@ -84,9 +97,9 @@ def filterCSV(path, rowNum, dataType, pageNum):
         df = df[~df.index.isin(na_free.index)]
 
     numOfPages = numberOfPages(df,rowNum)
-
+    
     df = paging(df,rowNum,pageNum)
-
+    print(df)
     return [df,numOfPages]
 
 def numericValues(path):

@@ -92,15 +92,14 @@ def edit_cell():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
 
-        df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['FileName']))
+        df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
         df = FileStorageProgram.editCell(df,int(json['rowNumber']), json['columnName'], json['value'])
 
-        file = io.BytesIO()
-        df.to_csv(file, mode='b')
-        file.seek(0)
+        
+        df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']), index=False)
 
-        return send_file(file, download_name=json['fileName'])
-            
+        return {"message" : "Edit successfull."}
+        
     else:
         return content_type
 
@@ -110,15 +109,12 @@ def delete_row():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
-
-        df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['FileName']))
+        df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
         df = FileStorageProgram.deleteRow(df,json['rowNumber'])
+    
+        df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']), index=False)
 
-        file = io.BytesIO()
-        df.to_csv(file, mode='b')
-        file.seek(0)
-
-        return send_file(file, download_name=json['fileName'])
+        return {"message" : "Delete successfull."}
         
     else:
         return content_type

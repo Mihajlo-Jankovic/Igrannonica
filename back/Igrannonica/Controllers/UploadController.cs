@@ -105,6 +105,35 @@ namespace Igrannonica.Controllers
             });
         }
 
+
+        [HttpGet("delete-authorized/{filename}"), Authorize]
+        public async Task<IActionResult> DeleteFileAuthorized(string filename)
+        {
+            Models.File? file = _context.File.Where(f => f.RandomFileName == filename).FirstOrDefault();
+            if (file == null)
+            {
+                return BadRequest("wrong filename");
+            }
+            string username = _userService.GetUsername();
+            User? user = _context.User.Where(u => u.username == username).FirstOrDefault();
+
+            if (user.Files.Contains(file) == false)
+            {
+                return BadRequest("not your file");
+            }
+            _context.Remove(file);
+            await _context.SaveChangesAsync();
+            HttpClient client = new HttpClient();
+            var endpoint = new Uri("http://127.0.0.1:8000/deleteFile/" + filename);
+            var response = await client.GetAsync(endpoint);
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(new
+            {
+                responseMessage = content
+            });
+        }
+
+
         private async Task<string> UploadFile(HttpRequest request, string randomFileName)
         {
             // validation of Content-Type
