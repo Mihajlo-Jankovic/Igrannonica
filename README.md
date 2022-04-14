@@ -1,5 +1,23 @@
 <h1>Cortex - Igrannonica</h1>
 
+<h2>Server</h2>
+
+Uputstvo i konfiguracije za server
+
+**Spisak zauzetih portova:**
+
+```
+10105 - WebServer za Angular
+10106 - .NET server
+10107 - Main Flask Server
+10108 - Storage Flask Server
+10109 - MongoDB
+```
+
+<h2>Local</h2>
+
+Uputstvo i konfiguracije za local
+
 **Da bi se aplikacija uspesno pokretala potrebno je imati sledece:**
 
 ```
