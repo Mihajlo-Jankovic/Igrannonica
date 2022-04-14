@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
 using Igrannonica.DataTransferObjects;
+using Microsoft.AspNetCore.SignalR;
+using Igrannonica.Hubs;
 
 namespace Igrannonica.Controllers
 {
@@ -11,6 +13,14 @@ namespace Igrannonica.Controllers
     [ApiController]
     public class PythonCommController : ControllerBase
     {
+
+        private IHubContext<ChatHub> _hub;
+
+        public PythonCommController(IHubContext<ChatHub> hub)
+        {
+            _hub = hub;
+        }
+
         [HttpGet("getRequest")]
         public async Task<ActionResult<string>> SendGetRequest()
         {
@@ -93,10 +103,10 @@ namespace Igrannonica.Controllers
         }
 
         [HttpPost("testLive")]
-        public async Task<ActionResult<string>> LiveTreniranje(Object obj)
+        public async Task<ActionResult<string>> LiveTreniranje(dynamic obj)
         {
             Console.WriteLine(obj.ToString());
-
+            _hub.Clients.Client(obj.ConnID).SendAsync("trainingdata", obj.ToString());
             return Ok("OK");
         }
     }
