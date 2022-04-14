@@ -13,3 +13,5 @@ export const AdminLayoutRoutes: Routes = [
   { path: "tables", component: TablesComponent, canActivate:[UploadGuardService] },
   { path : "upload", component : UploadComponent}
 ];
+
+
