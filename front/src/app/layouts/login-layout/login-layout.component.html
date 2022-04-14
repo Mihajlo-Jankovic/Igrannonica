@@ -3,12 +3,12 @@
         <div _ngcontent-lhv-c2="" class=" container-fluid">
             <div _ngcontent-lhv-c2="" class=" navbar-wrapper">
                 <div _ngcontent-lhv-c2="" class=" navbar-toggle d-inline"><button _ngcontent-lhv-c2="" class=" navbar-toggler" type="button"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar1"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar2"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar3"></span></button></div>
-                <a _ngcontent-lhv-c2="" class=" navbar-brand" href="/login"> Log in </a>
+                <a _ngcontent-lhv-c2="" class=" navbar-brand" routerLink="/login" routerLinkActive="active"> Log in </a>
             </div><button _ngcontent-lhv-c2="" aria-label="Toggle navigation" class=" navbar-toggler" id="navigation" type="button" aria-expanded="false"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span></button>
             <div _ngcontent-lhv-c2="" class="navbar-collapse collapse" id="navigation" aria-expanded="false" aria-hidden="true" style="display: none;">
                 <ul _ngcontent-lhv-c2="" class=" navbar-nav ml-auto">
-                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link" href="/register"><i _ngcontent-lhv-c2="" class=" tim-icons icon-laptop"></i> Register </a></li>
-                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link text-primary" href="/upload"><i _ngcontent-lhv-c2="" class=" tim-icons icon-minimal-left"></i> Back to Playground </a></li>
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link" routerLink="/register" routerLinkActive="active"><i _ngcontent-lhv-c2="" class=" tim-icons icon-laptop"></i> Register </a></li>
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link text-primary" routerLink="/upload" routerLinkActive="active"><i _ngcontent-lhv-c2="" class=" tim-icons icon-minimal-left"></i> Back to Playground </a></li>
                 </ul>
             </div>
         </div>
@@ -51,12 +51,12 @@
                                 <button type="submit" [disabled]="!loginForm.valid" class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
                                 <div class=" pull-left">
                                     <h6>
-                                        <a class="text-primary" href="register"> Create Account </a>
+                                        <a class="text-primary" routerLink="register" routerLinkActive="active"> Create Account </a>
                                     </h6>
                                 </div>
                                 <div class=" pull-right">
                                     <h6>
-                                        <a class="text-primary" href="javascript:void(0)"> Need Help? </a>
+                                        <a class="text-primary" routerLink="javascript:void(0)" routerLinkActive="active"> Need Help? </a>
                                     </h6>
                                 </div>
                             </div>

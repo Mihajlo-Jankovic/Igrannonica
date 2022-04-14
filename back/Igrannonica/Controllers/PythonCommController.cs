@@ -90,7 +90,7 @@ namespace Igrannonica.Controllers
             }
         }
 
-        [HttpGet("testiranje")]
+        [HttpGet("testiranje")] 
         public async Task<ActionResult<string>> TestiranjeIstorije()
         {
             using (var client = new HttpClient())

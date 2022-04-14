@@ -26,6 +26,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   closeResult: string;
 
+  navTo(url : string){
+
+  }
+
   get(){
     return sessionStorage.getItem('username');
   }
