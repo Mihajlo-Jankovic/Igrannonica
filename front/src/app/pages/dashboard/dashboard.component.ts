@@ -9,6 +9,7 @@ import { Configuration } from "src/app/configuration";
 import { LoginService } from "src/app/services/login.service";
 import { ToastrService } from "ngx-toastr";
 import { NotificationsService } from "src/app/services/notifications.service";
+import { SignalRService } from "src/app/services/signal-r.service";
 
 @Component({
   selector: "app-dashboard",
@@ -62,7 +63,7 @@ export class DashboardComponent implements OnInit {
   selectedItems = [];
   dropdownSettings:IDropdownSettings = {};
 
-  constructor(private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
+  constructor(private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
   configuration = new Configuration();
 
@@ -258,6 +259,9 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.signal.startConnection();
+
     this.multiselect();
     this.checkProblemType();
     this.layer.id = 1;
