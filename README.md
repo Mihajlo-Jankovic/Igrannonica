@@ -1,0 +1,36 @@
+<h1>Cortex - Igrannonica</h1>
+
+**Da bi se aplikacija uspesno pokretala potrebno je imati sledece:**
+
+```
+Angular CLI: 13.2.5
+Node: 16.14.0
+Package Manager: npm 8.3.1
+.NET: 6.0
+MySql: 8.0
+Python: 3.10.2
+Anakonda: NE
+
+Python biblioteke: tensorflow, pandas, csv, keras, sklearn, category_encoders, urllib, flask, json, requests, websockets, asyncio
+```
+
+**Frontend**
+
+Potrebno je otvoriti terminal i u njemu otvoriti folder "front" u kojem se nalazi Angular, iz tog foldera izvrsiti sledece komande:
+```
+npm install
+ng serve
+```
+
+**Backend**
+
+U folderu "back" pronaci fajl "Igrannonica.sln" i pokrenuti ga. Kada se pokrene otvora se konzola i tab u swagger-u koji moraju biti otvoreni dok se koristi aplikacija, u suprotnom .NET server ce se ugasiti.
+
+**ML**
+
+Potrebno je otvoriti terminal i u njemu otvoriti folder "ml" u kojem se nalaze python skripte. Iz tog foldera u terminalu izvrsiti sledece komande:
+
+```
+set FLASK_APP="FlaskServer.py"
+python3 -m flask run
+```
