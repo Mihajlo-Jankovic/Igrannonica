@@ -212,6 +212,7 @@ export class TablesComponent {
   }
 
   public onSelectedType(event: any) {
+    this.page = 1;
     const value = event.target.value;
     this.selectedType = value;
     sessionStorage.removeItem('csv');
@@ -222,11 +223,12 @@ export class TablesComponent {
   } 
 
   public onSelectedRow(event: any) {
-  const value = event.target.value;
-  this.selectedRow = value;
-  this.clearStorage();
-  this.reset();
-  this.showTable(this.selectedType, this.selectedRow, this.page);
+    this.page = 1;
+    const value = event.target.value;
+    this.selectedRow = value;
+    this.clearStorage();
+    this.reset();
+    this.showTable(this.selectedType, this.selectedRow, this.page);
   }
 
   reset()

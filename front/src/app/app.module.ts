@@ -26,12 +26,12 @@ import { NgApexchartsModule } from "ng-apexcharts";
     HttpClientModule,
     ComponentsModule,
     NgbModule,
-    RouterModule,
     AppRoutingModule,
     BrowserModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
-    NgApexchartsModule
+    NgApexchartsModule,
+    RouterModule
   ],
   declarations: [
     AppComponent, 

@@ -69,7 +69,7 @@
                     </a>
                     <ul class=" dropdown-navbar" ngbDropdownMenu>
                         <li class=" nav-link">
-                            <a class=" nav-item" href="/user" ngbDropdownItem style="color: #bcb8b7;">
+                            <a class=" nav-item" routerLink="/user" routerLinkActive="active" ngbDropdownItem style="color: #bcb8b7;">
                                 Profile
                             </a>
                         </li>
@@ -84,7 +84,7 @@
                 <li class=" nav-item  navbar-collapse" *ngIf="!cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <ul class=" navbar-nav ml-auto">
                         <li class=" nav-link">
-                            <a class="login" href="/login" ngbDropdownItem>
+                            <a class="login" routerLink="/login" routerLinkActive="active" ngbDropdownItem>
                                 LOG IN
                             </a>
                         </li>

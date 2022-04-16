@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Igrannonica.Services.UserService;
 using Igrannonica.Services.FileService;
+using Microsoft.AspNetCore.SignalR;
+using Igrannonica.Hubs;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -60,15 +62,16 @@ builder.Services.AddCors(options =>
         {
             builder.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
         });
 });
 
 builder.Services.Configure<FormOptions>(o =>
 {
-   o.ValueLengthLimit = int.MaxValue;
-   o.MultipartBodyLengthLimit = int.MaxValue;
-   o.MemoryBufferThreshold = int.MaxValue;
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
 });
 
 var app = builder.Build();
@@ -85,6 +88,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseCors(myAllowSpecificOrigins);
+
+
+
+
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -99,5 +106,6 @@ app.MapControllers();
 FileService fileService = new FileService();
 Thread t1 = new Thread(new ThreadStart(fileService.DeleteAllExpiredFiles));
 t1.Start();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
