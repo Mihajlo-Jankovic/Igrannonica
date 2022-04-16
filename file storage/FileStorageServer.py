@@ -50,9 +50,6 @@ def delete_file(filename):
         return 'successfully deleted'
     return 'error'
 
-@app.route("/")
-def hello():
-    return "Hello World"
 
 # Kontroler za prikaz podataka u tabeli
 @app.route('/tabledata', methods=['POST'])
@@ -120,4 +117,4 @@ def delete_row():
         return content_type
 
 if __name__ == '__main__':
-    app.run(port=8000)
+    app.run(port=10108)

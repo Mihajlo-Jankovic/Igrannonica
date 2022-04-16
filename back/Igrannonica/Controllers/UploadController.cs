@@ -96,7 +96,10 @@ namespace Igrannonica.Controllers
         public async Task<IActionResult> DeleteFileUnauthorized(string filename)
         {
             HttpClient client = new HttpClient();
-            var endpoint = new Uri("http://127.0.0.1:8000/deleteFile/" + filename);
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:DeleteFile").Value + filename);
+
             var response = await client.GetAsync(endpoint);
             var content = await response.Content.ReadAsStringAsync();
             return Ok(new
@@ -124,7 +127,9 @@ namespace Igrannonica.Controllers
             _context.Remove(file);
             await _context.SaveChangesAsync();
             HttpClient client = new HttpClient();
-            var endpoint = new Uri("http://127.0.0.1:8000/deleteFile/" + filename);
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:DeleteFile").Value + filename);
             var response = await client.GetAsync(endpoint);
             var content = await response.Content.ReadAsStringAsync();
             return Ok(new
@@ -173,7 +178,9 @@ namespace Igrannonica.Controllers
                     var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                             contentDisposition.FileName.Value);
 
-                    var endpoint = new Uri("http://127.0.0.1:8000/uploadFile");
+                    var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:UploadFile").Value);
                     StreamContent content = new StreamContent(section.Body);
                     var response = await client.PostAsync(endpoint, new MultipartFormDataContent
                     {

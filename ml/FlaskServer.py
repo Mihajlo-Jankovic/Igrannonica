@@ -8,13 +8,7 @@ PATH = 'https://localhost:7219/api/Csv/'
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello():
-    return "Hello World"
 
-@app.route("/simpleget", methods=['GET'])
-def tableData():
-    return json.dumps({'Title': 'test', 'Body': 'test', 'UserId' : 4})
 
 
 @app.route('/startTraining', methods=['POST'])
@@ -29,10 +23,6 @@ def startTraining():
     else:
         return content_type
 
-@app.route('/testiranje', methods=['GET'])
-def probaIspisa():
-    history = program.testiranje()
-    return history
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=10107)
