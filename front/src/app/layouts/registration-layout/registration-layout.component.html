@@ -1,0 +1,123 @@
+<header>
+    <nav _ngcontent-lhv-c2="" class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
+        <div _ngcontent-lhv-c2="" class=" container-fluid">
+            <div _ngcontent-lhv-c2="" class=" navbar-wrapper">
+                <div _ngcontent-lhv-c2="" class=" navbar-toggle d-inline"><button _ngcontent-lhv-c2="" class=" navbar-toggler" type="button"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar1"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar2"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar3"></span></button></div>
+                <a _ngcontent-lhv-c2="" class=" navbar-brand" href="/register"> Register </a>
+            </div><button _ngcontent-lhv-c2="" aria-label="Toggle navigation" class=" navbar-toggler" id="navigation" type="button" aria-expanded="false"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span></button>
+            <div _ngcontent-lhv-c2="" class="navbar-collapse collapse" id="navigation" aria-expanded="false" aria-hidden="true" style="display: none;">
+                <ul _ngcontent-lhv-c2="" class=" navbar-nav ml-auto">
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link" href="/login"><i _ngcontent-lhv-c2="" class=" tim-icons icon-single-02"></i> Login </a></li>
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link text-primary" href="/upload"><i _ngcontent-lhv-c2="" class=" tim-icons icon-minimal-left"></i> Back to Playground </a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="wrapper wrapper-full-page">
+    <div class="full-page login-page ">
+        <div class="content">
+            <div class="container">
+                <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
+                    <form class="form" novalidate [formGroup]="registerForm" (ngSubmit)="registration(registerForm)">
+                        <div class=" card card-login">
+                            <div class=" card-header">
+                                <h1 class=" card-title">Register</h1>
+                            </div>
+                            <div class=" card-body">
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="First Name" name="firstname" formControlName="firstname" class="form-control">
+                                </div>
+                                <div *ngIf="m.firstname.touched && m.firstname.invalid" class="input-group">
+                                    <div *ngIf="m.firstname.errors?.required">Popunite prazno polje!</div>
+                                    <div *ngIf="m.firstname.errors?.pattern">*Dozvoljena su velika slova, mala slova, broj karaktera(2, 20)</div>
+                                </div>
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Last Name" name="lastname" formControlName="lastname" class="form-control">
+                                </div>
+                                <div *ngIf="m.lastname.touched && m.lastname.invalid" class="input-group">
+                                    <div *ngIf="m.lastname.errors?.required">Molim vas unesite prezime!</div>
+                                    <div *ngIf="m.lastname.errors?.pattern">*Dozvoljena su velika slova, mala slova, broj karaktera(2, 20)</div>
+                                </div>
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-email-85"></i>
+                                        </div>
+                                    </div>
+                                    <input type="email" placeholder="Email" name="email" formControlName="email" class="form-control">
+                                </div>
+                                <div *ngIf="m.email.touched && m.email.invalid" class="input-group">
+                                    <div *ngIf="m.email.errors?.required">Molim vas unesite email!</div>
+                                    <div *ngIf="m.email.errors?.pattern">Format je neispravan!</div>
+                                </div>
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Username" name="username" formControlName="username" class="form-control">
+                                </div>
+                                <div *ngIf="m.username.touched && m.username.invalid" class="input-group">
+                                    <div *ngIf="m.username.errors?.required">Molim vas unesite korisnicko ime!</div>
+                                    <div *ngIf="m.username.errors?.pattern">Format je neispravan!</div>
+                                </div>
+                                <!-- format za korisnicko ime(dozvoljeno je): velika i mala slova, karakteri[(.),(_),(-)], karakteri[(.),(_),(-)] ne smeju 
+                                biti na prvom ili poslednjem mestu i ne smeju se ponavljati uzastopno, broj dozvoljenih karaktera(5, 20) -->
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-lock-circle"></i>
+                                        </div>
+                                    </div>
+                                    <input type="password" placeholder="Password" name="password" formControlName="password" class="form-control">
+                                </div>
+                                <div *ngIf="m.password.touched && m.password.invalid" class="input-group">
+                                    <div *ngIf="m.password.errors?.required">Molim vas unesite sifru!</div>
+                                    <div *ngIf="m.password.errors?.pattern">*Obavezno: veliko slovo, malo slovo, broj ili karakter, broj karaktera(8, 20)</div>
+                                </div>
+                                <!-- format za sifru: obavezno je bar jedno veliko, bar jedno malo slovo i jedan broj, broj karaktera(8, 20) -->
+                            </div>
+                            <div class=" card-footer">
+                                <button type="submit" [disabled]="!registerForm.valid" class="btn btn-primary btn-lg btn-block mr-1">Register</button>
+                                <div class=" pull-left">
+                                    <h6>
+                                        <a class="text-primary" href="/login"> Already have an account? </a>
+                                    </h6>
+                                </div>
+                                <div class=" pull-right">
+                                    <h6>
+                                        <a class="text-primary" href="javascript:void(0)"> Need Help? </a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class=" footer">
+    <div class=" container-fluid">
+        <ul class=" nav">
+            <li class=" nav-item">
+                <a class=" nav-link" href="#"> About Us </a>
+            </li>
+        </ul>
+        <div class=" copyright">
+            &copy; 2022 made by Cortex.
+        </div>
+    </div>
+</footer>

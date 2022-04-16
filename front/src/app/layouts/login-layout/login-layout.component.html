@@ -1,0 +1,81 @@
+<header>
+    <nav _ngcontent-lhv-c2="" class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
+        <div _ngcontent-lhv-c2="" class=" container-fluid">
+            <div _ngcontent-lhv-c2="" class=" navbar-wrapper">
+                <div _ngcontent-lhv-c2="" class=" navbar-toggle d-inline"><button _ngcontent-lhv-c2="" class=" navbar-toggler" type="button"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar1"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar2"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar bar3"></span></button></div>
+                <a _ngcontent-lhv-c2="" class=" navbar-brand" href="/login"> Log in </a>
+            </div><button _ngcontent-lhv-c2="" aria-label="Toggle navigation" class=" navbar-toggler" id="navigation" type="button" aria-expanded="false"><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span><span _ngcontent-lhv-c2="" class=" navbar-toggler-bar navbar-kebab"></span></button>
+            <div _ngcontent-lhv-c2="" class="navbar-collapse collapse" id="navigation" aria-expanded="false" aria-hidden="true" style="display: none;">
+                <ul _ngcontent-lhv-c2="" class=" navbar-nav ml-auto">
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link" href="/register"><i _ngcontent-lhv-c2="" class=" tim-icons icon-laptop"></i> Register </a></li>
+                    <li _ngcontent-lhv-c2="" class=" nav-item"><a _ngcontent-lhv-c2="" class=" nav-link text-primary" href="/upload"><i _ngcontent-lhv-c2="" class=" tim-icons icon-minimal-left"></i> Back to Playground </a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="wrapper wrapper-full-page">
+    <div class="full-page login-page ">
+        <div class="content">
+            <div class="container">
+                <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
+                    <form class="form" novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
+                        <div class=" card card-login">
+                            <div class=" card-header">
+                                <h1 class=" card-title">Log in</h1>
+                            </div>
+                            <div class=" card-body">
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Username" name="username" formControlName="username" class="form-control">
+                                </div>
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-lock-circle"></i>
+                                        </div>
+                                    </div>
+                                    <input type="password" placeholder="Password" name="password" formControlName="password" class="form-control">
+                                </div>
+                                <div class="input-group">
+                                    <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
+                                        <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Neispravno korisnicko ime/lozinka!</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" card-footer">
+                                <button type="submit" [disabled]="!loginForm.valid" class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
+                                <div class=" pull-left">
+                                    <h6>
+                                        <a class="text-primary" href="register"> Create Account </a>
+                                    </h6>
+                                </div>
+                                <div class=" pull-right">
+                                    <h6>
+                                        <a class="text-primary" href="javascript:void(0)"> Need Help? </a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class=" footer">
+    <div class=" container-fluid">
+        <ul class=" nav">
+            <li class=" nav-item">
+                <a class=" nav-link" href="#"> About Us </a>
+            </li>
+        </ul>
+        <div class=" copyright">
+            &copy; 2022 made by Cortex.
+        </div>
+    </div>
+</footer>
