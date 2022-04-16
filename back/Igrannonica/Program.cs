@@ -46,7 +46,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var connectionString = builder.Configuration.GetConnectionString("DevConnection");
+string connectionString;
+if (builder.Environment.IsProduction())
+{
+    connectionString = builder.Configuration.GetConnectionString("ProdConnection");
+
+}
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("DevConnection");
+}
 
 builder.Services.AddDbContext<MySqlContext>(options =>
 {

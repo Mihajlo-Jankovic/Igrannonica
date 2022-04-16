@@ -166,15 +166,7 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 
     return (X_train, X_test, y_train, y_test)
 
-def testiranje():
-    df = pd.read_csv(path)
-    X_train, X_test, y_train, y_test = prepare_data(df, ['Title','Genre'], ['Metascore'], 'label', 0.2)
-    #print(X_train, X_test, y_train, y_test)
 
-    m = build_model(6, [8,8,8,8,8,8], 'relu', 'None', 0, 'Adam', 0.001, 'Regression', 10, 'mean_squared_error', ['mse', 'mae'])
-    #print(m)
-    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10, callbacks=[CustomCallback()])
-    return model.history
 
 def startTraining(connid, fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
     global connId
