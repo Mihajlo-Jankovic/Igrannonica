@@ -7,6 +7,7 @@ import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import files from 'src/files.json';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload',
@@ -22,6 +23,7 @@ export class UploadComponent implements OnInit {
   listOfFilesUnauthorized: any = [];
   selectedPrivacyType: string = "all";
   session: any;
+  cookieCheck:any;
   publicFiles: any = [];
   publicFilesUnauthorized: any = [];
   privateFiles: any = [];
@@ -32,17 +34,51 @@ export class UploadComponent implements OnInit {
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string}[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string}[];
 
-  constructor(private filesService: FilesService, private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
-    this.session = this.getUsername();
+  constructor(private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
+   // this.username = this.getUsername();
+  
+    this.cookieCheck = this.cookie.get('token');
+    this.refreshToken();
   }
 
   getUsername() {
-    return sessionStorage.getItem('username');
+    return this.cookie.get('username');
+    
+  }
+
+
+  onLogout() {
+    this.cookie.deleteAll();
+    sessionStorage.clear();
+    this.router.navigate(["upload"]);
+  }
+
+  refreshToken(){
+    this.loggedUser = this.loginService.isAuthenticated();
+    if (this.loggedUser) {
+      this.token = this.cookie.get('token');
+    }
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + this.token
+    });
+    let options = { headers: headers };
+    this.http.get<any>('https://localhost:7219/api/User/refreshToken/' + this.token ,options).subscribe(token => {
+      let JSONtoken: string = JSON.stringify(token);
+      let StringToken = JSON.parse(JSONtoken).token;
+
+      if (StringToken == "Token not valid"){
+        this.onLogout();
+      }
+      else{
+        this.cookie.set("token", StringToken);
+      }
+    });
+  
   }
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
-    if (this.session) {
+    if (this.cookieCheck) {
       this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
         this.FilesList = data;
 
@@ -155,6 +191,7 @@ export class UploadComponent implements OnInit {
       }
     }
     this.uploadNotification();
+    this.router.navigate(['tables']);
   }
 
   filesAuthorized() {

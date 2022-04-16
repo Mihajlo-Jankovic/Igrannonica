@@ -5,6 +5,8 @@ import { EditPasswordService } from "src/app/services/edit/edit-password.service
 import { UserInfoService } from "src/app/services/edit/user-info.service";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "src/app/services/user.service";
+import { ToastrService } from "ngx-toastr";
+
 
 @Component({
   selector: "app-user",
@@ -40,15 +42,14 @@ export class UserComponent implements OnInit {
 
   username: string;
   messageEditProfile: string;
-  indicator : string;
+  indicator : boolean=false;
   userInfo : any;
 
   getUsername() {
     return sessionStorage.getItem('username');
   }
 
-  constructor(private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder, private userService : UserService) {
-    this.username = this.getUsername();
+  constructor(private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
     this.messageEditProfile = "";
     this.editForm = formBuilder.group({firstname:"", lastname:""});
     this.editPasswordForm = formBuilder.group({currentPassword:"",newPassword:""});
@@ -66,12 +67,20 @@ export class UserComponent implements OnInit {
   }
 
   editProfile(){
-    this.indicator = "edit";
+    if(this.indicator==true)
+      this.indicator=false;
+    else this.indicator=true;
   }
   
   edit(form: FormGroup) {
     if (form.value.firstname && form.value.lastname) {
-      this.messageEditProfile = "Succesfully changed";
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
       this.editService.edit(form.value.firstname, form.value.lastname).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
       })
@@ -80,6 +89,13 @@ export class UserComponent implements OnInit {
 
   editPassword(form: FormGroup) {
     if (form.value.currentPassword && form.value.newPassword) {
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
       this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
       })
