@@ -16,30 +16,24 @@ namespace Igrannonica.Controllers
     {
 
         private IHubContext<ChatHub> _hub;
+        private IConfiguration _configuration;
 
-        public PythonCommController(IHubContext<ChatHub> hub)
+        public PythonCommController(IHubContext<ChatHub> hub, IConfiguration configuration)
         {
+            _configuration = configuration;
             _hub = hub;
         }
 
-        [HttpGet("getRequest")]
-        public async Task<ActionResult<string>> SendGetRequest()
-        {
-            using (var client = new HttpClient())
-            {
-                var endpoint = new Uri("http://127.0.0.1:8000/simpleget");
-                var result = client.GetAsync(endpoint).Result;
-                var json = result.Content.ReadAsStringAsync().Result;
-                return Ok(json);
-            }
-        }
+        
 
         [HttpPost("getTableData")]
         public async Task<ActionResult<string>> GetTableData(TableDataDTO parameters)
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:8000/tabledata");
+                var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:TableData").Value);
                 var newPost = new TableDataDTO()
                 {
                     FileName = parameters.FileName,
@@ -60,7 +54,9 @@ namespace Igrannonica.Controllers
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:8000/statistics");
+                var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:Statistics").Value);
 
                 var newPost = new StatisticsDTO()
                 {
@@ -81,7 +77,9 @@ namespace Igrannonica.Controllers
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("http://127.0.0.1:5000/startTraining");
+                var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:TrainingServer").Value
+                    + _configuration.GetSection("Endpoints:StartTraining").Value);
 
                 var newPostJson = JsonConvert.SerializeObject(parameters);
                 var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
@@ -91,17 +89,7 @@ namespace Igrannonica.Controllers
             }
         }
 
-        [HttpGet("testiranje")] 
-        public async Task<ActionResult<string>> TestiranjeIstorije()
-        {
-            using (var client = new HttpClient())
-            {
-                var endpoint = new Uri("http://127.0.0.1:5000/testiranje");
-                var result = client.GetAsync(endpoint).Result;
-                var json = result.Content.ReadAsStringAsync().Result;
-                return Ok(json);
-            }
-        }
+       
 
         [HttpPost("testLive")]
         public async Task<ActionResult<string>> LiveTreniranje(LiveTrainingDTO liveTraining)
