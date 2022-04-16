@@ -57,6 +57,8 @@ else
     connectionString = builder.Configuration.GetConnectionString("DevConnection");
 }
 
+Console.WriteLine(connectionString);
+
 builder.Services.AddDbContext<MySqlContext>(options =>
 {
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
@@ -69,7 +71,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         builder =>
         {
-            builder.WithOrigins("http://localhost:4200")
+            builder.WithOrigins("http://147.91.204.115:10105")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -85,6 +87,12 @@ builder.Services.Configure<FormOptions>(o =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<MySqlContext>();
+    dataContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -97,16 +105,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseCors(myAllowSpecificOrigins);
-
-
-
-
-app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-    RequestPath = new PathString("/Resources")
-});
 
 app.UseAuthorization();
 
