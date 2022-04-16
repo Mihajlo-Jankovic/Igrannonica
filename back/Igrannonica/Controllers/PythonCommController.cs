@@ -106,7 +106,7 @@ namespace Igrannonica.Controllers
         public async Task<ActionResult<string>> LiveTreniranje(dynamic obj)
         {
             Console.WriteLine(obj.ToString());
-            _hub.Clients.Client(obj.ConnID).SendAsync("trainingdata", obj.ToString());
+            await _hub.Clients.Client(obj.connID).SendAsync("trainingdata", obj.ToString());
             return Ok("OK");
         }
     }

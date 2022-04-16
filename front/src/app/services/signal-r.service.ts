@@ -32,7 +32,7 @@ export class SignalRService {
   public getConnectionId = () => {
     this.hubConnection.invoke('getconnectionid').then(
       (data) => {
-        console.log(data);
+          console.log(data);
           this.connectionId = data;
           this.cookie.set("connID", this.connectionId);
         }

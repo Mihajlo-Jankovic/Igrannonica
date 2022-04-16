@@ -9,12 +9,16 @@ namespace Igrannonica.Hubs
 {
     public class ChatHub : Hub
     {
-        public override Task OnConnectedAsync()
+        /*public async override Task OnConnectedAsync()
         {
             Console.WriteLine("--> Connection Established!" + Context.ConnectionId);
-            Clients.Client(Context.ConnectionId).SendAsync("ReceiveConnID", Context.ConnectionId);
-            return base.OnConnectedAsync();
-        }
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveConnID", Context.ConnectionId);
+            var returnVal = base.OnConnectedAsync();
+            return returnVal;
+        }*/
+
+
+        public string GetConnectionId() => Context.ConnectionId;
 
         public async Task SendMessageAsync(string message)
         {

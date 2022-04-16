@@ -15,6 +15,8 @@ from tensorflow import keras
 
 path = 'csv\movies.csv'
 
+connId = ''
+
 class CustomCallback(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         keys = list(logs.keys())
@@ -22,6 +24,7 @@ class CustomCallback(keras.callbacks.Callback):
         print(" ")
         for key in keys:
             modelHistory[key] = logs[key]
+        modelHistory['connID'] = connId
         print(modelHistory)
 
         headers = {'content-type': 'application/json'}
@@ -171,13 +174,14 @@ def testiranje():
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=10, callbacks=[CustomCallback()])
     return model.history
 
-def startTraining(fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
+def startTraining(connid, fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
+    global connId
+    connId = connid
     PATH = 'http://127.0.0.1:8000/downloadFile/'
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
-
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(inputList), 10, lossFunction, metrics)
-    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs)
+    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback()])
     return model.history
 
 # t1 = threading.Thread(target=testiranje)
