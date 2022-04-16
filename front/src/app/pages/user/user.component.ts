@@ -49,7 +49,7 @@ export class UserComponent implements OnInit {
     return sessionStorage.getItem('username');
   }
 
-  constructor(private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder) {
+  constructor(private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder, private userService : UserService) {
     this.messageEditProfile = "";
     this.editForm = formBuilder.group({firstname:"", lastname:""});
     this.editPasswordForm = formBuilder.group({currentPassword:"",newPassword:""});
