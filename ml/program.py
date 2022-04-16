@@ -75,23 +75,22 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     else:
         model.add(tf.keras.layers.Dense(outputs, activation='softmax'))
     # Odabir optimizera i podesavanje learning rate-a
-    match optimizerType:
-        case 'SGD':
-            optimizer = tf.keras.optimizers.SGD(learningRate)
-        case 'RMSprop':
-            optimizer = tf.keras.optimizers.RMSprop(learningRate)
-        case 'Adam':
-            optimizer = tf.keras.optimizers.Adam(learningRate)
-        case 'Adadelta':
-            optimizer = tf.keras.optimizers.Adadelta(learningRate)
-        case 'Adagrad':
-            optimizer = tf.keras.optimizers.Adagrad(learningRate)
-        case 'Adamax':
-            optimizer = tf.keras.optimizers.Adamax(learningRate)
-        case 'Nadam':
-            optimizer = tf.keras.optimizers.Nadam(learningRate)
-        case 'Ftrl':
-            optimizer = tf.keras.optimizers.Ftrl(learningRate)
+    if(optimizerType == 'SGD'):
+        optimizer = tf.keras.optimizers.SGD(learningRate)
+    elif (optimizerType == 'RMSprop'):
+        optimizer = tf.keras.optimizers.RMSprop(learningRate)
+    elif (optimizerType == 'Adam'):
+        optimizer = tf.keras.optimizers.Adam(learningRate)
+    elif (optimizerType == 'Adadelta'):
+        optimizer = tf.keras.optimizers.Adadelta(learningRate)
+    elif (optimizerType == 'Adagrad'):
+        optimizer = tf.keras.optimizers.Adagrad(learningRate)
+    elif (optimizerType == 'Adamax'):
+        optimizer = tf.keras.optimizers.Adamax(learningRate)
+    elif (optimizerType == 'Nadam'):
+        optimizer = tf.keras.optimizers.Nadam(learningRate)
+    elif (optimizerType == 'Ftrl'):
+        optimizer = tf.keras.optimizers.Ftrl(learningRate)
             
     model.compile(optimizer, loss=lossFunction , metrics=metric)
 
