@@ -262,6 +262,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
 
     this.signal.startConnection();
+    this.signal.addTrainingDataListener();
 
     this.multiselect();
     this.checkProblemType();
