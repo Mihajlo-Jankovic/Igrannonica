@@ -20,15 +20,17 @@ connId = ''
 class CustomCallback(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         keys = list(logs.keys())
+        data = {}
         modelHistory = {}
         print(" ")
         for key in keys:
             modelHistory[key] = logs[key]
-        modelHistory['connID'] = connId
+        data['connID'] = connId
+        data['trainingData'] = modelHistory
         print(modelHistory)
 
         headers = {'content-type': 'application/json'}
-        r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(modelHistory), verify=False)
+        r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
         print(r)
 
 # Citanje CSV fajla

@@ -6,6 +6,7 @@ using System.Text;
 using Igrannonica.DataTransferObjects;
 using Microsoft.AspNetCore.SignalR;
 using Igrannonica.Hubs;
+using Newtonsoft.Json.Linq;
 
 namespace Igrannonica.Controllers
 {
@@ -103,10 +104,12 @@ namespace Igrannonica.Controllers
         }
 
         [HttpPost("testLive")]
-        public async Task<ActionResult<string>> LiveTreniranje(dynamic obj)
+        public async Task<ActionResult<string>> LiveTreniranje(LiveTrainingDTO liveTraining)
         {
-            Console.WriteLine(obj.ToString());
-            await _hub.Clients.Client(obj.connID).SendAsync("trainingdata", obj.ToString());
+
+            await _hub.Clients.Client(liveTraining.ConnID).SendAsync("trainingdata", liveTraining);
+            Console.WriteLine(liveTraining.ConnID);
+            //Console.WriteLine(liveTraining.TrainingData.toString());
             return Ok("OK");
         }
     }
