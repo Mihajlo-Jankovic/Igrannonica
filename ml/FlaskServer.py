@@ -3,6 +3,7 @@ import json
 import program
 import pandas as pd
 import io
+import threading
 
 PATH = 'https://localhost:7219/api/Csv/'
 
@@ -23,8 +24,11 @@ def startTraining():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
 
-        modelHistory = program.startTraining(json['connID'],json['fileName'], json['inputList'], json['output'], json['encodingType'], json['ratio'], json['numLayers'], json['layerList'], json['activationFunction'], json['regularization'], json['regularizationRate'], json['optimizer'], json['learningRate'], json['problemType'], json['lossFunction'], json['metrics'], json['numEpochs'])
-        return modelHistory
+        #modelHistory = program.startTraining(json['connID'],json['fileName'], json['inputList'], json['output'], json['encodingType'], json['ratio'], json['numLayers'], json['layerList'], json['activationFunction'], json['regularization'], json['regularizationRate'], json['optimizer'], json['learningRate'], json['problemType'], json['lossFunction'], json['metrics'], json['numEpochs'])
+        thread = threading.Thread(target=program.startTraining, args=[json['connID'],json['fileName'], json['inputList'], json['output'], json['encodingType'], json['ratio'], json['numLayers'], json['layerList'], json['activationFunction'], json['regularization'], json['regularizationRate'], json['optimizer'], json['learningRate'], json['problemType'], json['lossFunction'], json['metrics'], json['numEpochs']])
+        thread.start()
+
+        return {"message" : "Training started"}
     
     else:
         return content_type

@@ -18,20 +18,23 @@ path = 'csv\movies.csv'
 connId = ''
 
 class CustomCallback(keras.callbacks.Callback):
+
+    modelHistory = {}
+
     def on_epoch_end(self, epoch, logs=None):
         keys = list(logs.keys())
         data = {}
-        modelHistory = {}
-        print(" ")
         for key in keys:
-            modelHistory[key] = logs[key]
+            if(epoch == 0):
+                self.modelHistory[key] = [logs[key]]
+            else:
+                self.modelHistory[key].append(logs[key])
         data['connID'] = connId
-        data['trainingData'] = modelHistory
-        print(modelHistory)
+        data['epoch'] = epoch
+        data['trainingData'] = self.modelHistory
 
         headers = {'content-type': 'application/json'}
         r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
-        print(r)
 
 # Citanje CSV fajla
 def openCSV(path):
