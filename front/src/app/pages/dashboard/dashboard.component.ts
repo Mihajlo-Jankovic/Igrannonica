@@ -9,6 +9,7 @@ import { Configuration } from "src/app/configuration";
 import { LoginService } from "src/app/services/login.service";
 import { ToastrService } from "ngx-toastr";
 import { NotificationsService } from "src/app/services/notifications.service";
+import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 
 @Component({
@@ -62,6 +63,11 @@ export class DashboardComponent implements OnInit {
   dropdownList = [];
   selectedItems = [];
   dropdownSettings:IDropdownSettings = {};
+
+  private hubConnection: signalR.HubConnection;
+  public connectionId : string;
+  public liveData: {};
+  public chartData = {};
 
   constructor(private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
@@ -154,6 +160,7 @@ export class DashboardComponent implements OnInit {
       window.alert("Input or output not selected");
       return;
     }
+    this.chartData = {};
     this.training = true;
     let fileName = this.cookieService.get('filename');
     let connID = this.cookieService.get('connID');
@@ -171,17 +178,7 @@ export class DashboardComponent implements OnInit {
     this.http.post(this.configuration.startTesting,{"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
       (response) => {
         this.trained = true;
-        this.training = false;
-        this.modelHistory = response;
-        this.buttons = Object.keys(this.modelHistory);
-        this.buttons.splice(this.buttons.length/2);
-        this.data = this.modelHistory['loss'];
-        this.val_data = this.modelHistory['val_loss'];
-        this.chart_labels = [];
-        for (let i = 0; i < this.data.length; i++) {
-          this.chart_labels[i] = i + 1;
-        }
-        this.updateOptions();
+        this.notify.showNotification("Training started successfully!");
       }
     );
   }
@@ -307,11 +304,13 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
 
     this.checkStorage();
-    this.signal.startConnection();
-    this.signal.addTrainingDataListener();
+    this.startConnection();
+    this.addTrainingDataListener();
 
     this.multiselect();
     this.checkProblemType();
+
+    this.chartData = {};
     this.layer.id = 1;
     this.layerList.push(this.layer);
     
@@ -505,5 +504,50 @@ export class DashboardComponent implements OnInit {
       this.epochs = value;
       sessionStorage.setItem('epochs', (this.epochs).toString());
     }
+  }
+  //SOKETI
+
+  public startConnection = () => {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+                            .withUrl(this.configuration.port + "/chatHub")
+                            .build();
+    this.hubConnection
+      .start()
+      .then(() => console.log('Connection started'))
+      .then(() => this.getConnectionId())
+      .catch(err => console.log('Error while starting connection: ' + err))
+  }
+  public addTransferDataListener = () => {
+    this.hubConnection.on('ReceiveConnID', (data) => {
+      console.log(data);
+    });
+  }
+
+  public getConnectionId = () => {
+    this.hubConnection.invoke('getconnectionid').then(
+      (data) => {
+          console.log(data);
+          this.connectionId = data;
+          this.cookieService.set("connID", this.connectionId);
+        }
+    ); 
+  }
+
+  public addTrainingDataListener = () => {
+    this.hubConnection.on('trainingdata', (data) => {
+      this.liveData = data;
+      this.chartData = this.liveData['trainingData'];
+
+      this.trained = true;
+      this.buttons = Object.keys(this.chartData);
+      this.buttons.splice(this.buttons.length/2);
+      this.data = this.chartData['loss'];
+      this.val_data = this.chartData['val_loss'];
+      this.chart_labels = [];
+      for (let i = 0; i < this.data.length; i++) {
+        this.chart_labels[i] = i + 1;
+      }
+      this.updateOptions();
+    });
   }
 }
