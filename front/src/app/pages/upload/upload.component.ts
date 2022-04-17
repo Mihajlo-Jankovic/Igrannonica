@@ -57,23 +57,22 @@ export class UploadComponent implements OnInit {
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
       this.token = this.cookie.get('token');
-    }
-    let headers = new HttpHeaders({
-      'Authorization': 'bearer ' + this.token
-    });
-    let options = { headers: headers };
-    this.http.get<any>('https://localhost:7219/api/User/refreshToken/' + this.token ,options).subscribe(token => {
-      let JSONtoken: string = JSON.stringify(token);
-      let StringToken = JSON.parse(JSONtoken).token;
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      this.http.get<any>('https://localhost:7219/api/User/refreshToken/' + this.token ,options).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
 
-      if (StringToken == "Token not valid"){
-        this.onLogout();
-      }
-      else{
-        this.cookie.set("token", StringToken);
-      }
-    });
-  
+        if (StringToken == "Token not valid"){
+          this.onLogout();
+        }
+        else{
+          this.cookie.set("token", StringToken);
+        }
+      });
+    }
   }
 
   ngOnInit(): void {

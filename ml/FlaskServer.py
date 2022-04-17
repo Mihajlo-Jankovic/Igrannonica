@@ -5,12 +5,7 @@ import pandas as pd
 import io
 import threading
 
-PATH = 'https://localhost:7219/api/Csv/'
-
 app = Flask(__name__)
-
-
-
 
 @app.route('/startTraining', methods=['POST'])
 def startTraining():
@@ -26,7 +21,6 @@ def startTraining():
     
     else:
         return content_type
-
 
 if __name__ == '__main__':
     app.run(port=10107)

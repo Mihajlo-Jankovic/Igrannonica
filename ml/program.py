@@ -173,7 +173,7 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 def startTraining(connid, fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
     global connId
     connId = connid
-    PATH = 'http://127.0.0.1:8000/downloadFile/'
+    PATH = 'http://127.0.0.1:10108/downloadFile/'
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(inputList), 10, lossFunction, metrics)
