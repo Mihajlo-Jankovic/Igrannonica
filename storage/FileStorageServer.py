@@ -7,7 +7,7 @@ import FileStorageProgram
 import json
 import io
 
-UPLOAD_FOLDER = 'resources\CSVFiles'
+UPLOAD_FOLDER = os.path.join('Resources','CSVFiles')
 ALLOWED_EXTENSIONS = {'csv'}
 
 app = Flask(__name__)

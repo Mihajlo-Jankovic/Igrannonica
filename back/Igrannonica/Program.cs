@@ -71,10 +71,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         builder =>
         {
-            builder.WithOrigins("http://147.91.204.115:10105")
+            builder.AllowAnyOrigin()
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowAnyMethod();
         });
 });
 
@@ -110,9 +109,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-FileService fileService = new FileService();
-Thread t1 = new Thread(new ThreadStart(fileService.DeleteAllExpiredFiles));
-t1.Start();
+//FileService fileService = new FileService();
+//Thread t1 = new Thread(new ThreadStart(fileService.DeleteAllExpiredFiles));
+//t1.Start();
+
 app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
