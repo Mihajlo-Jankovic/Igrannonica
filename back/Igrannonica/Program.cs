@@ -47,11 +47,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 string connectionString;
+
 if (builder.Environment.IsProduction())
 {
     connectionString = builder.Configuration.GetConnectionString("ProdConnection");
-
 }
+
 else
 {
     connectionString = builder.Configuration.GetConnectionString("DevConnection");
@@ -66,16 +67,13 @@ builder.Services.AddDbContext<MySqlContext>(options =>
 
 
 //Enable CORS
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: myAllowSpecificOrigins,
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-        });
+    options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+    {
+        builder.WithOrigins("http://147.91.204.115:10105", "http://softeng.pmf.kg.ac.rs:10105", "https://localhost:7219").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    });
 });
 
 builder.Services.Configure<FormOptions>(o =>

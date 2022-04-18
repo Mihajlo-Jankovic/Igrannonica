@@ -25,18 +25,27 @@ namespace Igrannonica.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly string mongoConnString = "mongodb://localhost:27017";
-
         private User user = new User();
+        private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
         private readonly MySqlContext _context;
+
+        private string mongoConnString = "mongodb://Cortex:hPkyrLiG@147.91.204.115:10109/Cortex"; // mongodb://Cortex:hPkyrLiG@localhost:10109/?authSource=admin 1
+
+        
+
 
         public UserController(MySqlContext context, IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
             _userService = userService;
             _context = context;
+
+            /*if(_env.IsProduction()) mongoConnString = _configuration.GetConnectionString("MongoProdConnection");
+            else mongoConnString = _configuration.GetConnectionString("MongoDevConnection");
+
+            Console.WriteLine(mongoConnString);*/
         }
 
 
