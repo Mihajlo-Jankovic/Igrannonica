@@ -26,7 +26,7 @@ namespace Igrannonica.Controllers
     public class UserController : ControllerBase
     {
         private User user = new User();
-        private readonly IWebHostEnvironment _env;
+        private readonly IHostEnvironment _hostEnvironment;
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
         private readonly MySqlContext _context;
@@ -36,11 +36,13 @@ namespace Igrannonica.Controllers
         
 
 
-        public UserController(MySqlContext context, IConfiguration configuration, IUserService userService)
+        public UserController(MySqlContext context, IConfiguration configuration, IUserService userService, IHostEnvironment hostEnvironment)
         {
             _configuration = configuration;
             _userService = userService;
             _context = context;
+
+            _hostEnvironment = hostEnvironment;
 
             /*if(_env.IsProduction()) mongoConnString = _configuration.GetConnectionString("MongoProdConnection");
             else mongoConnString = _configuration.GetConnectionString("MongoDevConnection");
@@ -333,13 +335,25 @@ namespace Igrannonica.Controllers
 
             experiment.userId = user.id;
 
-            var client = new MongoClient(mongoConnString);
+            var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<ExperimentDTO>("experiment");
 
             collection.InsertOne(experiment);    
 
             return Ok(experiment);
+        }
+
+        private string getMongoDBConnString()
+        {
+            if(_hostEnvironment.IsDevelopment())
+            {
+                return "mongodb://Cortex:hPkyrLiG@147.91.204.115:10109/Cortex";
+            }
+            else
+            {
+                return "mongodb://localhost:27017";
+            }
         }
 
         [HttpGet("getUserExperiments"), Authorize]
@@ -350,7 +364,7 @@ namespace Igrannonica.Controllers
 
             if (user == null) return BadRequest("JWT is bad!");
 
-            var client = new MongoClient(mongoConnString);
+            var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
 
@@ -373,7 +387,7 @@ namespace Igrannonica.Controllers
 
             if (user == null) return BadRequest("JWT is bad!");
 
-            var client = new MongoClient(mongoConnString);
+            var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
 
