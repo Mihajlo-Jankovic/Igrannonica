@@ -336,6 +336,7 @@ namespace Igrannonica.Controllers
             experiment.userId = user.id;
 
             var client = new MongoClient(getMongoDBConnString());
+            Console.WriteLine(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<ExperimentDTO>("experiment");
 
@@ -348,11 +349,12 @@ namespace Igrannonica.Controllers
         {
             if(_hostEnvironment.IsDevelopment())
             {
-                return "mongodb://Cortex:hPkyrLiG@147.91.204.115:10109/Cortex";
+                return "mongodb://localhost:27017";
             }
             else
             {
-                return "mongodb://localhost:27017";
+                return "mongodb://Cortex:hPkyrLiG@147.91.204.115:10109/Cortex";
+
             }
         }
 
