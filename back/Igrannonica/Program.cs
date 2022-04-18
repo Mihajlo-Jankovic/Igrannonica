@@ -72,7 +72,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
     {
-        builder.WithOrigins("http://147.91.204.115:10105", "http://softeng.pmf.kg.ac.rs:10105", "https://localhost:7219").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        builder.WithOrigins("http://147.91.204.115:10105", "http://softeng.pmf.kg.ac.rs:10105", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     });
 });
 
