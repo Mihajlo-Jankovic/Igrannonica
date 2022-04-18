@@ -230,7 +230,7 @@ export class DashboardComponent implements OnInit {
       'lossFunction' : this.lossFunction, 
       'metrics' : metrics, 
       'numEpochs' : +this.epochs,
-      'results' : JSON.stringify(this.modelHistory)
+      'results' : JSON.stringify(this.chartData)
     }
     /*
           SLANJE ZAHTEVA
@@ -243,8 +243,8 @@ export class DashboardComponent implements OnInit {
   }
 
   changeData(name){
-    this.data = this.modelHistory[name];
-    this.val_data = this.modelHistory['val_' + name];
+    this.data = this.chartData[name];
+    this.val_data = this.chartData['val_' + name];
     this.label = name;
     this.val_label = 'val_' + name;
     this.updateOptions();
