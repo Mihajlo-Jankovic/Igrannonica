@@ -8,5 +8,5 @@ p:hover {
 }
 
 a:disabled {
-    color: grey;
+    color: red;
 }

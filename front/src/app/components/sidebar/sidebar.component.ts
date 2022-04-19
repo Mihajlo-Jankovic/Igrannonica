@@ -22,7 +22,7 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: "/dashboard",
-    title: "Training Model",
+    title: "Model Training",
     icon: "icon-chart-pie-36",
     class: ""
   }
