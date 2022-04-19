@@ -17,7 +17,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/tables",
     title: "Table List",
-    icon: "icon-puzzle-10",
+    icon: "icon-bullet-list-67",
     class: ""
   },
   {
