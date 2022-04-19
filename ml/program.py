@@ -168,7 +168,8 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 
     return (X_train, X_test, y_train, y_test)
 
-
+def output_unique_values(df,output):
+    return df[output].nunique()
 
 def startTraining(connid, fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
     global connId
@@ -177,7 +178,8 @@ def startTraining(connid, fileName, inputList, output, encodingType, ratio, numL
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
     print("Kolone : ", len(X_train.columns))
-    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), 10, lossFunction, metrics)
+    outputUniqueValues = output_unique_values(df,output)
+    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback()])
     return model.history
 
