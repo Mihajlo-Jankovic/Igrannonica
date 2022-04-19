@@ -444,12 +444,11 @@ input[type='radio']:checked:after {
     }
 }
 
-@media(max-width: 411px) {
+@media(max-width: 452px) {
     .page {
-        width: 30px;
         max-width: 30px;
     }
     .arrow {
-        font-size: 2em;
+        font-size: 1.5em;
     }
 }
