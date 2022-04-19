@@ -110,24 +110,6 @@
     }
 }
 
-.dropdown {
-    font-size: 13px;
-    padding: 10px 8px 10px 14px;
-    background: transparent;
-    border: 1px solid #7d3c8b;
-    border-radius: 6px;
-    overflow: hidden;
-    color: white;
-    margin-left: 1rem;
-    margin-top: 8px;
-    height: 42px;
-    width: 15%;
-    min-width: 200px;
-    //position: relative;
-    float: left;
-    bottom: 0;
-}
-
 .dropdown:focus {
     border-color: #7d3c8b;
 }
