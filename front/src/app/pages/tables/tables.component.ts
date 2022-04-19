@@ -215,9 +215,7 @@ export class TablesComponent {
     this.page = 1;
     const value = event.target.value;
     this.selectedType = value;
-    sessionStorage.removeItem('csv');
-    sessionStorage.removeItem('numOfPages');
-    sessionStorage.removeItem('numericValues');
+    this.clearStorage();
     this.reset();
     this.showTable(this.selectedType, this.selectedRow, this.page);
   } 
@@ -243,8 +241,8 @@ export class TablesComponent {
   {
     if(sessionStorage.getItem('statistics'))
     {
-      this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
-      this.loadStatistics();
+      //this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
+      //this.loadStatistics();
     }
     else{
     let filename = this.cookie.get('filename');
@@ -253,7 +251,7 @@ export class TablesComponent {
         this.statisticData = response;
         //console.log(this.statisticData);
 
-        sessionStorage.setItem('statistics', JSON.stringify(this.statisticData));
+        //sessionStorage.setItem('statistics', JSON.stringify(this.statisticData));
         this.loadStatistics();
         this.boxPlotFun();
       })
@@ -519,9 +517,9 @@ export class TablesComponent {
       await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
         {
           this.clearStorage();
-          sessionStorage.removeItem('statistics');
-          this.reset()
+          this.reset();
           this.showTable(this.selectedType, this.selectedRow, this.page);
+          sessionStorage.removeItem('statistics');
           this.resetStatistic();
           this.showStatistics(this.selectedCol);
           this.selectedRows = [];

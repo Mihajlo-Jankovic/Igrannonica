@@ -46,7 +46,7 @@ namespace Igrannonica.Controllers
             var csvJson = JsonConvert.SerializeObject(csv);
             var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
             
-            return Ok(response.Content.ToString());
+            return Ok();
 
         }
 
@@ -67,7 +67,7 @@ namespace Igrannonica.Controllers
             var csvJson = JsonConvert.SerializeObject(csv);
             var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
             
-            return Ok(response.Content.ToString());
+            return Ok();
 
         }
 

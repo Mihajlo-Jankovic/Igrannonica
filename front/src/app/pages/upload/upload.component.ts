@@ -152,7 +152,7 @@ export class UploadComponent implements OnInit {
     sessionStorage.removeItem('epochs');
   }
 
-  public uploadFile(files: any) {
+   async uploadFile(files: any) {
     if (files.length === 0)
       return;
     
@@ -175,22 +175,23 @@ export class UploadComponent implements OnInit {
         });
         let options = { headers: headers };
 
-        this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
+       await this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
+          this.router.navigate(['/tables']);
         })
       }
       else{
-        this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name=>{
+        await this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name=>{
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
+          this.router.navigate(['/tables']);
         })
       }
     }
     this.uploadNotification();
-    this.router.navigate(['tables']);
   }
 
   filesAuthorized() {
