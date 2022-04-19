@@ -179,8 +179,9 @@ def startTraining(connid, fileName, inputList, output, encodingType, ratio, numL
     print("Kolone : ", len(X_train.columns))
     outputUniqueValues = output_unique_values(df,output)
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
-    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback()])
+    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback(connid)])
     return model.history
+
 
 # t1 = threading.Thread(target=testiranje)
 
