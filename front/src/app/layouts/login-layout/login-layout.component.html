@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="input-group">
                                     <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
-                                        <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Neispravno korisnicko ime/lozinka!</div>
+                                        <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Wrong username or password!</div>
                                     </div>
                                 </div>
                             </div>
