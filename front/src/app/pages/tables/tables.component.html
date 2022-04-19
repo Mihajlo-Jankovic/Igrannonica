@@ -25,7 +25,7 @@
         <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
-                    <h3 class=" card-category" style="color: white;">Statistics</h3>
+                    <h3 class=" card-category" style="color: white;">Column Statistics</h3>
                     <select class='dropdown' (change)='onSelectedCol($event)' style="width: 100%;">
                         <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
                     </select>
@@ -80,7 +80,7 @@
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
-                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="previewMatrix()">Review</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="previewMatrix()">View Full Matrix</button>
                 </div>
                 <div class=" card-body">
                     <div class=" table-responsive" style="height: 300px;" id="corr">
@@ -104,8 +104,10 @@
         </div>
         <div class=" col-lg-12">
             <div class=" card">
-                <div class=" card-header" (click)="showIOFun()">
-                    <h4 class=" card-title" style="color: white;">Click here to choose input and output columns</h4>
+                <div class=" card-header">
+                    <h4 class=" card-title" style="color: white; position: relative; float: left;">Click here to choose input and output columns</h4>
+                    <div *ngIf="!showIO" style="position: relative; float: right;" (click)="showIOFun()"><i class="tim-icons icon-minimal-down io"></i></div>
+                    <div *ngIf="showIO" style="position: relative; float: right;" (click)="showIOFun()"><i class="tim-icons icon-minimal-up io"></i></div>
                 </div>
                 <div class=" card-body" *ngIf="showIO" style="padding:2%; display: flex; justify-content: center;">
                     <div class="divInput">
@@ -113,7 +115,7 @@
                         <div *ngFor="let item of headingLines[0]; let i = index">
                             <div class="Ioption">
                                 <div class="checkDIV">
-                                    <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]">
+                                    <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
                                     <label for="{{ 'check' + i }}" class="check-box"></label>
                                 </div>
                                 <p>{{item}}</p>
@@ -125,7 +127,7 @@
                         <div *ngFor="let item of headingLines[0]; let i = index">
                             <div class="Ooption">
                                 <div class="radioDIV">
-                                    <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]">
+                                    <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]" [checked]="radios1[i]">
                                     <label for="{{ 'radio' + i }}" class="radio-button" style="margin: 0px;"></label>
                                 </div>
                                 <p>{{item}}</p>
@@ -211,6 +213,15 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-primary btn-lg btn-block mb-3 train" routerLink="/dashboard" routerLinkActive="active">Continue</button>
                 </div>
             </div>
         </div>

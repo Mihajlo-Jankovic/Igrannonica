@@ -50,6 +50,11 @@ export class TablesComponent {
     'index': []
   }
 
+  statistic = {
+    'colList': [],
+    'jsonList': []
+  }
+
   statisticData = {
     'rowsNum': 0,
     'min': 0,
@@ -82,6 +87,9 @@ export class TablesComponent {
 
   radios: any = [];
   checks: any = [];
+  radios1: any = [];
+  checks1: any = [];
+  pret: number = -1;
 
   selectedType : string = "all";
   selectedRow : number = 10;
@@ -142,7 +150,6 @@ export class TablesComponent {
       this.tableService.getAll(filename,type, rows, page).subscribe(
       (response) => {
         this.csv = response;
-
         let dataCSV: any = {};
         dataCSV = this.csv['csv'];
         this.data = dataCSV;
@@ -169,7 +176,7 @@ export class TablesComponent {
     let headersArray: any = [];
     for (let i = 0; i < this.data['columns'].length; i++) {
       headersArray.push(this.data['columns'][i]);
-      this.radios[i] = false;
+      this.radios[i] = true;
       this.checks[i] = false;
     }
     this.headingLines.push(headersArray);
@@ -197,10 +204,10 @@ export class TablesComponent {
     for (let i = 0; i < this.numericValues['col'].length; i++) {
       numValueIndexArray = [];
       numValueIndexArray.push(this.numericValues['col'][i]);
-      numValueIndexArray.push(this.numericValues['index'][i]);
+      numValueIndexArray.push(i);
       this.numericValuesArray.push(numValueIndexArray);
     }
-
+    
     this.selectedColName = this.numericValuesArray[0][0];
     this.selectedCol = this.numericValuesArray[0][1];
     this.selectedColDiv = true;
@@ -209,6 +216,24 @@ export class TablesComponent {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedCol);
     }
+
+    //setovanje I/O
+    for (let i = 0; i < this.data['columns'].length-1; i++) {
+      this.radios1[i] = false;
+      this.checks1[i] = true;
+      this.listCheckedI.push(this.data['columns'][i]);
+    }
+
+    this.checks[this.data['columns'].length-1] = true;
+    this.checks1[this.data['columns'].length-1] = false;
+    this.listCheckedI.splice(this.data['columns'].length-1, 1);
+    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+
+    this.radios[this.data['columns'].length-1] = false;
+    this.radios1[this.data['columns'].length-1] = true;
+    this.selectedOutput = this.data['columns'][this.data['columns'].length-1];
+    sessionStorage.setItem('output', this.selectedOutput);
+    this.pret = this.headingLines[0].length-2;
   }
 
   public onSelectedType(event: any) {
@@ -243,67 +268,85 @@ export class TablesComponent {
     {
       //this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
       //this.loadStatistics();
+      this.statistic = JSON.parse(sessionStorage.getItem('statistics'));
+      this.loadStatistics(col);
     }
     else{
     let filename = this.cookie.get('filename');
     this.tableService.getStatistics(filename, col).subscribe(
       (response) => {
-        this.statisticData = response;
-        //console.log(this.statisticData);
-
-        //sessionStorage.setItem('statistics', JSON.stringify(this.statisticData));
-        this.loadStatistics();
+        this.statistic = response;
+        //console.log(this.statistic);
+        sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
+        this.loadStatistics(col);
         this.boxPlotFun();
       })
     }
   }
 
-  public loadStatistics()
+  colListData: any=[];
+  public loadStatistics(col:number)
   {
-    this.mixArray = [];
-    this.rowsNum = this.statisticData['rowsNum'];
-    this.min = this.statisticData['min'];
-    this.mixArray.push(this.min);
-    this.firstQ = this.statisticData['firstQ'];
-    this.mixArray.push(this.firstQ);
-    this.avg = this.statisticData['avg'];
-    this.med = this.statisticData['med'];
-    this.mixArray.push(this.med);
-    this.thirdQ = this.statisticData['thirdQ'];
-    this.mixArray.push(this.thirdQ);
-    this.max = this.statisticData['max'];
-    this.mixArray.push(this.max);
-
-    this.numArray = [];
-    for (let i = 0; i < this.statisticData['corrMatrix'][this.selectedCol].length; i++) {
-      this.numArray.push(this.statisticData['corrMatrix'][this.selectedCol][i]);
+    this.colListData=[];
+    for (let i = 0; i < this.statistic['colList'].length; i++) {
+      this.colListData.push(this.statistic['colList'][i]);
     }
 
-    this.outliers = [];
-    for(let i=0;i<this.statisticData['outliers'].length;i++){
-      this.outliers.push(this.statisticData['outliers'][i]);
+    for (let i = 0; i < this.statistic['jsonList'].length; i++) {
+      if(i == col) {
+        this.statisticData = this.statistic['jsonList'][i];
+        this.mixArray = [];
+        this.rowsNum = this.statisticData['rowsNum'];
+        this.min = this.statisticData['min'];
+        this.mixArray.push(this.min);
+        this.firstQ = this.statisticData['firstQ'];
+        this.mixArray.push(this.firstQ);
+        this.avg = this.statisticData['avg'];
+        this.med = this.statisticData['med'];
+        this.mixArray.push(this.med);
+        this.thirdQ = this.statisticData['thirdQ'];
+        this.mixArray.push(this.thirdQ);
+        this.max = this.statisticData['max'];
+        this.mixArray.push(this.max);
+
+        let permName: string;
+        for (let i = 0; i < this.colListData.length; i++) {
+          if(i == col) {
+            permName = this.colListData[i]; }
+        }
+    
+        this.numArray = [];
+        for (let i = 0; i < this.statisticData['corrMatrix'][permName].length; i++) {
+          this.numArray.push(this.statisticData['corrMatrix'][permName][i]);
+        }
+        
+        this.outliers = [];
+        for(let i=0;i<this.statisticData['outliers'].length;i++){
+          this.outliers.push(this.statisticData['outliers'][i]);
+        }
+
+        let fullMatrix: any = {};
+          fullMatrix = this.statisticData['fullCorrMatrix'];
+          this.fullMatrixData = fullMatrix;
+
+          this.fullCorrColNamesArray = [];
+          for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
+            this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
+          }
+
+          this.fullCorrValArray = [];
+          let valArray: any = [];
+          for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
+          valArray = [];
+
+          for(let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
+            valArray.push(this.fullMatrixData['values'][i][j]);
+          }
+          this.fullCorrValArray.push(valArray);
+        }
+        this.boxPlotFun();
+      }
     }
-
-    let fullMatrix: any = {};
-        fullMatrix = this.statisticData['fullCorrMatrix'];
-        this.fullMatrixData = fullMatrix;
-
-        this.fullCorrColNamesArray = [];
-        for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
-          this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
-        }
-
-        this.fullCorrValArray = [];
-        let valArray: any = [];
-        for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
-            valArray = [];
-
-            for(let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
-              valArray.push(this.fullMatrixData['values'][i][j]);
-            }
-            this.fullCorrValArray.push(valArray);
-        }
-
   }
 
   public onSelectedCol(event: any) {
@@ -341,7 +384,23 @@ export class TablesComponent {
           type: 'scatter',
           data: [{
             x : this.selectedColName,
-            y : this.outliers
+            y : this.outliers[0]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[1]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[2]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[this.outliers.length-1]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[this.outliers.length-2]
           }
           ]
         }
@@ -475,6 +534,7 @@ export class TablesComponent {
       if(this.listCheckedI[i] == value) {
         var index = i; 
         exists = true;
+        break;
       }
     }
 
@@ -490,6 +550,15 @@ export class TablesComponent {
   
   selectedOutputFun(event: any) {
     var value = event.target.value;
+    var ind: number = -1;
+
+    for (let i = 0; i < this.headingLines[0].length; i++) {
+      if(this.selectedOutput == this.headingLines[0][i])
+        ind = i;
+    }
+
+    this.pret = ind;
+    console.log(this.pret);
     this.selectedOutput = value;
     sessionStorage.setItem('output', this.selectedOutput);
     //console.log(this.selectedOutput);
@@ -500,11 +569,11 @@ export class TablesComponent {
   }
   
   disableInput(id : number) {
-    if(this.checked != undefined) {
-      this.checks[this.checked] = !this.checks[this.checked];
-    }
     this.checks[id] = !this.checks[id];
-    this.checked = id;
+    
+    if(this.pret != -1)
+      this.checks[this.pret] = !this.checks[this.pret];
+    console.log(this.pret);
   }
 
   selectedID(id : number){

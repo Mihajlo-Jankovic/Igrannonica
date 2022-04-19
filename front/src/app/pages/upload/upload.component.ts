@@ -26,8 +26,8 @@ export class UploadComponent implements OnInit {
   cookieCheck:any;
   publicFiles: any = [];
   publicFilesUnauthorized: any = [];
-  privateFiles: any = [];
   allFiles: any = [];
+  myFiles: any = [];
 
   configuration = new Configuration();
 
@@ -81,6 +81,8 @@ export class UploadComponent implements OnInit {
       this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
         this.FilesList = data;
 
+        this.allFiles = [];
+        this.myFiles = [];
         for (let i = 0; i < this.FilesList.length; i++) {
           if (this.FilesList[i]['username'] == this.getUsername()) {
             this.FilesList[i]['thisUser'] = this.getUsername();
@@ -90,14 +92,17 @@ export class UploadComponent implements OnInit {
           }
         } 
 
-
         for (let i = 0; i < this.FilesList.length; i++) {
-          this.allFiles.push(this.FilesList[i]);
-          if (this.FilesList[i]['isPublic'])
-            this.publicFiles.push(this.FilesList[i]);
-          else this.privateFiles.push(this.FilesList[i]);
+          if(this.FilesList[i]['isPublic'] == true)  {
+            this.allFiles.push(this.FilesList[i]);
+          }
+          if(this.FilesList[i]['username']== this.getUsername()) {
+            this.myFiles.push(this.FilesList[i]);
+          }
         }
-      })
+        this.selectedPrivacyType = "all";
+        this.FilesList = this.allFiles;
+      })  
     }
     else {
       this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {
@@ -113,14 +118,39 @@ export class UploadComponent implements OnInit {
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedPrivacyType = value;
-    if (this.selectedPrivacyType == "true") {
-      this.FilesList = this.publicFiles;
-    }
-    else if (this.selectedPrivacyType == 'false') {
-      this.FilesList = this.privateFiles;
-    }
-    else if (this.selectedPrivacyType == "all")
+
+    if (this.selectedPrivacyType == "all")
       this.FilesList = this.allFiles;
+    else if(this.selectedPrivacyType == "myFiles")
+      this.FilesList = this.myFiles;
+
+    this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
+      this.FilesList = data;
+      this.myFiles = [];
+      this.allFiles = [];
+      for (let i = 0; i < this.FilesList.length; i++) {
+        if (this.FilesList[i]['username'] == this.getUsername()) {
+          this.FilesList[i]['thisUser'] = this.getUsername();
+        }
+        if(this.FilesList[i]['isPublic'] == true) {
+          this.FilesList[i]['Public']="true";
+        }
+      } 
+
+      for (let i = 0; i < this.FilesList.length; i++) {
+        if(this.FilesList[i]['isPublic'] == true) 
+          this.allFiles.push(this.FilesList[i]);
+
+        if(this.FilesList[i]['username']== this.getUsername()) {
+          this.myFiles.push(this.FilesList[i]);
+        }
+      }
+
+      if (this.selectedPrivacyType == "all")
+        this.FilesList = this.allFiles;
+      else if(this.selectedPrivacyType == "myFiles")
+        this.FilesList = this.myFiles;
+      })  
   }
 
   save(fileName: string) {
@@ -132,31 +162,11 @@ export class UploadComponent implements OnInit {
     return sessionStorage.getItem('fileName');
   }
 
-  clearStorage()
-  {
-    sessionStorage.removeItem('csv');
-    sessionStorage.removeItem('numOfPages');
-    sessionStorage.removeItem('numericValues');
-    sessionStorage.removeItem('statistics');
-    sessionStorage.removeItem('inputList');
-    sessionStorage.removeItem('output');
-    sessionStorage.removeItem('problemType');
-    sessionStorage.removeItem('encoding');
-    sessionStorage.removeItem('optimizer');
-    sessionStorage.removeItem('regularization');
-    sessionStorage.removeItem('lossFunction');
-    sessionStorage.removeItem('range');
-    sessionStorage.removeItem('activationFunction');
-    sessionStorage.removeItem('learningRate');
-    sessionStorage.removeItem('regularizationRate');
-    sessionStorage.removeItem('epochs');
-  }
-
    async uploadFile(files: any) {
     if (files.length === 0)
       return;
     
-    this.clearStorage();
+    sessionStorage.clear();
       
     let file = <File>files[0];
     var fileSize = file.size;
@@ -245,11 +255,11 @@ export class UploadComponent implements OnInit {
 
   useThis(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    this.clearStorage();
+    sessionStorage.clear();
   }
   useThisUn(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    this.clearStorage();
+    sessionStorage.clear();
   }
 
   delete(event, item) {
@@ -286,9 +296,12 @@ export class UploadComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(token);
         location.reload();
       })
-      location.reload();
+      //if (this.selectedPrivacyType == "all")
+      //  location.reload();
+      this.myFiles = [];
+      this.allFiles = [];
     }
-    else if(event.target.checked){
+    if(event.target.checked){
       item.isPublic = true;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
@@ -306,7 +319,9 @@ export class UploadComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(token);
         location.reload();
       })
-      location.reload();
+      //location.reload();
+      this.myFiles = [];
+      this.allFiles = [];
     }
   }
 

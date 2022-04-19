@@ -13,3 +13,11 @@
 .bg-darkslategrey {
     background-color: #181824;
 }
+
+.img {
+    width: 180px;
+    height: 34px;
+    margin-top: 10px;
+    margin-left: 10px;
+    background-image: url("src/assets/img/logo.png");
+}
