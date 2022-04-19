@@ -375,7 +375,7 @@ namespace Igrannonica.Controllers
             foreach (Experiment experiment in experiments)
             {
                 Models.File file = _context.File.Where(f => f.RandomFileName == experiment.fileName).FirstOrDefault();
-                experiment.fileName = file.FileName;
+                experiment.realName = file.FileName;
             }
 
             return Ok(experiments);

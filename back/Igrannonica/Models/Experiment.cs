@@ -12,6 +12,7 @@ namespace Igrannonica.Models
         public string name { get; set; }
         public string date { get; set; }
         public string fileName { get; set; }
+        public string realName { get; set; }
         public List<string> inputList { get; set; }
         public string output { get; set; }
         public string encodingType { get; set; }
