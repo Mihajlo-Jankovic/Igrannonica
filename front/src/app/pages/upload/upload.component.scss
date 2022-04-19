@@ -83,6 +83,51 @@
     flex-wrap: wrap;
 }
 
+@media(max-width: 1250px) {
+    .file {
+        width: 33.3%;
+    }
+}
+
+@media(max-width: 768px) {
+    .file {
+        width: 50%;
+    }
+}
+
+@media(max-width: 620px) {
+    .dropdown {
+        width: 100%;
+    }
+}
+
+@media(max-width: 528px) {
+    .file {
+        width: 100%;
+    }
+    .dropdown {
+        width: 100%;
+    }
+}
+
+.dropdown {
+    font-size: 13px;
+    padding: 10px 8px 10px 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-left: 1rem;
+    margin-top: 8px;
+    height: 42px;
+    width: 15%;
+    min-width: 200px;
+    //position: relative;
+    float: left;
+    bottom: 0;
+}
+
 .dropdown:focus {
     border-color: #7d3c8b;
 }
@@ -210,7 +255,6 @@ input:checked+.slider:before {
 
 button {
     height: 100%;
-    left: 70px;
     padding: 0px;
 }
 
@@ -259,4 +303,29 @@ button {
     .dropdown {
         width: 100%;
     }
+}
+
+.page {
+    padding: 0.5rem;
+    color: #7d3c8b;
+}
+
+.paging {
+    font-size: 13px;
+    background: transparent;
+    overflow: hidden;
+    color: white;
+    margin-left: 1rem;
+    margin-top: 8px;
+    height: 42px;
+    width: 15%;
+    min-width: 200px;
+    bottom: 0;
+    padding-bottom: 10px;
+    float: right;
+}
+
+.row1 {
+    position: relative;
+    width: 100%;
 }
