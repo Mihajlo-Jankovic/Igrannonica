@@ -10,7 +10,7 @@
 </div>
 <div class="sidebar-wrapper">
     <ul class="nav">
-        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item" [hidden]="!isUploaded(menuItem.title)">
+        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item" [disabled]="!isUploaded(menuItem.title)">
             <a [routerLink]="[menuItem.path]">
                 <i class="tim-icons  {{ menuItem.icon }}"></i>
                 <p>{{ menuItem.title }}</p>
