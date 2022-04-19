@@ -14,39 +14,11 @@
             </div>
             <div class=" card">
                 <div class="card-header">
-                    <div class=" row1">
-                        <h2 class="card-title" style="float: left;"> Choose an existing dataset</h2>
-                        <select *ngIf="session" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy">
-                            <option class='option' value="all">Public</option>
-                            <!--
-                            <option class='option' value="true">Public</option>
-                            <option class='option' value="false">Private</option>
-                            -->
-                            <option class='option' value="myFiles">My datasets</option>
-                        </select>
-                        <!--
-                        <div class="paging">
-                            <button class=" btn btn-link page" style="padding: 0px;">
-                                <i class="tim-icons icon-minimal-left"></i>
-                            </button>
-                            <button class=" btn btn-link page" style="padding: 0px;">
-                                <i class="tim-icons icon-double-left"></i>
-                            </button>
-                            <button class=" btn btn-link page" style="color: white">1</button>
-                            <button class=" btn btn-link page">2</button>
-                            <button class=" btn btn-link page">3</button>
-                            <button class=" btn btn-link page">4</button>
-                            <button class=" btn btn-link page">5</button>
-
-                            <button class=" btn btn-link page" style="padding: 0px;">
-                                <i class="tim-icons icon-double-right"></i>
-                            </button>
-                            <button class=" btn btn-link page" style="padding: 0px;">
-                                <i class="tim-icons icon-minimal-right"></i>
-                            </button>
-                        </div>
-                        -->
-                    </div>
+                    <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing dataset</h3>
+                    <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy" style="float:left;">
+                        <option class='option' value="all">Public</option>
+                        <option class='option' value="myFiles">My datasets</option>
+                    </select>
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
                     <div class="authorized" *ngIf="cookieCheck">
