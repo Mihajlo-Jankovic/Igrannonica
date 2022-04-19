@@ -18,14 +18,14 @@
 }
 
 .train {
-    width: 380px;
+    width: 300px;
     height: 42px;
     padding: 0px;
     margin-left: auto;
     margin-right: auto;
 }
 
-gms .save {
+.save {
     width: 300px;
     height: 35px;
     float: right;
@@ -38,8 +38,7 @@ h6 {
 }
 
 .dropdown {
-    font-size: 13px;
-    padding: 10px 8px 10px 14px;
+    font-size: 1rem;
     background: transparent;
     border: 1px solid #7d3c8b;
     border-radius: 6px;

@@ -13,8 +13,7 @@
 }
 
 .dropdown {
-    font-size: 13px;
-    padding: 10px 8px 10px 14px;
+    font-size: 1rem;
     background: transparent;
     border: 1px solid #7d3c8b;
     border-radius: 6px;
@@ -270,6 +269,7 @@ td {
     padding: 0.2rem;
     color: #7d3c8b;
     max-width: 42px;
+    font-size: 15px;
 }
 
 .divOutput,
@@ -323,7 +323,7 @@ input[type='radio']:checked:after {
 
 .train {
     background-color: #27293d;
-    width: auto;
+    width: 125px;
     height: auto;
     margin: auto;
     padding: 5px;
@@ -411,6 +411,14 @@ input[type='radio']:checked:after {
     margin: 0;
     padding-left: 0;
     width: 42px;
+}
+
+.arrow {
+    font-size: 1.7rem;
+}
+
+.next {
+    width: 122px;
 }
 
 @media(max-width: 785px) {

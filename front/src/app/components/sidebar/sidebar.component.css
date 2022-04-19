@@ -1,0 +1,12 @@
+p {
+    font-size: 0.8rem;
+    color: white;
+}
+
+p:hover {
+    font-weight: bold;
+}
+
+a:disabled {
+    color: grey;
+}
