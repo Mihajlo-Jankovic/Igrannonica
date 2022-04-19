@@ -268,8 +268,8 @@ export class UploadComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(token);
         location.reload();
       })
-      if (this.selectedPrivacyType == "all")
-        location.reload();
+      //if (this.selectedPrivacyType == "all")
+      //  location.reload();
       this.myFiles = [];
       this.allFiles = [];
     }

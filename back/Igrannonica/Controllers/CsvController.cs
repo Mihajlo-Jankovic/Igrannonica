@@ -193,29 +193,7 @@ namespace Igrannonica.Controllers
 
         }
 
-        public List<dynamic> getPagedCSV(int pageNum, int csvNum)
-        {
-            List<Models.File> tmpList = _mySqlContext.File.Where(u => u.IsPublic == true).ToList();
 
-            List<dynamic> files = new List<dynamic>();
-
-            int i = 0;
-            foreach (var tmp in tmpList)
-            {
-                if(i < pageNum*csvNum) { i++; continue; }
-
-                User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
-
-                var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
-                files.Add(file);
-
-                i++;
-                if (i >= csvNum) break;
-            }
-
-            return files;
-        }
-
-
+        
     }
 }
