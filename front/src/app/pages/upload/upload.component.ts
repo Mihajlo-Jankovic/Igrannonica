@@ -132,31 +132,11 @@ export class UploadComponent implements OnInit {
     return sessionStorage.getItem('fileName');
   }
 
-  clearStorage()
-  {
-    sessionStorage.removeItem('csv');
-    sessionStorage.removeItem('numOfPages');
-    sessionStorage.removeItem('numericValues');
-    sessionStorage.removeItem('statistics');
-    sessionStorage.removeItem('inputList');
-    sessionStorage.removeItem('output');
-    sessionStorage.removeItem('problemType');
-    sessionStorage.removeItem('encoding');
-    sessionStorage.removeItem('optimizer');
-    sessionStorage.removeItem('regularization');
-    sessionStorage.removeItem('lossFunction');
-    sessionStorage.removeItem('range');
-    sessionStorage.removeItem('activationFunction');
-    sessionStorage.removeItem('learningRate');
-    sessionStorage.removeItem('regularizationRate');
-    sessionStorage.removeItem('epochs');
-  }
-
    async uploadFile(files: any) {
     if (files.length === 0)
       return;
     
-    this.clearStorage();
+    sessionStorage.clear();
       
     let file = <File>files[0];
     var fileSize = file.size;
@@ -245,11 +225,11 @@ export class UploadComponent implements OnInit {
 
   useThis(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    this.clearStorage();
+    sessionStorage.clear();
   }
   useThisUn(event, item) {
     this.cookie.set("filename", item.randomFileName);
-    this.clearStorage();
+    sessionStorage.clear();
   }
 
   delete(event, item) {

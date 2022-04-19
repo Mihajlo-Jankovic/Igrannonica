@@ -341,7 +341,23 @@ export class TablesComponent {
           type: 'scatter',
           data: [{
             x : this.selectedColName,
-            y : this.outliers
+            y : this.outliers[0]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[1]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[2]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[this.outliers.length-1]
+          },
+          {
+            x : this.selectedColName,
+            y : this.outliers[this.outliers.length-2]
           }
           ]
         }
