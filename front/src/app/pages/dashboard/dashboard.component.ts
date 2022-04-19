@@ -84,6 +84,7 @@ export class DashboardComponent implements OnInit {
       this.layersLabel++;
       this.layer = new layer(this.layersLabel);
       this.layerList.push(this.layer);
+      sessionStorage.setItem('numLayers', (this.layerList.length).toString())
     }
   }
 
@@ -92,17 +93,21 @@ export class DashboardComponent implements OnInit {
       this.layersLabel--;
       this.layerList.splice(index);
       this.neuronsList[index] = 1;
+      sessionStorage.setItem('numLayers', (this.layerList.length).toString())
+      sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
     }
   }
 
   increaseNeurons(index){
     this.neuronsList[index]++;
     this.neuron = new neuron(this.neuronsList[index]);
+    sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
   }
 
   decreaseNeurons(index, i){
     if(this.neuronsList[index] > 1){
       this.neuronsList[index]--;
+      sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
     }
   }
   
@@ -311,8 +316,33 @@ export class DashboardComponent implements OnInit {
     this.checkProblemType();
 
     this.chartData = {};
-    this.layer.id = 1;
-    this.layerList.push(this.layer);
+    if(sessionStorage.getItem('numLayers'))
+    {
+      var numLayer = Number(sessionStorage.getItem('numLayers'));
+      console.log("Num layer" + numLayer)
+      for(let i=0;i<numLayer;i++){
+        this.layersLabel = i + 1;
+        this.layer = new layer(this.layersLabel);
+        this.layerList.push(this.layer);
+      }
+
+      if(sessionStorage.getItem('neuronsList'))
+      {
+        var list = []; 
+        list = JSON.parse(sessionStorage.getItem('neuronsList'));
+
+        for(let i=0;i<numLayer;i++){
+          this.neuronsList[i] = list[i];
+          this.neuron = new neuron(this.neuronsList[i]);
+        }
+      }
+
+    }
+    else{
+      this.layer.id = 1;
+      this.layerList.push(this.layer);
+    }
+    
 
     var gradientChartOptionsConfigurationWithTooltipRed: any = {
       maintainAspectRatio: false,

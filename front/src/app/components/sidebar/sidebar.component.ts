@@ -16,13 +16,13 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: "/tables",
-    title: "Table List",
-    icon: "icon-puzzle-10",
+    title: "Data Preview",
+    icon: "icon-bullet-list-67",
     class: ""
   },
   {
     path: "/dashboard",
-    title: "Dashboard",
+    title: "Training Model",
     icon: "icon-chart-pie-36",
     class: ""
   }

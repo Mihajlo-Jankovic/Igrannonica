@@ -14,12 +14,13 @@ from tensorflow import keras
 
 
 path = 'csv\movies.csv'
-
-connId = ''
-
 class CustomCallback(keras.callbacks.Callback):
 
     modelHistory = {}
+    connId = ""
+
+    def __init__(self, connID):
+        self.connId = connID
 
     def on_epoch_end(self, epoch, logs=None):
         keys = list(logs.keys())
@@ -29,7 +30,7 @@ class CustomCallback(keras.callbacks.Callback):
                 self.modelHistory[key] = [logs[key]]
             else:
                 self.modelHistory[key].append(logs[key])
-        data['connID'] = connId
+        data['connID'] = self.connId
         data['epoch'] = epoch
         data['trainingData'] = self.modelHistory
 
@@ -172,8 +173,6 @@ def output_unique_values(df,output):
     return df[output].nunique()
 
 def startTraining(connid, fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
-    global connId
-    connId = connid
     PATH = 'http://127.0.0.1:10108/downloadFile/'
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)

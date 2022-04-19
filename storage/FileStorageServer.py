@@ -47,8 +47,8 @@ def delete_file(filename):
         os.remove(filepath)
         
         #Printing the confirmation message of deletion
-        return 'successfully deleted'
-    return 'error'
+        return {"message" : "Dataset successfully deleted."}
+    return {"message" : "Error encoundered while deleting dataset."}
 
 
 # Kontroler za prikaz podataka u tabeli
@@ -66,7 +66,7 @@ def table_data():
         return {'csv': json.loads(df.to_json(orient = 'split')), 'numericValues': numericValues, 'numOfPages': numOfPages}
         
     else:
-        return content_type
+        return {"message" : "Error encoundered while reading dataset content."}
 
 # Kontroler za prikaz statistickih podataka
 @app.route('/statistics', methods=['POST'])
@@ -81,14 +81,13 @@ def statistics():
         return json_object
         
     else:
-        return content_type
+        return {"message" : "Error encoundered while calculating statistics."}
 
 @app.route('/editcell', methods=['POST'])
 def edit_cell():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
-
         df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
         df = FileStorageProgram.editCell(df,int(json['rowNumber']), json['columnName'], json['value'])
 
@@ -98,7 +97,7 @@ def edit_cell():
         return {"message" : "Edit successfull."}
         
     else:
-        return content_type
+        return {"message" : "Error encoundered while editing cell content."}
 
 
 @app.route('/deleterow', methods=['POST'])
@@ -114,7 +113,7 @@ def delete_row():
         return {"message" : "Delete successfull."}
         
     else:
-        return content_type
+        return {"message" : "Error encoundered while deleting a row from the dataset."}
 
 if __name__ == '__main__':
     app.run(port=10108)
