@@ -125,6 +125,24 @@ input[type=range]::-moz-range-thumb {
     color: #d450d9 !important;
 }
 
+.metric-button {
+    float: right;
+    background: #7d3c8b !important;
+}
+
+.metric-button:hover {
+    background: #d450d9 !important;
+}
+
+.button-group {
+    height: auto;
+    width: auto;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+/*
 .layerContainer {
     display: flex;
     min-height: 100px;
@@ -146,9 +164,66 @@ input[type=range]::-moz-range-thumb {
     margin-left: 1rem;
     border-radius: 3px;
 }
+*/
+
+.layerButtons {
+    height: 60px;
+}
+
+.layerContainer {
+    position: relative;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    text-align: center;
+    font-size: 0;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layer {
+    height: auto;
+    margin-bottom: 0;
+    position: relative;
+    border-radius: 4px;
+    padding: 0.5rem;
+    min-width: 230px;
+    float: left;
+    width: 16.66%;
+}
+
+.layerContent {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #7d3c8b;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
 
 .buttons {
     height: 40px;
+    width: 100%;
+}
+
+.neurons {
+    width: 100%;
+    height: 35px;
+}
+
+.textInput {
+    font-size: 1rem;
+    text-align: center;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    width: 100px;
+    float: right;
+    margin-top: 3px;
+    height: 25px;
 }
 
 .neuron {
@@ -210,15 +285,55 @@ $spin-duration: 1s;
     animation: spin $spin-duration infinite linear;
 }
 
+.experimentName {
+    //margin: 5px 0 0 30px;
+    background: transparent;
+    border: 3px solid #7d3c8b;
+    border-radius: 3px;
+    height: 35px;
+    width: 100%;
+    color: white;
+}
+
+.expContainer {
+    min-width: 300px;
+    width: 33.3%;
+    height: 67px;
+    margin: 0px;
+    float: left;
+    padding: 1rem 1rem 1rem 1rem;
+}
+
+@media(max-width: 1720px) {
+    .layer {
+        width: 33.33%
+    }
+}
+
 @media(max-width: 1366px) {
     .hyperparameter {
         width: 25%;
     }
 }
 
+@media(max-width: 1359px) {
+    .expContainer {
+        width: 100%;
+    }
+    .save {
+        width: 100%;
+    }
+}
+
 @media(max-width: 1024px) {
     .hyperparameter {
         width: 33.3%;
+    }
+}
+
+@media(max-width: 999px) {
+    .layer {
+        width: 50%
     }
 }
 
@@ -234,36 +349,14 @@ $spin-duration: 1s;
     }
 }
 
+@media(max-width: 504px) {
+    .layer {
+        width: 100%;
+    }
+}
+
 @media(max-width: 414px) {
     .train {
-        width: 100%;
-    }
-}
-
-.experimentName {
-    //margin: 5px 0 0 30px;
-    background: transparent;
-    border: 3px solid #7d3c8b;
-    border-radius: 3px;
-    height: 35px;
-    width: 100%;
-    color: white;
-}
-
-.expContainer {
-    min-width: 350px;
-    width: 33.3%;
-    height: 67px;
-    margin: 0px;
-    float: left;
-    padding: 1rem 1rem 1rem 1rem;
-}
-
-@media(max-width: 1359px) {
-    .expContainer {
-        width: 100%;
-    }
-    .save {
         width: 100%;
     }
 }

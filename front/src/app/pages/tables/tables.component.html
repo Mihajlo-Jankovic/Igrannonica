@@ -25,7 +25,7 @@
         <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
-                    <h4 class=" card-category" style="color: white;">Statistics</h4>
+                    <h3 class=" card-category" style="color: white;">Statistics</h3>
                     <select class='dropdown' (change)='onSelectedCol($event)' style="width: 100%;">
                         <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
                     </select>
@@ -67,8 +67,7 @@
         <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card card-chart" style="height: 390px;">
                 <div class=" card-header">
-                    <h4 class=" card-category" style="color: white;">Boxplot</h4>
-                    <h3 class=" card-title"> </h3>
+                    <h3 class=" card-category" style="color: white;">Boxplot</h3>
                 </div>
                 <div class=" card-body">
                     <div id="chart" *ngIf="selectedColDiv">
@@ -80,7 +79,7 @@
         <div class=" col-lg-4" *ngIf="showStatisticDiv">
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
-                    <h4 class=" card-category" style="color: white;float: left;">Correlation Matrix</h4>
+                    <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="previewMatrix()">Review</button>
                 </div>
                 <div class=" card-body">
@@ -139,7 +138,7 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class=" card-header" style="padding:0px;">
-                    <h4 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">Uploaded data</h4>
+                    <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">Uploaded data</h3>
                     <div class="headerLeft" style="padding-top: 8px;">
                         <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
                             <option class='option' value="all">All</option>

@@ -3,25 +3,23 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class="card-header">
-                    <h2 class="card-title">Upload a new dataset</h2>
+                    <h3 class="card-title">Upload a new dataset</h3>
                 </div>
                 <div class="card-body">
                     <div class="file-upload">
-                        <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv">
-                        <div class="card-subtitle">Drag n Drop your file dataset</div>
+                        <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv" ngbTooltip="Click or drag your file here to upload">
+                        <div class="card-subtitle">Drag n Drop your dataset here</div>
                     </div>
                 </div>
             </div>
             <div class=" card">
                 <div class="card-header">
-                    <div class=" row">
-                        <h2 class="card-title"> Choose an existing file</h2>
-                        <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy">
-                            <option class='option' value="all">All</option>
-                            <option class='option' value="true">Public</option>
-                            <option class='option' value="false">Private</option>
-                        </select>
-                    </div>
+                    <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing file</h3>
+                    <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy" style="float:left;">
+                        <option class='option' value="all">All</option>
+                        <option class='option' value="true">Public</option>
+                        <option class='option' value="false">Private</option>
+                    </select>
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
                     <div class="authorized" *ngIf="cookieCheck">

@@ -12,7 +12,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h2 class=" card-title" style="position: relative; float: left;">Configure hyperparameters</h2>
+                    <h3 class=" card-title" style="position: relative; float: left;">Configure hyperparameters</h3>
                 </div>
                 <div class="card-body" style="padding-left: 0; padding-right: 0;">
                     <div class="hyperparameter">
@@ -131,39 +131,43 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <div style="width : 250px; position: relative; float: left;">
-                        <h2 class=" card-title">Configure layers</h2>
+                <div class="card-header layerButtons">
+                    <div style="width : auto; position: relative; float: left;">
+                        <h3 class="card-title">Configure layers</h3>
                     </div>
-                    <div class=" btn-group" style="position: relative; float: left;">
-                        <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseLayers(layersLabel-1)">
+                    <div class=" btn-group" style="position: relative; float: left; margin-left: 27px;">
+                        <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseLayers(layersLabel-1)" ngbTooltip="Decrease number of layers">
                             <i class=" tim-icons icon-simple-delete"></i>
                         </button>
-                        <button class=" btn btn-danger btn-sm plus" (click)="increaseLayers()">
+                        <button class=" btn btn-danger btn-sm plus" (click)="increaseLayers()" ngbTooltip="Increase number of layers">
                             <i class=" tim-icons icon-simple-add"></i>
                         </button>
                     </div>
+                    <!--
                     <div style="position: relative; float: left; width: 50px; text-align: center;">
                         <h2 style="padding: 3px;">{{layerList.length}}</h2>
                     </div>
+                    -->
                 </div>
-
-                <div class="card-body layerContainer">
-                    <div class="col-2 layer" *ngFor="let layer of layerList" div>
-                        <div class="buttons">
-                            <div class=" btn-group" style="position: relative; float: left;">
-                                <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseNeurons(layer.id-1, neuronsList[layer.id-1])">
-                                    <i class=" tim-icons icon-simple-delete"></i>
-                                </button>
-                                <button class=" btn btn-danger btn-sm plus" (click)="increaseNeurons(layer.id-1)">
-                                    <i class=" tim-icons icon-simple-add"></i>
-                                </button>
-                            </div>
-                            <h2 style="position: relative; float: right; padding: 3px;">{{neuronsMatrix[layer.id-1].length}}</h2>
-                        </div>
-                        <div>
-                            <div class="neuron" *ngFor="let neuron of neuronsMatrix[layer.id-1]">
-
+                <div class="card-body" style="padding: 0rem .5rem 0rem .5rem;">
+                    <div class="layerContainer">
+                        <div class="layer" *ngFor="let layer of layerList" div>
+                            <div class="layerContent">
+                                <h3 style="margin-bottom: 5px;">Layer {{layer.id}}</h3>
+                                <div class="buttons">
+                                    <div class=" btn-group">
+                                        <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseNeurons(layer.id-1, neuronsList[layer.id-1])" ngbTooltip="Decrease number of neurons">
+                                            <i class=" tim-icons icon-simple-delete"></i>
+                                        </button>
+                                        <button class=" btn btn-danger btn-sm plus" (click)="increaseNeurons(layer.id-1)" ngbTooltip="Increase number of neurons">
+                                            <i class=" tim-icons icon-simple-add"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="neurons">
+                                    <h3 style="width: auto; margin:0; padding:0; float: left;">Neurons</h3>
+                                    <input type="text" class="textInput" [(ngModel)]="neuronsList[layer.id-1]" ngbTooltip="Type in number of neurons">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -184,14 +188,12 @@
         <div class=" col-12">
             <div class=" card card-chart">
                 <div class=" card-header">
-                    <div class=" row">
-                        <div class=" col-sm-6 text-left">
-                            <h2 class=" card-title">Performance</h2>
-                        </div>
-                        <div class=" col-sm-6">
-                            <div class=" btn-group btn-group-toggle float-right" data-toggle="buttons" *ngIf="buttons.length > 0">
-                                <button class="btn btn-danger btn-sm plus" *ngFor="let button of buttons" [ngbTooltip]="showTooltip(button)" (click)="changeData(button)" placement="left">{{button}}</button>
-                            </div>
+                    <div style="height:auto; width: 150px; float: left;">
+                        <h3 class=" card-title" style="width:150px;">Performance</h3>
+                    </div>
+                    <div style="width:auto; height:auto; float:right;">
+                        <div class="button-group" data-toggle="buttons" *ngIf="buttons.length > 0">
+                            <button class="btn btn-danger btn-sm metric-button" *ngFor="let button of buttons" [ngbTooltip]="showTooltip(button)" (click)="changeData(button)" placement="left" style="float: right;">{{button}}</button>
                         </div>
                     </div>
                 </div>
@@ -206,10 +208,10 @@
             <div class="card">
                 <div class="card-header" style="padding:0px !important;">
                     <div class="expContainer">
-                        <h2 class=" card-title saveTitle">Save your experiment</h2>
+                        <h3 class=" card-title saveTitle">Save your experiment</h3>
                     </div>
                     <div class="expContainer">
-                        <input type="text" class="experimentName" ngbTooltip="Enter experiment name" [(ngModel)]="experimentName">
+                        <input type="text" class="experimentName" ngbTooltip="Write experiment name" [(ngModel)]="experimentName">
                     </div>
                     <div class="expContainer">
                         <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveExperiment()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>

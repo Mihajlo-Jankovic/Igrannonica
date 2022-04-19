@@ -44,7 +44,6 @@ export class DashboardComponent implements OnInit {
   public range: number = 50;
   public experimentName: string = "";
 
-  public modelHistory: any;
   public trained: boolean = false;
   public training: boolean = false;
 
@@ -56,7 +55,6 @@ export class DashboardComponent implements OnInit {
 
   layerList = [];
   neuronsList = [1,1,1,1,1,1];
-  neuronsMatrix = [[],[],[],[],[],[],[],[]];
 
   public fileName: string = this.cookieService.get('filename');
 
@@ -94,22 +92,17 @@ export class DashboardComponent implements OnInit {
       this.layersLabel--;
       this.layerList.splice(index);
       this.neuronsList[index] = 1;
-      this.neuronsMatrix[index].splice(1);
     }
   }
 
   increaseNeurons(index){
-    if(this.neuronsList[index] < 8) {
-      this.neuronsList[index]++;
-      this.neuron = new neuron(this.neuronsList[index]);
-      this.neuronsMatrix[index].push(this.neuron);
-    }
+    this.neuronsList[index]++;
+    this.neuron = new neuron(this.neuronsList[index]);
   }
 
   decreaseNeurons(index, i){
     if(this.neuronsList[index] > 1){
       this.neuronsList[index]--;
-      this.neuronsMatrix[index].splice(i-1);
     }
   }
   
@@ -156,6 +149,7 @@ export class DashboardComponent implements OnInit {
   }
 
   startTraining() {
+    console.log(this.neuronsList);
     if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
       window.alert("Input or output not selected");
       return;
@@ -313,11 +307,6 @@ export class DashboardComponent implements OnInit {
     this.chartData = {};
     this.layer.id = 1;
     this.layerList.push(this.layer);
-    
-    for (let i = 0; i < this.neuronsMatrix.length; i++) {
-      this.neuron = new neuron(1);
-      this.neuronsMatrix[i].push(neuron);
-    }
 
     var gradientChartOptionsConfigurationWithTooltipRed: any = {
       maintainAspectRatio: false,

@@ -176,7 +176,8 @@ def startTraining(connid, fileName, inputList, output, encodingType, ratio, numL
     PATH = 'http://127.0.0.1:10108/downloadFile/'
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
-    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(inputList), 10, lossFunction, metrics)
+    print("Kolone : ", len(X_train.columns))
+    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), 10, lossFunction, metrics)
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback()])
     return model.history
 
