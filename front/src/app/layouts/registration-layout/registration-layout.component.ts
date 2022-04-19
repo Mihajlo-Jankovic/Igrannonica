@@ -23,7 +23,8 @@ export class RegistrationLayoutComponent implements OnInit {
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
       username: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$")]],
-      password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
+      password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
+      confirmPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     })
   }
 
@@ -35,28 +36,30 @@ export class RegistrationLayoutComponent implements OnInit {
   }
 
   registration(form: FormGroup) {
-    if (form.value.username && form.value.password && form.value.firstname && form.value.lastname && form.value.email) {
+    if (form.value.username && form.value.password && form.value.confirmPassword && form.value.firstname && form.value.lastname && form.value.email) {
       this.registerService.register(form.value.username, form.value.password, form.value.firstname, form.value.lastname, form.value.email)
         .subscribe(token => {
           let JSONtoken: string = JSON.stringify(token);
           let StringToken = JSON.parse(JSONtoken).token;
-          if (StringToken == "Email is taken!")
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-          else if (StringToken == "Username already exists!")
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-          else if(StringToken == "Success"){
+          if (StringToken == "Email is taken!") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+          else if (StringToken == "Username already exists!") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+          else if (StringToken == "Success" && form.value.password == form.value.confirmPassword) {
             this.router.navigate(['/login']);
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Congratulations, your account has been successfully created </b>.', '', {
               disableTimeOut: false,
@@ -69,7 +72,13 @@ export class RegistrationLayoutComponent implements OnInit {
         })
     }
     else {
-      alert("Popunite sva polja!");
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please enter all fields</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
     }
   }
 
