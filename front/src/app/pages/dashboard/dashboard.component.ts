@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
   public liveData: {};
   public chartData = {};
 
-  constructor(private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
+  constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
   configuration = new Configuration();
 
@@ -151,7 +151,13 @@ export class DashboardComponent implements OnInit {
   startTraining() {
     console.log(this.neuronsList);
     if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
-      window.alert("Input or output not selected");
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Input or output not selected</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
       return;
     }
     this.chartData = {};
