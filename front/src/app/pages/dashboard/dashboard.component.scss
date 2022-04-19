@@ -234,6 +234,12 @@ $spin-duration: 1s;
     }
 }
 
+@media(max-width: 414px) {
+    .train {
+        width: 100%;
+    }
+}
+
 .experimentName {
     //margin: 5px 0 0 30px;
     background: transparent;

@@ -82,17 +82,17 @@ i:hover {
 h6 {
     text-align: left;
 }
+
 h5 {
-  display: block;
-  text-align: left;
-  font-size: .90em;
-  margin-top: 1.67em;
-  margin-bottom: 1.67em;
-  margin-left: 0;
-  margin-right: 0;
-  font-weight: bold;
-  line-height: 1.0;
-   
+    display: block;
+    text-align: left;
+    font-size: .90em;
+    margin-top: 1.67em;
+    margin-bottom: 1.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+    line-height: 1.0;
 }
 
 .titleDiv {
@@ -138,5 +138,11 @@ h5 {
 @media(max-width: 1110px) {
     .hyperparameter {
         width: 50%;
+    }
+}
+
+@media(max-width: 600px) {
+    .hyperparameter {
+        width: 100%;
     }
 }

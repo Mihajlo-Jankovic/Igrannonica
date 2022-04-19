@@ -26,6 +26,7 @@
     width: 40%;
     position: relative;
     bottom: 0;
+    min-width: none;
 }
 
 .dropdown:focus {
@@ -266,8 +267,9 @@ td {
 }
 
 .page {
-    padding: 0.5rem;
+    padding: 0.2rem;
     color: #7d3c8b;
+    max-width: 42px;
 }
 
 .divOutput,
@@ -388,6 +390,7 @@ input[type='radio']:checked:after {
     padding-left: 1rem;
     height: 66px;
     float: left;
+    min-width: none;
 }
 
 .headerRight {
@@ -395,6 +398,7 @@ input[type='radio']:checked:after {
     padding-right: 1rem;
     height: 66px;
     float: right;
+    min-width: none;
 }
 
 .buttons {
@@ -405,16 +409,16 @@ input[type='radio']:checked:after {
     height: 66px;
     float: right;
     margin: 0;
+    padding-left: 0;
+    width: 42px;
 }
 
 @media(max-width: 785px) {
     .headerLeft {
         width: 100%;
-        min-width: 400px;
     }
     .headerRight {
         width: 100%;
-        min-width: 400px;
     }
     .dropdown {
         width: 46%;
@@ -428,16 +432,24 @@ input[type='radio']:checked:after {
     .headerLeft {
         height: auto;
         width: 100%;
-        min-width: 400px;
     }
     .headerRight {
         width: 100%;
-        min-width: 400px;
     }
     .dropdown {
         width: 95%;
     }
     .buttons {
         float: left;
+    }
+}
+
+@media(max-width: 411px) {
+    .page {
+        width: 30px;
+        max-width: 30px;
+    }
+    .arrow {
+        font-size: 2em;
     }
 }

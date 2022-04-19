@@ -11,15 +11,15 @@
                     </div>
 
                     <div class=" container" *ngFor="let exp of experiments; index as i">
-                        <div style="min-height: 20px;">
-                            <div style="position: relative; float: left; margin-top: 15px;">
-                                <h5>{{exp['name']}}</h5>
+                        <div style="min-height: 10px;">
+                            <div style="position: relative; float: left">
+                                <h5 style="margin-bottom: 0px; margin-top: 10px;">{{exp['name']}}</h5>
                             </div>
-                            <div *ngIf="!clcDiv[i]" style="position: relative; float: right; margin-top: 15px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-down"></i></div>
-                            <div *ngIf="clcDiv[i]" style="position: relative; float: right; margin-top: 15px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-up"></i></div>
+                            <div *ngIf="!clcDiv[i]" style="position: relative; float: right; margin-top: 5px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-down"></i></div>
+                            <div *ngIf="clcDiv[i]" style="position: relative; float: right; margin-top: 5px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-up"></i></div>
                         </div>
                         <div *ngIf="clcDiv[i]" class="box" style="margin-top: 30px;">
-                            <div class="filenameparameter" style="margin-left: 0em;">
+                            <div class="hyperparameter" style="margin-left: 0em;">
                                 <h6>File name</h6>
                                 <input type="text" class="dropdown" value="{{exp['fileName']}}" disabled>
                             </div>
@@ -31,13 +31,13 @@
                                 <br>
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" style=" padding: 0px;">USE</button>
                             </div>
-                            <div class="parameter" style="margin-left: 0em; clear: both;">
+                            <div class="hyperparameter" style="margin-left: 0em; clear: both;">
                                 <h6>Inputs</h6>
                                 <select class="dropdown">
                                     <option  *ngFor="let item of exp['inputList']; index as j" class="option">{{item}}</option>
                                 </select>
                             </div>
-                            <div class="parameter">
+                            <div class="hyperparameter">
                                 <h6>Output</h6>
                                 <input type="text" class="dropdown" value="{{exp['output']}}" disabled>
                             </div>
@@ -74,15 +74,15 @@
                             </div>
                             <div class="hyperparameter">
                                 <h6>Learning rate</h6>
-                                <input type="text" class="dropdown"  value="{{exp['learningRate']}}" disabled>
+                                <input type="text" class="dropdown" value="{{exp['learningRate']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Regularization rate</h6>
-                                <input type="text" class="dropdown"  value="{{exp['regularizationRate']}}" disabled>
+                                <input type="text" class="dropdown" value="{{exp['regularizationRate']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Number of epochs</h6>
-                                <input type="text" class="dropdown"  value="{{exp['numEpochs']}}" disabled>
+                                <input type="text" class="dropdown" value="{{exp['numEpochs']}}" disabled>
                             </div>
                             <div class="hyperparameter">
                                 <h6>Number of layers</h6>

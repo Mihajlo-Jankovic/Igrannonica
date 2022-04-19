@@ -18,6 +18,8 @@ footer {
     height: 70;
     padding: 1.2rem 3rem 1rem 3rem;
     z-index: 1000;
+    position: fixed;
+    top: 0;
 }
 
 .headerLeft {
@@ -48,4 +50,47 @@ footer {
 
 .white {
     color: white;
+}
+
+.login {
+    float: left;
+}
+
+.upload {
+    float: right;
+}
+
+@media(max-width: 575px) {
+    .header {
+        padding: 1.2rem 2rem 1rem 2rem;
+    }
+}
+
+@media(max-width: 468px) {
+    .header {
+        height: 90px;
+    }
+    .headerLeft {
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-bottom: 0.5rem;
+        text-align: center;
+        border-bottom: 1px solid white;
+    }
+    .headerRight {
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-top: 0.5rem;
+    }
+    .navItem {
+        padding-right: 0px;
+    }
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
