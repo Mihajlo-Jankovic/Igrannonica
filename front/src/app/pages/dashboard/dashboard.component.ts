@@ -44,6 +44,8 @@ export class DashboardComponent implements OnInit {
   public range: number = 50;
   public experimentName: string = "";
 
+  public selectedMetric: string = "loss";
+
   public trained: boolean = false;
   public training: boolean = false;
 
@@ -247,6 +249,7 @@ export class DashboardComponent implements OnInit {
   }
 
   changeData(name){
+    this.selectedMetric = name;
     this.data = this.chartData[name];
     this.val_data = this.chartData['val_' + name];
     this.label = name;
@@ -566,8 +569,8 @@ export class DashboardComponent implements OnInit {
       this.trained = true;
       this.buttons = Object.keys(this.chartData);
       this.buttons.splice(this.buttons.length/2);
-      this.data = this.chartData['loss'];
-      this.val_data = this.chartData['val_loss'];
+      this.data = this.chartData[this.selectedMetric];
+      this.val_data = this.chartData['val_'+this.selectedMetric];
       this.chart_labels = [];
       for (let i = 0; i < this.data.length; i++) {
         this.chart_labels[i] = i + 1;
