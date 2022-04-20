@@ -57,6 +57,7 @@ export class DashboardComponent implements OnInit {
   neuronsList = [1,1,1,1,1,1];
 
   public fileName: string = this.cookieService.get('filename');
+  public  loggedUser: boolean;
 
   dropdownList = [];
   selectedItems = [];
@@ -189,11 +190,9 @@ export class DashboardComponent implements OnInit {
   }
 
   saveExperiment() {
-    let loggedUser: boolean;
     let token: string;
 
-    loggedUser = this.loginService.isAuthenticated();
-    if (loggedUser) {
+    if (this.loggedUser) {
       token = this.cookieService.get('token');
     }
     let headers = new HttpHeaders({
@@ -307,7 +306,8 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    
+    this.loggedUser = this.loginService.isAuthenticated();
     this.checkStorage();
     this.startConnection();
     this.addTrainingDataListener();

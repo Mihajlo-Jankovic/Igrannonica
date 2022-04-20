@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
+import { Location } from "@angular/common";
 
 declare interface RouteInfo {
   path: string;
@@ -7,6 +8,8 @@ declare interface RouteInfo {
   icon: string;
   class: string;
 }
+
+
 export const ROUTES: RouteInfo[] = [
   {
     path: "/upload",
@@ -28,12 +31,16 @@ export const ROUTES: RouteInfo[] = [
   }
 ];
 
+
+
 @Component({
   selector: "app-sidebar",
   templateUrl: "./sidebar.component.html",
   styleUrls: ["./sidebar.component.css"]
 })
 export class SidebarComponent implements OnInit {
+  location: Location;
+  private listTitles: any[];
   menuItems: any[];
 
   constructor(private cookie : CookieService) {}
@@ -57,5 +64,19 @@ export class SidebarComponent implements OnInit {
       return true;
     return false;
     }
+  }
+
+  getTitle() {
+    var titlee = this.location.prepareExternalUrl(this.location.path());
+    if (titlee.charAt(0) === "//") {
+      titlee = titlee.slice(1);
+    }
+
+    for (var item = 0; item < this.listTitles.length; item++) {
+      if (this.listTitles[item].path === titlee) {
+        return this.listTitles[item].title;
+      }
+    }
+    return "Dashboard";
   }
 }

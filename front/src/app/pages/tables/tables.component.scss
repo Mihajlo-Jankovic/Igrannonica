@@ -12,9 +12,8 @@
     background: #1e1e2e;
 }
 
-
 .dropdown {
-    font-size: 1rem;
+    font-size: 14px;
     background: transparent;
     border: 1px solid #7d3c8b;
     border-radius: 6px;
@@ -103,6 +102,7 @@ i {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #7d3c8b;
 }
+
 
 /*
 #table::-webkit-scrollbar-corner {
@@ -371,24 +371,25 @@ input[type='radio']:checked:after {
     z-index: 1000;
     //overflow: auto;
 }
+
 .cm-modal-body {
     padding: 20px;
     background: transparent;
-
     margin: 40px;
     //overflow: auto;
 }
+
 .cm-modal-background {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-
     background-color: #000;
-    opacity: 0.75;  
+    opacity: 0.75;
     z-index: 900;
 }
+
 body.cm-modal-open {
     overflow: hidden;
 }
@@ -496,7 +497,7 @@ body.cm-modal-open {
     }
 }
 
-.io{
+.io {
     font-size: 1em;
     padding: 0px;
     color: #ffff;

@@ -27,4 +27,5 @@ export class Configuration
     public downloadFile : string = this.port + "/api/Csv/";
     public downloadFileUnauthorized = this.port + "/api/FileUpload/delete-authorized/";
     public updateVisibility = this.port + "/api/Csv/updateVisibility";
+    public refreshToken = this.port + "/api/User/refreshToken/";
 }

@@ -61,7 +61,7 @@ export class UploadComponent implements OnInit {
         'Authorization': 'bearer ' + this.token
       });
       let options = { headers: headers };
-      this.http.get<any>('https://localhost:7219/api/User/refreshToken/' + this.token ,options).subscribe(token => {
+      this.http.get<any>(this.configuration.refreshToken + this.token ,options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
 
@@ -162,7 +162,7 @@ export class UploadComponent implements OnInit {
     return sessionStorage.getItem('fileName');
   }
 
-   async uploadFile(files: any) {
+    async uploadFile(files: any) {
     if (files.length === 0)
       return;
     
@@ -185,7 +185,7 @@ export class UploadComponent implements OnInit {
         });
         let options = { headers: headers };
 
-       await this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
+        await this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
