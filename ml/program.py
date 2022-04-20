@@ -63,11 +63,12 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     elif(regularizer == 'L2'):
         reg = L2(regRate)
     # Input layer
-    tf.keras.layers.InputLayer(input_shape=(inputs,)),
-    #model.add(tf.keras.layers.Input((inputs,)))
-    #model.add(tf.keras.layers.Flatten())
+    if(regularizer != 'None'):
+        model.add(tf.keras.layers.Dense(neurons[0], activation=activation, kernel_regularizer=reg, input_dim=inputs))
+    else:
+        model.add(tf.keras.layers.Dense(neurons[0], activation=activation, input_dim=inputs))
     # Hidden layers
-    for i in range(layers):
+    for i in range (1, len(neurons)):
         # Provera da li je izabran regularizer
         if(regularizer != 'None'):
             model.add(tf.keras.layers.Dense(neurons[i], activation=activation, kernel_regularizer=reg))
@@ -75,9 +76,12 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
             model.add(tf.keras.layers.Dense(neurons[i], activation=activation))
     # Output layer
     if(problemType == 'Regression'):
-        model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
+        model.add(tf.keras.layers.Dense(1, activation='linear'))
     else:
-        model.add(tf.keras.layers.Dense(outputs, activation='softmax'))
+        if(outputs == 2):
+            model.add(tf.keras.layers.Dense(outputs, activation='sigmoid'))
+        else:
+            model.add(tf.keras.layers.Dense(outputs, activation='softmax'))
     # Odabir optimizera i podesavanje learning rate-a
     if(optimizerType == 'SGD'):
         optimizer = tf.keras.optimizers.SGD(learningRate)
@@ -176,9 +180,10 @@ def startTraining(connid, fileName, inputList, output, encodingType, ratio, numL
     PATH = 'http://127.0.0.1:10108/downloadFile/'
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
-    print("Kolone : ", len(X_train.columns))
     outputUniqueValues = output_unique_values(df,output)
+    print(outputUniqueValues)
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
+    m.summary()
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback(connid)])
     return model.history
 
