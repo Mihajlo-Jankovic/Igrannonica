@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit {
   neuron = new neuron(1);
 
   layerList = [];
-  neuronsList = [1,1,1,1,1,1];
+  neuronsList = [1,1,1,1,1,1,1,1];
 
   public fileName: string = this.cookieService.get('filename');
   public  loggedUser: boolean;

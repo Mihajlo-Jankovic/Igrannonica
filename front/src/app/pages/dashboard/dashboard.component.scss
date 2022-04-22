@@ -278,7 +278,13 @@ $spin-duration: 1s;
     padding: 1rem 1rem 1rem 1rem;
 }
 
-@media(max-width: 1720px) {
+@media(max-width: 1760px) {
+    .layer {
+        width: 25%
+    }
+}
+
+@media(max-width: 1070px) {
     .layer {
         width: 33.33%
     }
@@ -305,7 +311,7 @@ $spin-duration: 1s;
     }
 }
 
-@media(max-width: 999px) {
+@media(max-width: 620px) {
     .layer {
         width: 50%
     }
@@ -323,7 +329,7 @@ $spin-duration: 1s;
     }
 }
 
-@media(max-width: 504px) {
+@media(max-width: 430px) {
     .layer {
         width: 100%;
     }
