@@ -14,6 +14,8 @@ import {
 } from "ng-apexcharts";
 import { AnyForUntypedForms } from "@angular/forms";
 
+declare function myFunc(): any;
+
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
@@ -120,6 +122,18 @@ export class TablesComponent {
   mixArray: any = []; //niz za boxplot
   numArray: any= []; //niz za kor matricu
   outliers : any = [];
+
+  hideStatistics: boolean = false;
+  hideBoxplot: boolean = false;
+  hideMatrix: boolean = false;
+
+  statsButton: string = "Full Statistics";
+  matrixButton: string = "View Full Matrix";
+
+  X: boolean = true;
+  ioSelection: boolean = false;
+  encoding: boolean = false;
+  dataPreprocessing: boolean = false;
 
   constructor(private tableService: TableService, private cookie : CookieService) {
     sessionStorage.removeItem('statistics');
@@ -406,7 +420,7 @@ export class TablesComponent {
         }
       ],
       chart: {
-        height: 223,
+        height: 280,
         type: "boxPlot",
         foreColor: '#ced4da',
 
@@ -620,4 +634,94 @@ export class TablesComponent {
     this.opndMatrix = false;
   }
 
+  expandStats() {
+    var stats = document.getElementsByClassName('statistics')[0];
+    if(this.statsButton == "Full Statistics") {
+      this.hideBoxplot = true;
+      this.hideMatrix = true;
+      stats.classList.add('col-lg-12');
+      this.statsButton = "Close Statistics"
+    }
+    else {
+      this.hideBoxplot = false;
+      this.hideMatrix = false;
+      stats.classList.remove('col-lg-12');
+      this.statsButton = "Full Statistics"
+    }
+  }
+
+  expandMatrix() {
+    var matrix = document.getElementsByClassName('matrix')[0];
+
+    if(this.matrixButton == "View Full Matrix") {
+      this.hideBoxplot = true;
+      this.hideStatistics = true;
+      matrix.classList.add('col-lg-12');
+      this.matrixButton = "Close Matrix"
+    }
+    else {
+      this.hideBoxplot = false;
+      this.hideStatistics = false;
+      matrix.classList.remove('col-lg-12');
+      this.matrixButton = "View Full Matrix"
+    }
+  }
+
+  openedTab(id : number) {
+    var buttons = document.getElementsByClassName('tabBtn');
+
+    /*
+    for(let i = 0; i < buttons.length; i++){
+      buttons[i].classList.remove('tabOpened');
+    }
+
+    buttons[id].classList.add('tabOpened');
+    */
+
+    if(id == 0) {
+      this.X = true;
+      this.ioSelection = false; 
+      this.encoding = false; 
+      this.dataPreprocessing = false; 
+    }
+    else if(id == 1) {
+      this.X = false;
+      this.ioSelection = true; 
+      this.encoding = false; 
+      this.dataPreprocessing = false; 
+      //this.heightCorrection();
+    }
+    else if (id == 2) {
+      this.X = false;
+      this.ioSelection = false; 
+      this.encoding = true; 
+      this.dataPreprocessing = false; 
+    }
+    else if (id == 3) {
+      this.X = false;
+      this.ioSelection = false; 
+      this.encoding = false; 
+      this.dataPreprocessing = true; 
+    }
+  }
+
+  heightCorrection() {
+    var tabs = document.getElementsByClassName('tabs')[0];
+    var height: number = 0;
+    if(this.ioSelection) { 
+      height = document.getElementsByClassName('io-selection')[0].clientHeight;
+    }
+    else if(this.encoding) {
+      height = document.getElementsByClassName('encoding')[0].clientHeight;
+    }
+    else if(this.dataPreprocessing) {
+      height = document.getElementsByClassName('data-preprocessing')[0].clientHeight;
+    }
+    else if(this.X) {
+      height = document.getElementsByClassName('X')[0].clientHeight;
+    }
+    height += 70;
+    tabs.setAttribute('style', 'height: '+ height +'px;');
+    console.log(height);
+  }
 }

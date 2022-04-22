@@ -12,6 +12,12 @@
     background: #1e1e2e;
 }
 
+.dropdownContainer {
+    padding-right: 1rem;
+    float: left;
+    width: 50%
+}
+
 .dropdown {
     font-size: 14px;
     background: transparent;
@@ -19,10 +25,9 @@
     border-radius: 6px;
     overflow: hidden;
     color: white;
-    margin-right: 20px;
     margin-top: 8px;
     height: 42px;
-    width: 40%;
+    width: 100%;
     position: relative;
     bottom: 0;
     min-width: none;
@@ -268,7 +273,7 @@ td {
 
 #chart {
     max-width: 650px;
-    margin: 35px auto;
+    margin: auto;
 }
 
 .page {
@@ -280,19 +285,13 @@ td {
 
 .divOutput,
 .divInput {
-    width: responsive;
+    width: 50%;
     border: 1px solid #7d3c8b;
     padding: 5px;
     border-radius: 5px;
     color: #ced4da;
-}
-
-.divOutput {
-    margin-left: 5px;
-}
-
-.divInput {
-    margin-right: 5px;
+    float: left;
+    margin-bottom: 1rem;
 }
 
 input[type='radio'] {
@@ -337,6 +336,7 @@ input[type='radio']:checked:after {
     border: 1px solid #7d3c8b;
     border-radius: 5px;
     color: #ffff;
+    margin-bottom: 0px !important;
 }
 
 .corrMatrixBody {
@@ -424,7 +424,7 @@ body.cm-modal-open {
 .headerLeft {
     width: 50%;
     padding-left: 1rem;
-    height: 66px;
+    height: 80px;
     float: left;
     min-width: none;
 }
@@ -432,17 +432,17 @@ body.cm-modal-open {
 .headerRight {
     width: 50%;
     padding-right: 1rem;
-    height: 66px;
+    height: 80px;
     float: right;
     min-width: none;
 }
 
 .buttons {
-    height: 66px;
+    height: 80px;
 }
 
 .trash {
-    height: 66px;
+    height: 80px;
     float: right;
     margin: 0;
     padding-left: 0;
@@ -457,6 +457,161 @@ body.cm-modal-open {
     width: 122px;
 }
 
+.io {
+    font-size: 1em;
+    padding: 0px;
+    color: #ffff;
+}
+
+.io:hover {
+    color: #7d3c8b;
+}
+
+.tab-content {
+    padding: 1rem;
+}
+
+$breakpoint: 512px;
+$tabs-base-color: #27293d;
+// #####################################
+// CSS definition for functionality
+.responsive-tabs {
+    overflow: overlay;
+    >input {
+        display: none;
+        &:checked {
+            +label {
+                +section {
+                    display: block;
+                }
+            }
+        }
+    }
+    >label {
+        display: block;
+        @media (min-width: $breakpoint) {
+            display: inline-block;
+        }
+    }
+    >section {
+        width: 100%;
+        display: none;
+        @media (min-width: $breakpoint) {
+            float: left;
+        }
+    }
+}
+
+// Classes for simple presentation
+.responsive-tabs {
+    margin-bottom: 30px;
+    >input {
+        &:checked {
+            +label {
+                background-color: $tabs-base-color;
+                color: white;
+            }
+        }
+    }
+    >label {
+        background-color: darken($tabs-base-color, 10);
+        margin: 0;
+        padding: 15px 20px;
+        cursor: pointer;
+        @media (min-width: $breakpoint) {
+            margin-left: 0px;
+        }
+        &:not(:first-of-type) {
+            //border-top: 1px solid #ddd;
+        }
+    }
+    >section {
+        background-color: $tabs-base-color;
+    }
+}
+
+// Classes for better presentation 
+.responsive-tabs {
+    overflow: overlay;
+    margin-bottom: 30px;
+    >input {
+        display: none;
+        &:checked {
+            +label {
+                background-color: $tabs-base-color;
+                color: white;
+                font-weight: normal;
+                padding-top: 15px;
+                cursor: default;
+                &::after {
+                    transform: translateY(-5px) rotateZ(180deg);
+                    opacity: 0;
+                }
+                +section {
+                    max-height: 10000px;
+                    transition: all 0.5s cubic-bezier(1, 0, 1, 0) 0.5s;
+                    @media (min-width: $breakpoint) {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+    >label {
+        border-radius: 0.4rem 0.4rem 0rem 0rem;
+        font-size: 15px;
+        position: relative;
+        background-color: darken($tabs-base-color, 10);
+        cursor: pointer;
+        margin: 0px;
+        font-weight: normal;
+        margin: 0;
+        display: block;
+        transition: background-color 0.5s linear, color 0.5s linear;
+        @media (min-width: $breakpoint) {
+            display: inline-block;
+            padding: 10px 10px;
+        }
+        &:not(:first-of-type) {
+            //border-top: 1px solid #ddd;
+        }
+        &::after {
+            content: '';
+            position: absolute;
+            top: 26px;
+            right: 25px;
+            border-color: #4d4d4d transparent transparent transparent;
+            border-style: solid;
+            border-width: 5px;
+            transform: rotateY(180deg);
+            transition: transform 0.3s linear;
+            transition: opacity 0.5s linear;
+            @media (min-width: $breakpoint) {
+                content: none;
+            }
+        }
+        &:hover {
+            color: white;
+            padding-top: 15px;
+            background: $tabs-base-color;
+        }
+    }
+    >section {
+        max-height: 0;
+        //padding: 1rem;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0, 1, 0, 1);
+        width: 100%;
+        background-color: $tabs-base-color;
+        display: block;
+        border-radius: 0rem 0.286rem 0.286rem 0.286rem;
+        @media (min-width: $breakpoint) {
+            float: left;
+            display: none;
+        }
+    }
+}
+
 @media(max-width: 785px) {
     .headerLeft {
         width: 100%;
@@ -465,7 +620,7 @@ body.cm-modal-open {
         width: 100%;
     }
     .dropdown {
-        width: 46%;
+        //width: 46%;
     }
     .buttons {
         float: left;
@@ -480,8 +635,8 @@ body.cm-modal-open {
     .headerRight {
         width: 100%;
     }
-    .dropdown {
-        width: 95%;
+    .dropdownContainer {
+        width: 100%;
     }
     .buttons {
         float: left;
@@ -495,14 +650,4 @@ body.cm-modal-open {
     .arrow {
         font-size: 1.5em;
     }
-}
-
-.io {
-    font-size: 1em;
-    padding: 0px;
-    color: #ffff;
-}
-
-.io:hover {
-    color: #7d3c8b;
 }
