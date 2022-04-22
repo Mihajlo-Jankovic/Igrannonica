@@ -9,6 +9,7 @@
                 <div class="corrMatrix" style="padding: 0.5%;overflow: auto;">
                     <h2 style="float:left">Correlation Matrix</h2>
                     <button class="btn btn-primary btn-lg btn-block mb-3 train" style="float: right;" type="submit" (click)="close()">Close</button>
+
                     <div class=" table-responsive" id="corr" style="max-height: 700px;">
                         <table class="table">
                             <thead>
@@ -38,9 +39,6 @@
                         <h3 class=" card-category" style="color: white; float:left;">Column Statistics</h3>
                         <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandStats()" style="margin-bottom: 0px;">{{statsButton}}</button>
                     </div>
-                    <select class='dropdown' (change)='onSelectedCol($event)' style="width: 100%;">
-                        <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
-                    </select>
                 </div>
                 <div class=" card-body">
                     <div class=" table-full-width">
@@ -79,7 +77,13 @@
         <div class="boxblot col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideBoxplot">
             <div class=" card card-chart" style="height: 390px;">
                 <div class=" card-header">
-                    <h3 class=" card-category" style="color: white;">Boxplot</h3>
+                    <div style="width:100%; height:auto;">
+                        <h3 class=" card-category" style="color: white; float: left;">Boxplot</h3>
+                        <h3 class=" card-category" style="color: white; float: right;">Choose column to plot</h3>
+                    </div>
+                    <select class='dropdown' (change)='onSelectedCol($event)' style="width: 100%; right: 0px; top: 0px;">
+                        <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
+                    </select>
                 </div>
                 <div class=" card-body">
                     <div id="chart" *ngIf="selectedColDiv">
@@ -95,7 +99,7 @@
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix()">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive" style="height: 300px;" id="corr">
+                    <div class=" table-responsive" style="height: 312px;" id="corr">
                         <table class=" table">
                             <thead>
                                 <tr>
@@ -177,17 +181,23 @@
                 <div class=" card-header" style="padding:0px;">
                     <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">Uploaded data</h3>
                     <div class="headerLeft" style="padding-top: 8px;">
-                        <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
-                            <option class='option' value="all">All</option>
-                            <option class='option' value="null">Null</option>
-                            <option class='option' value="not null">Not Null</option>
-                        </select>
-                        <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
-                            <option class='option' value="10">10</option>
-                            <option class='option' value="20">20</option>
-                            <option class='option' value="50">50</option>
-                            <option class='option' value="100">100</option>
-                        </select>
+                        <div class="dropdownContainer">
+                            <h6>Filter rows</h6>
+                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
+                                <option class='option' value="all">All</option>
+                                <option class='option' value="null">Null</option>
+                                <option class='option' value="not null">Not Null</option>
+                            </select>
+                        </div>
+                        <div class="dropdownContainer">
+                            <h6>Rows per page</h6>
+                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
+                                <option class='option' value="10">10</option>
+                                <option class='option' value="20">20</option>
+                                <option class='option' value="50">50</option>
+                                <option class='option' value="100">100</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="headerRight">
                         <div class="trash">
