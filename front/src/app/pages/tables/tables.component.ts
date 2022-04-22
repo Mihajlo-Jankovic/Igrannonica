@@ -420,7 +420,7 @@ export class TablesComponent {
         }
       ],
       chart: {
-        height: 223,
+        height: 280,
         type: "boxPlot",
         foreColor: '#ced4da',
 
