@@ -351,10 +351,10 @@ namespace Igrannonica.Controllers
             {
                 return "mongodb://localhost:27017";
             }
+
             else
             {
-                return "mongodb://Cortex:hPkyrLiG@147.91.204.115:10109/Cortex";
-
+                return "mongodb://localhost:10109";
             }
         }
 
