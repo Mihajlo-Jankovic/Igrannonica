@@ -325,6 +325,19 @@ namespace Igrannonica.Controllers
             return _context.User.Any(e => e.id == id);
         }
 
+        private string getMongoDBConnString()
+        {
+            if(_hostEnvironment.IsDevelopment())
+            {
+                return "mongodb://localhost:27017";
+            }
+
+            else
+            {
+                return "mongodb://localhost:10109";
+            }
+        }
+
         [HttpPost("saveExperiment"), Authorize]
         public async Task<ActionResult<string>> SaveExperiment(ExperimentDTO experiment)
         {
@@ -340,22 +353,9 @@ namespace Igrannonica.Controllers
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<ExperimentDTO>("experiment");
 
-            collection.InsertOne(experiment);    
+            collection.InsertOne(experiment);
 
             return Ok(experiment);
-        }
-
-        private string getMongoDBConnString()
-        {
-            if(_hostEnvironment.IsDevelopment())
-            {
-                return "mongodb://localhost:27017";
-            }
-
-            else
-            {
-                return "mongodb://localhost:10109";
-            }
         }
 
         [HttpGet("getUserExperiments"), Authorize]
