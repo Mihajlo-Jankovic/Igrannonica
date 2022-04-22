@@ -140,32 +140,7 @@ input[type=range]::-moz-range-thumb {
     margin: 0px;
 }
 
-
-/*
-.layerContainer {
-    display: flex;
-    min-height: 100px;
-    overflow: hidden;
-    padding-left: 0px;
-}
-
-.layer {
-    height: auto;
-    max-width: none;
-    min-width: 0;
-    flex: auto;
-    position: relative;
-    float: left;
-    padding: 1rem;
-    border: 2px solid #7d3c8b;
-    min-height: 100px;
-    overflow: hidden;
-    margin-left: 1rem;
-    border-radius: 3px;
-}
-*/
-
-.layerButtons {
++.layerButtons {
     height: 60px;
 }
 
@@ -188,9 +163,9 @@ input[type=range]::-moz-range-thumb {
     position: relative;
     border-radius: 4px;
     padding: 0.5rem;
-    min-width: 230px;
+    min-width: 146px;
     float: left;
-    width: 16.66%;
+    width: 12.5%;
 }
 
 .layerContent {
@@ -219,7 +194,7 @@ input[type=range]::-moz-range-thumb {
     border-radius: 6px;
     overflow: hidden;
     color: white;
-    width: 100px;
+    width: 50px;
     float: right;
     margin-top: 3px;
     height: 25px;

@@ -83,7 +83,7 @@ export class DashboardComponent implements OnInit {
   }
 
   increaseLayers(){
-    if(this.layersLabel < 6) {
+    if(this.layersLabel < 8) {
       this.layersLabel++;
       this.layer = new layer(this.layersLabel);
       this.layerList.push(this.layer);

@@ -1,3 +1,7 @@
+<style>
+
+</style>
+
 <div class=" content">
     <div class="corrMatrixBody" [hidden]="!opndMatrix">
         <div class="cm-modal">
@@ -24,13 +28,16 @@
                 </div>
             </div>
         </div>
-        <div class="cm-modal-background"></div>      
+        <div class="cm-modal-background"></div>
     </div>
     <div class=" row">
-        <div class=" col-lg-4" *ngIf="showStatisticDiv">
+        <div class="statistics col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideStatistics">
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
-                    <h3 class=" card-category" style="color: white;">Column Statistics</h3>
+                    <div style="width:100%; height:auto;">
+                        <h3 class=" card-category" style="color: white; float:left;">Column Statistics</h3>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandStats()" style="margin-bottom: 0px;">{{statsButton}}</button>
+                    </div>
                     <select class='dropdown' (change)='onSelectedCol($event)' style="width: 100%;">
                         <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
                     </select>
@@ -69,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <div class=" col-lg-4" *ngIf="showStatisticDiv">
+        <div class="boxblot col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideBoxplot">
             <div class=" card card-chart" style="height: 390px;">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;">Boxplot</h3>
@@ -81,11 +88,11 @@
                 </div>
             </div>
         </div>
-        <div class=" col-lg-4" *ngIf="showStatisticDiv">
+        <div class="matrix col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideMatrix">
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
-                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="previewMatrix()">View Full Matrix</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix()">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
                     <div class=" table-responsive" style="height: 300px;" id="corr">
@@ -107,39 +114,62 @@
                 </div>
             </div>
         </div>
-        <div class=" col-lg-12">
-            <div class=" card">
-                <div class=" card-header" (click)="showIOFun()">
-                    <h4 class=" card-title" style="color: white; position: relative; float: left;">Input & Output selection - Click here to choose</h4>
-                    <div *ngIf="!showIO" style="position: relative; float: right;"><i class="tim-icons icon-minimal-down io"></i></div>
-                    <div *ngIf="showIO" style="position: relative; float: right;"><i class="tim-icons icon-minimal-up io"></i></div>
-                </div>
-                <div class=" card-body" *ngIf="showIO" style="padding:2%; display: flex; justify-content: center;">
-                    <div class="divInput">
-                        <h4>Input</h4>
-                        <div *ngFor="let item of headingLines[0]; let i = index">
-                            <div class="Ioption">
-                                <div class="checkDIV">
-                                    <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
-                                    <label for="{{ 'check' + i }}" class="check-box"></label>
+        <div class="col-12">
+            <div class="responsive-tabs">
+                <input type="radio" name="tab" id="tab-4" checked>
+                <label for="tab-4">X</label>
+                <section>
+                    <div class="tab-content">
+                        <h3 style="margin : 0px; padding: 0px;">Choose a tab to open</h3>
+                    </div>
+                </section>
+
+                <input type="radio" name="tab" id="tab-1">
+                <label for="tab-1">Input & Output Selection</label>
+                <section>
+                    <div class="tab-content">
+                        <div class="divInput">
+                            <h4>Input</h4>
+                            <div *ngFor="let item of headingLines[0]; let i = index">
+                                <div class="Ioption">
+                                    <div class="checkDIV">
+                                        <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
+                                        <label for="{{ 'check' + i }}" class="check-box"></label>
+                                    </div>
+                                    <p>{{item}}</p>
                                 </div>
-                                <p>{{item}}</p>
+                            </div>
+                        </div>
+                        <div class="divOutput">
+                            <h4>Output</h4>
+                            <div *ngFor="let item of headingLines[0]; let i = index">
+                                <div class="Ooption">
+                                    <div class="radioDIV">
+                                        <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]" [checked]="radios1[i]">
+                                        <label for="{{ 'radio' + i }}" class="radio-button" style="margin: 0px;"></label>
+                                    </div>
+                                    <p>{{item}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="divOutput">
-                        <h4>Output</h4>
-                        <div *ngFor="let item of headingLines[0]; let i = index">
-                            <div class="Ooption">
-                                <div class="radioDIV">
-                                    <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]" [checked]="radios1[i]">
-                                    <label for="{{ 'radio' + i }}" class="radio-button" style="margin: 0px;"></label>
-                                </div>
-                                <p>{{item}}</p>
-                            </div>
-                        </div>
+                </section>
+
+                <input type="radio" name="tab" id="tab-2">
+                <label for="tab-2">Encoding</label>
+                <section>
+                    <div class="tab-content">
+                        <p>tab two</p>
                     </div>
-                </div>
+                </section>
+
+                <input type="radio" name="tab" id="tab-3">
+                <label for="tab-3">Data Preprocessing</label>
+                <section>
+                    <div class="tab-content">
+                        <p>tab three<br>with<br>content<br>over<br>more<br>lines</p>
+                    </div>
+                </section>
             </div>
         </div>
         <div class=" col-md-12">
