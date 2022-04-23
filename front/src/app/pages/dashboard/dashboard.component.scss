@@ -278,15 +278,43 @@ $spin-duration: 1s;
     padding: 1rem 1rem 1rem 1rem;
 }
 
+.headerLeft {
+    height: 70px;
+    width: 25%;
+    padding: 1rem;
+    float: left;
+}
+
+.headerRight {
+    height: 70px;
+    width: 75%;
+    padding: 1rem;
+    float: right;
+}
+
+.page {
+    padding: 0.2rem;
+    color: #7d3c8b;
+    max-width: 42px;
+    font-size: 15px;
+}
+
+.page-buttons {
+    width: auto;
+    float: right;
+}
+
+.arrow {
+    font-size: 1.7rem;
+}
+
+.next {
+    width: 122px;
+}
+
 @media(max-width: 1760px) {
     .layer {
         width: 25%
-    }
-}
-
-@media(max-width: 1070px) {
-    .layer {
-        width: 33.33%
     }
 }
 
@@ -305,15 +333,15 @@ $spin-duration: 1s;
     }
 }
 
-@media(max-width: 1024px) {
-    .hyperparameter {
-        width: 33.3%;
+@media(max-width: 1070px) {
+    .layer {
+        width: 33.33%
     }
 }
 
-@media(max-width: 620px) {
-    .layer {
-        width: 50%
+@media(max-width: 1024px) {
+    .hyperparameter {
+        width: 33.3%;
     }
 }
 
@@ -323,9 +351,36 @@ $spin-duration: 1s;
     }
 }
 
+@media(max-width: 620px) {
+    .layer {
+        width: 50%
+    }
+}
+
+@media(max-width: 560px) {
+    .headerLeft {
+        width: 100%;
+    }
+    .headerRight {
+        width: 100%;
+    }
+    .page-buttons {
+        margin: auto;
+    }
+}
+
 @media(max-width: 528px) {
     .hyperparameter {
         width: 100%;
+    }
+}
+
+@media(max-width: 452px) {
+    .page {
+        max-width: 30px;
+    }
+    .arrow {
+        font-size: 1.5em;
     }
 }
 

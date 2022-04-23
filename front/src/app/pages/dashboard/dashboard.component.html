@@ -184,7 +184,7 @@
             </div>
         </div>
     </div>
-    <div class=" row">
+    <div class="row">
         <div class=" col-12">
             <div class=" card card-chart">
                 <div class=" card-header">
@@ -199,6 +199,69 @@
                 </div>
                 <div class=" card-body" [hidden]="!trained">
                     <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" [hidden]="!trained || !loggedUser">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header" style="padding: 0px">
+                    <div class="headerLeft">
+                        <h3 class="card-title" style="padding:0; margin: 0px;">Models</h3>
+                    </div>
+                    <div class="headerRight">
+                        <div class="page-buttons">
+                            <h6>Swich between epochs</h6>
+                            <button class=" btn btn-link page" (click)="firstPage()">
+                                <i class="tim-icons icon-double-left arrow"></i>
+                            </button>
+                            <button class=" btn btn-link page" style="padding-left:0px;" (click)="previousPage(1)">
+                                <i class="tim-icons icon-minimal-left arrow"></i>
+                            </button>
+                            <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="selectedEpoch < 2">
+                                {{selectedEpoch-2}}
+                            </button>
+                            <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="selectedEpoch == 0">
+                                {{selectedEpoch-1}}
+                            </button>
+
+                            <button class=" btn btn-link page" style="color: white;">
+                                {{selectedEpoch}}
+                            </button>
+
+                            <button class=" btn btn-link page" (click)="nextPage(1)">
+                                {{selectedEpoch+1}}
+                            </button>
+                            <button class=" btn btn-link page" (click)="nextPage(2)">
+                                {{selectedEpoch+2}}
+                            </button>
+                            <button class=" btn btn-link page" style="padding-right: 0px;" (click)="nextPage(1)">
+                                <i class="tim-icons icon-minimal-right arrow"></i>
+                            </button>
+                            <button class=" btn btn-link page" style="padding-left: 0;" (click)="lastPage()">
+                                <i class="tim-icons icon-double-right arrow"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class=" table-responsive" style="min-height: 200px; max-height: 500px;" id="table">
+                        <table class=" table tablesorter">
+                            <thead>
+                                <tr>
+                                    <th>MODEL</th>
+                                    <th *ngFor="let item of modelsHeader; let i = index" style="text-align: center; cursor: pointer;">{{item}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of modelsList; let i = index">
+                                    <td>{{item.id}}</td>
+                                    <td *ngFor="let value of modelsHeader; let j = index">{{item.data[value][selectedEpoch]}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

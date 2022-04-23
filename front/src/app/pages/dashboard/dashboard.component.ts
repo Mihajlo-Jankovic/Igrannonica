@@ -11,7 +11,7 @@ import { ToastrService } from "ngx-toastr";
 import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
-
+import { trainedModel } from "src/app/models/trainedModel.model";
 @Component({
   selector: "app-dashboard",
   templateUrl: "dashboard.component.html",
@@ -69,6 +69,11 @@ export class DashboardComponent implements OnInit {
   public connectionId : string;
   public liveData: {};
   public chartData = {};
+
+  public modelsList: any = [];
+  public modelsTrained: number = 0;
+  public modelsHeader: any = [];
+  public selectedEpoch: number = 224;
 
   constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
@@ -142,6 +147,11 @@ export class DashboardComponent implements OnInit {
       this.metrics = this.selectedItems;
     }
     sessionStorage.setItem('problemType', this.problemType);
+    for (let i = 0; i < this.dropdownList.length; i++) {
+      this.modelsHeader.push(this.dropdownList[i]['item_id']);
+      this.modelsHeader.push('val_' + this.dropdownList[i]['item_id']);
+    }
+    console.log(this.modelsHeader);
   }
 
   multiselect(){
@@ -157,7 +167,6 @@ export class DashboardComponent implements OnInit {
   }
 
   startTraining() {
-    console.log(this.neuronsList);
     if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
       this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Input or output not selected</b>.', '', {
         disableTimeOut: false,
@@ -182,10 +191,15 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < this.selectedItems.length; i++) {
       metrics[i] = this.selectedItems[i].item_id;
     }
+    var parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
     //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
-    this.http.post(this.configuration.startTesting,{"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
+    this.http.post(this.configuration.startTesting, parameters).subscribe(
       (response) => {
-        this.trained = true;
+        this.modelsTrained++;
+
+        var newModel = new trainedModel(this.modelsTrained, parameters);
+
+        this.modelsList.push(newModel);
         this.notify.showNotification("Training started successfully!");
       }
     );
@@ -258,10 +272,8 @@ export class DashboardComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-    console.log(item);
   }
   onSelectAll(items: any) {
-    console.log(items);
   }
 
   checkStorage()
@@ -322,7 +334,6 @@ export class DashboardComponent implements OnInit {
     if(sessionStorage.getItem('numLayers'))
     {
       var numLayer = Number(sessionStorage.getItem('numLayers'));
-      console.log("Num layer" + numLayer)
       for(let i=0;i<numLayer;i++){
         this.layersLabel = i + 1;
         this.layer = new layer(this.layersLabel);
@@ -485,7 +496,6 @@ export class DashboardComponent implements OnInit {
   onSelected(event : any)
   {
     const target = event.target.name;
-    console.log(target)
     const value = event.target.value;
     if(target == "encodingType")
     {
@@ -533,6 +543,26 @@ export class DashboardComponent implements OnInit {
       sessionStorage.setItem('epochs', (this.epochs).toString());
     }
   }
+
+  nextPage(step){
+    this.selectedEpoch+= step;
+  }
+
+  previousPage(step){
+    if(this.selectedEpoch > 0){
+      this.selectedEpoch-= step;
+    }
+  }
+
+  firstPage(){
+    this.selectedEpoch = 0;
+  }
+
+  lastPage(){
+
+  }
+
+
   //SOKETI
 
   public startConnection = () => {
@@ -547,14 +577,12 @@ export class DashboardComponent implements OnInit {
   }
   public addTransferDataListener = () => {
     this.hubConnection.on('ReceiveConnID', (data) => {
-      console.log(data);
     });
   }
 
   public getConnectionId = () => {
     this.hubConnection.invoke('getconnectionid').then(
       (data) => {
-          console.log(data);
           this.connectionId = data;
           this.cookieService.set("connID", this.connectionId);
         }
@@ -565,7 +593,6 @@ export class DashboardComponent implements OnInit {
     this.hubConnection.on('trainingdata', (data) => {
       this.liveData = data;
       this.chartData = this.liveData['trainingData'];
-
       this.trained = true;
       this.buttons = Object.keys(this.chartData);
       this.buttons.splice(this.buttons.length/2);
@@ -576,6 +603,16 @@ export class DashboardComponent implements OnInit {
         this.chart_labels[i] = i + 1;
       }
       this.updateOptions();
+
+      this.modelsList[this.modelsTrained-1].data = this.chartData;
+      
+      this.trained = true;
     });
+  }
+
+  public test() {
+    for(let i = 0; i < this.modelsList.length; i++){
+      console.log(this.modelsList);
+    }
   }
 }
