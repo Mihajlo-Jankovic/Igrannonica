@@ -32,7 +32,7 @@ def upload_file():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return {'message' : "Upload Successfull!"}
+        return {'message' : "Upload Successfull!", 'randomFileName' : filename}
 
 @app.route('/downloadFile/<filename>', methods=['GET'])
 def download_file(filename):

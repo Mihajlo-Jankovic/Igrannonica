@@ -39,14 +39,14 @@ namespace Igrannonica.Controllers
                 return BadRequest("no file with that name");*/
 
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
-                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
-                    + _configuration.GetSection("Endpoints:EditCell").Value);
+                    + _configuration.GetSection("PEndpointsythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection(":EditCell").Value);
             
             HttpClient client = new HttpClient(); 
             var csvJson = JsonConvert.SerializeObject(csv);
             var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
-            
-            return Ok();
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(content);
 
         }
 
@@ -66,8 +66,8 @@ namespace Igrannonica.Controllers
             HttpClient client = new HttpClient();
             var csvJson = JsonConvert.SerializeObject(csv);
             var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
-            
-            return Ok();
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(content);
 
         }
 
@@ -75,8 +75,11 @@ namespace Igrannonica.Controllers
         public async Task<IActionResult> downloadfile(string filename)
         {
             Models.File? file = _mySqlContext.File.Where(f => f.RandomFileName == filename).FirstOrDefault();
-            if (file == null)
-                return BadRequest("no file with that name");
+            if (file == null) 
+                return BadRequest(new
+                {
+                    responseMessage = "Error: No file found with that name!"
+                });
             HttpClient client = new HttpClient();
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
                     + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
@@ -98,7 +101,10 @@ namespace Igrannonica.Controllers
                 User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
                 
                 if (user == null)
-                    return BadRequest("JWT is bad!");
+                    return BadRequest(new
+                    {
+                        responseMessage = "Error: No user found with that name!"
+                    });
 
                 List < Models.File > tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id || u.IsPublic == true).ToList();
 
@@ -146,13 +152,19 @@ namespace Igrannonica.Controllers
             var usernameOriginal = _userService.GetUsername();
             User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
             
-            if (user == null)
-                return BadRequest("JWT is bad!");
+            if (user == null) 
+                return BadRequest(new
+                {
+                    responseMessage = "Error: No user found with that name!"
+                });
 
             Models.File file = _mySqlContext.File.Where(f => f.Id == request.Id).FirstOrDefault();
 
             if (file.UserForeignKey != user.id)
-                return BadRequest("JWT is bad!");
+                return BadRequest(new
+                {
+                    responseMessage = "Error: The file you are trying to change doesn't belong to you!"
+                });
 
             file.IsPublic = request.IsVisible;
 

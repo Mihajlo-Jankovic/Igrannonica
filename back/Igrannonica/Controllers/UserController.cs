@@ -54,18 +54,15 @@ namespace Igrannonica.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
         {
-            TokenDTO token = new TokenDTO();
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
             {
-                token.token = "Username already exists!";
-                return Ok(token);
+                return BadRequest(new { responseMessage = "Error: Username already exists!" });
             }
             user = _context.User.Where(u => u.email == request.email).FirstOrDefault();
             if(user != null)
             {
-                token.token = "Email is taken!";
-                return Ok(token);
+                return BadRequest(new { responseMessage = "Error: Email is taken!" });
             }
 
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -81,8 +78,7 @@ namespace Igrannonica.Controllers
             _context.User.Add(this.user);
             await _context.SaveChangesAsync();
 
-            token.token = "Success";
-            return Ok(token);
+            return Ok(new { responseMessage = "Success" });
         }
 
         [HttpPost("EditUserName"), Authorize]
@@ -91,14 +87,14 @@ namespace Igrannonica.Controllers
             var usernameOriginal = _userService.GetUsername();
             User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
             if(userOriginal == null)
-                return BadRequest("JWT is bad!");
+                return NotFound(new { responseMessage = "Error: Username not found!" });
             userOriginal.firstname = request.firstname;
             userOriginal.lastname = request.lastname;
 
             _context.User.Update(userOriginal);
             await _context.SaveChangesAsync();
 
-            return Ok("Success!");
+            return Ok(new { responseMessage = "Success" });
         }
 
         [HttpPost("EditUserPassword"), Authorize]
@@ -107,9 +103,9 @@ namespace Igrannonica.Controllers
             var usernameOriginal = _userService.GetUsername();
             User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
             if (userOriginal == null)
-                return BadRequest("JWT is bad!");
+                return NotFound(new { responseMessage = "Error: Username not found!" });
             if (!VerifyPasswordHash(request.oldPassword, userOriginal.passwordHash, userOriginal.passwordSalt))
-                return BadRequest("Wrong password");
+                return BadRequest(new { responseMessage = "Error: Wrong password!" });
             CreatePasswordHash(request.newPassword, out byte[] newPasswordHash, out byte[] newPasswordSalt);
             userOriginal.passwordHash = newPasswordHash;
             userOriginal.passwordSalt = newPasswordSalt;
@@ -117,7 +113,7 @@ namespace Igrannonica.Controllers
             _context.User.Update(userOriginal);
             await _context.SaveChangesAsync();
 
-            return Ok("Success!");
+            return Ok(new { responseMessage = "Success" });
         }
 
         [HttpGet("GetNameSurnameEmail"), Authorize]
@@ -127,7 +123,7 @@ namespace Igrannonica.Controllers
             User user = _context.User.Where(u => u.username == userName).FirstOrDefault(); 
             if (user == null)
             {
-                return Ok("User not found");
+                return NotFound(new { responseMessage = "Error: Username not found!" });
             }
 
 
@@ -149,13 +145,11 @@ namespace Igrannonica.Controllers
             User user =  _context.User.Where(u => u.username == loginDTO.username).FirstOrDefault();
             if (user == null)
             {
-                token.token = "User not found";
-                return Ok(token);
+                return NotFound(new { responseMessage = "Error: Username not found!" });
             }
             if (!VerifyPasswordHash(loginDTO.password, user.passwordHash, user.passwordSalt))
             {
-                token.token = "Wrong password";
-                return Ok(token);
+                return BadRequest(new { responseMessage = "Error: Wrong password!" });
             }
             token.token = CreateToken(user);
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token.token);
@@ -344,7 +338,8 @@ namespace Igrannonica.Controllers
             var username = _userService.GetUsername();
             User user = _context.User.Where(u => u.username == username).FirstOrDefault();
 
-            if (user == null) return BadRequest("JWT is bad!");
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
 
             experiment.userId = user.id;
 
@@ -364,7 +359,8 @@ namespace Igrannonica.Controllers
             var usernameOriginal = _userService.GetUsername();
             User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
 
-            if (user == null) return BadRequest("JWT is bad!");
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
 
             var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
@@ -387,7 +383,8 @@ namespace Igrannonica.Controllers
             var username = _userService.GetUsername();
             User user = _context.User.Where(u => u.username == username).FirstOrDefault();
 
-            if (user == null) return BadRequest("JWT is bad!");
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
 
             var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");

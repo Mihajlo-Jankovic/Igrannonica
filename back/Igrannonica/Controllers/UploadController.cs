@@ -55,8 +55,8 @@ namespace Igrannonica.Controllers
             var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             file.RandomFileName = RandomFileName;
             var task = UploadFile(request, RandomFileName);
-            if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
-                return BadRequest(task.Result);
+            if (task.Result == "Bad file type in the request" || task.Result == "No files data in the request.")
+                return BadRequest(new { responseMessage = task.Result });
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
             file.IsPublic = false;
@@ -64,8 +64,8 @@ namespace Igrannonica.Controllers
             await _context.SaveChangesAsync();
             return Ok(new
             {
-                randomFileName = RandomFileName
-            }) ;
+                responseMessage = task.Result
+            });
 
         }
 
@@ -87,7 +87,7 @@ namespace Igrannonica.Controllers
             //file.SessionID = sessionID;
             return Ok(new
             {
-                randomFileName = RandomFileName
+                responseMessage = task.Result
             });
 
         }
@@ -148,7 +148,7 @@ namespace Igrannonica.Controllers
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                return "los tip fajla";
+                return "Bad file type in the request";
             }
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
@@ -187,7 +187,7 @@ namespace Igrannonica.Controllers
                         {content, "file", randomFileName },
                     });
 
-                    return contentDisposition.FileName.Value;
+                    return await response.Content.ReadAsStringAsync();
                 }
 
                 section = await reader.ReadNextSectionAsync();
