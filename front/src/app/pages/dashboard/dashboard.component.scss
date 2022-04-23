@@ -312,6 +312,27 @@ $spin-duration: 1s;
     width: 122px;
 }
 
+#table::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#table::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#table::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #7d3c8b;
+}
+
 @media(max-width: 1760px) {
     .layer {
         width: 25%

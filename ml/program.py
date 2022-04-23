@@ -33,9 +33,21 @@ class CustomCallback(keras.callbacks.Callback):
                 self.modelHistory[key].append(logs[key])
         data['connID'] = self.connId
         data['epoch'] = epoch
+        data['ended'] = 0
         data['trainingData'] = self.modelHistory
         headers = {'content-type': 'application/json'}
         r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
+
+    def on_train_end(self, logs=None):
+        data = {}
+        data['connID'] = self.connId
+        data['epoch'] = 1
+        data['ended'] = 1
+        data['trainingData'] = self.modelHistory
+        headers = {'content-type': 'application/json'}
+        r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
+        
+
 
 # Citanje CSV fajla
 def openCSV(path):
@@ -183,6 +195,7 @@ def startTraining(connid, fileName, inputList, output, encodingType, ratio, numL
     outputUniqueValues = output_unique_values(df,output)
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
     model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback(connid)])
+
     return model.history
 
 

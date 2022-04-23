@@ -197,13 +197,13 @@
                         </div>
                     </div>
                 </div>
-                <div class=" card-body" [hidden]="!trained">
+                <div class=" card-body" [hidden]="!training">
                     <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row" [hidden]="!trained || !loggedUser">
+    <div class="row" *ngIf="trained && loggedUser">
         <div class="col-12">
             <div class="card">
                 <div class="card-header" style="padding: 0px">
@@ -220,21 +220,21 @@
                                 <i class="tim-icons icon-minimal-left arrow"></i>
                             </button>
                             <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="selectedEpoch < 2">
-                                {{selectedEpoch-2}}
-                            </button>
-                            <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="selectedEpoch == 0">
                                 {{selectedEpoch-1}}
                             </button>
-
-                            <button class=" btn btn-link page" style="color: white;">
+                            <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="selectedEpoch == 0">
                                 {{selectedEpoch}}
                             </button>
 
-                            <button class=" btn btn-link page" (click)="nextPage(1)">
+                            <button class=" btn btn-link page" style="color: white;">
                                 {{selectedEpoch+1}}
                             </button>
-                            <button class=" btn btn-link page" (click)="nextPage(2)">
+
+                            <button class=" btn btn-link page" (click)="nextPage(1)" [hidden]="selectedEpoch+1 == maxEpochs">
                                 {{selectedEpoch+2}}
+                            </button>
+                            <button class=" btn btn-link page" (click)="nextPage(2)" [hidden]="selectedEpoch+1 >= maxEpochs-1">
+                                {{selectedEpoch+3}}
                             </button>
                             <button class=" btn btn-link page" style="padding-right: 0px;" (click)="nextPage(1)">
                                 <i class="tim-icons icon-minimal-right arrow"></i>
@@ -251,7 +251,7 @@
                             <thead>
                                 <tr>
                                     <th>MODEL</th>
-                                    <th *ngFor="let item of modelsHeader; let i = index" style="text-align: center; cursor: pointer;">{{item}}</th>
+                                    <th *ngFor="let item of modelsHeader; let i = index" style="text-align: center; cursor: pointer;" (click)="chartThisMetric(item)">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -262,6 +262,18 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class=" col-12">
+            <div class=" card card-chart">
+                <div class=" card-header">
+                    <h3 class=" card-title">Model metrics</h3>
+                </div>
+                <div class=" card-body">
+                    <div class=" chart-area"><canvas id="metric-chart"> </canvas></div>
                 </div>
             </div>
         </div>

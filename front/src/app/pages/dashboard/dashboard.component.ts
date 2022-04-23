@@ -12,6 +12,7 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
+
 @Component({
   selector: "app-dashboard",
   templateUrl: "dashboard.component.html",
@@ -70,14 +71,193 @@ export class DashboardComponent implements OnInit {
   public liveData: {};
   public chartData = {};
 
+  public parameters: {};
   public modelsList: any = [];
   public modelsTrained: number = 0;
   public modelsHeader: any = [];
-  public selectedEpoch: number = 224;
+  public selectedEpoch: number = 0;
+  public maxEpochs: number = 0;
+
+  public gradientChartOptionsConfigurationWithTooltipRed: any;
+  public metricChartConfig: any;
+  public metricsCanvas: any;
+  public metricsCtx;
+  public metricLabels = [];
+  public metricsChart;
 
   constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
   configuration = new Configuration();
+
+  
+  ngOnInit() {
+    
+    this.loggedUser = this.loginService.isAuthenticated();
+    this.checkStorage();
+    this.startConnection();
+    this.addTrainingDataListener();
+
+    this.multiselect();
+    this.checkProblemType();
+
+    this.chartData = {};
+    if(sessionStorage.getItem('numLayers'))
+    {
+      var numLayer = Number(sessionStorage.getItem('numLayers'));
+      for(let i=0;i<numLayer;i++){
+        this.layersLabel = i + 1;
+        this.layer = new layer(this.layersLabel);
+        this.layerList.push(this.layer);
+      }
+
+      if(sessionStorage.getItem('neuronsList'))
+      {
+        var list = []; 
+        list = JSON.parse(sessionStorage.getItem('neuronsList'));
+
+        for(let i=0;i<numLayer;i++){
+          this.neuronsList[i] = list[i];
+          this.neuron = new neuron(this.neuronsList[i]);
+        }
+      }
+
+    }
+    else{
+      this.layer.id = 1;
+      this.layerList.push(this.layer);
+    }
+    
+
+    this.gradientChartOptionsConfigurationWithTooltipRed = {
+      maintainAspectRatio: false,
+      legend: {
+        display: true
+      },
+
+      tooltips: {
+        backgroundColor: '#f5f5f5',
+        titleFontColor: '#333',
+        bodyFontColor: '#666',
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest"
+      },
+      responsive: true,
+      scales: {
+        yAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(29,140,248,0.0)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Values",
+            fontColor : "#ffffff"
+          }
+        }],
+
+        xAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(233,32,16,0.1)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Epochs",
+            fontColor : "#ffffff"
+          }
+        }]
+      }
+    };
+
+    this.chart_labels = [];
+
+    this.canvas = document.getElementById("chartBig1");
+    this.ctx = this.canvas.getContext("2d");
+
+    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+    var val_gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke.addColorStop(1, 'rgba(212,80,217,0.2)');
+    gradientStroke.addColorStop(0.4, 'rgba(212,80,217,0.0)');
+    gradientStroke.addColorStop(0, 'rgba(212,80,217,0)'); //pink colors
+
+    val_gradientStroke.addColorStop(1, 'rgba(14,134,212,0.2)');
+    val_gradientStroke.addColorStop(0.4, 'rgba(14,134,212,0.0)');
+    val_gradientStroke.addColorStop(0, 'rgba(14,134,212,0)'); //blue colors
+
+    var config = {
+      type: 'line',
+      data: {
+        labels: this.chart_labels,
+        datasets: [{
+          label: this.label,
+          fill: true,
+          backgroundColor: val_gradientStroke,
+          borderColor: '#0e86d4',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: '#0e86d4',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: '#0e86d4',
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: this.data,
+        },{
+          label: this.val_label,
+          fill: true,
+          backgroundColor: gradientStroke,
+          borderColor: '#d450d9',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: '#d450d9',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: '#d450d9',
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: this.val_data,
+        }]
+      },
+      options: this.gradientChartOptionsConfigurationWithTooltipRed
+    };
+    this.myChartData = new Chart(this.ctx, config);
+
+    this.configureGraph();
+  }
+  
+  configureGraph() {
+
+    this.metricsCanvas = document.getElementById("metric-chart");
+    this.metricsCtx = this.metricsCanvas.getContext("2d");
+
+    this.metricChartConfig = {
+      type : "line",
+      data : {},
+      options: this.gradientChartOptionsConfigurationWithTooltipRed
+    };
+    
+    this.metricsChart = new Chart(this.metricsCtx, this.metricChartConfig);
+  }
 
   get() {
     return sessionStorage.getItem('username');
@@ -147,11 +327,6 @@ export class DashboardComponent implements OnInit {
       this.metrics = this.selectedItems;
     }
     sessionStorage.setItem('problemType', this.problemType);
-    for (let i = 0; i < this.dropdownList.length; i++) {
-      this.modelsHeader.push(this.dropdownList[i]['item_id']);
-      this.modelsHeader.push('val_' + this.dropdownList[i]['item_id']);
-    }
-    console.log(this.modelsHeader);
   }
 
   multiselect(){
@@ -191,15 +366,23 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < this.selectedItems.length; i++) {
       metrics[i] = this.selectedItems[i].item_id;
     }
-    var parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
+    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
     //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
-    this.http.post(this.configuration.startTesting, parameters).subscribe(
+    this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
         this.modelsTrained++;
+        
+        if(this.epochs > this.maxEpochs) {
+          this.maxEpochs = this.epochs;
+          for (let i = 0; i < this.maxEpochs; i++){
+            this.metricLabels[i] = i+1;
+          }
+        }
 
-        var newModel = new trainedModel(this.modelsTrained, parameters);
-
-        this.modelsList.push(newModel);
+        for (let i = 0; i < this.selectedItems.length; i++) {
+          this.modelsHeader.push(this.selectedItems[i]['item_id']);
+          this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
+        }
         this.notify.showNotification("Training started successfully!");
       }
     );
@@ -320,149 +503,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    
-    this.loggedUser = this.loginService.isAuthenticated();
-    this.checkStorage();
-    this.startConnection();
-    this.addTrainingDataListener();
-
-    this.multiselect();
-    this.checkProblemType();
-
-    this.chartData = {};
-    if(sessionStorage.getItem('numLayers'))
-    {
-      var numLayer = Number(sessionStorage.getItem('numLayers'));
-      for(let i=0;i<numLayer;i++){
-        this.layersLabel = i + 1;
-        this.layer = new layer(this.layersLabel);
-        this.layerList.push(this.layer);
-      }
-
-      if(sessionStorage.getItem('neuronsList'))
-      {
-        var list = []; 
-        list = JSON.parse(sessionStorage.getItem('neuronsList'));
-
-        for(let i=0;i<numLayer;i++){
-          this.neuronsList[i] = list[i];
-          this.neuron = new neuron(this.neuronsList[i]);
-        }
-      }
-
-    }
-    else{
-      this.layer.id = 1;
-      this.layerList.push(this.layer);
-    }
-    
-
-    var gradientChartOptionsConfigurationWithTooltipRed: any = {
-      maintainAspectRatio: false,
-      legend: {
-        display: true
-      },
-
-      tooltips: {
-        backgroundColor: '#f5f5f5',
-        titleFontColor: '#333',
-        bodyFontColor: '#666',
-        bodySpacing: 4,
-        xPadding: 12,
-        mode: "nearest",
-        intersect: 0,
-        position: "nearest"
-      },
-      responsive: true,
-      scales: {
-        yAxes: [{
-          barPercentage: 1.6,
-          gridLines: {
-            drawBorder: false,
-            color: 'rgba(29,140,248,0.0)',
-            zeroLineColor: "transparent",
-          },
-          ticks: {
-            padding: 20,
-            fontColor: "#ffffff"
-          }
-        }],
-
-        xAxes: [{
-          barPercentage: 1.6,
-          gridLines: {
-            drawBorder: false,
-            color: 'rgba(233,32,16,0.1)',
-            zeroLineColor: "transparent",
-          },
-          ticks: {
-            padding: 20,
-            fontColor: "#ffffff"
-          }
-        }]
-      }
-    };
-
-    this.chart_labels = [];
-
-    this.canvas = document.getElementById("chartBig1");
-    this.ctx = this.canvas.getContext("2d");
-
-    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
-    var val_gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke.addColorStop(1, 'rgba(212,80,217,0.2)');
-    gradientStroke.addColorStop(0.4, 'rgba(212,80,217,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(212,80,217,0)'); //pink colors
-
-    val_gradientStroke.addColorStop(1, 'rgba(14,134,212,0.2)');
-    val_gradientStroke.addColorStop(0.4, 'rgba(14,134,212,0.0)');
-    val_gradientStroke.addColorStop(0, 'rgba(14,134,212,0)'); //blue colors
-
-    var config = {
-      type: 'line',
-      data: {
-        labels: this.chart_labels,
-        datasets: [{
-          label: this.label,
-          fill: true,
-          backgroundColor: val_gradientStroke,
-          borderColor: '#0e86d4',
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: '#0e86d4',
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: '#0e86d4',
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
-          data: this.data,
-        },{
-          label: this.val_label,
-          fill: true,
-          backgroundColor: gradientStroke,
-          borderColor: '#d450d9',
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: '#d450d9',
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: '#d450d9',
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
-          data: this.val_data,
-        }]
-      },
-      options: gradientChartOptionsConfigurationWithTooltipRed
-    };
-    this.myChartData = new Chart(this.ctx, config);
-  }
-
   public updateOptions() {
     this.myChartData.data.datasets[0].data = this.data;
     this.myChartData.data.datasets[0].label = this.label;
@@ -545,7 +585,9 @@ export class DashboardComponent implements OnInit {
   }
 
   nextPage(step){
-    this.selectedEpoch+= step;
+    if(this.selectedEpoch < this.maxEpochs) {
+      this.selectedEpoch+= step;
+    }
   }
 
   previousPage(step){
@@ -559,9 +601,39 @@ export class DashboardComponent implements OnInit {
   }
 
   lastPage(){
-
+    this.selectedEpoch = this.maxEpochs-1;
   }
 
+  chartThisMetric(metric : string){
+    this.metricsChart.data.labels = this.metricLabels;
+    this.metricsChart.data.datasets = [];
+
+    for (let i = 0; i < this.modelsList.length; i++) {
+      //console.log(this.modelsList[i].data);
+      var r = Math.floor(Math.random() * 255);
+      var g = Math.floor(Math.random() * 255);
+      var b = Math.floor(Math.random() * 255);
+
+      this.metricsChart.data.datasets.push({
+        label: "model " + this.modelsList[i].id,
+        fill: false,
+        borderColor: "rgb(" + r + "," + g + "," + b + ")",
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: this.modelsList[i].data[metric],
+      });
+    }
+
+    this.metricsChart.update();
+  }
 
   //SOKETI
 
@@ -575,6 +647,7 @@ export class DashboardComponent implements OnInit {
       .then(() => this.getConnectionId())
       .catch(err => console.log('Error while starting connection: ' + err))
   }
+
   public addTransferDataListener = () => {
     this.hubConnection.on('ReceiveConnID', (data) => {
     });
@@ -591,28 +664,28 @@ export class DashboardComponent implements OnInit {
 
   public addTrainingDataListener = () => {
     this.hubConnection.on('trainingdata', (data) => {
-      this.liveData = data;
-      this.chartData = this.liveData['trainingData'];
-      this.trained = true;
-      this.buttons = Object.keys(this.chartData);
-      this.buttons.splice(this.buttons.length/2);
-      this.data = this.chartData[this.selectedMetric];
-      this.val_data = this.chartData['val_'+this.selectedMetric];
-      this.chart_labels = [];
-      for (let i = 0; i < this.data.length; i++) {
-        this.chart_labels[i] = i + 1;
+      if(data['ended'] == 0) {
+        this.liveData = data;
+        this.chartData = this.liveData['trainingData'];
+        this.buttons = Object.keys(this.chartData);
+        this.buttons.splice(this.buttons.length/2);
+        this.data = this.chartData[this.selectedMetric];
+        this.val_data = this.chartData['val_'+this.selectedMetric];
+        this.chart_labels = [];
+        for (let i = 0; i < this.data.length; i++) {
+          this.chart_labels[i] = i + 1;
+        }
+        this.updateOptions();
       }
-      this.updateOptions();
+      else {
+        this.trained = true;
 
-      this.modelsList[this.modelsTrained-1].data = this.chartData;
-      
-      this.trained = true;
+        var newModel = new trainedModel(this.modelsTrained, this.parameters);
+        this.modelsList.push(newModel);
+        this.modelsList[this.modelsTrained-1].data = this.chartData;
+
+        
+      }
     });
-  }
-
-  public test() {
-    for(let i = 0; i < this.modelsList.length; i++){
-      console.log(this.modelsList);
-    }
   }
 }
