@@ -86,38 +86,52 @@ namespace Igrannonica.Controllers
             return File(bytes, "csv/plain", filename);
         }
 
-        
 
-        
-        [HttpGet("getCSVAuthorized"), Authorize]
-        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized()
+
+
+        [HttpPost("getCSVAuthorized"), Authorize]
+        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized(FileDTO dto)
         {
             using (var client = new HttpClient())
             {
                 var usernameOriginal = _userService.GetUsername();
                 User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
-                
+
                 if (user == null)
                     return BadRequest("JWT is bad!");
 
-                List < Models.File > tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id || u.IsPublic == true).ToList();
-
                 List<dynamic> files = new List<dynamic>();
 
-                foreach (var tmp in tmpList)
+                if (dto.Visibility == "public")
                 {
-                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+                    List<Models.File> tmpList = _mySqlContext.File.Where(u => u.IsPublic == true).ToList();
 
-                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
-                    files.Add(file);
+                    foreach (var tmp in tmpList)
+                    {
+                        User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+
+                        var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                        files.Add(file);
+                    }
+                }
+
+                else
+                {
+                    List<Models.File> tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id).ToList();
+
+                    foreach (var tmp in tmpList)
+                    {
+                        var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = user.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                        files.Add(file);
+                    }
                 }
 
                 return Ok(files);
             }
         }
-        
 
-        
+
+
         [HttpGet("getCSVUnauthorized")]
         public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized()
         {
