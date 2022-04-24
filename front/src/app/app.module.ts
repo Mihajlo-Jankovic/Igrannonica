@@ -7,6 +7,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from "./app.component";
+import { Error404 } from "./layouts/error-404-page/error-404.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -34,7 +35,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     RouterModule
   ],
   declarations: [
-    AppComponent, 
+    AppComponent,
+    Error404, 
     AdminLayoutComponent, 
     LoginLayoutComponent,
     RegistrationLayoutComponent, 

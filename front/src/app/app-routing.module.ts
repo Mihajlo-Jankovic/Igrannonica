@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { BrowserModule } from "@angular/platform-browser";
 import { Routes, RouterModule } from "@angular/router";
 
+import { Error404 } from "./layouts/error-404-page/error-404.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
 import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
@@ -33,7 +34,7 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: "upload"
+    component: Error404 
   }
 ];
 

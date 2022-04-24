@@ -12,7 +12,6 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
-import { FailedToNegotiateWithServerError } from "@microsoft/signalr/dist/esm/Errors";
 
 @Component({
   selector: "app-dashboard",
@@ -911,6 +910,8 @@ export class DashboardComponent implements OnInit {
           this.chartThisMetric(this.selectedChartMetric);
         }
         //this.makeSmallCharts(this.modelsTrained-1, data["epochs"]);
+        console.log(this.modelsList);
+        this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
       }
     });
   }

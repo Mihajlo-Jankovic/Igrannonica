@@ -84,13 +84,13 @@
                             <option class='option' value="10">10</option>
                         </select>
                     </div>
-                    <div class="hyperparameter">
-                        <h6>Ratio of training to test data - {{range}} : {{100-range}}</h6>
-                        <input type="range" name="range" min="10" max="90" step="10" value="50" [(ngModel)]="range" ngbTooltip="Ratio of training to test data" (change)="onSelected($event)">
-                    </div>
                     <div class="hyperparameter" style="margin-bottom: 1rem;">
                         <h6>Number of Epochs</h6>
                         <input class="dropdown" name="epochs" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs" (change)="onSelected($event)">
+                    </div>
+                    <div class="hyperparameter">
+                        <h6>Training : Test - {{range}}% : {{100-range}}%</h6>
+                        <input type="range" name="range" min="10" max="90" step="10" value="50" [(ngModel)]="range" ngbTooltip="Ratio of training to test data" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameter">
                         <h6>Loss function</h6>
