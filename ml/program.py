@@ -18,10 +18,12 @@ class CustomCallback(keras.callbacks.Callback):
 
     modelHistory = {}
     connId = ""
+    epochs = 1
 
-    def __init__(self, connID):
+    def __init__(self, connID, numEpochs):
         self.connId = connID
         self.modelHistory = {}
+        self.epochs = numEpochs
 
     def on_epoch_end(self, epoch, logs=None):
         keys = list(logs.keys())
@@ -41,7 +43,7 @@ class CustomCallback(keras.callbacks.Callback):
     def on_train_end(self, logs=None):
         data = {}
         data['connID'] = self.connId
-        data['epoch'] = 1
+        data['epoch'] = self.epochs
         data['ended'] = 1
         data['trainingData'] = self.modelHistory
         headers = {'content-type': 'application/json'}
@@ -194,7 +196,7 @@ def startTraining(connid, fileName, inputList, output, encodingType, ratio, numL
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
     outputUniqueValues = output_unique_values(df,output)
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
-    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback(connid)])
+    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])
 
     return model.history
 

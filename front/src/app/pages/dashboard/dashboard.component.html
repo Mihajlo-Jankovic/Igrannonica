@@ -119,8 +119,9 @@
                         <input class="dropdown" name="epochs" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameterMetrics">
-                        <h6>Metrics</h6>
-                        <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+                        <h6>Metrics for model comparison</h6>
+                        <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" [disabled]="firstTraining" (onSelect)="onItemSelect($event)"
+                            (onSelectAll)="onSelectAll($event)">
                         </ng-multiselect-dropdown>
                     </div>
                     <!--<div>{{range}}</div>-->
@@ -179,17 +180,17 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining()">START TRAINING</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining()" [disabled]="training">START TRAINING</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class=" col-12">
-            <div class=" card card-chart">
-                <div class=" card-header">
-                    <div style="height:auto; width: 150px; float: left;">
-                        <h3 class=" card-title" style="width:150px;">Performance</h3>
+    <div class="row" [hidden]="!firstTraining">
+        <div class="col-12">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <div style="height:auto; width: auto; float: left;">
+                        <h3 class="card-title" style="width:auto;">Model {{modelsTrained}}</h3>
                     </div>
                     <div style="width:auto; height:auto; float:right;">
                         <div class="button-group" data-toggle="buttons" *ngIf="buttons.length > 0">
@@ -197,8 +198,8 @@
                         </div>
                     </div>
                 </div>
-                <div class=" card-body" [hidden]="!training">
-                    <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
+                <div class="card-body">
+                    <div class="chart-area"><canvas id="chartBig1"> </canvas></div>
                 </div>
             </div>
         </div>
@@ -208,7 +209,8 @@
             <div class="card">
                 <div class="card-header" style="padding: 0px">
                     <div class="headerLeft">
-                        <h3 class="card-title" style="padding:0; margin: 0px;">Models</h3>
+                        <h3 class="card-title" style="padding:0; margin: 0px;">Trained Models-Epoch: {{selectedEpoch+1}} </h3>
+                        <h6 style="margin-left:0; padding-left:0; text-align: left;">Click on header to change the chart</h6>
                     </div>
                     <div class="headerRight">
                         <div class="page-buttons">
@@ -256,8 +258,15 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let item of modelsList; let i = index">
-                                    <td>{{item.id}}</td>
-                                    <td *ngFor="let value of modelsHeader; let j = index">{{item.data[value][selectedEpoch]}}</td>
+                                    <td style="text-align: center;">{{item.id}}</td>
+                                    <td *ngFor="let value of modelsHeader; let j = index">{{item.data[value][selectedEpoch].toFixed(10)}}</td>
+
+                                    <!--
+                                    <td *ngFor="let value of modelsHeader; let j = index">
+                                        metric-chart{{j}}
+                                        <canvas id="{{value}}-chart{{j}}" class="smallChart"></canvas>
+                                    </td>
+                                    -->
                                 </tr>
                             </tbody>
                         </table>
@@ -266,7 +275,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" [hidden]="!openMetricsChart">
         <div class=" col-12">
             <div class=" card card-chart">
                 <div class=" card-header">

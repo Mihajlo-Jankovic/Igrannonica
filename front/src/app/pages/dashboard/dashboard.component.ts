@@ -41,8 +41,8 @@ export class DashboardComponent implements OnInit {
   public regularizationRate: number = 0;
   public lossFunction: string;
   public metrics: any = [];
-  public epochs: number = 10;
-  public range: number = 50;
+  public epochs: number = 100;
+  public range: number = 80;
   public experimentName: string = "";
 
   public selectedMetric: string = "loss";
@@ -60,7 +60,7 @@ export class DashboardComponent implements OnInit {
   neuronsList = [1,1,1,1,1,1,1,1];
 
   public fileName: string = this.cookieService.get('filename');
-  public  loggedUser: boolean;
+  public loggedUser: boolean;
 
   dropdownList = [];
   selectedItems = [];
@@ -79,11 +79,18 @@ export class DashboardComponent implements OnInit {
   public maxEpochs: number = 0;
 
   public gradientChartOptionsConfigurationWithTooltipRed: any;
+  public metricChartOptions: any;
+  public smallMetricChartOptions: any;
+  public smallMetricCharts: any = [];
   public metricChartConfig: any;
   public metricsCanvas: any;
   public metricsCtx;
   public metricLabels = [];
   public metricsChart;
+  public selectedChartMetric: string = "none";
+
+  public openMetricsChart: boolean = false;
+  public firstTraining: boolean = false;
 
   constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
@@ -246,6 +253,61 @@ export class DashboardComponent implements OnInit {
   }
   
   configureGraph() {
+    this.metricChartOptions = {
+      maintainAspectRatio: false,
+      legend: {
+        display: true
+      },
+
+      tooltips: {
+        backgroundColor: '#f5f5f5',
+        titleFontColor: '#333',
+        bodyFontColor: '#666',
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest"
+      },
+      responsive: true,
+      scales: {
+        yAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(29,140,248,0.0)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Values",
+            fontColor : "#ffffff"
+          }
+        }],
+
+        xAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(233,32,16,0.1)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Epochs",
+            fontColor : "#ffffff"
+          }
+        }]
+      }
+    };
 
     this.metricsCanvas = document.getElementById("metric-chart");
     this.metricsCtx = this.metricsCanvas.getContext("2d");
@@ -253,10 +315,50 @@ export class DashboardComponent implements OnInit {
     this.metricChartConfig = {
       type : "line",
       data : {},
-      options: this.gradientChartOptionsConfigurationWithTooltipRed
+      options: this.metricChartOptions
     };
     
     this.metricsChart = new Chart(this.metricsCtx, this.metricChartConfig);
+
+    this.smallMetricChartOptions = {
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+      responsive: true,
+      tooltip : {
+        enabled: false
+      },
+      scales: {
+        yAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            display : false
+          },
+          ticks: {
+            suggestedMin: 50,
+            suggestedMax: 125,
+            padding: 20,
+            fontColor: "#9e9e9e"
+          },
+          display : false
+        }],
+
+        xAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            display : false
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#9e9e9e"
+          },
+          display : false
+        }]
+      }
+    };
+
+
   }
 
   get() {
@@ -354,6 +456,7 @@ export class DashboardComponent implements OnInit {
     }
     this.chartData = {};
     this.training = true;
+    this.firstTraining = true;
     let fileName = this.cookieService.get('filename');
     let connID = this.cookieService.get('connID');
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
@@ -379,6 +482,7 @@ export class DashboardComponent implements OnInit {
           }
         }
 
+        this.modelsHeader = [];
         for (let i = 0; i < this.selectedItems.length; i++) {
           this.modelsHeader.push(this.selectedItems[i]['item_id']);
           this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
@@ -605,6 +709,9 @@ export class DashboardComponent implements OnInit {
   }
 
   chartThisMetric(metric : string){
+    this.openMetricsChart = true;
+    this.selectedChartMetric = metric;
+
     this.metricsChart.data.labels = this.metricLabels;
     this.metricsChart.data.datasets = [];
 
@@ -632,7 +739,56 @@ export class DashboardComponent implements OnInit {
       });
     }
 
+    this.metricsChart.options.scales.yAxes[0].scaleLabel.labelString = metric;
     this.metricsChart.update();
+  }
+
+  makeSmallCharts(id: number, epochs: number) {
+    var smallMetricCanvas: any;
+    var smallMetricCtx: any;
+    for (let i = 0; i < this.modelsHeader.length; i++) {
+      smallMetricCanvas = document.getElementById(this.modelsHeader[i] + "-chart");
+      console.log(smallMetricCanvas);
+      smallMetricCtx = smallMetricCanvas.getContext("2d");
+      console.log(this.modelsHeader[i] + "-chart");
+
+      var smallMetricLabels = []
+
+
+      for(let i = 0; i < epochs; i++) {
+        smallMetricLabels.push(i);
+      }
+
+      var data = {
+        labels: smallMetricLabels,
+        datasets: [{
+          label: "label",
+          fill: false,
+          backgroundColor: '#ffffff',
+          borderColor: '#00d6b4',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: '#00d6b4',
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: '#00d6b4',
+          pointBorderWidth: 0,
+          pointHoverRadius: 0,
+          pointHoverBorderWidth: 0,
+          pointRadius: 0,
+          data: this.modelsList[id].data[this.modelsHeader[i]],
+        }]
+      };
+
+      var smallMetricChartConfig = {
+        type : "line",
+        data : data,
+        options: this.smallMetricChartOptions
+      };
+      
+      this.smallMetricCharts[id] = new Chart(smallMetricCtx, smallMetricChartConfig);
+      this.smallMetricCharts[id].update();
+    }
   }
 
   //SOKETI
@@ -678,13 +834,20 @@ export class DashboardComponent implements OnInit {
         this.updateOptions();
       }
       else {
+        this.training = false;
         this.trained = true;
 
         var newModel = new trainedModel(this.modelsTrained, this.parameters);
         this.modelsList.push(newModel);
         this.modelsList[this.modelsTrained-1].data = this.chartData;
 
-        
+        if(this.selectedChartMetric == "none"){
+          this.chartThisMetric(this.modelsHeader[0]);
+        }
+        else {
+          this.chartThisMetric(this.selectedChartMetric);
+        }
+        //this.makeSmallCharts(this.modelsTrained-1, data["epochs"]);
       }
     });
   }

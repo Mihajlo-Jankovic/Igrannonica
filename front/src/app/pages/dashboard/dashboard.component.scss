@@ -280,14 +280,15 @@ $spin-duration: 1s;
 
 .headerLeft {
     height: 70px;
-    width: 25%;
+    width: 325px;
     padding: 1rem;
+    padding-right: 0;
     float: left;
 }
 
 .headerRight {
     height: 70px;
-    width: 75%;
+    width: auto;
     padding: 1rem;
     float: right;
 }
@@ -331,6 +332,11 @@ $spin-duration: 1s;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #7d3c8b;
+}
+
+.smallChart {
+    width: 120px;
+    height: 60px;
 }
 
 @media(max-width: 1760px) {
