@@ -12,6 +12,7 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
+import { FailedToNegotiateWithServerError } from "@microsoft/signalr/dist/esm/Errors";
 
 @Component({
   selector: "app-dashboard",
@@ -92,10 +93,56 @@ export class DashboardComponent implements OnInit {
   public openMetricsChart: boolean = false;
   public firstTraining: boolean = false;
 
+  public loginWarning: boolean = false;
+
   constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
   configuration = new Configuration();
 
+
+  clearEverything() {
+    this.problemType = "Regression";
+    this.encodingType = "label";
+    this.activationFunction = "sigmoid";
+    this.optimizer = "Adam";
+    this.learningRate = 0.0001;
+    this.regularization = "None";
+    this.regularizationRate = 0;
+    this.metrics = [];
+    this.epochs = 100;
+    this.range = 80;
+    this.experimentName = "";
+    this.checkProblemType();
+
+    this.selectedMetric = "loss";
+    this.trained = false;
+    this.training = false;
+
+    this.layerList = [];
+    this.neuronsList = [1,1,1,1,1,1,1,1];
+    this.layer.id = 1;
+    this.layerList.push(this.layer);
+
+    this.layersLabel = 1;
+
+    this.liveData = {};
+    this.chartData = {};
+    
+    this.parameters = {};
+    this.modelsList = [];
+    this.modelsTrained = 0;
+    this.modelsHeader = [];
+    this.selectedEpoch = 0;
+    this.maxEpochs = 0;
+
+    this.metricLabels = [];
+    this.selectedChartMetric = "none";
+
+    this.openMetricsChart = false;
+    this.firstTraining = false;
+  
+    this.loginWarning = false;
+  }
   
   ngOnInit() {
     
@@ -108,6 +155,7 @@ export class DashboardComponent implements OnInit {
     this.checkProblemType();
 
     this.chartData = {};
+
     if(sessionStorage.getItem('numLayers'))
     {
       var numLayer = Number(sessionStorage.getItem('numLayers'));
@@ -129,7 +177,7 @@ export class DashboardComponent implements OnInit {
       }
 
     }
-    else{
+    else {
       this.layer.id = 1;
       this.layerList.push(this.layer);
     }
@@ -443,6 +491,20 @@ export class DashboardComponent implements OnInit {
     };
   }
 
+  checkBeforeTraining() {
+    if(!this.loggedUser) {
+      if(!this.firstTraining) {
+        this.loginWarning = true;
+      }
+      else {
+        this.startTraining();
+      }
+    }
+    else {
+      this.startTraining();
+    }
+  }
+
   startTraining() {
     if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
       this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Input or output not selected</b>.', '', {
@@ -454,6 +516,7 @@ export class DashboardComponent implements OnInit {
       });
       return;
     }
+    this.loginWarning = false;
     this.chartData = {};
     this.training = true;
     this.firstTraining = true;

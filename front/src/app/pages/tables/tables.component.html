@@ -96,7 +96,7 @@
             <div class=" card" style="height: 390px;">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
-                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix()">{{matrixButton}}</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix(); previewMatrix();">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
                     <div class=" table-responsive" style="height: 312px;" id="corr">
