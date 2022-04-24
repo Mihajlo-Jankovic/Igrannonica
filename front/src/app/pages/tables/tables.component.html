@@ -1,39 +1,7 @@
-<style>
-
-</style>
-
 <div class=" content">
-    <div class="corrMatrixBody" [hidden]="!opndMatrix">
-        <div class="cm-modal">
-            <div class="cm-modal-body">
-                <div class="corrMatrix" style="padding: 0.5%;overflow: auto;">
-                    <h2 style="float:left">Correlation Matrix</h2>
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" style="float: right;" type="submit" (click)="close()">Close</button>
-
-                    <div class=" table-responsive" id="corr" style="max-height: 700px;">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let item of fullCorrColNamesArray; let i = index">
-                                    <td>{{item}}</td>
-                                    <td *ngFor="let item1 of fullCorrValArray[i]; let j = index">{{item1}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="cm-modal-background"></div>
-    </div>
     <div class=" row">
         <div class="statistics col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideStatistics">
-            <div class=" card" style="height: 390px;">
+            <div class=" card" style="min-height: 390px; max-height: 450px;">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
                         <h3 class=" card-category" style="color: white; float:left;">Column Statistics</h3>
@@ -41,7 +9,45 @@
                     </div>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-full-width">
+                    <div class=" table-full-width" [hidden]="!hideS">
+                        <table class=" table"><!--style="display: block;
+                        overflow-x: auto;
+                        white-space: nowrap;"> -->
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MIN</td>
+                                    <td *ngFor="let item of arrMin; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Q1</td>
+                                    <td *ngFor="let item of arrQ1; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MEAN</td>
+                                    <td *ngFor="let item of arrMean; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MEDIAN</td>
+                                    <td *ngFor="let item of arrMedian; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Q3</td>
+                                    <td *ngFor="let item of arrQ3; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MAX</td>
+                                    <td *ngFor="let item of arrMax; let i = index">{{item}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class=" table-full-width" [hidden]="hideS">
                         <table class=" table">
                             <tbody>
                                 <tr>
@@ -93,13 +99,13 @@
             </div>
         </div>
         <div class="matrix col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideMatrix">
-            <div class=" card" style="height: 390px;">
+            <div class=" card" style="min-height: 390px; max-height: 700px;">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix()">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive" style="height: 312px;" id="corr">
+                    <div class=" table-responsive" style="height: 312px;" id="corr" [hidden]="hideM">
                         <table class=" table">
                             <thead>
                                 <tr>
@@ -112,6 +118,22 @@
                                     <td>{{numericValuesArray[i][0]}}</td>
                                     <td>{{item}}</td>
                                     <tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class=" table-responsive" style="height: 500px;" id="corr" [hidden]="!hideM">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of fullCorrColNamesArray; let i = index">
+                                    <td>{{item}}</td>
+                                    <td *ngFor="let item1 of fullCorrValArray[i]; let j = index">{{item1}}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -241,8 +263,10 @@
                         <table class=" table tablesorter">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>
+                                    <th style="position: sticky;
+                                    top: 0; z-index: 20000; background-color: #27293d;"></th>
+                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;position: sticky;
+                                    top: 0; z-index: 20000; background-color: #27293d;">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>
