@@ -1,6 +1,6 @@
 <div class=" content">
     <div class=" row">
-        <div class=" col-md-8">
+        <!-- <div class=" col-md-8">
             <div class=" card">
                 <div class=" card-header">
                     <h3 class="card-title">My Projects</h3>
@@ -154,8 +154,9 @@
                 <div class=" card-footer">
                 </div>
             </div>
+        </div> -->
+        <div class=" col-md-4">
         </div>
-
         <div class=" col-md-4">
             <div class=" card card-user">
                 <div class=" card-body">
@@ -173,18 +174,18 @@
                         <h5 class=" title">E-mail: {{userInfo.email}}</h5><br><br>
                         <p class=" description"></p><br>
 
-                        <button class="btn btn-primary btn-lg btn-block mb-3" (click)="editProfile()">Edit Profile</button>
-
+                        <button class="btn btn-primary btn-lg " (click)="editInfo()">Edit Info</button>
+                        <button class="btn btn-primary btn-lg " (click)="changePassword()">Edit Password</button>
                     </div>
                 </div>
             </div>
-            <div class=" card card-user" *ngIf="indicator">
+            <div class=" card card-user" *ngIf="indicatorInfo">
                 <div class=" card-body">
                     <p class=" card-text"></p>
                     <div class=" author">
 
 
-                        <h5 class=" title">Edit Profile</h5>
+                        <h6 class=" title">Edit Profile</h6>
                         <form class="form" [formGroup]="editForm" (ngSubmit)="edit(editForm)">
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="{{userInfo.firstname}}" name="firstname" formControlName="firstname" type="text" />
@@ -192,16 +193,31 @@
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="{{userInfo.lastname}}" name="lastname" formControlName="lastname" type="text" />
                             </div>
+                            <div class=" input-group">
+                                <input class=" form-control" placeholder="Password" name="password" formControlName="password" type="text" />
+                            </div>
+                            <div class=" input-group">
+                                <input class=" form-control" placeholder="Confirm password" name="confirmPassword" formControlName="confirmPassword" type="text" />
+                            </div>
 
                             <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button><br>
 
                             <label>{{messageEditProfile}}</label>
 
                         </form>
+                    </div>
+                </div>
+                <div class=" card-footer">
+                </div>
 
 
-
-                        <br><br>
+                <div>
+                </div>
+            </div>
+            <div class=" card card-user" *ngIf="indicatorPassword">
+                <div class=" card-body">
+                    <p class=" card-text"></p>
+                    <div class=" author">
                         <div class=" card-header1">
                             <h6 class=" title">Edit Password</h6>
                         </div><br>

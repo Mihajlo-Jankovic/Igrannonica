@@ -42,7 +42,8 @@ export class UserComponent implements OnInit {
 
   username: string;
   messageEditProfile: string;
-  indicator : boolean=false;
+  indicatorInfo : boolean=false;
+  indicatorPassword : boolean=false;
   userInfo : any;
 
   getUsername() {
@@ -66,10 +67,21 @@ export class UserComponent implements OnInit {
     return this.editForm.controls;
   }
 
-  editProfile(){
-    if(this.indicator==true)
-      this.indicator=false;
-    else this.indicator=true;
+  editInfo(){
+    if(this.indicatorInfo==true)
+      this.indicatorInfo=false;
+    else {
+      this.indicatorInfo=true;
+      this.indicatorPassword = false;
+   }
+  }
+  changePassword(){
+    if(this.indicatorPassword==true)
+      this.indicatorPassword=false;
+    else {
+      this.indicatorPassword=true;
+      this.indicatorInfo = false;
+    }
   }
   
   edit(form: FormGroup) {
