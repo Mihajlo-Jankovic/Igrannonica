@@ -16,9 +16,29 @@
                 <div class="card-header">
                     <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing dataset</h3>
                     <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy" style="float:left;">
-                        <option class='option' value="all">Public</option>
-                        <option class='option' value="myFiles">My datasets</option>
+                        <option class='option' value="public">Public</option>
+                        <option class='option' value="mydatasets">My datasets</option>
                     </select>
+                    <div class="paging" [hidden]="!numOfPages">
+                        <button class=" btn btn-link page" style="padding: 0px;" (click)="firstPage()">
+                            <i class="tim-icons icon-double-left"></i>
+                        </button>
+                        <button class=" btn btn-link page" style="padding: 0px;" (click)="previousPage(1)">
+                            <i class="tim-icons icon-minimal-left"></i>
+                        </button>
+                        <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="pageNum < 3">{{pageNum-2}}</button>
+                        <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="pageNum == 1">{{pageNum-1}}</button>
+                        <button class=" btn btn-link page" style="color: white" >{{pageNum}}</button>
+                        <button class=" btn btn-link page" (click)="nextPage(1)" [hidden]="pageNum == numOfPages">{{pageNum+1}}</button>
+                        <button class=" btn btn-link page" (click)="nextPage(2)" [hidden]="pageNum >= numOfPages-1">{{pageNum+2}}</button>
+                        <button class=" btn btn-link page" style="padding: 0px;" (click)="nextPage(1)">
+                            <i class="tim-icons icon-minimal-right"></i>
+                        </button>
+                        <button class=" btn btn-link page" style="padding: 0px;" (click)="lastPage()">
+                            <i class="tim-icons icon-double-right"></i>
+                        </button>
+                    </div>
+
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
                     <div class="authorized" *ngIf="cookieCheck">
