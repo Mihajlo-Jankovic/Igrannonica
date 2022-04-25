@@ -21,6 +21,10 @@ namespace Igrannonica.Models
         [Column(TypeName = "nvarchar(500)")]
         public byte[] passwordSalt { get; set; }
 
+        public int verifyNumber { get; set; }
+
+        public bool verifiedMail { get; set; }
+
         public List<File> Files { get; set; }
     }
 }

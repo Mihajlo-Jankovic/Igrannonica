@@ -35,9 +35,6 @@ namespace Igrannonica.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
         private readonly MySqlContext _context;
-
-        private string mongoConnString = "mongodb://Cortex:hPkyrLiG@147.91.204.115:10109/Cortex"; // mongodb://Cortex:hPkyrLiG@localhost:10109/?authSource=admin 1
-
         
 
 
@@ -49,40 +46,12 @@ namespace Igrannonica.Controllers
 
             _hostEnvironment = hostEnvironment;
 
-            /*if(_env.IsProduction()) mongoConnString = _configuration.GetConnectionString("MongoProdConnection");
-            else mongoConnString = _configuration.GetConnectionString("MongoDevConnection");
-
-            Console.WriteLine(mongoConnString);*/
         }
 
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
         {
-            /*var message = new MimeMessage();
-            var bodyBuilder = new BodyBuilder();
-
-            // from
-            message.From.Add(new MailboxAddress("Cortex", "cortexigrannonica@hotmail.com"));
-            // to
-            message.To.Add(new MailboxAddress(request.firstname, request.email));
-
-            message.Subject = "Mail verification";
-            bodyBuilder.TextBody = "Thank for registering, please fill the following numbers into the registration form at the website";
-            message.Body = bodyBuilder.ToMessageBody();
-
-            using (var client = new SmtpClient())
-            {
-                // Note: don't set a timeout unless you REALLY know what you are doing.
-                //client.Timeout = 1000 * 20;
-
-                client.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
-                client.Authenticate("cortexigrannonica@hotmail.com", "Cortexigrannonic;1");
-                client.Send(message);
-            }
-
-
-            Console.WriteLine("email sent");*/
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
             {
@@ -94,6 +63,30 @@ namespace Igrannonica.Controllers
                 return BadRequest(new { responseMessage = "Error: Email is taken!" });
             }
 
+            Random randomNumbers = new();
+            int randomNumber = randomNumbers.Next(1000, 9999);
+            MimeMessage message = new();
+            BodyBuilder bodyBuilder = new();
+
+            // from
+            message.From.Add(new MailboxAddress("Cortex", "cortexigrannonica@hotmail.com"));
+            // to
+            message.To.Add(new MailboxAddress(request.firstname, request.email));
+
+            message.Subject = "Mail verification";
+            bodyBuilder.TextBody = "Thanks for registering, please fill the following numbers into the registration form at the website " + randomNumber;
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+
+                client.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
+                client.Authenticate("cortexigrannonica@hotmail.com", "Cortexigrannonic;1");
+                client.Send(message);
+            }
+
+            Console.WriteLine("email sent");
+
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
 
             this.user.id = request.id;
@@ -103,6 +96,8 @@ namespace Igrannonica.Controllers
             this.user.passwordHash = passwordHash;
             this.user.passwordSalt = passwordSalt;
             this.user.username = request.username;
+            this.user.verifiedMail = false;
+            this.user.verifyNumber = randomNumber;
 
             _context.User.Add(this.user);
             await _context.SaveChangesAsync();
@@ -110,6 +105,21 @@ namespace Igrannonica.Controllers
             
 
             return Ok(new { responseMessage = "Successful registration!" });
+        }
+
+        [HttpGet("verifyMail")]
+        public async Task<IActionResult> VerifyMail(int verifyNumber, string email)
+        {
+            User user = _context.User.Where(u => u.email == email).FirstOrDefault();
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
+            if (user.verifyNumber != verifyNumber)
+                return BadRequest(new { responseMessage = "Wrong number!" });
+            user.verifiedMail = true;
+
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok(new { responseMessage = "Succesfull registration!" });
         }
 
         [HttpPost("EditUserName"), Authorize]
