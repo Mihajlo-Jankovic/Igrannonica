@@ -62,7 +62,7 @@ namespace Igrannonica.Controllers
             file.IsPublic = false;
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
-            return Ok(task.Result);
+            return Ok(new { randomFileName = RandomFileName });
 
         }
 
@@ -82,7 +82,7 @@ namespace Igrannonica.Controllers
             file.IsPublic = false;
             file.UserForeignKey = null;
             //file.SessionID = sessionID;
-            return Ok(task.Result);
+            return Ok(new { randomFileName = RandomFileName });
 
         }
 
@@ -175,7 +175,7 @@ namespace Igrannonica.Controllers
                         {content, "file", randomFileName },
                     });
 
-                    return await response.Content.ReadAsStringAsync();
+                    return contentDisposition.FileName.Value;
                 }
 
                 section = await reader.ReadNextSectionAsync();
