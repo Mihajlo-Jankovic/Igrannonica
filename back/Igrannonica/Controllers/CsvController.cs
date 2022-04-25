@@ -39,8 +39,8 @@ namespace Igrannonica.Controllers
                 return BadRequest("no file with that name");*/
 
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
-                    + _configuration.GetSection("PEndpointsythonServerPorts:FileUploadServer").Value
-                    + _configuration.GetSection(":EditCell").Value);
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:EditCell").Value);
             
             HttpClient client = new HttpClient(); 
             var csvJson = JsonConvert.SerializeObject(csv);
