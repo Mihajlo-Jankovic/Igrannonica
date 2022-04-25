@@ -92,42 +92,48 @@ namespace Igrannonica.Controllers
         [HttpPost("getCSVAuthorized"), Authorize]
         public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized(FileDTO dto)
         {
-            using (var client = new HttpClient())
+            var usernameOriginal = _userService.GetUsername();
+            User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+
+            if (user == null) return BadRequest("JWT is bad!");
+
+            if(dto.PageNum == 0)
             {
-                var usernameOriginal = _userService.GetUsername();
-                User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+                List<Models.File> tmpList = _mySqlContext.File.ToList();
 
-                if (user == null)
-                    return BadRequest("JWT is bad!");
-
-                List<dynamic> files = new List<dynamic>();
-
-                if (dto.Visibility == "public")
+                foreach (var tmp in tmpList)
                 {
-                    List<Models.File> tmpList = _mySqlContext.File.Where(u => u.IsPublic == true).ToList();
-
-                    foreach (var tmp in tmpList)
-                    {
-                        User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
-
-                        var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
-                        files.Add(file);
-                    }
+                    dto.PageNum++;
                 }
-
-                else
-                {
-                    List<Models.File> tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id).ToList();
-
-                    foreach (var tmp in tmpList)
-                    {
-                        var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = user.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
-                        files.Add(file);
-                    }
-                }
-
-                return Ok(files);
             }
+
+            List<dynamic> files = new List<dynamic>();
+
+            if (dto.Visibility == "public")
+            {
+                List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(f => f.IsPublic == true).Take(dto.NumPerPage * dto.PageNum).ToList();
+
+                foreach (var tmp in tmpList)
+                {
+                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, dateCreated = tmp.DateCreated, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                    files.Add(file);
+                }
+            }
+
+            else
+            {
+                List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(u => u.UserForeignKey == user.id).Take(dto.NumPerPage * dto.PageNum).ToList();
+
+                foreach (var tmp in tmpList)
+                {
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, dateCreated = tmp.DateCreated, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                    files.Add(file);
+                }
+            }
+
+            return Ok(new { files = files, numOfPages = dto.PageNum });
         }
 
 

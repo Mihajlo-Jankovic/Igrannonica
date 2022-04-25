@@ -54,6 +54,7 @@ namespace Igrannonica.Controllers
             Models.File file = new Models.File();
             var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             file.RandomFileName = RandomFileName;
+            file.DateCreated = DateTime.Now;
             var task = UploadFile(request, RandomFileName);
             if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
@@ -82,6 +83,7 @@ namespace Igrannonica.Controllers
             Models.File file = new();
             file.RandomFileName = RandomFileName;
             file.FileName = task.Result;
+            file.DateCreated = DateTime.Now;
             file.IsPublic = false;
             file.UserForeignKey = null;
             //file.SessionID = sessionID;

@@ -25,6 +25,9 @@ namespace Igrannonica.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("longtext");
