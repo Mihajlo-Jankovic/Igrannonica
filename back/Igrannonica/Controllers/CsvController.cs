@@ -86,8 +86,20 @@ namespace Igrannonica.Controllers
             return File(bytes, "csv/plain", filename);
         }
 
-        private int paging(List<Models.File> tmpList, int numPerPage)
+        private int paging(string flag, int numPerPage, int userId)
         {
+            List<Models.File> tmpList;
+
+            if (flag == "public")
+            {
+                tmpList = _mySqlContext.File.Where(f => f.IsPublic == true).ToList();
+            }
+
+            else
+            {
+                tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == userId).ToList();
+            }
+
             int numOfPages;
             int numOfFiles = 0;
 
@@ -117,7 +129,7 @@ namespace Igrannonica.Controllers
             {
                 List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(f => f.IsPublic == true).Take(dto.NumPerPage * dto.PageNum).ToList();
 
-                if (dto.NumOfPages == 0) dto.NumOfPages = paging(tmpList, dto.NumPerPage);
+                if (dto.NumOfPages == 0) dto.NumOfPages = paging("public", dto.NumPerPage, 0);
 
                 int i = 0;
                 foreach (var tmp in tmpList)
@@ -135,7 +147,7 @@ namespace Igrannonica.Controllers
             {
                 List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(u => u.UserForeignKey == user.id).Take(dto.NumPerPage * dto.PageNum).ToList();
 
-                if (dto.NumOfPages == 0) dto.NumOfPages = paging(tmpList, dto.NumPerPage);
+                if (dto.NumOfPages == 0) dto.NumOfPages = paging("mydataset", dto.NumPerPage, user.id);
 
                 int i = 0;
                 foreach (var tmp in tmpList)
@@ -155,7 +167,7 @@ namespace Igrannonica.Controllers
         {
             List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(f => f.IsPublic == true).Take(dto.NumPerPage * dto.PageNum).ToList();
 
-            if (dto.NumOfPages == 0) dto.NumOfPages = paging(tmpList, dto.NumPerPage);
+            if (dto.NumOfPages == 0) dto.NumOfPages = paging("public", dto.NumPerPage, 0);
 
             List<dynamic> files = new List<dynamic>();
 
