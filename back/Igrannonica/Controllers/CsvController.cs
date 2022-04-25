@@ -171,7 +171,7 @@ namespace Igrannonica.Controllers
             _mySqlContext.File.Update(file);
             await _mySqlContext.SaveChangesAsync();
 
-            return Ok("Success!");
+            return Ok(new { responseMessage = "Success!" });
         }
 
     }

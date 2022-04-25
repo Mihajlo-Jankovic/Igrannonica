@@ -38,7 +38,6 @@ export class UploadComponent implements OnInit {
    // this.username = this.getUsername();
   
     this.cookieCheck = this.cookie.get('token');
-    this.refreshToken();
   }
 
   getUsername() {
@@ -54,30 +53,27 @@ export class UploadComponent implements OnInit {
   }
 
   refreshToken(){
-    this.loggedUser = this.loginService.isAuthenticated();
-    if (this.loggedUser) {
+    console.log('123123');
       this.token = this.cookie.get('token');
-      let headers = new HttpHeaders({
-        'Authorization': 'bearer ' + this.token
-      });
-      let options = { headers: headers };
-      this.http.get<any>(this.configuration.refreshToken + this.token ,options).subscribe(token => {
+      
+      this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
 
         if (StringToken == "Token not valid"){
           this.onLogout();
+          location.reload();
         }
         else{
           this.cookie.set("token", StringToken);
         }
       });
-    }
   }
 
   ngOnInit(): void {
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.cookieCheck) {
+      this.refreshToken();
       this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
         this.FilesList = data;
 

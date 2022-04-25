@@ -56,16 +56,13 @@ namespace Igrannonica.Controllers
             file.RandomFileName = RandomFileName;
             var task = UploadFile(request, RandomFileName);
             if (task.Result == "Bad file type in the request" || task.Result == "No files data in the request.")
-                return BadRequest(new { responseMessage = task.Result });
+                return BadRequest(task.Result);
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
             file.IsPublic = false;
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
-            return Ok(new
-            {
-                responseMessage = task.Result
-            });
+            return Ok(task.Result);
 
         }
 
@@ -77,7 +74,7 @@ namespace Igrannonica.Controllers
             var request = HttpContext.Request;
             
             var task = UploadFile(request, RandomFileName);
-            if (task.Result == "los tip fajla" || task.Result == "No files data in the request.")
+            if (task.Result == "Bad file type in the request" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
             Models.File file = new();
             file.RandomFileName = RandomFileName;
@@ -85,10 +82,7 @@ namespace Igrannonica.Controllers
             file.IsPublic = false;
             file.UserForeignKey = null;
             //file.SessionID = sessionID;
-            return Ok(new
-            {
-                responseMessage = task.Result
-            });
+            return Ok(task.Result);
 
         }
 
@@ -102,10 +96,7 @@ namespace Igrannonica.Controllers
 
             var response = await client.GetAsync(endpoint);
             var content = await response.Content.ReadAsStringAsync();
-            return Ok(new
-            {
-                responseMessage = content
-            });
+            return Ok(content);
         }
 
 
@@ -115,14 +106,14 @@ namespace Igrannonica.Controllers
             Models.File? file = _context.File.Where(f => f.RandomFileName == filename).FirstOrDefault();
             if (file == null)
             {
-                return BadRequest("wrong filename");
+                return BadRequest(new {reponseMessage = "wrong filename" });
             }
             string username = _userService.GetUsername();
             User? user = _context.User.Where(u => u.username == username).FirstOrDefault();
 
             if (user.Files.Contains(file) == false)
             {
-                return BadRequest("not your file");
+                return BadRequest(new { reponseMessage = "not your file" });
             }
             _context.Remove(file);
             await _context.SaveChangesAsync();
@@ -132,10 +123,7 @@ namespace Igrannonica.Controllers
                     + _configuration.GetSection("Endpoints:DeleteFile").Value + filename);
             var response = await client.GetAsync(endpoint);
             var content = await response.Content.ReadAsStringAsync();
-            return Ok(new
-            {
-                responseMessage = content
-            });
+            return Ok(content);
         }
 
 

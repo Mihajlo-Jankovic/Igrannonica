@@ -18,6 +18,11 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Bson;
 using System.Text;
+using System.Net;
+using MailKit;
+using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 namespace Igrannonica.Controllers
 {
@@ -54,6 +59,30 @@ namespace Igrannonica.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
         {
+            /*var message = new MimeMessage();
+            var bodyBuilder = new BodyBuilder();
+
+            // from
+            message.From.Add(new MailboxAddress("Cortex", "cortexigrannonica@hotmail.com"));
+            // to
+            message.To.Add(new MailboxAddress(request.firstname, request.email));
+
+            message.Subject = "Mail verification";
+            bodyBuilder.TextBody = "Thank for registering, please fill the following numbers into the registration form at the website";
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                // Note: don't set a timeout unless you REALLY know what you are doing.
+                //client.Timeout = 1000 * 20;
+
+                client.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
+                client.Authenticate("cortexigrannonica@hotmail.com", "Cortexigrannonic;1");
+                client.Send(message);
+            }
+
+
+            Console.WriteLine("email sent");*/
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
             {
@@ -78,7 +107,9 @@ namespace Igrannonica.Controllers
             _context.User.Add(this.user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { responseMessage = "Success" });
+            
+
+            return Ok(new { responseMessage = "Successful registration!" });
         }
 
         [HttpPost("EditUserName"), Authorize]
@@ -159,6 +190,7 @@ namespace Igrannonica.Controllers
         [HttpGet("refreshToken/{jwtString}")]
         public async Task<ActionResult<TokenDTO>> RefreshToken(string jwtString)
         {
+
             var claims = ValidateToken(jwtString);
             if(claims == null)
             {
@@ -173,11 +205,13 @@ namespace Igrannonica.Controllers
             return Ok(new { token = CreateToken(user) });
         }
 
-        private ClaimsPrincipal ValidateToken(string jwtToken)
+        private ClaimsPrincipal ValidateToken(string jwtString)
         {
 
-            SecurityToken validatedToken;
-            TokenValidationParameters validationParameters = new TokenValidationParameters
+            var jwtToken = new JwtSecurityToken(jwtString);
+            if ((jwtToken == null) || (jwtToken.ValidFrom > DateTime.UtcNow) || (jwtToken.ValidTo < DateTime.UtcNow))
+                return null;
+            TokenValidationParameters validationParameters = new()
             {
                 ValidateActor = false,
                 ValidateAudience = false,
@@ -187,8 +221,8 @@ namespace Igrannonica.Controllers
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value))
             };
 
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
-
+            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtString, validationParameters, out _);
+            
 
             return principal;
         }
@@ -394,7 +428,7 @@ namespace Igrannonica.Controllers
 
             collection.DeleteOne(e => e._id == obj.Id);
 
-            return Ok(obj.Id);
+            return Ok(new { obj.Id });
         }
     }
 }

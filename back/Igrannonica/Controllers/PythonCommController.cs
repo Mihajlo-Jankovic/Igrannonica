@@ -98,7 +98,7 @@ namespace Igrannonica.Controllers
             await _hub.Clients.Client(liveTraining.ConnID).SendAsync("trainingdata", liveTraining);
             Console.WriteLine(liveTraining.ConnID);
             //Console.WriteLine(liveTraining.TrainingData.toString());
-            return Ok("OK");
+            return Ok(new {responseMessage = "OK" });
         }
     }
 }
