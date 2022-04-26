@@ -138,7 +138,7 @@ namespace Igrannonica.Controllers
 
                     User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
 
-                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, dateCreated = tmp.DateCreated.ToString("MM/dd/yyyy hh:mm tt""), userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, dateCreated = tmp.DateCreated.ToString("MM/dd/yyyy hh:mm tt"), userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
                     files.Add(file);
                 }
             }
