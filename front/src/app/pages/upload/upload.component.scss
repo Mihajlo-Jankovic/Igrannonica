@@ -311,3 +311,39 @@ button {
     position: relative;
     width: 100%;
 }
+
+
+.buttons {
+    height: 40px;
+    float: right;
+}
+
+.trash {
+    height: 80px;
+    float: right;
+    margin: 0;
+    padding-left: 0;
+    width: 42px;
+}
+
+.arrow {
+    font-size: 1.7rem;
+}
+
+.next {
+    width: 122px;
+}
+
+.page {
+    padding: 0.2rem;
+    color: #7d3c8b;
+    max-width: 42px;
+    font-size: 15px;
+}
+
+button {
+    float: right;
+    height: 100%;
+    vertical-align: top;
+    padding: 0px;
+}
