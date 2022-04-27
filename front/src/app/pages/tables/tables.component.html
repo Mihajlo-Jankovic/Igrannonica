@@ -1,7 +1,7 @@
 <div class=" content">
     <div class=" row">
         <div class="statistics col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideStatistics">
-            <div class=" card" style="min-height: 390px; max-height: 450px;">
+            <div class=" card s">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
                         <h3 class=" card-category" style="color: white; float:left;">Column Statistics</h3>
@@ -9,10 +9,8 @@
                     </div>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-full-width" [hidden]="!hideS">
-                        <table class=" table"><!--style="display: block;
-                        overflow-x: auto;
-                        white-space: nowrap;"> -->
+                    <div class=" table-responsive stat" [hidden]="!hideS" id="table">
+                        <table class=" table">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -47,7 +45,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class=" table-full-width" [hidden]="hideS">
+                    <div class=" table-full-width" [hidden]="hideS"><br>
                         <table class=" table">
                             <tbody>
                                 <tr>
@@ -81,7 +79,7 @@
             </div>
         </div>
         <div class="boxblot col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideBoxplot">
-            <div class=" card card-chart" style="height: 390px;">
+            <div class=" card card-chart s">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
                         <h3 class=" card-category" style="color: white; float: left;">Boxplot</h3>
@@ -99,13 +97,13 @@
             </div>
         </div>
         <div class="matrix col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideMatrix">
-            <div class=" card" style="min-height: 390px; max-height: 700px;">
+            <div class=" card s">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix()">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive" style="height: 312px;" id="corr" [hidden]="hideM">
+                    <div class=" table-responsive stat" id="corr" [hidden]="hideM">
                         <table class=" table">
                             <thead>
                                 <tr>
@@ -121,12 +119,12 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class=" table-responsive" style="height: 500px;" id="corr" [hidden]="!hideM">
+                    <div class=" table-responsive stat" id="corr" [hidden]="!hideM">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
+                                    <th class="f"></th>
+                                    <th class="f" *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -263,10 +261,8 @@
                         <table class=" table tablesorter">
                             <thead>
                                 <tr>
-                                    <th style="position: sticky;
-                                    top: 0; z-index: 20000; background-color: #27293d;"></th>
-                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;position: sticky;
-                                    top: 0; z-index: 20000; background-color: #27293d;">{{item}}</th>
+                                    <th class="f"></th>
+                                    <th class="f" *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>
