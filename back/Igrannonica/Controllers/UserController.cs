@@ -402,11 +402,11 @@ namespace Igrannonica.Controllers
 
             List<Experiment> experiments = collection.Find(e => e.userId == user.id).ToList();
 
-            foreach (Experiment experiment in experiments)
+           /* foreach (Experiment experiment in experiments)
             {
                 Models.File file = _context.File.Where(f => f.RandomFileName == experiment.fileName).FirstOrDefault();
                 experiment.realName = file.FileName;
-            }
+            }*/
 
             return Ok(experiments);
         }

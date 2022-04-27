@@ -14,24 +14,50 @@ export class ExperimentsComponent implements OnInit {
   }
 
   data = {
-    'name' : "",
-    'date' : "",
-    'fileName' : "",
-    'inputList' : [],
-    'output' : "",
-    'problemType' : "",
-    'encodingType' : "",
-    'optimizer' : "",
-    'regularization' : "",
-    'lossFunction' : "",
-    'ratio' : 0,
-    'activationFunction' : "",
-    'learningRate' : 0,
-    'regularizationRate' : 0,
-    'epochs' : 0,
-    'numLayers' : 0,
-    'layerList' : [],
-    'metrics' : []
+    "_id": "",
+    "userId": 0,
+    "name": "",
+    "date": "",
+    "fileName": "",
+    "realName": "",
+    "description": "",
+    "models": [
+      {
+        "id": 0,
+        "data": {
+          "logcosh": [],
+          "loss": [],
+          "mae": [],
+          "mape": [],
+          "mse": [],
+          "msle": [],
+          "val_logcosh": [],
+          "val_loss": [],
+          "val_mae": [],
+          "val_mape": [],
+          "val_mse": [],
+          "val_msle": []
+        },
+        "parameters": {
+          "inputList": [],
+          "output": "",
+          "ratio": 0,
+          "numLayers": 0,
+          "layerList": [],
+          "activationFunction": "",
+          "regularization": "",
+          "regularizationRate": 0,
+          "optimizer": "",
+          "learningRate": 0,
+          "problemType": "",
+          "lossFunction": "",
+          "metrics": [],
+          "numEpochs": 0,
+          "encodingType": "",
+          "fileName": "s"
+        }
+      }
+    ]
   }
 
   experimentList : any = []
@@ -53,6 +79,14 @@ export class ExperimentsComponent implements OnInit {
 
         this.experimentList.push(this.data)
       }
+    })
+  }
+
+  deleteExperiments(id : any)
+  {
+    this.userService.deleteExperiment(id).subscribe(res => {
+      this.experimentList = [];
+      this.showExperiments();
     })
   }
 
