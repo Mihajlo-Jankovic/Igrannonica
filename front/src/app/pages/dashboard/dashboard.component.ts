@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
   public epochs: number = 100;
   public range: number = 80;
   public experimentName: string = "";
+  public description : string = "";
 
   public selectedMetric: string = "loss";
 
@@ -111,6 +112,7 @@ export class DashboardComponent implements OnInit {
     this.epochs = 100;
     this.range = 80;
     this.experimentName = "";
+    this.description = "";
     this.checkProblemType();
 
     this.selectedMetric = "loss";
@@ -567,6 +569,7 @@ export class DashboardComponent implements OnInit {
     let options = { headers: headers };
 
     let fileName = this.cookieService.get('filename');
+    let realName = this.cookieService.get('realName');
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
     let output = sessionStorage.getItem('output');
     let layerList = [];
@@ -584,22 +587,9 @@ export class DashboardComponent implements OnInit {
       'name' : this.experimentName,
       'date' : date,
       'fileName' : fileName, 
-      'inputList' : inputList, 
-      'output' : output, 
-      'encodingType' : this.encodingType, 
-      'ratio' : 1 - (1 * (this.range/100)), 
-      'numLayers' : this.layersLabel, 
-      'layerList' : layerList, 
-      'activationFunction' : this.activationFunction, 
-      'regularization' : this.regularization, 
-      'regularizationRate' : this.regularizationRate, 
-      'optimizer' : this.optimizer, 
-      'learningRate' : this.learningRate, 
-      'problemType' : this.problemType, 
-      'lossFunction' : this.lossFunction, 
-      'metrics' : metrics, 
-      'numEpochs' : +this.epochs,
-      'results' : JSON.stringify(this.chartData)
+      'realName' : realName,
+      'description' : this.description,
+      'models' : this.modelsList
     }
     /*
           SLANJE ZAHTEVA
