@@ -33,7 +33,7 @@ export class UploadComponent implements OnInit {
 
   pageNum: any = 1;
   numOfPages: any = 0;
-  numPerPage: any = 4;
+  numPerPage: any = 8;
 
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string, dateCreated:Date}[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
@@ -88,7 +88,7 @@ export class UploadComponent implements OnInit {
       this.listOfFilesAuthorized = this.filesService.filesAuthorized(privacyType, page, this.numPerPage, this.numOfPages).subscribe(data => {
         this.FilesList = data['files'];
         this.numOfPages = data['numOfPages'];
-
+        
         this.allFiles = [];
         this.myFiles = [];
 
@@ -131,7 +131,7 @@ export class UploadComponent implements OnInit {
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedPrivacyType = value;
-
+    this.pageNum = 1;
     this.showDatasets(this.selectedPrivacyType, this.pageNum);
   }
 
@@ -262,7 +262,7 @@ export class UploadComponent implements OnInit {
   
 
   onCheckboxChange(event: any,item) {
-    console.log(this.allFiles);
+    
     if(!event.target.checked){
       item.isPublic = false;
       this.loggedUser = this.loginService.isAuthenticated();
@@ -280,6 +280,10 @@ export class UploadComponent implements OnInit {
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
       })
+      /*
+      if(this.selectedPrivacyType == "public")
+        location.reload();
+      */
     }
     if(event.target.checked){
       item.isPublic = true;
@@ -299,6 +303,10 @@ export class UploadComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(token);
       })
     }
+    /*
+    if(this.selectedPrivacyType == "public")
+        location.reload();
+    */
   }
 
   uploadNotification() {
