@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { EditService } from "src/app/services/edit/edit.service";
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditPasswordService } from "src/app/services/edit/edit-password.service";
 import { UserInfoService } from "src/app/services/edit/user-info.service";
 import { HttpClient } from "@angular/common/http";
@@ -52,7 +52,12 @@ export class UserComponent implements OnInit {
 
   constructor(private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder, private userService : UserService) {
     this.messageEditProfile = "";
-    this.editForm = formBuilder.group({firstname:"", lastname:""});
+    this.editForm = formBuilder.group({ 
+      firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
+      lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
+      password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
+   //   confirmPassword['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
+    });
     this.editPasswordForm = formBuilder.group({currentPassword:"",newPassword:""});
   }
 
@@ -60,7 +65,7 @@ export class UserComponent implements OnInit {
     this.userInfo = this.userInfoService.info().subscribe(data=> {
       this.userInfo = data;
     })
-    this.showExperiments()
+    //this.showExperiments()
   }
 
   public get m() {
@@ -83,9 +88,10 @@ export class UserComponent implements OnInit {
       this.indicatorInfo = false;
     }
   }
+
   
   edit(form: FormGroup) {
-    if (form.value.firstname && form.value.lastname) {
+    if (form.value.firstname && form.value.lastname && form.value.password && form.value.confirmPassword) {
       this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
         disableTimeOut: false,
         closeButton: true,
@@ -93,7 +99,7 @@ export class UserComponent implements OnInit {
         toastClass: "alert alert-info alert-with-icon",
         positionClass: 'toast-top-center'
       });
-      this.editService.edit(form.value.firstname, form.value.lastname).subscribe(token => {
+      this.editService.edit(form.value.firstname, form.value.lastname,form.value.password).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
       })
     }
@@ -114,40 +120,40 @@ export class UserComponent implements OnInit {
     }
   }
   
-  niz: any= [1];
-  clcDiv: any = [false];
+  // niz: any= [1];
+  // clcDiv: any = [false];
 
-  openDiv(index1:number) {
+  // openDiv(index1:number) {
     
-    if(this.clcDiv[index1] == false) {
-      this.clcDiv[index1] = true;
-    }
-    else {
-      this.clcDiv[index1] = false;
-    }
-  }
+  //   if(this.clcDiv[index1] == false) {
+  //     this.clcDiv[index1] = true;
+  //   }
+  //   else {
+  //     this.clcDiv[index1] = false;
+  //   }
+  // }
 
-  showExperiments()
-  {
-    this.userService.getAllUserExperiments().subscribe(exp =>{
-      for(let i = 0; i< exp.length; i++)
-      {
-        let expData : any = {};
-        expData = exp[i];
-        this.data = expData;
+  // showExperiments()
+  // {
+  //   this.userService.getAllUserExperiments().subscribe(exp =>{
+  //     for(let i = 0; i< exp.length; i++)
+  //     {
+  //       let expData : any = {};
+  //       expData = exp[i];
+  //       this.data = expData;
 
-        this.experiments.push(this.data)
-      }
-    })
-  }
+  //       this.experiments.push(this.data)
+  //     }
+  //   })
+  // }
 
-  deleteExperiments(id : any)
-  {
-    this.userService.deleteExperiment(id).subscribe(res => {
-      this.experiments = [];
-      this.showExperiments();
-    })
-    location.reload();
-  }
+  // deleteExperiments(id : any)
+  // {
+  //   this.userService.deleteExperiment(id).subscribe(res => {
+  //     this.experiments = [];
+  //     this.showExperiments();
+  //   })
+  //   location.reload();
+  // }
 
 }

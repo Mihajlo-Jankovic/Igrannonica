@@ -186,7 +186,7 @@
 
 
                         <h6 class=" title">Edit Profile</h6>
-                        <form class="form" [formGroup]="editForm" (ngSubmit)="edit(editForm)">
+                        <form class="form" novalidate  [formGroup]="editForm" (ngSubmit)="edit(editForm)">
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="{{userInfo.firstname}}" name="firstname" formControlName="firstname" type="text" />
                             </div>
@@ -199,8 +199,11 @@
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="Confirm password" name="confirmPassword" formControlName="confirmPassword" type="text" />
                             </div>
+                            <div *ngIf="m.confirmPassword.touched && m.confirmPassword!=m.password  && m.password.invalid" class="input-group">
+                                <div *ngIf="m.confirmPassword.errors?.pattern">*Password mismatched!</div>
+                            </div>
 
-                            <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button><br>
+                            <button [disabled]="!editForm.valid" class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button><br>
 
                             <label>{{messageEditProfile}}</label>
 
@@ -227,6 +230,9 @@
                             </div>
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="New password" type="password" name="newPassword" formControlName="newPassword" />
+                            </div>
+                            <div class=" input-group">
+                                <input class=" form-control" placeholder="Confirm new password" type="password" name="confirmNewPassword" formControlName="confirmNewPassword" />
                             </div>
 
                             <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button>
