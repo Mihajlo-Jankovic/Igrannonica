@@ -199,9 +199,6 @@
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="Confirm password" name="confirmPassword" formControlName="confirmPassword" type="text" />
                             </div>
-                            <div *ngIf="m.confirmPassword.touched && m.confirmPassword!=m.password  && m.password.invalid" class="input-group">
-                                <div *ngIf="m.confirmPassword.errors?.pattern">*Password mismatched!</div>
-                            </div>
 
                             <button [disabled]="!editForm.valid" class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button><br>
 
@@ -224,7 +221,7 @@
                         <div class=" card-header1">
                             <h6 class=" title">Edit Password</h6>
                         </div><br>
-                        <form class="form" [formGroup]="editPasswordForm" (ngSubmit)="editPassword(editPasswordForm)">
+                        <form class="form" novalidate [formGroup]="editPasswordForm" (ngSubmit)="editPassword(editPasswordForm)">
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="Old password" type="password" name="currentPassword" formControlName="currentPassword" />
                             </div>
@@ -235,7 +232,7 @@
                                 <input class=" form-control" placeholder="Confirm new password" type="password" name="confirmNewPassword" formControlName="confirmNewPassword" />
                             </div>
 
-                            <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button>
+                            <button [disabled]="!editPasswordForm.valid" class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button>
                         </form>
                     </div>
                 </div>

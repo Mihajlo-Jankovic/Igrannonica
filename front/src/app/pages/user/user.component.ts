@@ -56,9 +56,13 @@ export class UserComponent implements OnInit {
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
-   //   confirmPassword['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
+      confirmPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     });
-    this.editPasswordForm = formBuilder.group({currentPassword:"",newPassword:""});
+    this.editPasswordForm = formBuilder.group({
+      currentPassword:['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
+      newPassword:['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
+      confirmNewPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
+    });
   }
 
   ngOnInit() {
@@ -70,6 +74,9 @@ export class UserComponent implements OnInit {
 
   public get m() {
     return this.editForm.controls;
+  }
+  public get n() {
+    return this.editPasswordForm.controls;
   }
 
   editInfo(){
@@ -92,6 +99,16 @@ export class UserComponent implements OnInit {
   
   edit(form: FormGroup) {
     if (form.value.firstname && form.value.lastname && form.value.password && form.value.confirmPassword) {
+      if(form.value.password != form.value.confirmPassword){
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+      }
+     else{
       this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
         disableTimeOut: false,
         closeButton: true,
@@ -102,21 +119,33 @@ export class UserComponent implements OnInit {
       this.editService.edit(form.value.firstname, form.value.lastname,form.value.password).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
       })
+     }
     }
   }
 
   editPassword(form: FormGroup) {
-    if (form.value.currentPassword && form.value.newPassword) {
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
-      this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(token => {
-        let JSONtoken: string = JSON.stringify(token);
-      })
+    if (form.value.currentPassword && form.value.newPassword && form.value.confirmNewPassword) {
+      if(form.value.newPassword != form.value.confirmNewPassword){
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+      }
+      else{
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+        this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(token => {
+          let JSONtoken: string = JSON.stringify(token);
+        })
+      }
     }
   }
   
