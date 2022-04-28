@@ -148,7 +148,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     
     this.loggedUser = this.loginService.isAuthenticated();
-    this.checkStorage();
+    this.configureGraph();
+    
     this.startConnection();
     this.addTrainingDataListener();
 
@@ -298,7 +299,7 @@ export class DashboardComponent implements OnInit {
     };
     this.myChartData = new Chart(this.ctx, config);
 
-    this.configureGraph();
+    this.checkStorage();
   }
   
   configureGraph() {
@@ -544,6 +545,8 @@ export class DashboardComponent implements OnInit {
           for (let i = 0; i < this.maxEpochs; i++){
             this.metricLabels[i] = i+1;
           }
+          sessionStorage.setItem('maxEpoch', (this.maxEpochs).toString());
+          sessionStorage.setItem('metricsLabel', JSON.stringify(this.metricLabels));
         }
 
         this.modelsHeader = [];
@@ -552,6 +555,9 @@ export class DashboardComponent implements OnInit {
           this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
         }
         this.notify.showNotification("Training started successfully!");
+
+        sessionStorage.setItem('modelsTrained', (this.modelsTrained).toString());
+        sessionStorage.setItem('modelsHeader', JSON.stringify(this.modelsHeader));
       }
     );
   }
@@ -596,7 +602,7 @@ export class DashboardComponent implements OnInit {
     */
     this.http.post(this.configuration.saveExperiment, experiment, options).subscribe(
       (response) => {
-        this.notify.showNotification("Experiment saved to your profile successfully!");
+        this.notify.showNotification("Experiment saved successfully!");
       }
     );
   }
@@ -656,6 +662,31 @@ export class DashboardComponent implements OnInit {
     if(sessionStorage.getItem('epochs'))
     {
       this.epochs = Number(sessionStorage.getItem('epochs'));
+    }
+    if(sessionStorage.getItem('modelsTrained'))
+    {
+      this.modelsTrained = Number(sessionStorage.getItem('modelsTrained'));
+    }
+    if(sessionStorage.getItem('modelsHeader'))
+    {
+      this.modelsHeader = [];
+      this.modelsHeader = JSON.parse(sessionStorage.getItem('modelsHeader'));
+    }
+    if(sessionStorage.getItem('modelsList'))
+    {
+      this.modelsList = [];
+      this.modelsList = JSON.parse(sessionStorage.getItem('modelsList'));
+      this.openMetricsChart = true;
+      this.trained = true;
+    }
+    if(sessionStorage.getItem('maxEpoch'))
+    {
+      this.maxEpochs = Number(sessionStorage.getItem('maxEpoch'));
+    }
+    if(sessionStorage.getItem('metricsLabel'))
+    {
+      this.metricLabels = JSON.parse(sessionStorage.getItem('metricsLabel'));
+      this.chartThisMetric(this.modelsHeader[0]);
     }
   }
 
@@ -901,6 +932,7 @@ export class DashboardComponent implements OnInit {
         }
         //this.makeSmallCharts(this.modelsTrained-1, data["epochs"]);
         console.log(this.modelsList);
+        sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
         this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
       }
     });
