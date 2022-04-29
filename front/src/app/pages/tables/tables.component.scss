@@ -1,4 +1,9 @@
 @use "sass:math";
+
+.row {
+    margin-right: 0px;
+}
+
 .table-td-input {
     color: rgba(255, 255, 255, .7)!important;
     background-color: transparent;

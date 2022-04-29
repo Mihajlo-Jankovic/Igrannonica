@@ -12,6 +12,7 @@ import { TablesComponent } from "../../pages/tables/tables.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UploadComponent } from "../../pages/upload/upload.component";
 import { NgApexchartsModule } from "ng-apexcharts";
+import { HomeComponent } from "src/app/pages/home/home.component";
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
   declarations: [
     DashboardComponent,
     TablesComponent,
-    UploadComponent
+    UploadComponent,
+    HomeComponent
   ]
 })
 export class AdminLayoutModule {}

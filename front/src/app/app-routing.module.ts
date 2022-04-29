@@ -11,7 +11,7 @@ import { RegistrationLayoutComponent } from "./layouts/registration-layout/regis
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "upload",
+    redirectTo: "home",
     pathMatch: "full"
   },
   {

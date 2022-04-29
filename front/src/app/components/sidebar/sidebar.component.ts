@@ -12,6 +12,12 @@ declare interface RouteInfo {
 
 export const ROUTES: RouteInfo[] = [
   {
+    path: "/home",
+    title: "Home",
+    icon: "icon-tv-2",
+    class: ""
+  },
+  {
     path: "/upload",
     title: "Upload",
     icon: "icon-upload",
@@ -52,11 +58,15 @@ export class SidebarComponent implements OnInit {
 
   isUploaded(name)
   {
-    if(name == 'Upload')
+    if(name == 'Upload') {
       return true;
+    }
+    else if(name == "Home") {
+      return true;
+    }
     else{
-    if(this.cookie.get('filename'))
-      return true;
+      if(this.cookie.get('filename'))
+        return true;
     return false;
     }
   }

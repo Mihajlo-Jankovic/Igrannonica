@@ -1,0 +1,129 @@
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+    height: 100%;
+}
+
+.content {
+    background: #27293d;
+    background-clip: content-box;
+}
+
+.welcome {
+    width: 680px;
+    margin: auto;
+    margin-top: 12%;
+    box-shadow: none;
+}
+
+h1 {
+    width: 40%;
+    height: auto;
+    float: left;
+    margin: 0px;
+    padding: 1.5rem 0px 0px 0px;
+    font-size: 2.5rem;
+    margin-left:auto;
+}
+
+.img-igrannonica {
+    max-width: 393px;
+    width: 60%;
+    margin: 0px;
+    float: left;
+    padding: 0px;
+    margin-right: auto;
+}
+
+.header-content {
+    height: 106px;
+    width: 652px;
+    padding:0px;
+    margin: auto;
+}
+
+.cortex {
+    width: 160px;
+    height: 70px;
+    margin: auto;
+    h4 {
+        float:left;
+        padding: 1rem 0.5rem 0rem 0rem;
+    }
+    .img-cortex {
+        float:left;
+        width: 70px;
+    }
+}
+
+.body-content {
+    margin: auto;
+    width: 652px;
+
+    button {
+        margin: 0px;
+        padding: 0.5rem 0rem 0.5rem 0rem;
+        width: 250px;
+    }
+}
+
+.summary {
+    min-height: 290px;
+}
+
+.img-cortex-small {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    bottom: 120px;
+    right: 50px;
+}
+
+@media(max-width: 769px) {
+    .img-cortex-small {
+        right: 35px;
+    }
+}
+
+@media(max-width: 725px){
+    .header-content {
+        width: 100%;
+        height: auto;
+        text-align: center;
+    }
+    .img-igrannonica {
+        width:100%;
+        float: none;
+    }
+    h1 {
+        width:auto;
+        float:none;
+        padding: 0px;
+    }
+    .body-content {
+        width: 100%;
+    }
+}
+
+@media(max-width: 590px) {
+    .body-content {
+        button {
+            width: 48.5%;
+        }
+    }
+}
+
+@media(max-width: 577px) {
+    .img-cortex-small {
+        right: auto;
+        margin: auto;
+    }
+}
+
+@media(max-width: 465px) {
+    .body-content {
+        button {
+            width: 100%;
+        }
+    }
+}
