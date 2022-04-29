@@ -17,11 +17,11 @@
                                                 <button class=" btn btn-link trash " placement="left" ngbTooltip="Delete file" container="body" style="left: 90px;" (click)="deleteExperiments(item['_id'])">
                                                     <i class="tim-icons icon-trash-simple"> </i>
                                                 </button>
-                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:right; margin-right:20px; width:60px; height:20px;">Use this</button>
+                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:right; margin-right:20px; width:60px; height:20px;" (click)="useExperiments(item)">Use this</button>
                                             </div>
                                         </div>
 
-                                        <div class="pull-right fileName">Desription:</div><textarea name="description" rows="3" style="margin-left: 15px; margin-bottom: 5px; width: 50%; background-color: #1e1e28; color:#525f7f">{{item.description}}</textarea>
+                                        <div class="pull-right fileName">Desription:</div><textarea disabled name="description" rows="3" style="margin-left: 15px; margin-bottom: 5px; width: 50%; background-color: #1e1e28; color:#525f7f">{{item.description}}</textarea>
                                         <div class="pull-right fileName">Date : {{item.date}}</div>
                                         <div class="pull-right fileName">Dataset : {{item.realName}}</div>
                                         <div class="pull-right fileName">Problem type : {{item.models[0]['parameters']['problemType']}}</div>

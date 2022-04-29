@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -54,7 +56,7 @@ export class ExperimentsComponent implements OnInit {
           "metrics": [],
           "numEpochs": 0,
           "encodingType": "",
-          "fileName": "s"
+          "fileName": ""
         }
       }
     ]
@@ -62,7 +64,7 @@ export class ExperimentsComponent implements OnInit {
 
   experimentList : any = []
 
-  constructor(private userService : UserService) { }
+  constructor(private userService : UserService, private cookie : CookieService, private router :  Router) { }
 
   ngOnInit(): void {
     this.showExperiments()
@@ -88,6 +90,55 @@ export class ExperimentsComponent implements OnInit {
       this.experimentList = [];
       this.showExperiments();
     })
+  }
+
+  useExperiments(item)
+  {
+    sessionStorage.setItem('modelsList', JSON.stringify(item.models));
+
+    let keys = Object.keys(item.models[0].data);
+    let headers = []
+    keys.forEach(key =>
+      {
+        if(item.models[0].data[key] != null)
+          headers.push(key);
+      })
+
+    sessionStorage.setItem('modelsHeader', JSON.stringify(headers));
+    sessionStorage.setItem('modelsTrained', (item.models.length).toString());
+
+    let maxEpoch = item.models[0].parameters['numEpochs'];
+    for(let i = 1; i< item.models.length; i++)
+    {
+        if(item.models[i].parameters['numEpochs'] > maxEpoch)
+          maxEpoch = item.models[i].parameters['numEpochs'];
+    }
+
+    let labels = [];
+    for(let i = 1; i <= maxEpoch; i++)
+      labels.push(i);
+
+    sessionStorage.setItem('maxEpoch', maxEpoch.toString());
+    sessionStorage.setItem('metricsLabel', JSON.stringify(labels));
+
+    this.cookie.set('filename', item.fileName);
+    this.cookie.set('realName', item.realName);
+    sessionStorage.setItem('description', item.description);
+    sessionStorage.setItem('experimentName', item.name);
+
+    sessionStorage.removeItem('problemType');
+    sessionStorage.removeItem('encoding');
+    sessionStorage.removeItem('optimizer');
+    sessionStorage.removeItem('regularization');
+    sessionStorage.removeItem('lossFunction');
+    sessionStorage.removeItem('range');
+    sessionStorage.removeItem('activationFunction');
+    sessionStorage.removeItem('activationFunction');
+    sessionStorage.removeItem('regularizationRate');
+    sessionStorage.removeItem('epochs');
+
+    this.router.navigate(['dashboard']);
+
   }
 
 }

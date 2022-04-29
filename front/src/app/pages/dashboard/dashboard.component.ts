@@ -688,6 +688,14 @@ export class DashboardComponent implements OnInit {
       this.metricLabels = JSON.parse(sessionStorage.getItem('metricsLabel'));
       this.chartThisMetric(this.modelsHeader[0]);
     }
+    if(sessionStorage.getItem('experimentName'))
+    {
+      this.experimentName = sessionStorage.getItem('experimentName');
+    }
+    if(sessionStorage.getItem('description'))
+    {
+      this.description = sessionStorage.getItem('description');
+    }
   }
 
   public updateOptions() {
