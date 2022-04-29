@@ -85,7 +85,6 @@ namespace Igrannonica.Controllers
                 client.Send(message);
             }
 
-            Console.WriteLine("email sent");
 
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -114,13 +113,17 @@ namespace Igrannonica.Controllers
             if (user == null)
                 return NotFound(new { responseMessage = "Error: Username not found!" });
             if (user.verifyNumber != verifyNumber)
-                return BadRequest(new { responseMessage = "Wrong number!" });
+                return BadRequest(new { responseMessage = "Error: Wrong number!" });
+            if (user.verifiedMail == true)
+                return BadRequest(new { reponseMessage = "Error: Mail already verified!" });
+
             user.verifiedMail = true;
 
             _context.User.Update(user);
             await _context.SaveChangesAsync();
             return Ok(new { responseMessage = "Succesfull registration!" });
         }
+
 
         [HttpPost("EditUserName"), Authorize]
         public async Task<ActionResult<User>> EditUserName(UpdateUserNameDTO request)
@@ -193,6 +196,10 @@ namespace Igrannonica.Controllers
             if (!VerifyPasswordHash(loginDTO.password, user.passwordHash, user.passwordSalt))
             {
                 return BadRequest(new { responseMessage = "Error: Wrong password!" });
+            }
+            if(user.verifiedMail == false)
+            {
+                return BadRequest(new { responseMessage = "Error: You have to verify your mail!" });
             }
             token.token = CreateToken(user);
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token.token);
