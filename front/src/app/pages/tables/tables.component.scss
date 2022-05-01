@@ -653,3 +653,103 @@ $tabs-base-color: #27293d;
         font-size: 1.5em;
     }
 }
+
+.hyperparameter {
+    width: 20%;
+    padding: 1rem;
+    height: 80px;
+    display: block;
+    //float: left;
+    flex: auto;
+    margin-bottom: 0.5rem;
+}
+
+.encoding {
+    width: 55%;
+    height: auto;
+    padding: 2px;
+    overflow: auto;
+    margin: auto;
+}
+
+.encRow {
+    width: auto;
+}
+
+.dropdown1 {
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-right: 20px;
+    margin-top: 8px;
+    height: 30px;
+    //width: 20%;
+    position: relative;
+    bottom: 0;
+    //width: 100%;
+    cursor: pointer;
+    float: left;
+}
+
+.dropdown1:focus {
+    border-color: #7d3c8b;
+}
+
+.dropdown1Text {
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-right: 20px;
+    margin-top: 8px;
+    height: 30px;
+    //width: 25%;
+    width: 55%;
+    position: relative;
+    bottom: 0;
+    cursor: pointer;
+    float: left;
+}
+
+.encText {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+
+@media(max-width: 1139px) {
+    .encoding {
+        width: 70%;
+    }
+}
+
+@media(max-width: 780px) {
+    .dropdown1Text {
+        overflow: none;
+        height: auto;
+    }
+}
+
+@media(max-width: 645px) {
+    .dropdown1Text {
+        overflow: none;
+        height: auto;
+        width: 50%;
+    }
+}
+
+@media(max-width: 478px) {
+    .dropdown1Text {
+        overflow: none;
+        height: auto;
+        width: 50%;
+    }
+    .encoding {
+        width: 100%;
+    }
+}
+

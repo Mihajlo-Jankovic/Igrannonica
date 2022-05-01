@@ -135,6 +135,14 @@ export class TablesComponent {
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
 
+  //dodat deo koda
+  notChecked: boolean = false;
+  listCheckedITemp: any = [];
+  nizTemp: any = [];
+  nizTempBoolean: any = [];
+  enc: any = [];
+  //*
+
   constructor(private tableService: TableService, private cookie : CookieService) {
     sessionStorage.removeItem('statistics');
     this.showTable(this.selectedType, this.selectedRow, this.page)
@@ -230,13 +238,31 @@ export class TablesComponent {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedCol);
     }
-
+    
     //setovanje I/O
     for (let i = 0; i < this.data['columns'].length-1; i++) {
       this.radios1[i] = false;
       this.checks1[i] = true;
       this.listCheckedI.push(this.data['columns'][i]);
+
+      //dodat deo koda
+      let temp: any = [];
+      temp.push(i);
+      temp.push(this.data['columns'][i]);
+      temp.push(true); //da li je izabrana (u pocetku su sve osim poslednje izabrane)
+      temp.push(this.isNumericFun(this.data['columns'][i]));
+      this.listCheckedITemp.push(temp);
+      //*
     }
+
+    //dodat deo koda
+    let temp: any = [];
+    temp.push( this.data['columns'].length-1);
+    temp.push(this.data['columns'][this.data['columns'].length-1]);
+    temp.push(false); //poslednja kolona nije izabrana
+    temp.push(this.isNumericFun(this.data['columns'][this.data['columns'].length-1]));
+    this.listCheckedITemp.push(temp);
+    //*
 
     this.checks[this.data['columns'].length-1] = true;
     this.checks1[this.data['columns'].length-1] = false;
@@ -248,7 +274,51 @@ export class TablesComponent {
     this.selectedOutput = this.data['columns'][this.data['columns'].length-1];
     sessionStorage.setItem('output', this.selectedOutput);
     this.pret = this.headingLines[0].length-2;
+
+    //dodat deo koda
+    this.nizTemp = [];
+    this.nizTempBoolean = [];
+    for(let i = 0; i < this.listCheckedITemp.length; i++) {
+      if(this.listCheckedITemp[i][2] == true) {
+        this.nizTemp.push(this.listCheckedITemp[i][1]);
+
+        let t = [];
+        t.push(this.listCheckedITemp[i][1]);
+        t.push(this.listCheckedITemp[i][3]);
+        this.nizTempBoolean.push(t);
+      }
+    }
+    sessionStorage.setItem('tempInput', JSON.stringify(this.nizTemp));
+    //console.log(this.listCheckedITemp);
+    //console.log(this.nizTempBoolean);
+    //console.log(this.nizTemp);
+/*
+    for(let i = 0; i < this.nizTempBoolean.length; i++) {
+      if(this.nizTempBoolean[i][1] == true) {
+        this.enc[i] = "none";
+      }
+      else {
+        this.enc[i] = "label";
+      }
+    }
+    sessionStorage.setItem('encoding', JSON.stringify(this.enc));
+*/
+    //*
+    
   }
+
+  //dodat deo koda
+  isNumericFun(s: any) {
+    let k: number = 0;
+
+    for(let j = 0; j < this.numericValues['col'].length; j++) {
+      if(this.numericValues['col'][j] == s) {
+        return true;
+      }
+    }
+    return false;
+  }
+  //*
 
   public onSelectedType(event: any) {
     this.page = 1;
@@ -274,6 +344,7 @@ export class TablesComponent {
     this.numberData = [];
     this.numberLines = [];
     this.rowLines = [];
+    this.listCheckedITemp = [];
   }
   
   showStatistics(col : number)
@@ -539,7 +610,6 @@ export class TablesComponent {
       this.showIO = false;
   }
 
-  
   inputCheckedFun(event: any) {
     var value = event.target.value;
 
@@ -552,15 +622,61 @@ export class TablesComponent {
       }
     }
 
-    if(exists == true)
-      this.listCheckedI.splice(index, 1);
-    else
-      this.listCheckedI.push(value);
-    
-    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
-    //console.log(this.listCheckedI);
-  }
+    //dodat deo koda
+    this.nizTemp = [];
+    this.nizTempBoolean = [];
+    //this.listCheckedITemp = [];
+    //*
 
+    if(exists == true) {
+      this.listCheckedI.splice(index, 1);
+
+      //dodat deo koda
+      for(let i = 0; i < this.listCheckedITemp.length; i++) {
+        if(this.listCheckedITemp[i][1] == value) {
+          this.listCheckedITemp[i][2] = false;
+        }
+      }
+      //*
+    }
+    else {
+      this.listCheckedI.push(value);
+
+      //dodat deo koda
+      for(let i = 0; i < this.listCheckedITemp.length; i++) {
+        if(this.listCheckedITemp[i][1] == value) {
+          this.listCheckedITemp[i][2] = true;
+        }
+      }
+      //*
+    }
+
+    //dodat deo koda
+    for(let i = 0; i < this.listCheckedITemp.length; i++) {
+      if(this.listCheckedITemp[i][2] == true) {
+        this.nizTemp.push(this.listCheckedITemp[i][1]);
+
+        let t = [];
+        t.push(this.listCheckedITemp[i][1]);
+        t.push(this.listCheckedITemp[i][3]);
+        this.nizTempBoolean.push(t); 
+      }
+    }
+
+    //console.log(this.nizTempBoolean);
+    //console.log(this.listCheckedITemp);
+
+    if(this.listCheckedI.length == 0)
+      this.notChecked = true;
+    else
+      this.notChecked = false;
+    
+
+    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+    sessionStorage.setItem('tempInput', JSON.stringify(this.nizTemp));
+
+    //*
+  }
   
   selectedOutputFun(event: any) {
     var value = event.target.value;
@@ -593,6 +709,24 @@ export class TablesComponent {
   selectedID(id : number){
     id = id + (this.page - 1)*this.selectedRow
     this.selectedRows.push(id);
+  }
+
+  onSelectedEnc(event : any)
+  {
+    /*
+    const value = event.target.value;
+    var splitted = value.split("|", 2);
+    let selectedEncoding = splitted[0];
+    let selectedcol = splitted[1];
+
+    for(let i = 0; i < this.nizTemp.length; i++) {
+      if(this.nizTemp[i] == selectedcol) {
+        this.enc[i] = selectedEncoding;
+      }
+    }
+    sessionStorage.setItem('encoding', JSON.stringify(this.enc));
+    //console.log(this.enc);
+    */
   }
 
   async deleteRows()
@@ -724,4 +858,5 @@ export class TablesComponent {
     tabs.setAttribute('style', 'height: '+ height +'px;');
     console.log(height);
   }
+
 }

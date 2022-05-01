@@ -124,7 +124,7 @@
                 <label for="tab-4">X</label>
                 <section>
                     <div class="tab-content">
-                        <h3 style="margin : 0px; padding: 0px;">Choose a tab to open</h3>
+                        <h3 style="margin : 0px; padding: 0px;">Preprocessing data - choose a tab to open</h3>
                     </div>
                 </section>
 
@@ -163,12 +163,30 @@
                 <label for="tab-2">Encoding</label>
                 <section>
                     <div class="tab-content">
-                        <p>tab two</p>
+                        <div [hidden]="!notChecked">
+                            <h3>Please choose input!</h3>
+                        </div>
+                    <div [hidden]="notChecked" class="encoding">
+                            <div class="encRow" *ngFor="let item of nizTempBoolean; let i = index">
+                                <div style="clear: both;">
+                                    <div class="dropdown1Text"> 
+                                        <p class="encText">{{item[0]}}</p>
+                                    </div>
+                                    <select class="dropdown1" name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
+                                        <option class='option' value="none|{{item[0]}}" *ngIf="item[1]" selected="item[1]">None</option>
+                                        <option class='option' value="label|{{item[0]}}">Label</option>
+                                        <option class='option' value="one-hot|{{item[0]}}">One-Hot</option>
+                                        <option class='option' value="binary|{{item[0]}}">Binary</option>
+                                        <option class='option' value="frequency|{{item[0]}}">Frequency</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
                 <input type="radio" name="tab" id="tab-3">
-                <label for="tab-3">Data Preprocessing</label>
+                <label for="tab-3">Missing values & outliers</label>
                 <section>
                     <div class="tab-content">
                         <p>tab three<br>with<br>content<br>over<br>more<br>lines</p>
