@@ -166,23 +166,20 @@
                         <div [hidden]="!notChecked">
                             <h3>Please choose input!</h3>
                         </div>
-                    <div [hidden]="notChecked" class="encoding">
-                            <div class="encRow" *ngFor="let item of nizTempBoolean; let i = index">
-                                <div style="clear: both;">
-                                    <div class="dropdown1Text"> 
-                                        <p class="encText">{{item[0]}}</p>
+                        <div [hidden]="notChecked" class="encoding">
+                                <div class="encRow" *ngFor="let item of tempColNumList; let i = index">
+                                    <div style="clear: both;">
+                                        <div class="dropdown1Text"> 
+                                            <p class="encText">{{item[0]}}</p>
+                                        </div>
+                                        <select class="dropdown1" name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
+                                            <option class='option' *ngIf="item[1]" value="None|{{item[0]}}" [selected]="item[2][0]">None</option>
+                                            <option class='option' *ngFor="let item1 of encodingList; let j = index" value={{item1}}|{{item[0]}} [selected]="item[2][j+1]">{{item1}}</option>
+                                        </select>
                                     </div>
-                                    <select class="dropdown1" name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
-                                        <option class='option' value="none|{{item[0]}}" *ngIf="item[1]" selected="item[1]">None</option>
-                                        <option class='option' value="label|{{item[0]}}">Label</option>
-                                        <option class='option' value="one-hot|{{item[0]}}">One-Hot</option>
-                                        <option class='option' value="binary|{{item[0]}}">Binary</option>
-                                        <option class='option' value="frequency|{{item[0]}}">Frequency</option>
-                                    </select>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </section>
 
                 <input type="radio" name="tab" id="tab-3">

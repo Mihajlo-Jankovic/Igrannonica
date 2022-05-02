@@ -135,14 +135,14 @@ export class TablesComponent {
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
 
-  //dodat deo koda
+  //*
   notChecked: boolean = false;
   listCheckedITemp: any = [];
-  nizTemp: any = [];
-  nizTempBoolean: any = [];
+  tempColNumList: any = [];
   enc: any = [];
+  encodingList = ["Label", "One-Hot", "Binary", "Frequency"];
   //*
-
+  
   constructor(private tableService: TableService, private cookie : CookieService) {
     sessionStorage.removeItem('statistics');
     this.showTable(this.selectedType, this.selectedRow, this.page)
@@ -238,81 +238,91 @@ export class TablesComponent {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedCol);
     }
-    
-    //setovanje I/O
-    for (let i = 0; i < this.data['columns'].length-1; i++) {
+    //*
+    this.setInputOutput();
+    //*
+  }
+
+  setInputOutput() {
+    for (let i = 0; i < this.headingLines[0].length-1; i++) {
       this.radios1[i] = false;
       this.checks1[i] = true;
-      this.listCheckedI.push(this.data['columns'][i]);
-
-      //dodat deo koda
+      this.listCheckedI.push(this.headingLines[0][i])
+      
+      //*
       let temp: any = [];
-      temp.push(i);
-      temp.push(this.data['columns'][i]);
+      let flag: any = 0;
+      temp.push(i); //id kolone
+      temp.push(this.headingLines[0][i]); //naziv kolone
       temp.push(true); //da li je izabrana (u pocetku su sve osim poslednje izabrane)
-      temp.push(this.isNumericFun(this.data['columns'][i]));
+      temp.push(this.isNumericFun(this.headingLines[0][i])); //da li je numericka
+      //default-ni encoding
+      for(let j = 0; j < this.numericValues['col'].length; j++) {
+        if(this.numericValues['col'][j] == this.headingLines[0][i]) {
+          temp.push("None");
+          flag = 1;
+        }
+      }
+      if(flag == 0)
+        temp.push(this.encodingList[0]);
       this.listCheckedITemp.push(temp);
       //*
     }
 
-    //dodat deo koda
-    let temp: any = [];
-    temp.push( this.data['columns'].length-1);
-    temp.push(this.data['columns'][this.data['columns'].length-1]);
-    temp.push(false); //poslednja kolona nije izabrana
-    temp.push(this.isNumericFun(this.data['columns'][this.data['columns'].length-1]));
-    this.listCheckedITemp.push(temp);
-    //*
-
-    this.checks[this.data['columns'].length-1] = true;
-    this.checks1[this.data['columns'].length-1] = false;
-    this.listCheckedI.splice(this.data['columns'].length-1, 1);
+    this.checks[this.headingLines[0].length-1] = true;
+    this.checks1[this.headingLines[0].length-1] = false;
+    this.listCheckedI.splice(this.headingLines[0].length-1, 1);
     sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
 
-    this.radios[this.data['columns'].length-1] = false;
-    this.radios1[this.data['columns'].length-1] = true;
-    this.selectedOutput = this.data['columns'][this.data['columns'].length-1];
+    this.radios[this.headingLines[0].length-1] = false;
+    this.radios1[this.headingLines[0].length-1] = true;
+    this.selectedOutput = this.headingLines[0][this.headingLines[0].length-1];
     sessionStorage.setItem('output', this.selectedOutput);
     this.pret = this.headingLines[0].length-2;
 
-    //dodat deo koda
-    this.nizTemp = [];
-    this.nizTempBoolean = [];
+    //*
+    let temp: any = [];
+    let flag: any = 0;
+    temp.push(this.headingLines[0].length-1);
+    temp.push(this.headingLines[0][this.headingLines[0].length-1]);
+    temp.push(false); //poslednja kolona nije izabrana
+    temp.push(this.isNumericFun(this.headingLines[0][this.headingLines[0].length-1]));
+    for(let j = 0; j < this.numericValues['col'].length; j++) {
+      if(this.numericValues['col'][j] == this.headingLines[0][this.headingLines[0].length-1]) {
+        temp.push("None");
+        flag = 1;
+      }
+    }
+    if(flag == 0)
+      temp.push(this.encodingList[0]);
+    this.listCheckedITemp.push(temp);
+
+    this.tempColNumList = [];
     for(let i = 0; i < this.listCheckedITemp.length; i++) {
-      if(this.listCheckedITemp[i][2] == true) {
-        this.nizTemp.push(this.listCheckedITemp[i][1]);
+      if(this.listCheckedITemp[i][2] == true) { //ako je izabrana
+        let temp = [];
+        temp.push(this.listCheckedITemp[i][1]);
+        temp.push(this.listCheckedITemp[i][3]);
 
         let t = [];
-        t.push(this.listCheckedITemp[i][1]);
-        t.push(this.listCheckedITemp[i][3]);
-        this.nizTempBoolean.push(t);
+        t = this.getSelectedEnc(this.listCheckedITemp[i][3], this.listCheckedITemp[i][4]);
+        temp.push(t);
+        this.tempColNumList.push(temp);
       }
     }
-    sessionStorage.setItem('tempInput', JSON.stringify(this.nizTemp));
-    //console.log(this.listCheckedITemp);
-    //console.log(this.nizTempBoolean);
-    //console.log(this.nizTemp);
-/*
-    for(let i = 0; i < this.nizTempBoolean.length; i++) {
-      if(this.nizTempBoolean[i][1] == true) {
-        this.enc[i] = "none";
-      }
-      else {
-        this.enc[i] = "label";
-      }
+
+    for(let i = 0; i < this.listCheckedITemp.length; i++) {
+      if(this.listCheckedITemp[i][2] == true)
+        this.enc.push(this.listCheckedITemp[i][4]);
     }
-    sessionStorage.setItem('encoding', JSON.stringify(this.enc));
-*/
+    sessionStorage.setItem('encoding1', JSON.stringify(this.enc));
     //*
-    
   }
 
-  //dodat deo koda
-  isNumericFun(s: any) {
-    let k: number = 0;
-
-    for(let j = 0; j < this.numericValues['col'].length; j++) {
-      if(this.numericValues['col'][j] == s) {
+  //*
+  isNumericFun(colName: any) {
+    for(let i = 0; i < this.numericValues['col'].length; i++) {
+      if(this.numericValues['col'][i] == colName) {
         return true;
       }
     }
@@ -622,27 +632,27 @@ export class TablesComponent {
       }
     }
 
-    //dodat deo koda
-    this.nizTemp = [];
-    this.nizTempBoolean = [];
-    //this.listCheckedITemp = [];
+    //*
+    this.listCheckedI = [];
+    this.tempColNumList = [];
     //*
 
     if(exists == true) {
-      this.listCheckedI.splice(index, 1);
-
-      //dodat deo koda
+      //*
       for(let i = 0; i < this.listCheckedITemp.length; i++) {
         if(this.listCheckedITemp[i][1] == value) {
           this.listCheckedITemp[i][2] = false;
+          
+          if(this.listCheckedITemp[i][3] == true)
+            this.listCheckedITemp[i][4] = "None";
+          else
+            this.listCheckedITemp[i][4] = this.encodingList[0];
         }
       }
       //*
     }
     else {
-      this.listCheckedI.push(value);
-
-      //dodat deo koda
+      //*
       for(let i = 0; i < this.listCheckedITemp.length; i++) {
         if(this.listCheckedITemp[i][1] == value) {
           this.listCheckedITemp[i][2] = true;
@@ -651,31 +661,37 @@ export class TablesComponent {
       //*
     }
 
-    //dodat deo koda
+    //*
+    let temp = [];
     for(let i = 0; i < this.listCheckedITemp.length; i++) {
       if(this.listCheckedITemp[i][2] == true) {
-        this.nizTemp.push(this.listCheckedITemp[i][1]);
-
+        this.listCheckedI.push(this.listCheckedITemp[i][1]);
         let t = [];
         t.push(this.listCheckedITemp[i][1]);
         t.push(this.listCheckedITemp[i][3]);
-        this.nizTempBoolean.push(t); 
+        t.push(this.getSelectedEnc(this.listCheckedITemp[i][3], this.listCheckedITemp[i][4]));
+        this.tempColNumList.push(t);
       }
     }
-
-    //console.log(this.nizTempBoolean);
-    //console.log(this.listCheckedITemp);
 
     if(this.listCheckedI.length == 0)
       this.notChecked = true;
     else
       this.notChecked = false;
+
+    this.enc = [];
+    for(let i = 0; i < this.listCheckedITemp.length; i++) {
+      if(this.listCheckedITemp[i][2] == true)
+        this.enc.push(this.listCheckedITemp[i][4]);
+    }
     
-
+    sessionStorage.setItem('encoding1', JSON.stringify(this.enc));
     sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
-    sessionStorage.setItem('tempInput', JSON.stringify(this.nizTemp));
-
     //*
+  }
+
+  resetEncoding() {
+
   }
   
   selectedOutputFun(event: any) {
@@ -691,7 +707,6 @@ export class TablesComponent {
     console.log(this.pret);
     this.selectedOutput = value;
     sessionStorage.setItem('output', this.selectedOutput);
-    //console.log(this.selectedOutput);
   }
 
   disableOutput(id : number) {
@@ -710,25 +725,52 @@ export class TablesComponent {
     id = id + (this.page - 1)*this.selectedRow
     this.selectedRows.push(id);
   }
-
+  
   onSelectedEnc(event : any)
   {
-    /*
     const value = event.target.value;
     var splitted = value.split("|", 2);
     let selectedEncoding = splitted[0];
     let selectedcol = splitted[1];
 
-    for(let i = 0; i < this.nizTemp.length; i++) {
-      if(this.nizTemp[i] == selectedcol) {
-        this.enc[i] = selectedEncoding;
+    for(let i = 0; i < this.listCheckedITemp.length; i++) {
+      if(this.listCheckedITemp[i][1] == selectedcol) {
+        this.listCheckedITemp[i][4] = selectedEncoding;
       }
     }
-    sessionStorage.setItem('encoding', JSON.stringify(this.enc));
-    //console.log(this.enc);
-    */
-  }
 
+    this.enc = [];
+    for(let i = 0; i < this.listCheckedITemp.length; i++) {
+      if(this.listCheckedITemp[i][2] == true)
+        this.enc.push(this.listCheckedITemp[i][4]);
+    }
+    sessionStorage.setItem('encoding1', JSON.stringify(this.enc));
+  }
+  //*
+  getSelectedEnc(isNum: any, encName: any) {
+    let temp = [];
+    if(encName == "None")
+      temp.push(true, false, false, false, false);
+    else if(encName == this.encodingList[0] && isNum == true)
+      temp.push(false, true, false, false, false);
+    else if(encName == this.encodingList[0] && isNum == false)
+      temp.push(true, false, false, false);
+    else if(encName == this.encodingList[1] && isNum == true)
+      temp.push(false, false, true, false, false);
+    else if(encName == this.encodingList[1] && isNum == false)
+      temp.push(false, true, false, false);
+    else if(encName == this.encodingList[2] && isNum == true)
+      temp.push(false, false, false, true, false);
+    else if(encName == this.encodingList[2] && isNum == false)
+      temp.push(false, false, true, false);
+    else if(encName == this.encodingList[3] && isNum == true)
+      temp.push(false, false, false, false, true);
+    else if(encName == this.encodingList[3] && isNum == false)
+      temp.push(false, false, false, true);
+
+    return temp;
+  }
+  //*
   async deleteRows()
   {
       await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
