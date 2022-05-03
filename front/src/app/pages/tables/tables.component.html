@@ -186,7 +186,29 @@
                 <label for="tab-3">Missing values & outliers</label>
                 <section>
                     <div class="tab-content">
-                        <p>tab three<br>with<br>content<br>over<br>more<br>lines</p>
+                        <div class="divMissingValues">
+                            <h4>Missing values</h4>
+                            <div class="encRow" *ngFor="let item of tempColNumList; let i = index">
+                                <div style="clear: both;">
+                                    <div class="dropdown2Text"> 
+                                        <p class="encText">{{item[0]}}</p>
+                                    </div>
+                                    <select class="dropdown2">
+                                        <option class='option'>None</option>
+                                    </select>
+                                    <div class="orDiv">
+                                        <p class="or">OR</p>
+                                    </div>
+                                    <div>
+                                        <input type="text" class="inputMissingValue">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton">CONFIRM</button>
+                        </div>
+                        <div class="divOutliers">
+                            <h4>Outliers</h4>
+                        </div>
                     </div>
                 </section>
             </div>

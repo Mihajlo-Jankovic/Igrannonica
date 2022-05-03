@@ -473,7 +473,7 @@ body.cm-modal-open {
     padding: 1rem;
 }
 
-$breakpoint: 512px;
+$breakpoint: 569px;
 $tabs-base-color: #27293d;
 // #####################################
 // CSS definition for functionality
@@ -686,10 +686,8 @@ $tabs-base-color: #27293d;
     margin-right: 20px;
     margin-top: 8px;
     height: 30px;
-    //width: 20%;
     position: relative;
     bottom: 0;
-    //width: 100%;
     cursor: pointer;
     float: left;
 }
@@ -707,7 +705,6 @@ $tabs-base-color: #27293d;
     margin-right: 20px;
     margin-top: 8px;
     height: 30px;
-    //width: 25%;
     width: 55%;
     position: relative;
     bottom: 0;
@@ -753,3 +750,195 @@ $tabs-base-color: #27293d;
     }
 }
 
+.dropdown2Text {
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-right: 20px;
+    margin-top: 8px;
+    height: 30px;
+    width: 50%;
+    position: relative;
+    bottom: 0;
+    cursor: pointer;
+    float: left;
+}
+
+.dropdown2 {
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-right: 20px;
+    margin-top: 8px;
+    height: 30px;
+    position: relative;
+    bottom: 0;
+    cursor: pointer;
+    float: left;
+}
+
+.dropdown2:focus {
+    border-color: #7d3c8b;
+}
+
+.inputMissingValue {
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-top: 8px;
+    max-width: 25%;
+    height: 30px;
+    position: relative;
+    bottom: 0;
+    cursor: pointer;
+    float: left;
+}
+
+.confirmButton {
+    background-color: #27293d;
+    width: 125px;
+    height: auto;
+    padding: 5px;
+    float: right;
+    border: 1px solid #7d3c8b;
+    border-radius: 5px;
+    color: #ffff;
+    margin-bottom: 0px !important;
+    margin-top: 8px;
+    margin-right: 5px;
+}
+
+.orDiv {
+    //width: 5%;
+    float: left;
+    height: auto;
+    margin-bottom: 0px !important;
+    margin-top: 8px;
+    margin-right: 20px;
+}
+.or {
+    margin: auto;
+    margin-top: 5px;
+}
+
+.divMissingValues,
+.divOutliers {
+    width: 50%;
+    border: 1px solid #7d3c8b;
+    padding: 5px;
+    border-radius: 5px;
+    color: #ced4da;
+    float: left;
+    margin-bottom: 1rem;
+}
+
+@media(max-width: 1877px) {
+    .inputMissingValue {
+        max-width: 20%;
+    }
+}
+
+@media(max-width: 1629px) {
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 50%;
+    }
+    .inputMissingValue {
+        max-width: 15%;
+    }
+}
+
+@media(max-width: 1509px) {
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 45%;
+    }
+}
+
+@media(max-width: 1319px) {
+    .dropdown2Text,.dropdown2, .orDiv {
+        margin-right: 10px;
+    }
+}
+
+@media(max-width: 1112px) {
+    .dropdown2Text,.dropdown2, .orDiv {
+        margin-right: 5px;
+    }
+}
+
+@media(max-width: 1011px) {
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 40%;
+    }
+}
+
+@media(max-width: 991px) {
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 45%;
+    }
+    .dropdown2Text, .dropdown2, .orDiv {
+        margin-right: 10px;
+    }
+}
+
+@media(max-width: 869px) {
+    .divMissingValues, .divOutliers {
+        width: 100%;
+    }
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 50%;
+    }
+    .dropdown2Text, .dropdown2, .orDiv {
+        margin-right: 20px;
+    }
+}
+
+@media(max-width: 729px) {
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 50%;
+    }
+}
+
+@media(max-width: 615px) {
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 45%;
+    }
+    .dropdown2Text, .dropdown2, .orDiv {
+        margin-right: 10px;
+    }
+}
+
+@media(max-width: 484px) {
+
+    .dropdown2Text, .dropdown2, .orDiv {
+        margin-right: 5px;
+    }
+}
+
+@media(max-width: 426px) {
+    .dropdown2Text {
+        overflow: none;
+        height: auto;
+        max-width: 38%;
+    }
+}
