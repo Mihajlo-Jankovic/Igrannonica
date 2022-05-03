@@ -78,7 +78,7 @@ namespace Igrannonica.Controllers
             if (file == null) 
                 return BadRequest(new
                 {
-                    responseMessage = "Error: No file found with that name!"
+                    responseMessage = _configuration.GetSection("ResponseMessages:BadFileName").Value
                 });
             HttpClient client = new HttpClient();
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
@@ -103,7 +103,7 @@ namespace Igrannonica.Controllers
                 if (user == null)
                     return BadRequest(new
                     {
-                        responseMessage = "Error: No user found with that name!"
+                        responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value
                     });
 
                 List < Models.File > tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id || u.IsPublic == true).ToList();
@@ -155,7 +155,7 @@ namespace Igrannonica.Controllers
             if (user == null) 
                 return BadRequest(new
                 {
-                    responseMessage = "Error: No user found with that name!"
+                    responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value
                 });
 
             Models.File file = _mySqlContext.File.Where(f => f.Id == request.Id).FirstOrDefault();
@@ -163,7 +163,7 @@ namespace Igrannonica.Controllers
             if (file.UserForeignKey != user.id)
                 return BadRequest(new
                 {
-                    responseMessage = "Error: The file you are trying to change doesn't belong to you!"
+                    responseMessage = _configuration.GetSection("ResponseMessages:WrongFileAccess").Value
                 });
 
             file.IsPublic = request.IsVisible;
@@ -171,7 +171,7 @@ namespace Igrannonica.Controllers
             _mySqlContext.File.Update(file);
             await _mySqlContext.SaveChangesAsync();
 
-            return Ok(new { responseMessage = "Success!" });
+            return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
 
     }

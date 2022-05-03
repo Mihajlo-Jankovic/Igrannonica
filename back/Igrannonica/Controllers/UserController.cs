@@ -86,12 +86,12 @@ namespace Igrannonica.Controllers
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
             {
-                return BadRequest(new { responseMessage = "Error: Username already exists!" });
+                return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameTaken").Value });
             }
             user = _context.User.Where(u => u.email == request.email).FirstOrDefault();
             if(user != null)
             {
-                return BadRequest(new { responseMessage = "Error: Email is taken!" });
+                return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:MailTaken").Value });
             }
 
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -109,7 +109,7 @@ namespace Igrannonica.Controllers
 
             
 
-            return Ok(new { responseMessage = "Successful registration!" });
+            return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
 
         [HttpPost("EditUserName"), Authorize]
@@ -118,16 +118,16 @@ namespace Igrannonica.Controllers
             var usernameOriginal = _userService.GetUsername();
             User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
             if(userOriginal == null)
-                return NotFound(new { responseMessage = "Error: Username not found!" });
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
             if (!VerifyPasswordHash(request.password, userOriginal.passwordHash, userOriginal.passwordSalt))
-                return BadRequest(new { responseMessage = "Error: Wrong password!" });
+                return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:WrongPassword").Value });
             userOriginal.firstname = request.firstname;
             userOriginal.lastname = request.lastname;
 
             _context.User.Update(userOriginal);
             await _context.SaveChangesAsync();
 
-            return Ok(new { responseMessage = "Success" });
+            return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
 
         [HttpPost("EditUserPassword"), Authorize]
@@ -136,9 +136,9 @@ namespace Igrannonica.Controllers
             var usernameOriginal = _userService.GetUsername();
             User userOriginal = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
             if (userOriginal == null)
-                return NotFound(new { responseMessage = "Error: Username not found!" });
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
             if (!VerifyPasswordHash(request.oldPassword, userOriginal.passwordHash, userOriginal.passwordSalt))
-                return BadRequest(new { responseMessage = "Error: Wrong password!" });
+                return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:WrongPassword").Value });
             CreatePasswordHash(request.newPassword, out byte[] newPasswordHash, out byte[] newPasswordSalt);
             userOriginal.passwordHash = newPasswordHash;
             userOriginal.passwordSalt = newPasswordSalt;
@@ -146,7 +146,7 @@ namespace Igrannonica.Controllers
             _context.User.Update(userOriginal);
             await _context.SaveChangesAsync();
 
-            return Ok(new { responseMessage = "Success" });
+            return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
 
         [HttpGet("GetNameSurnameEmail"), Authorize]
@@ -156,7 +156,7 @@ namespace Igrannonica.Controllers
             User user = _context.User.Where(u => u.username == userName).FirstOrDefault(); 
             if (user == null)
             {
-                return NotFound(new { responseMessage = "Error: Username not found!" });
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
             }
 
 
@@ -178,11 +178,11 @@ namespace Igrannonica.Controllers
             User user =  _context.User.Where(u => u.username == loginDTO.username).FirstOrDefault();
             if (user == null)
             {
-                return NotFound(new { responseMessage = "Error: Username not found!" });
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
             }
             if (!VerifyPasswordHash(loginDTO.password, user.passwordHash, user.passwordSalt))
             {
-                return BadRequest(new { responseMessage = "Error: Wrong password!" });
+                return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:WrongPassword").Value });
             }
             token.token = CreateToken(user);
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token.token);
@@ -196,13 +196,13 @@ namespace Igrannonica.Controllers
             var claims = ValidateToken(jwtString);
             if(claims == null)
             {
-                return Ok(new { token = "Token not valid" });
+                return Ok(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
             }
             var username = claims.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value;
             User user = _context.User.Where(u => u.username == username).FirstOrDefault();
             if (user == null)
             {
-                return Ok(new { token = "Token not valid" });
+                return Ok(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
             }
             return Ok(new { token = CreateToken(user) });
         }
@@ -375,7 +375,7 @@ namespace Igrannonica.Controllers
             User user = _context.User.Where(u => u.username == username).FirstOrDefault();
 
             if (user == null)
-                return NotFound(new { responseMessage = "Error: Username not found!" });
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
 
             experiment.userId = user.id;
 
@@ -396,7 +396,7 @@ namespace Igrannonica.Controllers
             User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
 
             if (user == null)
-                return NotFound(new { responseMessage = "Error: Username not found!" });
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
 
             var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
@@ -420,7 +420,7 @@ namespace Igrannonica.Controllers
             User user = _context.User.Where(u => u.username == username).FirstOrDefault();
 
             if (user == null)
-                return NotFound(new { responseMessage = "Error: Username not found!" });
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
 
             var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
