@@ -43,7 +43,8 @@ export class LoginLayoutComponent implements OnInit {
       this.loginService.login(form.value.username, form.value.password).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        if (StringToken == "User not found"){
+        console.log(StringToken);
+        if (StringToken == "Error: Username not found!"){
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong username</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
@@ -52,7 +53,7 @@ export class LoginLayoutComponent implements OnInit {
             positionClass: 'toast-top-center'
           });
         }
-        else if (StringToken == "Wrong password"){
+        else if (StringToken == "Error: Wrong password!"){
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
             disableTimeOut: false,
             closeButton: true,

@@ -41,7 +41,7 @@ export class RegistrationLayoutComponent implements OnInit {
         .subscribe(token => {
           let JSONtoken: string = JSON.stringify(token);
           let StringToken = JSON.parse(JSONtoken).token;
-          if (StringToken == "Email is taken!") {
+          if (StringToken == "Error: Email is taken!") {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
               disableTimeOut: false,
               closeButton: true,
@@ -50,7 +50,7 @@ export class RegistrationLayoutComponent implements OnInit {
               positionClass: 'toast-top-center'
             });
           }
-          else if (StringToken == "Username already exists!") {
+          else if (StringToken == "Error: Username already exists!") {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
               disableTimeOut: false,
               closeButton: true,
