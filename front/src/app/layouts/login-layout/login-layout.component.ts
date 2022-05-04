@@ -62,7 +62,7 @@ export class LoginLayoutComponent implements OnInit {
             positionClass: 'toast-top-center'
           });
         }
-        else {
+        else if (StringToken == "Success") {
           this.save(form.value.username,form.value.password);
           this.cookie.set("token", StringToken);
           this.cookie.set("username",form.value.username);
@@ -75,7 +75,25 @@ export class LoginLayoutComponent implements OnInit {
           });
           this.router.navigate(['upload']);
         }
+        else{
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
       })
+    }
+    else {
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please enter all fields</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
     }
   }
 }

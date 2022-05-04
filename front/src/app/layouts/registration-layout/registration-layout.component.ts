@@ -41,7 +41,8 @@ export class RegistrationLayoutComponent implements OnInit {
         .subscribe(token => {
           let JSONtoken: string = JSON.stringify(token);
           let StringToken = JSON.parse(JSONtoken).token;
-          if (StringToken == "Error: Email is taken!") {
+          console.log(token);
+          if (token == "responseMessage: 'Error: Email is taken!'") {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
               disableTimeOut: false,
               closeButton: true,
@@ -50,7 +51,7 @@ export class RegistrationLayoutComponent implements OnInit {
               positionClass: 'toast-top-center'
             });
           }
-          else if (StringToken == "Error: Username already exists!") {
+          else if (token == "Error: Username already exists!") {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
               disableTimeOut: false,
               closeButton: true,
@@ -59,9 +60,18 @@ export class RegistrationLayoutComponent implements OnInit {
               positionClass: 'toast-top-center'
             });
           }
-          else if (StringToken == "Success" && form.value.password == form.value.confirmPassword) {
+          else if (token == "Success" && form.value.password == form.value.confirmPassword) {
             this.router.navigate(['/login']);
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Congratulations, your account has been successfully created </b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+          else{
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
               disableTimeOut: false,
               closeButton: true,
               enableHtml: true,
