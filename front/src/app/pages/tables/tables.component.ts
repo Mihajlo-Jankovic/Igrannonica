@@ -123,6 +123,14 @@ export class TablesComponent {
   numArray: any= []; //niz za kor matricu
   outliers : any = [];
 
+  arr: any = [];
+  arrMin: any = [];
+  arrQ1: any = [];
+  arrMean: any = [];
+  arrMedian: any = [];
+  arrQ3: any = [];
+  arrMax: any = [];
+
   hideStatistics: boolean = false;
   hideBoxplot: boolean = false;
   hideMatrix: boolean = false;
@@ -298,12 +306,30 @@ export class TablesComponent {
     }
   }
 
+
   colListData: any=[];
   public loadStatistics(col:number)
   {
     this.colListData=[];
     for (let i = 0; i < this.statistic['colList'].length; i++) {
       this.colListData.push(this.statistic['colList'][i]);
+    }
+
+    this.arr = [];
+    this.arrMin = [];
+    this.arrQ1 = [];
+    this.arrMean = [];
+    this.arrMedian = [];
+    this.arrQ3 = [];
+    this.arrMax = [];
+    for (let i = 0; i < this.statistic['jsonList'].length; i++) {
+      this.arr.push(this.statistic['jsonList'][i]);
+      this.arrMin.push(this.arr[i]['min']);
+      this.arrQ1.push(this.arr[i]['firstQ']);
+      this.arrMean.push(this.arr[i]['avg']);
+      this.arrMedian.push(this.arr[i]['med']);
+      this.arrQ3.push(this.arr[i]['thirdQ']);
+      this.arrMax.push(this.arr[i]['max']);
     }
 
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
@@ -634,17 +660,22 @@ export class TablesComponent {
     this.opndMatrix = false;
   }
 
+  hideS: boolean = false;
+  hideM: boolean = false;
+
   expandStats() {
     var stats = document.getElementsByClassName('statistics')[0];
     if(this.statsButton == "Full Statistics") {
       this.hideBoxplot = true;
       this.hideMatrix = true;
+      this.hideS = true;
       stats.classList.add('col-lg-12');
       this.statsButton = "Close Statistics"
     }
     else {
       this.hideBoxplot = false;
       this.hideMatrix = false;
+      this.hideS = false;
       stats.classList.remove('col-lg-12');
       this.statsButton = "Full Statistics"
     }
@@ -656,12 +687,14 @@ export class TablesComponent {
     if(this.matrixButton == "View Full Matrix") {
       this.hideBoxplot = true;
       this.hideStatistics = true;
+      this.hideM = true;
       matrix.classList.add('col-lg-12');
       this.matrixButton = "Close Matrix"
     }
     else {
       this.hideBoxplot = false;
       this.hideStatistics = false;
+      this.hideM = false;
       matrix.classList.remove('col-lg-12');
       this.matrixButton = "View Full Matrix"
     }
