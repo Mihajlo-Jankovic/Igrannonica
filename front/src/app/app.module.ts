@@ -18,6 +18,7 @@ import { ComponentsModule } from "./components/components.module";
 import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
 import { LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { NgApexchartsModule } from "ng-apexcharts";
+import { ExperimentsComponent } from './pages/experiments/experiments.component';
 
 @NgModule({
   imports: [
@@ -40,7 +41,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
     AdminLayoutComponent, 
     LoginLayoutComponent,
     RegistrationLayoutComponent, 
-    UserComponent
+    UserComponent, ExperimentsComponent
   ],
   providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   bootstrap: [AppComponent]

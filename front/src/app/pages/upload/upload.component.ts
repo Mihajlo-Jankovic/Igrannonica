@@ -166,6 +166,7 @@ export class UploadComponent implements OnInit {
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
+          this.cookie.set('realName', file.name);
           this.router.navigate(['/tables']);
           console.log(StringName);
         })
@@ -175,6 +176,7 @@ export class UploadComponent implements OnInit {
           let JSONname: string = JSON.stringify(name);
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
+          this.cookie.set('realName', file.name);
           this.router.navigate(['/tables']);
         })
       }

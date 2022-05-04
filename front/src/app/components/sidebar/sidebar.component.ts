@@ -34,6 +34,12 @@ export const ROUTES: RouteInfo[] = [
     title: "Model Training",
     icon: "icon-chart-pie-36",
     class: ""
+  },
+  {
+    path: "/experiments",
+    title: "Experiments",
+    icon: "icon-single-copy-04",
+    class: ""
   }
 ];
 @Component({

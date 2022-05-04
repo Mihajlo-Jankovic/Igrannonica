@@ -313,6 +313,7 @@
                     </div>
                     <div class="expContainer">
                         <input type="text" class="experimentName" ngbTooltip="Write experiment name" [(ngModel)]="experimentName">
+                        <input type="text" class="experimentName" ngbTooltip="Enter description of your experiment" [(ngModel)]="description">
                     </div>
                     <div class="expContainer">
                         <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveExperiment()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>
