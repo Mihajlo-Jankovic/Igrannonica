@@ -1,7 +1,10 @@
 @use "sass:math";
-
 .row {
     margin-right: 0px;
+}
+
+.table {
+    margin: 0px;
 }
 
 .table-td-input {
@@ -528,9 +531,6 @@ $tabs-base-color: #27293d;
         @media (min-width: $breakpoint) {
             margin-left: 0px;
         }
-        &:not(:first-of-type) {
-            //border-top: 1px solid #ddd;
-        }
     }
     >section {
         background-color: $tabs-base-color;
@@ -579,9 +579,6 @@ $tabs-base-color: #27293d;
             display: inline-block;
             padding: 10px 10px;
         }
-        &:not(:first-of-type) {
-            //border-top: 1px solid #ddd;
-        }
         &::after {
             content: '';
             position: absolute;
@@ -626,9 +623,6 @@ $tabs-base-color: #27293d;
     .headerRight {
         width: 100%;
     }
-    .dropdown {
-        //width: 46%;
-    }
     .buttons {
         float: left;
     }
@@ -659,30 +653,31 @@ $tabs-base-color: #27293d;
     }
 }
 
-.s {
-    height: 390px;
+.card-height {
+    height: 410px;
 }
 
 .f {
     position: sticky;
-    top: 0; 
-    z-index: 20000; 
+    top: 0;
+    z-index: 20000;
     background-color: #27293d;
 }
 
 .stat {
-    height: 312px;
+    height: 332px;
 }
+
 
 /*
 @media(max-width: 1145px) {
-   .s {
-       min-height: 390px;
-       max-height: 390px;
-   }
-   .stat{
-       max-height: 312px;
-   }
+    .s {
+        min-height: 390px;
+        max-height: 390px;
+    }
+    .stat{
+        max-height: 312px;
+    }
 }
 
 /*

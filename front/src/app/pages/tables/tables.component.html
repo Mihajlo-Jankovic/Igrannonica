@@ -1,7 +1,7 @@
 <div class=" content">
     <div class=" row">
         <div class="statistics col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideStatistics">
-            <div class=" card s">
+            <div class=" card card-height">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
                         <h3 class=" card-category" style="color: white; float:left;">Column Statistics</h3>
@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive stat" [hidden]="!hideS" id="table">
+                    <div class=" table-responsive" [hidden]="!hideS" id="table">
                         <table class=" table">
                             <thead>
                                 <tr>
@@ -79,7 +79,7 @@
             </div>
         </div>
         <div class="boxblot col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideBoxplot">
-            <div class=" card card-chart s">
+            <div class=" card card-chart card-height">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
                         <h3 class=" card-category" style="color: white; float: left;">Boxplot</h3>
@@ -97,7 +97,7 @@
             </div>
         </div>
         <div class="matrix col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideMatrix">
-            <div class=" card s">
+            <div class=" card card-height">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix(); previewMatrix();">{{matrixButton}}</button>
@@ -203,7 +203,7 @@
                     <div class="headerLeft" style="padding-top: 8px;">
                         <div class="dropdownContainer">
                             <h6>Filter rows</h6>
-                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event)' placeholder="Data Type" ngbTooltip="Data type">
+                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event, true)' placeholder="Data Type" ngbTooltip="Data type">
                                 <option class='option' value="all">All</option>
                                 <option class='option' value="null">Null</option>
                                 <option class='option' value="not null">Not Null</option>
@@ -211,7 +211,7 @@
                         </div>
                         <div class="dropdownContainer">
                             <h6>Rows per page</h6>
-                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event)' placeholder="Rows" ngbTooltip="Number of rows per page">
+                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event, true)' placeholder="Rows" ngbTooltip="Number of rows per page">
                                 <option class='option' value="10">10</option>
                                 <option class='option' value="20">20</option>
                                 <option class='option' value="50">50</option>

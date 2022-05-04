@@ -23,7 +23,7 @@ h1 {
     margin: 0px;
     padding: 1.5rem 0px 0px 0px;
     font-size: 2.5rem;
-    margin-left:auto;
+    margin-left: auto;
 }
 
 .img-igrannonica {
@@ -38,7 +38,7 @@ h1 {
 .header-content {
     height: 106px;
     width: 652px;
-    padding:0px;
+    padding: 0px;
     margin: auto;
 }
 
@@ -47,11 +47,11 @@ h1 {
     height: 70px;
     margin: auto;
     h4 {
-        float:left;
+        float: left;
         padding: 1rem 0.5rem 0rem 0rem;
     }
     .img-cortex {
-        float:left;
+        float: left;
         width: 70px;
     }
 }
@@ -59,12 +59,6 @@ h1 {
 .body-content {
     margin: auto;
     width: 652px;
-
-    button {
-        margin: 0px;
-        padding: 0.5rem 0rem 0.5rem 0rem;
-        width: 250px;
-    }
 }
 
 .summary {
@@ -79,25 +73,42 @@ h1 {
     right: 50px;
 }
 
+.exp-btn {
+    background: transparent;
+    border: 3px solid #7d3c8b;
+    border-radius: 5px;
+    padding: 1rem 2rem 1rem 2rem;
+    margin: 0px;
+    width: 280px;
+    margin-bottom: 1rem;
+    color: #c6c6c9;
+    font-weight: bold;
+}
+
+.exp-btn:hover {
+    border-color: white;
+    color: white;
+}
+
 @media(max-width: 769px) {
     .img-cortex-small {
         right: 35px;
     }
 }
 
-@media(max-width: 725px){
+@media(max-width: 725px) {
     .header-content {
         width: 100%;
         height: auto;
         text-align: center;
     }
     .img-igrannonica {
-        width:100%;
+        width: 100%;
         float: none;
     }
     h1 {
-        width:auto;
-        float:none;
+        width: auto;
+        float: none;
         padding: 0px;
     }
     .body-content {
@@ -105,7 +116,7 @@ h1 {
     }
 }
 
-@media(max-width: 590px) {
+@media(max-width: 645px) {
     .body-content {
         button {
             width: 48.5%;
@@ -120,7 +131,7 @@ h1 {
     }
 }
 
-@media(max-width: 465px) {
+@media(max-width: 575px) {
     .body-content {
         button {
             width: 100%;

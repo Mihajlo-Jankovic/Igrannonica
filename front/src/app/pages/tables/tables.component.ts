@@ -143,9 +143,11 @@ export class TablesComponent {
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
 
+  filter = 0;
+
   constructor(private tableService: TableService, private cookie : CookieService) {
     sessionStorage.removeItem('statistics');
-    this.showTable(this.selectedType, this.selectedRow, this.page)
+    this.showTable(this.selectedType, this.selectedRow, this.page, false)
     this.boxPlotFun();
   }
 
@@ -156,7 +158,7 @@ export class TablesComponent {
     sessionStorage.removeItem('numericValues');
   }
 
-  showTable(type : string, rows : number, page : number)
+  showTable(type : string, rows : number, page : number, filter : boolean)
   {
     if(sessionStorage.getItem('csv') != null)
     {
@@ -165,7 +167,7 @@ export class TablesComponent {
       this.data = dataCSV;
       this.maxPage=sessionStorage.getItem('numOfPages');
       this.numericValues = JSON.parse(sessionStorage.getItem('numericValues'));
-      this.loadTable();
+      this.loadTable(filter);
     }
     else{
       let filename = this.cookie.get('filename');
@@ -188,12 +190,12 @@ export class TablesComponent {
         console.log("numeric values " + this.numericValues)
 
         sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
-        this.loadTable();
+        this.loadTable(filter);
       })
     }
   }
 
-  public loadTable()
+  public loadTable(filter: boolean)
   {
     let headersArray: any = [];
     for (let i = 0; i < this.data['columns'].length; i++) {
@@ -234,7 +236,8 @@ export class TablesComponent {
     this.selectedCol = this.numericValuesArray[0][1];
     this.selectedColDiv = true;
 
-    if(this.numericValues['col'].length > 0) {
+
+    if(this.numericValues['col'].length > 0 && !filter) {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedCol);
     }
@@ -258,22 +261,22 @@ export class TablesComponent {
     this.pret = this.headingLines[0].length-2;
   }
 
-  public onSelectedType(event: any) {
+  public onSelectedType(event: any, filter: boolean) {
     this.page = 1;
     const value = event.target.value;
     this.selectedType = value;
     this.clearStorage();
     this.reset();
-    this.showTable(this.selectedType, this.selectedRow, this.page);
+    this.showTable(this.selectedType, this.selectedRow, this.page, filter);
   } 
 
-  public onSelectedRow(event: any) {
+  public onSelectedRow(event: any, filter: boolean) {
     this.page = 1;
     const value = event.target.value;
     this.selectedRow = value;
     this.clearStorage();
     this.reset();
-    this.showTable(this.selectedType, this.selectedRow, this.page);
+    this.showTable(this.selectedType, this.selectedRow, this.page, filter);
   }
 
   reset()
@@ -527,7 +530,7 @@ export class TablesComponent {
       this.page += i;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true);
     }
   }
 
@@ -536,7 +539,7 @@ export class TablesComponent {
       this.page -= i;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true);
     }
   }
 
@@ -545,7 +548,7 @@ export class TablesComponent {
       this.page = 1;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true);
     }
   }
 
@@ -554,7 +557,7 @@ export class TablesComponent {
       this.page = this.maxPage;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true);
     }
   }
 
@@ -627,7 +630,7 @@ export class TablesComponent {
         {
           this.clearStorage();
           this.reset();
-          this.showTable(this.selectedType, this.selectedRow, this.page);
+          this.showTable(this.selectedType, this.selectedRow, this.page, false);
           sessionStorage.removeItem('statistics');
           this.resetStatistic();
           this.showStatistics(this.selectedCol);
@@ -644,7 +647,7 @@ export class TablesComponent {
       this.clearStorage();
       sessionStorage.removeItem('statistics');
       this.reset()
-      this.showTable(this.selectedType, this.selectedRow, this.page);
+      this.showTable(this.selectedType, this.selectedRow, this.page, false);
       this.resetStatistic();
       this.showStatistics(this.selectedCol);
     })
