@@ -21,18 +21,22 @@ export class UploadComponent implements OnInit {
   token: string;
   listOfFilesAuthorized: any = [];
   listOfFilesUnauthorized: any = [];
-  selectedPrivacyType: string = "all";
+  selectedPrivacyType: string = "public";
   session: any;
   cookieCheck:any;
   publicFiles: any = [];
   publicFilesUnauthorized: any = [];
   allFiles: any = [];
   myFiles: any = [];
-
+  
   configuration = new Configuration();
 
-  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string}[];
-  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string}[];
+  pageNum: any = 1;
+  numOfPages: any = 0;
+  numPerPage: any = 8;
+
+  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string, dateCreated:Date}[];
+  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
 
   constructor(private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
    // this.username = this.getUsername();
@@ -42,9 +46,7 @@ export class UploadComponent implements OnInit {
 
   getUsername() {
     return this.cookie.get('username');
-    
   }
-
 
   onLogout() {
     this.cookie.deleteAll();
@@ -70,14 +72,21 @@ export class UploadComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.showDatasets(this.selectedPrivacyType, this.pageNum);
+  }
+  
+  showDatasets(privacyType: string, page: number) {
     this.loggedUser = this.loginService.isAuthenticated();
+    this.numOfPages = 0;
     if (this.cookieCheck) {
       this.refreshToken();
-      this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
-        this.FilesList = data;
-
+      this.listOfFilesAuthorized = this.filesService.filesAuthorized(privacyType, page, this.numPerPage, this.numOfPages).subscribe(data => {
+        this.FilesList = data['files'];
+        this.numOfPages = data['numOfPages'];
+        
         this.allFiles = [];
         this.myFiles = [];
+
         for (let i = 0; i < this.FilesList.length; i++) {
           if (this.FilesList[i]['username'] == this.getUsername()) {
             this.FilesList[i]['thisUser'] = this.getUsername();
@@ -95,13 +104,17 @@ export class UploadComponent implements OnInit {
             this.myFiles.push(this.FilesList[i]);
           }
         }
-        this.selectedPrivacyType = "all";
-        this.FilesList = this.allFiles;
+        if(this.selectedPrivacyType == "public")
+          this.FilesList = this.allFiles;
+        else if(this.selectedPrivacyType == "mydatasets")
+          this.FilesList = this.myFiles;
       })  
     }
     else {
-      this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {
-        this.FilesListUnauthorized = data;
+      this.listOfFilesUnauthorized = this.filesService.filesUnauthorized("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(data => {
+        this.FilesListUnauthorized = data['files'];
+        this.numOfPages = data['numOfPages'];
+
         for (let i = 0; i < this.FilesListUnauthorized.length; i++) {
           if (this.FilesListUnauthorized[i]['isPublic'])
             this.publicFilesUnauthorized.push(this.FilesListUnauthorized[i]);
@@ -113,39 +126,8 @@ export class UploadComponent implements OnInit {
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedPrivacyType = value;
-
-    if (this.selectedPrivacyType == "all")
-      this.FilesList = this.allFiles;
-    else if(this.selectedPrivacyType == "myFiles")
-      this.FilesList = this.myFiles;
-
-    this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
-      this.FilesList = data;
-      this.myFiles = [];
-      this.allFiles = [];
-      for (let i = 0; i < this.FilesList.length; i++) {
-        if (this.FilesList[i]['username'] == this.getUsername()) {
-          this.FilesList[i]['thisUser'] = this.getUsername();
-        }
-        if(this.FilesList[i]['isPublic'] == true) {
-          this.FilesList[i]['Public']="true";
-        }
-      } 
-
-      for (let i = 0; i < this.FilesList.length; i++) {
-        if(this.FilesList[i]['isPublic'] == true) 
-          this.allFiles.push(this.FilesList[i]);
-
-        if(this.FilesList[i]['username']== this.getUsername()) {
-          this.myFiles.push(this.FilesList[i]);
-        }
-      }
-
-      if (this.selectedPrivacyType == "all")
-        this.FilesList = this.allFiles;
-      else if(this.selectedPrivacyType == "myFiles")
-        this.FilesList = this.myFiles;
-      })  
+    this.pageNum = 1;
+    this.showDatasets(this.selectedPrivacyType, this.pageNum);
   }
 
   save(fileName: string) {
@@ -185,6 +167,7 @@ export class UploadComponent implements OnInit {
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
           this.router.navigate(['/tables']);
+          console.log(StringName);
         })
       }
       else{
@@ -200,12 +183,12 @@ export class UploadComponent implements OnInit {
   }
 
   filesAuthorized() {
-    this.filesService.filesAuthorized().subscribe(token => {
+    this.filesService.filesAuthorized(this.selectedPrivacyType, this.pageNum, this.numPerPage, this.numOfPages).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
     })
   }
   filesUnauthorized() {
-    this.filesService.filesUnauthorized().subscribe(token => {
+    this.filesService.filesUnauthorized("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
     })
   }
@@ -271,8 +254,10 @@ export class UploadComponent implements OnInit {
       location.reload();
     })
   }
+  
 
   onCheckboxChange(event: any,item) {
+    
     if(!event.target.checked){
       item.isPublic = false;
       this.loggedUser = this.loginService.isAuthenticated();
@@ -289,12 +274,11 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
-        location.reload();
       })
-      //if (this.selectedPrivacyType == "all")
-      //  location.reload();
-      this.myFiles = [];
-      this.allFiles = [];
+      /*
+      if(this.selectedPrivacyType == "public")
+        location.reload();
+      */
     }
     if(event.target.checked){
       item.isPublic = true;
@@ -312,14 +296,13 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
-        location.reload();
       })
-      //location.reload();
-      this.myFiles = [];
-      this.allFiles = [];
     }
+    /*
+    if(this.selectedPrivacyType == "public")
+        location.reload();
+    */
   }
-
 
   uploadNotification() {
     this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>File uploaded successfully</b>.', '', {
@@ -329,5 +312,33 @@ export class UploadComponent implements OnInit {
       toastClass: "alert alert-info alert-with-icon",
       positionClass: 'toast-top-center'
     });
+  }
+
+  nextPage(i: number) {
+    if(this.pageNum + i <= this.numOfPages){
+      this.pageNum += i;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  previousPage(i : number) {
+    if(this.pageNum - i >= 1){
+      this.pageNum -= i;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  firstPage(){
+    if(this.pageNum != 1){
+      this.pageNum = 1;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  lastPage(){
+    if(this.pageNum != this.numOfPages){
+      this.pageNum = this.numOfPages;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
   }
 }

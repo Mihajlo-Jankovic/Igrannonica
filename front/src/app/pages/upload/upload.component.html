@@ -16,9 +16,36 @@
                 <div class="card-header">
                     <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing dataset</h3>
                     <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy" style="float:left;">
-                        <option class='option' value="all">Public</option>
-                        <option class='option' value="myFiles">My datasets</option>
-                    </select>
+                        <option class='option' value="public">Public</option>
+                        <option class='option' value="mydatasets">My datasets</option>
+                    </select>      
+                    <div class="buttons" [hidden]="!numOfPages">
+                        <button class=" btn btn-link page" style="padding-left: 0;" (click)="lastPage()">
+                            <i class="tim-icons icon-double-right arrow"></i>
+                        </button>
+                        <button class=" btn btn-link page" style="padding-left: 0; padding-right: 0px;" (click)="nextPage(1)">
+                            <i class="tim-icons icon-minimal-right arrow"></i>
+                        </button>
+                        <button class=" btn btn-link page" style="padding-right: 0px;" (click)="nextPage(2)" [hidden]="pageNum >= numOfPages-1">
+                            {{pageNum+2}}
+                        </button>
+                        <button class=" btn btn-link page" (click)="nextPage(1)" [hidden]="pageNum == numOfPages">
+                            {{pageNum+1}}
+                        </button>
+                        <button class=" btn btn-link page" style="color: white;">{{pageNum}}</button>
+                        <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="pageNum == 1">
+                            {{pageNum-1}}
+                        </button>
+                        <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="pageNum < 3">
+                            {{pageNum-2}}
+                        </button>
+                        <button class=" btn btn-link page" style="padding-left:0px;" (click)="previousPage(1)">
+                            <i class="tim-icons icon-minimal-left arrow"></i>
+                        </button>
+                        <button class=" btn btn-link page" (click)="firstPage()">
+                            <i class="tim-icons icon-double-left arrow"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
                     <div class="authorized" *ngIf="cookieCheck">
@@ -29,7 +56,7 @@
                                         <div class="titleHeader">
                                             <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 100px; float: left;">Dataset:</h4>
                                             <div *ngIf="item.thisUser" class="settings">
-                                                <button class=" btn btn-link trash " (click)="delete($event,item)" placement="left" ngbTooltip="Delete file" container="body" style="left: 70px;">
+                                                <button class=" btn btn-link trash " (click)="delete($event,item)" placement="left" ngbTooltip="Delete file" container="body" style="left: 20px">
                                                     <i class="tim-icons icon-trash-simple"> </i>
                                                 </button>
                                                 <label class="switch" ngbTooltip="Change file's privacy by toggling this">
@@ -42,6 +69,7 @@
 
                                         <div class="pull-right fileName">{{item.fileName}}</div>
                                     </div>
+                                    <p>Date&Time: {{item.dateCreated}}</p>
                                     <p>Uploaded by: {{item.username}}</p>
                                     <div style="height:30px; background: transparent;">
                                         <a href="/tables" class=" pull-left" (click)="useThis($event,item)">USE THIS</a>
@@ -58,9 +86,10 @@
                             <div class="file">
                                 <div class="fileContent">
                                     <div class=" row">
-                                        <h4 class="card-title" style="margin-bottom:0">Filename:</h4>
+                                        <h4 class="card-title" style="margin-bottom:0">Dataset:</h4>
                                         <div class="pull-right fileName">{{item.fileName}}</div>
                                     </div>
+                                    <p>Date&Time: {{item.dateCreated}}</p>
                                     <p>Uploaded by: {{item.username}}</p>
                                     <div style="height:30px; background: transparent;">
                                         <a href="/tables" class=" pull-left" (click)="useThisUn($event,item)">USE THIS</a>

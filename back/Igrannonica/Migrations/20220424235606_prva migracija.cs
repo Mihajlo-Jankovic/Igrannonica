@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -41,6 +42,7 @@ namespace Igrannonica.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FileName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    DateCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     IsPublic = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     SessionID = table.Column<int>(type: "int", nullable: true),
                     UserForeignKey = table.Column<int>(type: "int", nullable: true)

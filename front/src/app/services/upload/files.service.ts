@@ -15,7 +15,7 @@ export class FilesService {
 
   configuration = new Configuration();
 
-  filesAuthorized(){
+  filesAuthorized(visibility: string, pageNum: number, numPerPage: number, numOfPages: number ){
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
       this.token = this.cookie.get('token');
@@ -24,10 +24,10 @@ export class FilesService {
       'Authorization': 'bearer ' + this.token
     });
     let options = { headers: headers };
-    return this.http.get<any>(this.configuration.authorizedFiles,options)
+    return this.http.post<any>(this.configuration.authorizedFiles, {"visibility" : visibility, "pageNum" : pageNum, "numPerPage": numPerPage, "numOfPages": numOfPages}, options);
   }
 
-  filesUnauthorized(){
+  filesUnauthorized(visibility: string, pageNum: number, numPerPage: number, numOfPages: number){
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
       this.token = this.cookie.get('token');
@@ -36,6 +36,6 @@ export class FilesService {
       'Authorization': 'bearer ' + this.token
     });
     let options = { headers: headers };
-    return this.http.get<any>(this.configuration.unauthorizedFiles)
+    return this.http.post<any>(this.configuration.unauthorizedFiles, {"visibility" : visibility, "pageNum" : pageNum, "numPerPage": numPerPage, "numOfPages": numOfPages})
   }
 }

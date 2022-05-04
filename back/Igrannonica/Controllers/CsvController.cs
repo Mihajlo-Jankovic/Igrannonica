@@ -89,61 +89,103 @@ namespace Igrannonica.Controllers
             return File(bytes, "csv/plain", filename);
         }
 
-        
-
-        
-        [HttpGet("getCSVAuthorized"), Authorize]
-        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized()
+        private int paging(string flag, int numPerPage, int userId)
         {
-            using (var client = new HttpClient())
+            List<Models.File> tmpList;
+
+            if (flag == "public")
             {
-                var usernameOriginal = _userService.GetUsername();
-                User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
-                
-                if (user == null)
-                    return BadRequest(new
-                    {
-                        responseMessage = "Error: No user found with that name!"
-                    });
-
-                List < Models.File > tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == user.id || u.IsPublic == true).ToList();
-
-                List<dynamic> files = new List<dynamic>();
-
-                foreach (var tmp in tmpList)
-                {
-                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
-
-                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
-                    files.Add(file);
-                }
-
-                return Ok(files);
+                tmpList = _mySqlContext.File.Where(f => f.IsPublic == true).ToList();
             }
+
+            else
+            {
+                tmpList = _mySqlContext.File.Where(u => u.UserForeignKey == userId).ToList();
+            }
+
+            int numOfPages;
+            int numOfFiles = 0;
+
+            foreach (var tmp in tmpList)
+            {
+                numOfFiles++;
+            }
+
+            if (numOfFiles % numPerPage != 0) { numOfPages = numOfFiles / numPerPage; numOfPages++; }
+            else numOfPages = numOfFiles / numPerPage;
+
+            return numOfPages;
         }
-        
 
-        
-        [HttpGet("getCSVUnauthorized")]
-        public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized()
+
+        [HttpPost("getCSVAuthorized"), Authorize]
+        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized(FileDTO dto)
         {
-            using (var client = new HttpClient())
+            var usernameOriginal = _userService.GetUsername();
+            User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+
+            if (user == null) return BadRequest("JWT is bad!");
+
+            List <dynamic> files = new List<dynamic>();
+
+            if (dto.Visibility == "public")
             {
-                List<Models.File> tmpList = _mySqlContext.File.Where(u => u.IsPublic == true).ToList();
+                List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(f => f.IsPublic == true).Take(dto.NumPerPage * dto.PageNum).ToList();
 
-                List<dynamic> files = new List<dynamic>();
+                if (dto.NumOfPages == 0) dto.NumOfPages = paging("public", dto.NumPerPage, 0);
 
+                int i = 0;
                 foreach (var tmp in tmpList)
                 {
+                    if (i < (dto.PageNum - 1) * dto.NumPerPage) { i++; continue; }
 
                     User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
 
-                    var file = new { fileName = tmp.FileName, userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, dateCreated = tmp.DateCreated.ToString("MM/dd/yyyy hh:mm tt"), userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
                     files.Add(file);
                 }
-
-                return Ok(files);
             }
+
+            else
+            {
+                List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(u => u.UserForeignKey == user.id).Take(dto.NumPerPage * dto.PageNum).ToList();
+
+                if (dto.NumOfPages == 0) dto.NumOfPages = paging("mydataset", dto.NumPerPage, user.id);
+
+                int i = 0;
+                foreach (var tmp in tmpList)
+                {
+                    if (i < (dto.PageNum - 1) * dto.NumPerPage) { i++; continue; }
+
+                    var file = new { fileId = tmp.Id, fileName = tmp.FileName, dateCreated = tmp.DateCreated.ToString("MM/dd/yyyy hh:mm tt"), userId = tmp.UserForeignKey, username = user.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                    files.Add(file);
+                }
+            }
+
+            return Ok(new { files = files, numOfPages = dto.NumOfPages });
+        }
+
+        [HttpPost("getCSVUnauthorized")]
+        public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized(FileDTO dto)
+        {
+            List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(f => f.IsPublic == true).Take(dto.NumPerPage * dto.PageNum).ToList();
+
+            if (dto.NumOfPages == 0) dto.NumOfPages = paging("public", dto.NumPerPage, 0);
+
+            List<dynamic> files = new List<dynamic>();
+
+            int i = 0;
+            foreach (var tmp in tmpList)
+            {
+                if (i < (dto.PageNum - 1) * dto.NumPerPage) { i++; continue; }
+
+                User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+
+                var file = new { fileName = tmp.FileName, dateCreated = tmp.DateCreated.ToString("MM/dd/yyyy hh:mm tt"), userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
+                files.Add(file);
+            }
+
+            return Ok(new { files = files, numOfPages = dto.NumOfPages });
         }
         
         [HttpPost("updateVisibility"), Authorize]
