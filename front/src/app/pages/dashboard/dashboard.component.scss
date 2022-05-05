@@ -449,7 +449,7 @@ body.cm-modal-open {
     }
 }
 
-$breakpoint: 512px;
+$breakpoint: 1092px;
 $tabs-base-color: #27293d;
 // #####################################
 // CSS definition for functionality
@@ -524,7 +524,7 @@ $tabs-base-color: #27293d;
                 }
                 +section {
                     max-height: 10000px;
-                    transition: all 0.5s cubic-bezier(1, 0, 1, 0) 0.5s;
+                    transition: all 0.1s cubic-bezier(1, 0, 1, 0) 0.1s;
                     @media (min-width: $breakpoint) {
                         display: block;
                     }
@@ -556,8 +556,8 @@ $tabs-base-color: #27293d;
             border-style: solid;
             border-width: 5px;
             transform: rotateY(180deg);
-            transition: transform 0.3s linear;
-            transition: opacity 0.5s linear;
+            transition: transform 0.1s linear;
+            transition: opacity 0.1s linear;
             @media (min-width: $breakpoint) {
                 content: none;
             }
@@ -572,7 +572,7 @@ $tabs-base-color: #27293d;
         max-height: 0;
         //padding: 1rem;
         overflow: hidden;
-        transition: all 0.5s cubic-bezier(0, 1, 0, 1);
+        transition: all 0.1s cubic-bezier(0, 1, 0, 1);
         width: 100%;
         background-color: $tabs-base-color;
         display: block;

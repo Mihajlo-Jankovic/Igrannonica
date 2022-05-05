@@ -297,6 +297,7 @@
             <div class=" card card-chart">
                 <div class=" card-header">
                     <h3 class=" card-title">Model metrics</h3>
+                    <button (click)="makeMetricCharts()">KLIKNI</button>
                 </div>
                 <div class=" card-body">
                     <div class=" chart-area"><canvas id="metric-chart"> </canvas></div>
@@ -308,11 +309,12 @@
         <div class="responsive-tabs">
             <ng-container *ngFor="let item of modelsHeader; let i = index">
                 <input type="radio" name="tab" id="tab-{{i}}">
-                <label for="tab-{{i}}">{{item}}</label>
+                <label for="tab-{{i}}" (click)="nesto2(item, i)">{{item}}</label>
                 <section>
-                    <div class="tab-content">
-                        <div class="chart-area">
-                            <canvas id="{{item}}-chart"></canvas>
+                    <div class="tab-content" style="max-height: 250px;">
+                        <h3 class=" card-title" style="color: white; font-weight: 100; line-height: 1.4em; margin: 1rem 0 0 1rem">Model metrics</h3>
+                        <div class="chart-area" style="max-height: 250px;">
+                            <canvas id="{{item}}-chart" style="display: inline; height: 220px;"></canvas>
                         </div>
                     </div>
                 </section>
