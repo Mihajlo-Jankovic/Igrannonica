@@ -86,12 +86,12 @@ namespace Igrannonica.Controllers
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
             {
-                return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameTaken").Value });
+                return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameTaken").Value });
             }
             user = _context.User.Where(u => u.email == request.email).FirstOrDefault();
             if(user != null)
             {
-                return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:MailTaken").Value });
+                return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:MailTaken").Value });
             }
 
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);

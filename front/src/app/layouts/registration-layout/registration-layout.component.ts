@@ -38,9 +38,31 @@ export class RegistrationLayoutComponent implements OnInit {
   registration(form: FormGroup) {
     if (form.value.username && form.value.password && form.value.confirmPassword && form.value.firstname && form.value.lastname && form.value.email) {
       this.registerService.register(form.value.username, form.value.password, form.value.firstname, form.value.lastname, form.value.email)
-        .subscribe(token => {
+        .subscribe(token =>{
           let JSONtoken: string = JSON.stringify(token);
           let StringToken = JSON.parse(JSONtoken).token;
+          if (form.value.password == form.value.confirmPassword){
+          this.router.navigate(['/login']);
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Congratulations, your account has been successfully created </b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+          else{
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+        }, err => {
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error: Email is taken!") {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
               disableTimeOut: false,
@@ -52,25 +74,6 @@ export class RegistrationLayoutComponent implements OnInit {
           }
           else if (StringToken == "Error: Username already exists!") {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
-          }
-          else if (StringToken == "Success" && form.value.password == form.value.confirmPassword) {
-            this.router.navigate(['/login']);
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Congratulations, your account has been successfully created </b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
-          }
-          else{
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
               disableTimeOut: false,
               closeButton: true,
               enableHtml: true,
@@ -90,5 +93,5 @@ export class RegistrationLayoutComponent implements OnInit {
       });
     }
   }
-
 }
+ 
