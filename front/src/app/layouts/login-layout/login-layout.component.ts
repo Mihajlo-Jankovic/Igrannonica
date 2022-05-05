@@ -43,7 +43,23 @@ export class LoginLayoutComponent implements OnInit {
       this.loginService.login(form.value.username, form.value.password).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        console.log(StringToken);
+        console.log(token);
+        
+          this.save(form.value.username,form.value.password);
+          this.cookie.set("token", StringToken);
+          this.cookie.set("username",form.value.username);
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+          this.router.navigate(['upload']);
+        
+      },err=>{let JSONtoken: string = JSON.stringify(err);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        console.log("12");
         if (StringToken == "Error: Username not found!"){
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong username</b>.', '', {
             disableTimeOut: false,
@@ -62,29 +78,7 @@ export class LoginLayoutComponent implements OnInit {
             positionClass: 'toast-top-center'
           });
         }
-        else if (StringToken == "Success") {
-          this.save(form.value.username,form.value.password);
-          this.cookie.set("token", StringToken);
-          this.cookie.set("username",form.value.username);
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-          this.router.navigate(['upload']);
-        }
-        else{
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-        }
-      })
+      }) 
     }
     else {
       this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please enter all fields</b>.', '', {
