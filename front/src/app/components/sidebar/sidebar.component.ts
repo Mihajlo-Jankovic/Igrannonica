@@ -62,18 +62,35 @@ export class SidebarComponent implements OnInit {
     return true;
   }
 
-  isUploaded(name)
+  notSelected(name)
   {
-    if(name == 'Upload') {
-      return true;
+    if(name == "Home")
+    {
+      if(this.cookie.get('home'))
+        return false;
+      else
+        return true;
     }
-    else if(name == "Home") {
-      return true;
+    else if(name == "Upload")
+    {
+      if(!this.cookie.get('home'))
+        return false;
+      else
+        return true;
     }
-    else{
+    else if(name == "Experiments")
+    {
+      if(!this.cookie.get('home'))
+        return false;
+      else
+        return true;
+    }
+    else
+    {
       if(this.cookie.get('filename'))
         return true;
-    return false;
+      else
+        return false;
     }
   }
 }

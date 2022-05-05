@@ -8,14 +8,15 @@ import { UploadGuardService } from "src/app/services/upload-guard.service";
 import { NoAuthGuardService } from "src/app/services/auth-guard/no-auth-guard.service";
 import { HomeComponent } from "src/app/pages/home/home.component";
 import { ExperimentsComponent } from "src/app/pages/experiments/experiments.component";
+import { HomeServiceService } from "src/app/services/home-service.service";
 
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent, canActivate:[UploadGuardService] },
   { path: "user", component: UserComponent, canActivate : [NoAuthGuardService] },
   { path: "tables", component: TablesComponent, canActivate:[UploadGuardService] },
-  { path : "upload", component : UploadComponent},
+  { path : "upload", component : UploadComponent, canActivate:[HomeServiceService]},
   { path : "home", component : HomeComponent},
-  { path : "experiments", component : ExperimentsComponent}
+  { path : "experiments", component : ExperimentsComponent, canActivate:[HomeServiceService]}
 ];
 
 
