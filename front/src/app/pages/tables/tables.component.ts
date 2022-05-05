@@ -619,13 +619,23 @@ export class TablesComponent {
     console.log(this.pret);
   }
 
-  selectedID(id : number){
-    id = id + (this.page - 1)*this.selectedRow
-    this.selectedRows.push(id);
+  selectedID(event, id : number){
+    if(event.target.checked){
+      id = id + (this.page - 1)*this.selectedRow
+      this.selectedRows.push(id);
+    }
+    else{
+      id = id + (this.page - 1)*this.selectedRow
+      this.selectedRows.forEach((element, index)=> {
+        if(element == id) this.selectedRows.splice(index,1)
+      });
+    }
+    console.log(this.selectedRows)
   }
 
   async deleteRows()
   {
+    console.log(this.selectedRows)
       await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
         {
           this.clearStorage();

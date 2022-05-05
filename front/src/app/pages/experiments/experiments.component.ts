@@ -94,6 +94,59 @@ export class ExperimentsComponent implements OnInit {
 
   useExperiments(item)
   {
+
+    var metricsList = [];
+    var metrics = item.models[0].parameters.metrics;
+    for(let i = 0; i< metrics.length;i++)
+    {
+      if(metrics[i] == "mse")
+      {
+        metricsList[i] = {item_id: "mse", item_text: "Mean Squared Error"}
+      }
+      else if(metrics[i] == "msle")
+      {
+        metricsList[i] = {item_id: "msle", item_text: "Mean Squared Logarithmic Error"}
+      }
+      else if(metrics[i] == "mae")
+      {
+        metricsList[i] = {item_id: "mae", item_text: "Mean Absolute Error"}
+      }
+      else if(metrics[i] == "mape")
+      {
+        metricsList[i] = {item_id: "mape", item_text: "Mean Absolute Percentage Error"}
+      }
+      else if(metrics[i] == "logcosh")
+      {
+        metricsList[i] = {item_id: "logcosh", item_text: "Log Cosh Error"}
+      }
+      else if(metrics[i] == "categorical_accuracy")
+      {
+        metricsList[i] = {item_id: "categorical_accuracy", item_text: "Categorical Accuracy"}
+      }
+      else if(metrics[i] == "sparse_categorical_accuracy")
+      {
+        metricsList[i] = {item_id: "sparse_categorical_accuracy", item_text: "Sparse Categorical Accuracy"}
+      }
+      else if(metrics[i] == "top_k_accuracy")
+      {
+        metricsList[i] = {item_id: "top_k_accuracy", item_text: "Top K Accuracy"} 
+      }
+      else if(metrics[i] == "sparse_top_k_categorical_accuracy")
+      {
+        metricsList[i] = {item_id: "sparse_top_k_categorical_accuracy", item_text: "Sparse Top K Categorical Accuracy"}
+      }
+      else if(metrics[i] == "accuracy")
+      {
+        metricsList[i] = {item_id: "accuracy", item_text: "Accuracy"}
+      }
+      else if(metrics[i] == "binary_accuracy")
+      {
+        metricsList[i] = {item_id: "binary_accuracy", item_text: "Binary Accuracy"}
+      } 
+    }
+
+    sessionStorage.setItem('metrics', JSON.stringify(metricsList))
+
     sessionStorage.setItem('modelsList', JSON.stringify(item.models));
 
     let keys = Object.keys(item.models[0].data);

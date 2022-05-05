@@ -34,7 +34,6 @@ export class LoginLayoutComponent implements OnInit {
 
   save(username:string,password:string){
     sessionStorage.setItem('username',username);
-    sessionStorage.setItem('password', password);
   }
 
 

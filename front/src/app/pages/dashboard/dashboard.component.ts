@@ -479,6 +479,7 @@ export class DashboardComponent implements OnInit {
       this.metrics = this.selectedItems;
     }
     sessionStorage.setItem('problemType', this.problemType);
+    
   }
 
   multiselect(){
@@ -532,6 +533,7 @@ export class DashboardComponent implements OnInit {
     }
     let metrics = [];
     for (let i = 0; i < this.selectedItems.length; i++) {
+      sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems))
       metrics[i] = this.selectedItems[i].item_id;
     }
     this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
@@ -616,13 +618,24 @@ export class DashboardComponent implements OnInit {
     this.updateOptions();
   }
 
-  onItemSelect(item: any) {
+  onItemSelect(event) {
+    sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems));
   }
-  onSelectAll(items: any) {
+  onSelectAll(event) {
+    sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems));
+  }
+
+  onItemDeSelect(event){
+    sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems));
   }
 
   checkStorage()
   {
+    if(sessionStorage.getItem('metrics'))
+    {
+      this.selectedItems = JSON.parse(sessionStorage.getItem('metrics'));
+      this.metrics = this.selectedItems;
+    }
     if(sessionStorage.getItem('problemType'))
     {
       this.problemType = sessionStorage.getItem('problemType');

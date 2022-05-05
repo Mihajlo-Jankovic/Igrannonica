@@ -157,8 +157,8 @@
                             <div *ngFor="let item of headingLines[0]; let i = index">
                                 <div class="Ioption">
                                     <div class="checkDIV">
-                                        <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
-                                        <label for="{{ 'check' + i }}" class="check-box"></label>
+                                        <input type="checkbox" id="{{ 'check1' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
+                                        <label for="{{ 'check1' + i }}" class="check-box"></label>
                                     </div>
                                     <p>{{item}}</p>
                                 </div>
@@ -269,7 +269,7 @@
                                 <tr *ngFor="let item of rowLines[0]; let i = index">
                                     <td>
                                         <div style="position: relative; top: 5px">
-                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID(i)">
+                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID($event, i)">
                                             <label for="{{ 'check' + i }}" class="check-box"></label>
                                         </div>
                                     </td>

@@ -138,7 +138,7 @@
                     <div class="hyperparameterMetrics">
                         <h6>Metrics for model comparison</h6>
                         <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" [disabled]="firstTraining" (onSelect)="onItemSelect($event)"
-                            (onSelectAll)="onSelectAll($event)">
+                            (onSelectAll)="onSelectAll($event)" (onDeSelect)="onItemDeSelect($event)">
                         </ng-multiselect-dropdown>
                     </div>
                     <!--<div>{{range}}</div>-->
