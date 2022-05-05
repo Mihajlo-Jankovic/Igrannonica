@@ -92,7 +92,7 @@ b {
 
 .settings {
     position: relative;
-    width: 100px;
+    width: 120px;
     height: 24px;
     float: right;
     padding: 0px;
@@ -169,13 +169,13 @@ button {
     width: 5px;
 }
 
-@media(max-width: 1438px) {
+@media(max-width: 1498px) {
     .file {
         width: 50%;
     }
 }
 
-@media(max-width: 1063px) {
+@media(max-width: 1101px) {
     .file {
         width: 100%;
     }
@@ -187,7 +187,7 @@ button {
     }
 }
 
-@media(max-width: 813px) {
+@media(max-width: 851px) {
     .file {
         width: 100%;
     }

@@ -304,18 +304,37 @@
             </div>
         </div>
     </div>
+    <div class="col-12" style="padding: 0px;">
+        <div class="responsive-tabs">
+            <ng-container *ngFor="let item of modelsHeader; let i = index">
+                <input type="radio" name="tab" id="tab-{{i}}">
+                <label for="tab-{{i}}">{{item}}</label>
+                <section>
+                    <div class="tab-content">
+                        <div class="chart-area">
+                            <canvas id="{{item}}-chart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </ng-container>
+        </div>
+    </div>
     <div class="row" [hidden]="!trained || !loggedUser">
         <div class="col-12">
             <div class="card">
-                <div class="card-header" style="padding:0px !important;">
-                    <div class="expContainer">
-                        <h3 class=" card-title saveTitle">Save your experiment</h3>
-                    </div>
-                    <div class="expContainer">
+                <div class="card-header">
+                    <h3 class=" card-title saveTitle">Save your experiment</h3>
+                </div>
+                <div class="card-body">
+                    <div class="expContainer eciLeft">
+                        <h6>Experiment name</h6>
                         <input type="text" class="experimentName" ngbTooltip="Write experiment name" [(ngModel)]="experimentName">
+                    </div>
+                    <div class="expContainer eciRight">
+                        <h6>Experiment description</h6>
                         <input type="text" class="experimentName" ngbTooltip="Enter description of your experiment" [(ngModel)]="description">
                     </div>
-                    <div class="expContainer">
+                    <div class="expContainer" style="float: right; padding-top:22px;">
                         <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveExperiment()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>
                     </div>
                 </div>

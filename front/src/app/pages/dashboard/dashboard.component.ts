@@ -88,6 +88,7 @@ export class DashboardComponent implements OnInit {
   public metricsCtx;
   public metricLabels = [];
   public metricsChart;
+  public metricsCharts = [];
   public selectedChartMetric: string = "none";
 
   public openMetricsChart: boolean = false;
@@ -845,6 +846,46 @@ export class DashboardComponent implements OnInit {
 
     this.metricsChart.options.scales.yAxes[0].scaleLabel.labelString = metric;
     this.metricsChart.update();
+    //this.uradinesto(metric);
+  }
+
+  uradinesto(metric: string) {
+    var metricCanvas: any;
+    var metricCtx: any;
+    var mchart
+
+    metricCanvas = document.getElementById(metric + "-chart");
+    metricCtx = metricCanvas.getContext("2d");
+    mchart = new Chart(metricCtx, this.metricChartConfig);
+    
+    mchart.data.labels = this.metricLabels;
+    mchart.data.datasets = [];
+
+    for (let i = 0; i < this.modelsList.length; i++) {
+      //console.log(this.modelsList[i].data);
+      var r = Math.floor(Math.random() * 255);
+      var g = Math.floor(Math.random() * 255);
+      var b = Math.floor(Math.random() * 255);
+
+      mchart.data.datasets.push({
+        label: "model " + this.modelsList[i].id,
+        fill: false,
+        borderColor: "rgb(" + r + "," + g + "," + b + ")",
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: this.modelsList[i].data[metric],
+      });
+    }
+
+    mchart.update();
   }
 
   makeSmallCharts(id: number, epochs: number) {

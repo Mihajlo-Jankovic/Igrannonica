@@ -639,6 +639,9 @@ $tabs-base-color: #27293d;
     .dropdownContainer {
         width: 100%;
     }
+    .dpr {
+        margin-top: 1rem;
+    }
     .buttons {
         float: left;
     }
@@ -655,6 +658,10 @@ $tabs-base-color: #27293d;
 
 .card-height {
     height: 410px;
+}
+
+.height-change {
+    height: auto;
 }
 
 .f {

@@ -684,6 +684,8 @@ export class TablesComponent {
       this.hideS = true;
       stats.classList.add('col-lg-12');
       this.statsButton = "Close Statistics"
+
+      document.getElementById("stat").classList.add("height-change");
     }
     else {
       this.hideBoxplot = false;
@@ -691,6 +693,8 @@ export class TablesComponent {
       this.hideS = false;
       stats.classList.remove('col-lg-12');
       this.statsButton = "Full Statistics"
+
+      document.getElementById("stat").classList.remove("height-change");
     }
   }
 

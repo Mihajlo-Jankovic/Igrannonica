@@ -9,7 +9,6 @@
     border-radius: 6px;
     overflow: hidden;
     color: white;
-    margin-left: 1rem;
     height: 42px;
     width: 15%;
     min-width: 200px;
@@ -156,7 +155,7 @@ b {
     height: auto;
     float: right;
     padding: 0px;
-    margin-right: 1.5rem;
+    margin-right: 1rem;
 }
 
 .switch {
@@ -263,34 +262,6 @@ button {
     margin-top: 2px;
 }
 
-@media(max-width: 1250px) {
-    .file {
-        width: 33.3%;
-    }
-}
-
-@media(max-width: 768px) {
-    .file {
-        width: 50%;
-    }
-}
-
-@media(max-width: 615px) {
-    .dropdown {
-        width: 100%;
-        margin: 0px;
-    }
-}
-
-@media(max-width: 528px) {
-    .file {
-        width: 100%;
-    }
-    .dropdown {
-        width: 100%;
-    }
-}
-
 .page {
     padding: 0.5rem;
     color: #7d3c8b;
@@ -316,10 +287,10 @@ button {
     width: 100%;
 }
 
-
 .buttons {
     height: 40px;
     float: right;
+    padding-bottom: 5px;
 }
 
 .trash {
@@ -350,4 +321,47 @@ button {
     height: 100%;
     vertical-align: top;
     padding: 0px;
+}
+
+.header-filter {
+    float: right;
+    height: auto;
+    width: 100%;
+}
+
+.filter-left {
+    width: 40%;
+    height: 65px;
+    float: left;
+}
+
+.filter-right {
+    width: 60%;
+    height: 65px;
+    float: left;
+    padding-top: 20px;
+}
+
+@media(max-width: 1329px) {
+    .file {
+        width: 33.3%;
+    }
+}
+
+@media(max-width: 1079px) {
+    .file {
+        width: 50%;
+    }
+}
+
+@media(max-width: 562px) {
+    .file {
+        width: 100%;
+    }
+    .filter-left {
+        width: 100%;
+    }
+    .filter-right {
+        width: 100%;
+    }
 }

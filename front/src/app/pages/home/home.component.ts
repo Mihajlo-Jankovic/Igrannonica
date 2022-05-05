@@ -21,8 +21,7 @@ export class HomeComponent implements OnInit {
         this.router.navigate(['upload']);
     }
 
-    useExperiment(){
-        this.cookie.set('home', 'true');
+    oldExperiment() {
         this.router.navigate(['experiments']);
     }
 }

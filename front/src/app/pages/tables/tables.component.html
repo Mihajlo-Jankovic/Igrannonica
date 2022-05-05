@@ -1,7 +1,7 @@
 <div class=" content">
     <div class=" row">
         <div class="statistics col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideStatistics">
-            <div class=" card card-height">
+            <div class=" card card-height" id="stat">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
                         <h3 class=" card-category" style="color: white; float:left;">Column Statistics</h3>
@@ -209,7 +209,7 @@
                                 <option class='option' value="not null">Not Null</option>
                             </select>
                         </div>
-                        <div class="dropdownContainer">
+                        <div class="dropdownContainer dpr">
                             <h6>Rows per page</h6>
                             <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event, true)' placeholder="Rows" ngbTooltip="Number of rows per page">
                                 <option class='option' value="10">10</option>

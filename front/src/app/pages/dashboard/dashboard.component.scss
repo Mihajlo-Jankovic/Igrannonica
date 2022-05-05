@@ -269,7 +269,7 @@ $spin-duration: 1s;
     border: 3px solid #7d3c8b;
     border-radius: 3px;
     height: 35px;
-    width: 45%;
+    width: 100%;
     color: white;
 }
 
@@ -279,7 +279,18 @@ $spin-duration: 1s;
     height: 67px;
     margin: 0px;
     float: left;
-    padding: 1rem 1rem 1rem 1rem;
+    h6 {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+.eciLeft {
+    padding-right: 2rem;
+}
+
+.eciRight {
+    padding-left: 2rem;
 }
 
 .headerLeft {
@@ -427,8 +438,149 @@ body.cm-modal-open {
     .expContainer {
         width: 100%;
     }
+    .eciLeft {
+        width: 50%;
+    }
+    .eciRight {
+        width: 50%;
+    }
     .save {
         width: 100%;
+    }
+}
+
+$breakpoint: 512px;
+$tabs-base-color: #27293d;
+// #####################################
+// CSS definition for functionality
+.responsive-tabs {
+    overflow: overlay;
+    >input {
+        display: none;
+        &:checked {
+            +label {
+                +section {
+                    display: block;
+                }
+            }
+        }
+    }
+    >label {
+        display: block;
+        @media (min-width: $breakpoint) {
+            display: inline-block;
+        }
+    }
+    >section {
+        width: 100%;
+        display: none;
+        @media (min-width: $breakpoint) {
+            float: left;
+        }
+    }
+}
+
+// Classes for simple presentation
+.responsive-tabs {
+    margin-bottom: 30px;
+    >input {
+        &:checked {
+            +label {
+                background-color: $tabs-base-color;
+                color: white;
+            }
+        }
+    }
+    >label {
+        background-color: darken($tabs-base-color, 10);
+        margin: 0;
+        padding: 15px 20px;
+        cursor: pointer;
+        @media (min-width: $breakpoint) {
+            margin-left: 0px;
+        }
+    }
+    >section {
+        background-color: $tabs-base-color;
+    }
+}
+
+// Classes for better presentation 
+.responsive-tabs {
+    overflow: overlay;
+    margin-bottom: 30px;
+    >input {
+        display: none;
+        &:checked {
+            +label {
+                background-color: $tabs-base-color;
+                color: white;
+                font-weight: normal;
+                padding-top: 15px;
+                cursor: default;
+                &::after {
+                    transform: translateY(-5px) rotateZ(180deg);
+                    opacity: 0;
+                }
+                +section {
+                    max-height: 10000px;
+                    transition: all 0.5s cubic-bezier(1, 0, 1, 0) 0.5s;
+                    @media (min-width: $breakpoint) {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+    >label {
+        border-radius: 0.4rem 0.4rem 0rem 0rem;
+        font-size: 15px;
+        position: relative;
+        background-color: darken($tabs-base-color, 10);
+        cursor: pointer;
+        margin: 0px;
+        font-weight: normal;
+        margin: 0;
+        display: block;
+        transition: background-color 0.5s linear, color 0.5s linear;
+        @media (min-width: $breakpoint) {
+            display: inline-block;
+            padding: 10px 10px;
+        }
+        &::after {
+            content: '';
+            position: absolute;
+            top: 26px;
+            right: 25px;
+            border-color: #4d4d4d transparent transparent transparent;
+            border-style: solid;
+            border-width: 5px;
+            transform: rotateY(180deg);
+            transition: transform 0.3s linear;
+            transition: opacity 0.5s linear;
+            @media (min-width: $breakpoint) {
+                content: none;
+            }
+        }
+        &:hover {
+            color: white;
+            padding-top: 15px;
+            background: $tabs-base-color;
+        }
+    }
+    >section {
+        max-height: 0;
+        //padding: 1rem;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0, 1, 0, 1);
+        width: 100%;
+        background-color: $tabs-base-color;
+        display: block;
+        border-radius: 0rem 0.286rem 0.286rem 0.286rem;
+        @media (min-width: $breakpoint) {
+            float: left;
+            display: none;
+        }
     }
 }
 
@@ -447,6 +599,17 @@ body.cm-modal-open {
 @media(max-width: 768px) {
     .hyperparameter {
         width: 50%;
+    }
+}
+
+@media(max-width: 690px) {
+    .eciLeft {
+        width: 100%;
+        padding: 0;
+    }
+    .eciRight {
+        width: 100%;
+        padding: 0;
     }
 }
 
