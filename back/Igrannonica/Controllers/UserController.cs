@@ -439,6 +439,23 @@ namespace Igrannonica.Controllers
             return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
         }
 
+        [HttpPost("getExperimentUnauthorized")]
+        public async Task<ActionResult<List<Experiment>>> GetExperimentUnauthorized(PagingDTO dto)
+        {
+            var client = new MongoClient(getMongoDBConnString());
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+
+            if (dto.NumOfPages == 0)
+            {
+                var numOfFiles = collection.Count(e => e.visibility == true);
+                dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
+            }
+
+            List<Experiment> experiments = collection.Find(e => e.visibility == true).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+
+            return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
+        }
 
 
         [HttpPost("deleteExperiment"), Authorize]
