@@ -58,13 +58,13 @@ export class UploadComponent implements OnInit {
       this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-
-        if (StringToken == "Token not valid"){
+        this.cookie.set("token", StringToken);
+      }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken == "Error: Token not valid"){
           this.onLogout();
           location.reload();
-        }
-        else{
-          this.cookie.set("token", StringToken);
         }
       });
   }
@@ -185,6 +185,13 @@ export class UploadComponent implements OnInit {
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
           this.router.navigate(['/tables']);
+          this.uploadNotificationSuccess();
+        },err=>{
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Bad file type in the request") {
+            this.uploadNotificationBadFileType();
+          }
         })
       }
       else{
@@ -193,10 +200,17 @@ export class UploadComponent implements OnInit {
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
           this.router.navigate(['/tables']);
+          this.uploadNotificationSuccess();
+        },err=>{
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Bad file type in the request") {
+            this.uploadNotificationBadFileType();
+          }
         })
       }
     }
-    this.uploadNotification();
+    
   }
 
   filesAuthorized() {
@@ -268,10 +282,22 @@ export class UploadComponent implements OnInit {
     let options = { headers: headers };
     this.http.get<any>(this.configuration.downloadFileUnauthorized + item.randomFileName, options).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
+      console.log("124");
       location.reload();
+    },err=>{
+      let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error encoundered while deleting dataset.") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting dataset</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
     })
   }
-
   onCheckboxChange(event: any,item) {
     if(!event.target.checked){
       item.isPublic = false;
@@ -321,8 +347,18 @@ export class UploadComponent implements OnInit {
   }
 
 
-  uploadNotification() {
+  uploadNotificationSuccess() {
     this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>File uploaded successfully</b>.', '', {
+      disableTimeOut: false,
+      closeButton: true,
+      enableHtml: true,
+      toastClass: "alert alert-info alert-with-icon",
+      positionClass: 'toast-top-center'
+    });
+  }
+
+  uploadNotificationBadFileType() {
+    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Bad file type</b>.', '', {
       disableTimeOut: false,
       closeButton: true,
       enableHtml: true,
