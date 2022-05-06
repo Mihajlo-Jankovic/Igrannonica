@@ -121,6 +121,7 @@ namespace Igrannonica.Controllers
                 return NotFound(new { responseMessage = "Error: Username not found!" });
             if (!VerifyPasswordHash(request.password, userOriginal.passwordHash, userOriginal.passwordSalt))
                 return BadRequest(new { responseMessage = "Error: Wrong password!" });
+
             userOriginal.firstname = request.firstname;
             userOriginal.lastname = request.lastname;
 

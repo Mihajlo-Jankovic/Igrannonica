@@ -20,7 +20,7 @@ export class EditService {
 
   }
 
-  edit(firstname: any, lastname:any){
+  edit(firstname: any, lastname:any, password:any){
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
       this.token = this.cookie.get('token');
@@ -31,6 +31,7 @@ export class EditService {
     let options = { headers: headers };
     return this.http.post<string>(this.configuration.editUsername,
     {
+      "password": password,
       "firstname": firstname,
       "lastname": lastname
     }
