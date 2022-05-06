@@ -119,7 +119,7 @@ namespace Igrannonica.Controllers
 
 
         [HttpPost("getCSVAuthorized"), Authorize]
-        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized(FileDTO dto)
+        public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized(PagingDTO dto)
         {
             var usernameOriginal = _userService.GetUsername();
             User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
@@ -166,7 +166,7 @@ namespace Igrannonica.Controllers
         }
 
         [HttpPost("getCSVUnauthorized")]
-        public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized(FileDTO dto)
+        public async Task<ActionResult<List<Models.File>>> GetCSVUnauthorized(PagingDTO dto)
         {
             List<Models.File> tmpList = _mySqlContext.File.OrderByDescending(f => f.DateCreated).Where(f => f.IsPublic == true).Take(dto.NumPerPage * dto.PageNum).ToList();
 
