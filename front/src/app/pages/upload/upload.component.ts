@@ -192,6 +192,7 @@ export class UploadComponent implements OnInit {
           if (StringToken == "Error: Bad file type in the request") {
             this.uploadNotificationBadFileType();
           }
+          else this.error();
         })
       }
       else{
@@ -207,6 +208,7 @@ export class UploadComponent implements OnInit {
           if (StringToken == "Error: Bad file type in the request") {
             this.uploadNotificationBadFileType();
           }
+          else this.error();
         })
       }
     }
@@ -242,6 +244,12 @@ export class UploadComponent implements OnInit {
         }
         document.body.appendChild(downloadLink);
         downloadLink.click();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken=="Error: No file found with that name!"){
+          this.error();
+        }
       })
     }
   }
@@ -259,6 +267,12 @@ export class UploadComponent implements OnInit {
       }
       document.body.appendChild(downloadLink);
       downloadLink.click();
+    },err=>{
+      let JSONtoken: string = JSON.stringify(err.error);
+      let StringToken = JSON.parse(JSONtoken).responseMessage;
+      if(StringToken=="Error: No file found with that name!"){
+        this.error();
+      }
     })
   }
 
@@ -282,7 +296,6 @@ export class UploadComponent implements OnInit {
     let options = { headers: headers };
     this.http.get<any>(this.configuration.downloadFileUnauthorized + item.randomFileName, options).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
-      console.log("124");
       location.reload();
     },err=>{
       let JSONtoken: string = JSON.stringify(err.error);
@@ -316,6 +329,12 @@ export class UploadComponent implements OnInit {
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         location.reload();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Username not found!" || StringToken=="Error: The file you are trying to change doesn't belong to you!") {
+            this.error();
+          }
       })
       //if (this.selectedPrivacyType == "all")
       //  location.reload();
@@ -339,6 +358,12 @@ export class UploadComponent implements OnInit {
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         location.reload();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Username not found!" || StringToken=="Error: The file you are trying to change doesn't belong to you!") {
+            this.error();
+          }
       })
       //location.reload();
       this.myFiles = [];
@@ -359,6 +384,15 @@ export class UploadComponent implements OnInit {
 
   uploadNotificationBadFileType() {
     this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Bad file type</b>.', '', {
+      disableTimeOut: false,
+      closeButton: true,
+      enableHtml: true,
+      toastClass: "alert alert-info alert-with-icon",
+      positionClass: 'toast-top-center'
+    });
+  }
+  error() {
+    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
       disableTimeOut: false,
       closeButton: true,
       enableHtml: true,

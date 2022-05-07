@@ -13,6 +13,7 @@ import {
   ApexTooltip
 } from "ng-apexcharts";
 import { AnyForUntypedForms } from "@angular/forms";
+import { ToastrService } from "ngx-toastr";
 
 declare function myFunc(): any;
 
@@ -135,7 +136,7 @@ export class TablesComponent {
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
 
-  constructor(private tableService: TableService, private cookie : CookieService) {
+  constructor(private tableService: TableService, private cookie : CookieService,private toastr: ToastrService) {
     sessionStorage.removeItem('statistics');
     this.showTable(this.selectedType, this.selectedRow, this.page)
     this.boxPlotFun();
@@ -181,6 +182,18 @@ export class TablesComponent {
 
         sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
         this.loadTable();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken=="Error encoundered while reading dataset content."){
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while reading dataset content</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
       })
     }
   }
@@ -294,6 +307,18 @@ export class TablesComponent {
         sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
         this.loadStatistics(col);
         this.boxPlotFun();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken=="Error encoundered while calculating statistics."){
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while calculating statistics</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
       })
     }
   }
@@ -597,7 +622,7 @@ export class TablesComponent {
 
   async deleteRows()
   {
-      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
+      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res =>
         {
           this.clearStorage();
           this.reset();
@@ -606,6 +631,27 @@ export class TablesComponent {
           this.resetStatistic();
           this.showStatistics(this.selectedCol);
           this.selectedRows = [];
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Delete successfull</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        },err=>{
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if(StringToken=="Error encoundered while deleting a row from the dataset."){
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting a row from the dataset</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+
+
         });
 
   }
@@ -614,13 +660,33 @@ export class TablesComponent {
   {
     id = id + (this.page - 1)*this.selectedRow;
 
-    await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(err =>{
+    await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(res =>{
       this.clearStorage();
       sessionStorage.removeItem('statistics');
       this.reset()
       this.showTable(this.selectedType, this.selectedRow, this.page);
       this.resetStatistic();
       this.showStatistics(this.selectedCol);
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
+      
+    },err=>{
+      let JSONtoken: string = JSON.stringify(err.error);
+      let StringToken = JSON.parse(JSONtoken).responseMessage;
+      if(StringToken=="Error encoundered while deleting a row from the dataset."){
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while editing cell content</b>.', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+      }
     })
   }
 

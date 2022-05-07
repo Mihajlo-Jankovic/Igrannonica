@@ -536,7 +536,11 @@ export class DashboardComponent implements OnInit {
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
         this.modelsTrained++;
-        
+        let JSONtoken: string = JSON.stringify(response);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken!="Training started"){
+          this.error();
+        }
         if(this.epochs > this.maxEpochs) {
           this.maxEpochs = this.epochs;
           for (let i = 0; i < this.maxEpochs; i++){
@@ -607,6 +611,13 @@ export class DashboardComponent implements OnInit {
     this.http.post(this.configuration.saveExperiment, experiment, options).subscribe(
       (response) => {
         this.notify.showNotification("Experiment saved to your profile successfully!");
+      }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken == "Error: Username not found!"){
+          this.error();
+        }
+
       }
     );
   }
@@ -913,6 +924,16 @@ export class DashboardComponent implements OnInit {
         console.log(this.modelsList);
         this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
       }
+    });
+  }
+
+  error() {
+    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
+      disableTimeOut: false,
+      closeButton: true,
+      enableHtml: true,
+      toastClass: "alert alert-info alert-with-icon",
+      positionClass: 'toast-top-center'
     });
   }
 }
