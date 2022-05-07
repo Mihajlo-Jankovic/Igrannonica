@@ -120,9 +120,10 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
 
 def encode(df, encodingList):
     for col in df:
-        for colName in encodingList:
+        for colName in encodingList[0]:
             if(df[col] == colName):
-                encodingType = encodingList[colName]
+                index = encodingList[0].index(colName)
+                encodingType = encodingList[1][index]
 
                 # Label encoding
                 if(encodingType == 'label'):
@@ -160,7 +161,7 @@ def encode(df, encodingList):
                 elif(encodingType == 'mean'):
                         encoder = df.groupby(col)[IZLAZ].mean()
                         df.loc[:, col + '_mean'] = df[col].map(encoder)
-                '''              
+                '''            
     return df
 
 # Izbacivanje kolona koje nisu input i output
