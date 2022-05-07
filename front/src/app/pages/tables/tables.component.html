@@ -137,8 +137,8 @@
                             <div *ngFor="let item of headingLines[0]; let i = index">
                                 <div class="Ioption">
                                     <div class="checkDIV">
-                                        <input type="checkbox" id="{{ 'check' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
-                                        <label for="{{ 'check' + i }}" class="check-box"></label>
+                                        <input type="checkbox" id="{{ 'check1' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
+                                        <label for="{{ 'check1' + i }}" class="check-box"></label>
                                     </div>
                                     <p>{{item}}</p>
                                 </div>
@@ -167,14 +167,17 @@
                             <h3>Please choose input!</h3>
                         </div>
                         <div [hidden]="notChecked" class="encoding">
-                                <div class="encRow" *ngFor="let item of tempColNumList; let i = index">
-                                    <div style="clear: both;">
+                                <div class="encRow" *ngFor="let item of colDataList; let i = index">
+                                    <div style="clear: both;" *ngIf="item['isSelected']">
                                         <div class="dropdown1Text"> 
-                                            <p class="encText">{{item[0]}}</p>
+                                            <p class="encText">{{item['colName']}}</p>
                                         </div>
-                                        <select class="dropdown1" name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
-                                            <option class='option' *ngIf="item[1]" value="None|{{item[0]}}" [selected]="item[2][0]">None</option>
-                                            <option class='option' *ngFor="let item1 of encodingList; let j = index" value={{item1}}|{{item[0]}} [selected]="item[2][j+1]">{{item1}}</option>
+                                        <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
+                                            <option class='option' value="none|{{item['colName']}}" [selected]="item['encList'][0]" *ngIf="item['isNum']">None</option>
+                                            <option class='option' value="label|{{item['colName']}}" [selected]="item['encList'][1]">Label</option>
+                                            <option class='option' value="one-hot|{{item['colName']}}" [selected]="item['encList'][2]">One-Hot</option>
+                                            <option class='option' value="binary|{{item['colName']}}" [selected]="item['encList'][3]">Binary</option>
+                                            <option class='option' value="frequency|{{item['colName']}}" [selected]="item['encList'][4]">Frequency</option>
                                         </select>
                                     </div>
                                 </div>
@@ -183,32 +186,9 @@
                 </section>
 
                 <input type="radio" name="tab" id="tab-3">
-                <label for="tab-3">Missing values & outliers</label>
+                <label for="tab-3">Missing values & Outliers</label>
                 <section>
                     <div class="tab-content">
-                        <div class="divMissingValues">
-                            <h4>Missing values</h4>
-                            <div class="encRow" *ngFor="let item of tempColNumList; let i = index">
-                                <div style="clear: both;">
-                                    <div class="dropdown2Text"> 
-                                        <p class="encText">{{item[0]}}</p>
-                                    </div>
-                                    <select class="dropdown2">
-                                        <option class='option'>None</option>
-                                    </select>
-                                    <div class="orDiv">
-                                        <p class="or">OR</p>
-                                    </div>
-                                    <div>
-                                        <input type="text" class="inputMissingValue">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton">CONFIRM</button>
-                        </div>
-                        <div class="divOutliers">
-                            <h4>Outliers</h4>
-                        </div>
                     </div>
                 </section>
             </div>

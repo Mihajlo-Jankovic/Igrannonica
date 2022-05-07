@@ -121,10 +121,10 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
 def encode(df, encodingList):
     for col in df:
         for colName in encodingList[0]:
-            if(df[col] == colName):
+            if(col == colName):
                 index = encodingList[0].index(colName)
                 encodingType = encodingList[1][index]
-
+                
                 # Label encoding
                 if(encodingType == 'label'):
                     encoder = LabelEncoder()

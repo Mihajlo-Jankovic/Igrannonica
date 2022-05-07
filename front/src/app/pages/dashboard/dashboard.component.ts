@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit {
 
   public problemType: string = "Regression";
   public encodingType: string = "label";
+  public encodingList = [];
   public activationFunction: string = "sigmoid";
   public optimizer: string = "Adam";
   public learningRate: number = 0.0001;
@@ -531,8 +532,20 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < this.selectedItems.length; i++) {
       metrics[i] = this.selectedItems[i].item_id;
     }
-    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
-    //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
+    this.encodingList = [];
+    let colNameTemp = []; let encodingTypeTemp = [];
+    let encodingListTemp = JSON.parse(sessionStorage.getItem('columnData'));
+    for(let i = 0; i < encodingListTemp.length; i++) {
+      if(encodingListTemp[i]['isSelected']) {
+        colNameTemp.push(encodingListTemp[i]['colName']);
+        encodingTypeTemp.push(encodingListTemp[i]['encoding']);
+      }
+    }
+    this.encodingList.push(colNameTemp);
+    this.encodingList.push(encodingTypeTemp);
+
+    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
+    //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
         this.modelsTrained++;
