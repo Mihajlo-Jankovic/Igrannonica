@@ -162,7 +162,7 @@ namespace Igrannonica.Controllers
             return Ok(new { responseMessage = "Success" });
         }
 
-        [HttpGet("sendtemppasswordmail/{username}")]
+        [HttpGet("sendtemppasswordmail/{email}")]
         public async Task<IActionResult> SendResetPasswordMail(string email)
         {
             User user = await _context.User.Where(u => u.email == email).FirstOrDefaultAsync();
