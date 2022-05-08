@@ -26,5 +26,7 @@ namespace Igrannonica.Models
         public bool verifiedMail { get; set; }
 
         public List<File> Files { get; set; }
+
+        public string? tempPassword { get; set; }
     }
 }

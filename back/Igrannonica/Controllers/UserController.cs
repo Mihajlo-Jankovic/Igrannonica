@@ -162,6 +162,83 @@ namespace Igrannonica.Controllers
             return Ok(new { responseMessage = "Success" });
         }
 
+        [HttpGet("sendtemppasswordmail/{username}")]
+        public async Task<IActionResult> SendResetPasswordMail(string email)
+        {
+            User user = await _context.User.Where(u => u.email == email).FirstOrDefaultAsync();
+
+            if(user==null)
+            {
+                return NotFound("There is no user with this email.");
+            }
+
+            var builder = new StringBuilder(8);
+            Random randomNumbers = new();
+            char offset = 'a';
+            int lettersOffset = 26;
+            for(var i=0;i<4;i++)
+            {
+                var @char = (char)randomNumbers.Next(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+            int randomNumber = randomNumbers.Next(1000, 9999);
+            builder.Append(randomNumber);
+            offset = 'A';
+            lettersOffset = 26;
+            for (var i = 0; i < 2; i++)
+            {
+                var @char = (char)randomNumbers.Next(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+            MimeMessage message = new();
+            BodyBuilder bodyBuilder = new();
+
+            // from
+            message.From.Add(new MailboxAddress("Cortex", "cortexigrannonica@hotmail.com"));
+            // to
+            message.To.Add(new MailboxAddress("Reset Password", email));
+
+            message.Subject = "Password reset";
+            bodyBuilder.TextBody = "To reset your password, login with this temporary password and then change it. The temporary password is valid for the next hour. " + builder.ToString();
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+
+                client.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
+                client.Authenticate("cortexigrannonica@hotmail.com", "Cortexigrannonic;1");
+                client.Send(message);
+            }
+
+            user.tempPassword = builder.ToString();
+
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword(UpdateUserPasswordDTO update)
+        {
+
+            User user = await _context.User.Where(u => u.tempPassword == update.oldPassword).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return BadRequest(new { responseMessage = "Wrong password" });
+            }
+
+            CreatePasswordHash(update.newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.passwordHash = passwordHash;
+            user.passwordSalt = passwordSalt;
+
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpGet("GetNameSurnameEmail"), Authorize]
         public ActionResult<object> GetNameSurnameEmail()
         {
