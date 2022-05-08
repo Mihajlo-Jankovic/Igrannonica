@@ -12,7 +12,7 @@ namespace Igrannonica.Services.UserService
         }
         public string GetUsername()
         {
-            string result = "nema usera";
+            string result = "no user";
             if(_httpContextAccessor.HttpContext != null)
             {
                 result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);

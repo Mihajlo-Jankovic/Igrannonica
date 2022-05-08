@@ -30,13 +30,21 @@ namespace Igrannonica.Controllers
         }
 
         [DisableRequestSizeLimit]
-        [HttpPost("updatefilerow")]
-        public async Task<IActionResult> Edit(CsvEditRowDTO csv)
+        [HttpPost("updatefilerowauthorized"), Authorize]
+        public async Task<IActionResult> EditAuthorized(CsvEditRowDTO csv)
         {
+            var usernameOriginal = _userService.GetUsername();
 
-            /*Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
+            Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
             if (file == null)
-                return BadRequest("no file with that name");*/
+                return BadRequest("no file with that name");
+            
+            var checkedCredentials = checkCredentials(file.Id, usernameOriginal);
+
+            if(checkedCredentials.Equals(Ok()) == false)
+            {
+                return checkedCredentials;
+            }
 
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
                     + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
@@ -51,8 +59,8 @@ namespace Igrannonica.Controllers
         }
 
         [DisableRequestSizeLimit]
-        [HttpPost("deletefilerow")]
-        public async Task<IActionResult> Delete(CsvDeleteRowDTO csv)
+        [HttpPost("updatefilerowunauthorized")]
+        public async Task<IActionResult> EditUnauthorized(CsvEditRowDTO csv)
         {
 
             /*Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
@@ -61,8 +69,54 @@ namespace Igrannonica.Controllers
 
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
                     + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:EditCell").Value);
+
+            HttpClient client = new HttpClient();
+            var csvJson = JsonConvert.SerializeObject(csv);
+            var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(content);
+
+        }
+
+        [DisableRequestSizeLimit]
+        [HttpPost("deletefilerowauthorized"), Authorize]
+        public async Task<IActionResult> DeleteAuthorized(CsvDeleteRowDTO csv)
+        {
+            var usernameOriginal = _userService.GetUsername();
+
+            Models.File? file = _mySqlContext.File.Where(f => f.FileName == csv.fileName).FirstOrDefault();
+            if (file == null)
+                return BadRequest("no file with that name");
+
+            var checkedCredentials = checkCredentials(file.Id, usernameOriginal);
+
+            if (checkedCredentials.Equals(Ok()) == false)
+            {
+                return checkedCredentials;
+            }
+
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
                     + _configuration.GetSection("Endpoints:DeleteRow").Value);
             
+            HttpClient client = new HttpClient();
+            var csvJson = JsonConvert.SerializeObject(csv);
+            var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(content);
+
+        }
+
+        [DisableRequestSizeLimit]
+        [HttpPost("deletefilerowunauthorized")]
+        public async Task<IActionResult> DeleteUnauthorized(CsvDeleteRowDTO csv)
+        {
+
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                    + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+                    + _configuration.GetSection("Endpoints:DeleteRow").Value);
+
             HttpClient client = new HttpClient();
             var csvJson = JsonConvert.SerializeObject(csv);
             var response = await client.PostAsync(endpoint, new StringContent(csvJson, Encoding.UTF8, "application/json"));
@@ -199,7 +253,6 @@ namespace Igrannonica.Controllers
                 {
                     responseMessage = "Error: No user found with that name!"
                 });
-
             Models.File file = _mySqlContext.File.Where(f => f.Id == request.Id).FirstOrDefault();
 
             if (file.UserForeignKey != user.id)
@@ -216,5 +269,25 @@ namespace Igrannonica.Controllers
             return Ok(new { responseMessage = "Success!" });
         }
 
+        private IActionResult checkCredentials(int fileID, string username)
+        {
+            User user = _mySqlContext.User.Where(u => u.username == username).FirstOrDefault();
+
+            if (user == null)
+                return BadRequest(new
+                {
+                    responseMessage = "Error: No user found with that name!"
+                });
+
+            Models.File file = _mySqlContext.File.Where(f => f.Id == fileID).FirstOrDefault();
+
+            if (file.UserForeignKey != user.id && file.IsPublic == false)
+                return BadRequest(new
+                {
+                    responseMessage = "Error: The file you are trying to change doesn't belong to you!"
+                });
+            return Ok();
+        }
     }
+
 }

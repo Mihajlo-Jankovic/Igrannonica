@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -77,16 +80,10 @@ namespace Igrannonica.Controllers
             var task = UploadFile(request, RandomFileName);
             if (task.Result == "Bad file type in the request" || task.Result == "No files data in the request.")
                 return BadRequest(task.Result);
-            Models.File file = new();
-            file.RandomFileName = RandomFileName;
-            file.FileName = task.Result;
-            file.DateCreated = DateTime.Now;
-            file.IsPublic = false;
-            file.UserForeignKey = null;
-            //file.SessionID = sessionID;
             return Ok(new { randomFileName = RandomFileName });
 
         }
+
 
         [HttpGet("delete-unauthorized/{filename}")]
         public async Task<IActionResult> DeleteFileUnauthorized(string filename)
