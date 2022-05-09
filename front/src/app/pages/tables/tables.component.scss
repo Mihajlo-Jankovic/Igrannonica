@@ -828,17 +828,16 @@ $tabs-base-color: #27293d;
     margin-top: 5px;
 }
 
-.divMissingValues,
-.divOutliers {
+.divMissingValues {
     width: 50%;
     border: 1px solid #7d3c8b;
     padding: 5px;
     border-radius: 5px;
     color: #ced4da;
-    float: left;
+    margin: auto;
     margin-bottom: 1rem;
 }
-
+/*
 @media(max-width: 1877px) {
     .inputMissingValue {
         max-width: 20%;
@@ -941,4 +940,95 @@ $tabs-base-color: #27293d;
         height: auto;
         max-width: 38%;
     }
+}*/
+
+.dropdown2 {
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-right: 10px;
+    margin-top: 8px;
+    height: 30px;
+    position: relative;
+    bottom: 0;
+    cursor: pointer;
+    float: left;
+}
+
+.dropdown2:focus {
+    border-color: #7d3c8b;
+}
+
+.inputMissingValue {
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-top: 8px;
+    margin-right: 10px;
+    max-width: 25%;
+    height: 30px;
+    position: relative;
+    bottom: 0;
+    cursor: pointer;
+    float: left;
+    width: 125px;
+}
+
+.confirmButton {
+    background-color: #27293d;
+    width: 125px;
+    height: auto;
+    padding: 5px;
+    float: left;
+    border: 1px solid #7d3c8b;
+    border-radius: 5px;
+    color: #ffff;
+    margin-bottom: 0px !important;
+    margin-top: 8px;
+}
+
+.orDiv {
+    float: left;
+    height: auto;
+    margin-bottom: 0px !important;
+    margin-top: 8px;
+    margin-right: 10px;
+}
+.or {
+    margin-top: 5px;
+}
+
+.divMissingValues,
+.divOutliers {
+    width: 50%;
+    border: 1px solid #7d3c8b;
+    padding: 5px;
+    border-radius: 5px;
+    color: #ced4da;
+    //margin-bottom: 1rem;
+    margin: auto;
+}
+
+.deleteOutliersButton {
+    background-color: #27293d;
+    width: 125px;
+    height: auto;
+    margin: auto;
+    padding: 5px;
+    border: 1px solid #7d3c8b;
+    border-radius: 5px;
+    color: #ffff;
+    margin-bottom: 0px !important;
+}
+
+.outliersButtonDiv {
+    width: 50%;
+    height: 35px;
+    margin: auto;
+    padding: 10px;
 }

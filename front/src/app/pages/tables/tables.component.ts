@@ -149,6 +149,11 @@ export class TablesComponent {
   encodingList = ["label", "one-hot", "binary", "frequency"];
   colDataList: any = [];
   //*
+
+  //*
+  missingValuesList = [];
+  fillMissingValuesList = ["MIN", "MAX", "AVG", "MEAN"];
+  //*
   
   constructor(private tableService: TableService, private cookie : CookieService) {
     sessionStorage.removeItem('statistics');
@@ -912,4 +917,17 @@ export class TablesComponent {
     console.log(height);
   }
 
+  /*
+  selectedMissingValuesCol() {
+    
+  }
+
+  selectedfillMissingValuesCol() {
+    
+  }
+
+  confirmSelectedMissingValue() {
+    
+  }
+  */
 }

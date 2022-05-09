@@ -189,6 +189,37 @@
                 <label for="tab-3">Missing values & Outliers</label>
                 <section>
                     <div class="tab-content">
+                        <div class="divMissingValues">
+                            <h4>Choose or enter to fill missing values</h4>
+                            <div class="encRow" style="height: 45px;">
+                                <div style="margin: auto;">
+                                <select class="dropdown2">
+                                    <option class='option' ngbTooltip="Column name" *ngFor="let item of missingValuesList; let i = index">{{item}}</option>
+                                </select>
+                                <select class="dropdown2">
+                                    <option class='option' ngbTooltip="" *ngFor="let item of fillMissingValuesList; let i = index">{{item}}</option>
+                                </select>
+                                <div class="orDiv">
+                                    <p class="or">OR</p>
+                                </div>
+                                <input type="text" class="inputMissingValue" ngbTooltip="">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton">CONFIRM</button>
+                                </div>
+                            </div>
+                            <div class="table-responsive" id="table" style="width:50%; height: 250px; margin-top: 10px; margin-bottom: 10px; margin:auto; border: 1px solid #7d3c8b">
+                                <table class=" table tablesorter">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--
+                            <div class="outliersButtonDiv">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 deleteOutliersButton">DELETE OUTLIERS</button>
+                            </div>
+                            -->
+                        </div>
                     </div>
                 </section>
             </div>
