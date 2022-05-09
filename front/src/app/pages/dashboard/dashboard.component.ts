@@ -559,6 +559,7 @@ export class DashboardComponent implements OnInit {
       'fileName' : fileName, 
       'realName' : realName,
       'description' : this.description,
+      'visibility' : false,
       'models' : this.modelsList
     }
     /*
