@@ -90,7 +90,7 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>Training : Test - {{range}}% : {{100-range}}%</h6>
-                        <input type="range" name="range" min="10" max="90" step="10" value="50" [(ngModel)]="range" ngbTooltip="Ratio of training to test data" (change)="onSelected($event)">
+                        <input type="range" name="range" min="10" max="90" step="10" class="ratio" [(ngModel)]="range" ngbTooltip="Ratio of training to test data" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameter">
                         <h6>Loss function</h6>
@@ -135,6 +135,15 @@
                             <option class='option' value="10">10</option>
                         </select>
                     </div>
+
+                    <div class="hyperparameter">
+                        <h6 id="range-text" style="height: 15px;">Training : validation : test - {{range1}}% : {{this.range2 - this.range1}}% : {{100 - this.range2}}%</h6>
+                        <section class="range-container">
+                            <input name="range1" min="10" max="90" step="5" type="range" class="range" id="range1" [(ngModel)]="range1" (change)="onSelected($event)">
+                            <input name="range2" min="10" max="90" step="5" type="range" class="range" id="range2" [(ngModel)]="range2" (change)="onSelected($event)">
+                        </section>
+                    </div>
+
                     <div class="hyperparameterMetrics">
                         <h6>Metrics for model comparison</h6>
                         <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" [disabled]="firstTraining" (onSelect)="onItemSelect($event)"
@@ -297,7 +306,6 @@
             <div class=" card card-chart">
                 <div class=" card-header">
                     <h3 class=" card-title">Model metrics</h3>
-                    <button (click)="makeMetricCharts()">KLIKNI</button>
                 </div>
                 <div class=" card-body">
                     <div class=" chart-area"><canvas id="metric-chart"> </canvas></div>
@@ -321,6 +329,9 @@
             </ng-container>
         </div>
     </div>
+    <div class="col-12">
+    </div>
+
     <div class="row" [hidden]="!trained || !loggedUser">
         <div class="col-12">
             <div class="card">

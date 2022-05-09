@@ -12,6 +12,7 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: "app-dashboard",
@@ -43,6 +44,8 @@ export class DashboardComponent implements OnInit {
   public metrics: any = [];
   public epochs: number = 100;
   public range: number = 80;
+  public range1: number = 75;
+  public range2: number = 90;
   public experimentName: string = "";
   public description : string = "";
 
@@ -498,7 +501,7 @@ export class DashboardComponent implements OnInit {
       sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems))
       metrics[i] = this.selectedItems[i].item_id;
     }
-    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
+    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
     //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
@@ -621,6 +624,14 @@ export class DashboardComponent implements OnInit {
     if(sessionStorage.getItem('range'))
     {
       this.range = Number(sessionStorage.getItem('range'));
+    }
+    if(sessionStorage.getItem('range1'))
+    {
+      this.range1 = Number(sessionStorage.getItem('range1'));
+    }
+    if(sessionStorage.getItem('range2'))
+    {
+      this.range2 = Number(sessionStorage.getItem('range2'));
     }
     if(sessionStorage.getItem('activationFunction'))
     {
@@ -751,6 +762,28 @@ export class DashboardComponent implements OnInit {
     {
       this.epochs = value;
       sessionStorage.setItem('epochs', (this.epochs).toString());
+    }
+    else if(target == "range1")
+    {
+      if(this.range1 >= this.range2) {
+        this.range1 = this.range2 - 10;
+      }
+      sessionStorage.setItem('range1', (this.range1).toString());
+    }
+    else if(target == "range2")
+    {
+      if(this.range2 <= this.range1) {
+        this.range2 = this.range1 + 10;
+      }
+      sessionStorage.setItem('range2', (this.range2).toString());
+    }
+  }
+
+  rangeChange(event : any) {
+    var ratioText = document.getElementById("range-text");
+
+    if(this.range1 >= this.range2) {
+      this.range2 = this.range1 + 10;
     }
   }
 

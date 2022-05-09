@@ -4,7 +4,8 @@
     {
         public List<string> inputList { get; set; }
         public string output { get; set; }
-        public double ratio { get; set; }
+        public double ratio1 { get; set; }
+        public double ratio2 { get; set; }
         public int numLayers { get; set; }
         public List<int> layerList { get; set; }
         public string activationFunction { get; set; }

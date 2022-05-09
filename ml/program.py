@@ -190,15 +190,16 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 def output_unique_values(df,output):
     return df[output].nunique()
 
-def startTraining(connid, fileName, inputList, output, encodingType, ratio, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
+def startTraining(connid, fileName, inputList, output, encodingType, ratio1, ratio2, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
     PATH = 'http://127.0.0.1:10108/downloadFile/'
     df = openCSV(PATH + fileName)
-    X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio)
+    X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio1)
     outputUniqueValues = output_unique_values(df,output)
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
-    model = m.fit(x=X_train, y=y_train, validation_data=(X_test, y_test), epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])
-
-    return model.history
+    model = m.fit(x=X_train, y=y_train, validation_split=ratio2, epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])
+    score = m.evaluate(X_test, y_test)
+    print(score)
+    return score
 
 
 # t1 = threading.Thread(target=testiranje)
