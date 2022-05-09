@@ -538,9 +538,6 @@ export class DashboardComponent implements OnInit {
         this.modelsTrained++;
         let JSONtoken: string = JSON.stringify(response);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if(StringToken!="Training started"){
-          this.error();
-        }
         if(this.epochs > this.maxEpochs) {
           this.maxEpochs = this.epochs;
           for (let i = 0; i < this.maxEpochs; i++){
