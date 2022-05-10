@@ -259,85 +259,113 @@ export class TablesComponent {
 
   setInputOutput() {
 
-    for (let i = 0; i < this.headingLines[0].length-1; i++) {
-      this.radios[i] = true; //disabled
-      this.checks[i] = false; //disabled
-      this.radios1[i] = false; //checked
-      this.checks1[i] = true; //checked
-      this.listCheckedI.push(this.headingLines[0][i])
+    if(sessionStorage.getItem("inputList") == null) {
+      for (let i = 0; i < this.headingLines[0].length-1; i++) {
+        this.radios[i] = true; //disabled
+        this.checks[i] = false; //disabled
+        this.radios1[i] = false; //checked
+        this.checks1[i] = true; //checked
+        this.listCheckedI.push(this.headingLines[0][i])
+      }
+
+      this.checks[this.headingLines[0].length-1] = true;
+      this.checks1[this.headingLines[0].length-1] = false;
+      this.listCheckedI.splice(this.headingLines[0].length-1, 1);
+      sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+
+      this.radios[this.headingLines[0].length-1] = false;
+      this.radios1[this.headingLines[0].length-1] = true;
+      this.selectedOutput = this.headingLines[0][this.headingLines[0].length-1];
+      sessionStorage.setItem('output', this.selectedOutput);
+      this.pret = this.headingLines[0].length-2;
       
-      //*
-      let flag: any = 0;
+      this.setEncoding();
+    }
+    else {
+      this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
+      this.selectedOutput = sessionStorage.getItem('output');
+
+      let f: number = 0;
+      for (let i = 0; i < this.headingLines[0].length; i++) {
+        f = 0;
+        for (let j = 0; j < this.listCheckedI.length; j++) {
+          if(this.headingLines[0][i] == this.listCheckedI[j]) {
+            this.checks1[i] = true;
+            this.checks[i] = false;
+            this.radios1[i] = false;
+            this.radios[i] = true;
+            f = 1;
+          }
+        }
+        if(f == 0)
+        {
+          if(this.headingLines[0][i] == this.selectedOutput) {
+            this.checks1[i] = false;
+            this.checks[i] = true;
+            this.radios1[i] = true;
+            this.radios[i] = false;
+          }
+          else {
+            this.radios[i] = false;
+            this.checks[i] = false;
+            this.radios1[i] = false;
+            this.checks1[i] = false;
+          }
+        }
+      }
+      sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+      sessionStorage.setItem('output', this.selectedOutput);
+      this.updateEncoding();
+    }
+  }
+  //*
+  setEncoding() {
+    for (let i = 0; i < this.headingLines[0].length-1; i++) {   
+      let f: any = 0;
       this.restartColData();
-      //default-ni encoding
+
       for(let j = 0; j < this.numericValues['col'].length; j++) {
         if(this.numericValues['col'][j] == this.headingLines[0][i]) {
           this.column['encoding'] = "none";
-          flag = 1;
+          f = 1;
         }
       }
-      
-      if(flag == 0) {
+        
+      if(f == 0) {
         this.column['encoding'] = this.encodingList[0];
       }
-        this.column['id'] = i;
-        this.column['colName'] = this.headingLines[0][i]
-        this.column['isSelected'] = true;
-        this.column['isNum'] = this.isNumericFun(this.headingLines[0][i]);
-        this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
-      
+      this.column['id'] = i;
+      this.column['colName'] = this.headingLines[0][i]
+      this.column['isSelected'] = true;
+      this.column['isNum'] = this.isNumericFun(this.headingLines[0][i]);
+      this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
+        
       this.colDataList.push(this.column);
-      //*
     }
 
-    this.checks[this.headingLines[0].length-1] = true;
-    this.checks1[this.headingLines[0].length-1] = false;
-    this.listCheckedI.splice(this.headingLines[0].length-1, 1);
-    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
-
-    this.radios[this.headingLines[0].length-1] = false;
-    this.radios1[this.headingLines[0].length-1] = true;
-    this.selectedOutput = this.headingLines[0][this.headingLines[0].length-1];
-    sessionStorage.setItem('output', this.selectedOutput);
-    this.pret = this.headingLines[0].length-2;
-
-    //*
-    let flag: any = 0;
+    let f: any = 0;
     this.restartColData();
     this.column['id'] = this.headingLines[0].length-1;
     this.column['colName'] = this.headingLines[0][this.headingLines[0].length-1];
     this.column['isSelected'] = false;
     this.column['isNum'] = this.isNumericFun(this.headingLines[0][this.headingLines[0].length-1]);
-
-    flag = 0;
+  
+    f = 0;
     for(let j = 0; j < this.numericValues['col'].length; j++) {
       if(this.numericValues['col'][j] == this.headingLines[0][this.headingLines[0].length-1]) {
         this.column['encoding'] = "none";
-        flag = 1;
+        f = 1;
       }
     }
-    if(flag == 0) {
+    if(f == 0) {
       this.column['encoding'] = this.encoding[0];
     }
     this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
     this.colDataList.push(this.column);
-
-    /*
-    if(sessionStorage.getItem('inputList')) {
-      let v: any = [];
-      v = JSON.parse(sessionStorage.getItem('inputList'));
-      sessionStorage.setItem('inputList', JSON.stringify(v));
-    }
-    else {
-      sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
-    }
-    */
-
+  
     sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
-    //console.log(JSON.parse(sessionStorage.getItem('columnData')));
   }
 
-  //*
   isNumericFun(colName: any) {
     for(let i = 0; i < this.numericValues['col'].length; i++) {
       if(this.numericValues['col'][i] == colName) {
@@ -651,6 +679,13 @@ export class TablesComponent {
   inputCheckedFun(event: any) {
     var value = event.target.value;
 
+    //*
+    if(sessionStorage.getItem('inputList')) {
+      this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
+      this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
+    }
+    //*
+
     var exists = false;
     for (let i = 0; i < this.listCheckedI.length; i++) {
       if(this.listCheckedI[i] == value) {
@@ -670,12 +705,13 @@ export class TablesComponent {
         if(this.colDataList[i]['colName'] == value) {
 
           this.colDataList[i]['isSelected'] = false;
-          /*    
-            if(this.colDataList[i]['isNum'])
-              this.colDataList[i]['encoding'] = "none";
-            else
-              this.colDataList[i]['encoding'] = this.encodingList[0];
-          */
+              
+          if(this.colDataList[i]['isNum'])
+            this.colDataList[i]['encoding'] = "none";
+          else
+            this.colDataList[i]['encoding'] = this.encodingList[0];
+          
+          this.colDataList[i]['encList'] = this.getSelectedEnc(this.colDataList[i]['isNum'], this.colDataList[i]['encoding']);
         }
       }
       //*
@@ -707,10 +743,28 @@ export class TablesComponent {
     //*
   }
 
-  resetEncoding() {
+  updateEncoding() {
+    let f: number = 0;
 
+    this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
+    this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
+
+    for (let i = 0; i < this.colDataList.length; i++) {
+      f = 0;
+      for (let j = 0; j < this.listCheckedI.length; j++) {
+        if(this.colDataList[i]['colName'] == this.listCheckedI[j]) {
+          this.colDataList[i]['isSelected'] = true;
+          f = 1;
+        }
+      }
+      if(f == 0)
+        this.colDataList[i]['isSelected'] = false;
   }
-  
+
+  sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
+  sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+  }
+
   selectedOutputFun(event: any) {
     var value = event.target.value;
     var ind: number = -1;
@@ -721,7 +775,7 @@ export class TablesComponent {
     }
 
     this.pret = ind;
-    console.log(this.pret);
+    //console.log(this.pret);
     this.selectedOutput = value;
 
     sessionStorage.setItem('output', this.selectedOutput);
@@ -733,7 +787,7 @@ export class TablesComponent {
   
   disableInput(id : number) {
     this.checks[id] = !this.checks[id];
-    
+
     if(this.pret != -1) {
       this.checks[this.pret] = !this.checks[this.pret];
     }
@@ -759,7 +813,6 @@ export class TablesComponent {
     }
 
     sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
-    //console.log(this.colDataList);
   }
 
   //*
