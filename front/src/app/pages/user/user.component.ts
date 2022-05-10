@@ -97,7 +97,7 @@ export class UserComponent implements OnInit {
   }
 
   
-  edit(form: FormGroup) {
+  edit (form: FormGroup) {
     if (form.value.firstname && form.value.lastname && form.value.password && form.value.confirmPassword) {
       if(form.value.password != form.value.confirmPassword){
         this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>', '', {
@@ -109,15 +109,30 @@ export class UserComponent implements OnInit {
         });
       }
      else{
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
-      this.editService.edit(form.value.firstname, form.value.lastname,form.value.password).subscribe(token => {
+      this.editService.edit(form.value.firstname, form.value.lastname,form.value.password).subscribe(async token => {
         let JSONtoken: string = JSON.stringify(token);
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+        await new Promise(f=>setTimeout(f,50));
+        location.reload();
+       
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken == "Error: Wrong password!"){
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
       })
      }
     }
@@ -135,15 +150,29 @@ export class UserComponent implements OnInit {
         });
       }
       else{
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
-        this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(token => {
+        this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(async token => {
           let JSONtoken: string = JSON.stringify(token);
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+          await new Promise(f=>setTimeout(f,50));
+          location.reload();
+        },err=>{
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if(StringToken == "Error: Wrong password!"){
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
         })
       }
     }

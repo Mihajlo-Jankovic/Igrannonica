@@ -18,7 +18,7 @@ export class LoginLayoutComponent implements OnInit {
 
   public loginForm: FormGroup;
 
-  constructor( private toastr: ToastrService,private formBuilder: FormBuilder, private loginService: LoginService, private cookie: CookieService, private router: Router) {
+  constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private loginService: LoginService, private cookie: CookieService, private router: Router) {
     this.loginForm = formBuilder.group({
       username: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$")]],
       password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
@@ -42,7 +42,24 @@ export class LoginLayoutComponent implements OnInit {
       this.loginService.login(form.value.username, form.value.password).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        if (StringToken == "User not found"){
+        
+        this.save(form.value.username, form.value.password);
+        this.cookie.set("token", StringToken);
+        this.cookie.set("username", form.value.username);
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+        this.router.navigate(['upload']);
+
+      }, err => {
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        console.log(StringToken);
+        if (StringToken == "Error: Username not found!") {
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong username</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
@@ -51,7 +68,7 @@ export class LoginLayoutComponent implements OnInit {
             positionClass: 'toast-top-center'
           });
         }
-        else if (StringToken == "Wrong password"){
+        else if (StringToken == "Error: Wrong password!") {
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
@@ -60,20 +77,16 @@ export class LoginLayoutComponent implements OnInit {
             positionClass: 'toast-top-center'
           });
         }
-        else {
-          this.save(form.value.username,form.value.password);
-          this.cookie.set("token", StringToken);
-          this.cookie.set("username",form.value.username);
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-          this.router.navigate(['home']);
-        }
       })
+    }
+    else {
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please enter all fields</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
     }
   }
 }
