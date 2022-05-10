@@ -15,7 +15,7 @@
             <div class=" card">
                 <div class="card-header">
                     <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing dataset</h3>
-                    <div class="header-filter">
+                    <div class="header-filter" *ngIf="loggedUser">
                         <div class="filter-left">
                             <h6 *ngIf="cookieCheck">Filter datasets</h6>
                             <select class='dropdown' *ngIf="cookieCheck" [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Data Privacy" ngbTooltip="Data Privacy" style="float:left;">
@@ -55,6 +55,9 @@
                     </div>
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
+                    <div style="margin: auto" *ngIf="noFiles">
+                        <h1 style="text-align:center">No public datasets available.</h1>
+                    </div>
                     <div class="authorized" *ngIf="cookieCheck">
                         <div *ngFor="let item of FilesList">
                             <div class="file">

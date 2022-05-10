@@ -35,6 +35,8 @@ export class UploadComponent implements OnInit {
   numOfPages: any = 0;
   numPerPage: any = 8;
 
+  noFiles: boolean = true;
+
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string, dateCreated:Date}[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
 
@@ -84,6 +86,13 @@ export class UploadComponent implements OnInit {
         this.FilesList = data['files'];
         this.numOfPages = data['numOfPages'];
         
+        if(this.FilesList.length != 0) {
+          this.noFiles = false;
+        }
+        else {
+          this.noFiles = true;
+        }
+
         this.allFiles = [];
         this.myFiles = [];
 
@@ -114,6 +123,13 @@ export class UploadComponent implements OnInit {
       this.listOfFilesUnauthorized = this.filesService.filesUnauthorized("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(data => {
         this.FilesListUnauthorized = data['files'];
         this.numOfPages = data['numOfPages'];
+
+        if(this.FilesListUnauthorized.length != 0) {
+          this.noFiles = false;
+        }
+        else {
+          this.noFiles = true;
+        }
 
         for (let i = 0; i < this.FilesListUnauthorized.length; i++) {
           if (this.FilesListUnauthorized[i]['isPublic'])
