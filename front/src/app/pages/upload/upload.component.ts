@@ -60,13 +60,13 @@ export class UploadComponent implements OnInit {
       this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-
-        if (StringToken == "Token not valid"){
+        this.cookie.set("token", StringToken);
+      }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken == "Error: Token not valid"){
           this.onLogout();
           location.reload();
-        }
-        else{
-          this.cookie.set("token", StringToken);
         }
       });
   }
@@ -168,7 +168,14 @@ export class UploadComponent implements OnInit {
           this.cookie.set("filename", StringName);
           this.cookie.set('realName', file.name);
           this.router.navigate(['/tables']);
-          console.log(StringName);
+          this.uploadNotificationSuccess();
+        },err=>{
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Bad file type in the request") {
+            this.uploadNotificationBadFileType();
+          }
+          else this.error();
         })
       }
       else{
@@ -178,10 +185,18 @@ export class UploadComponent implements OnInit {
           this.cookie.set("filename", StringName);
           this.cookie.set('realName', file.name);
           this.router.navigate(['/tables']);
+          this.uploadNotificationSuccess();
+        },err=>{
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Bad file type in the request") {
+            this.uploadNotificationBadFileType();
+          }
+          else this.error();
         })
       }
     }
-    this.uploadNotification();
+    
   }
 
   filesAuthorized() {
@@ -213,6 +228,12 @@ export class UploadComponent implements OnInit {
         }
         document.body.appendChild(downloadLink);
         downloadLink.click();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken=="Error: No file found with that name!"){
+          this.error();
+        }
       })
     }
   }
@@ -230,6 +251,12 @@ export class UploadComponent implements OnInit {
       }
       document.body.appendChild(downloadLink);
       downloadLink.click();
+    },err=>{
+      let JSONtoken: string = JSON.stringify(err.error);
+      let StringToken = JSON.parse(JSONtoken).responseMessage;
+      if(StringToken=="Error: No file found with that name!"){
+        this.error();
+      }
     })
   }
 
@@ -254,10 +281,21 @@ export class UploadComponent implements OnInit {
     this.http.get<any>(this.configuration.downloadFileUnauthorized + item.randomFileName, options).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
       location.reload();
+    },err=>{
+      let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error encoundered while deleting dataset.") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting dataset</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
     })
   }
   
-
   onCheckboxChange(event: any,item) {
     
     if(!event.target.checked){
@@ -276,6 +314,13 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
+        location.reload();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Username not found!" || StringToken=="Error: The file you are trying to change doesn't belong to you!") {
+            this.error();
+          }
       })
       /*
       if(this.selectedPrivacyType == "public")
@@ -298,6 +343,13 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
+        location.reload();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Username not found!" || StringToken=="Error: The file you are trying to change doesn't belong to you!") {
+            this.error();
+          }
       })
     }
     /*
@@ -306,7 +358,8 @@ export class UploadComponent implements OnInit {
     */
   }
 
-  uploadNotification() {
+
+  uploadNotificationSuccess() {
     this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>File uploaded successfully</b>.', '', {
       disableTimeOut: false,
       closeButton: true,
@@ -342,5 +395,23 @@ export class UploadComponent implements OnInit {
       this.pageNum = this.numOfPages;
       this.showDatasets(this.selectedPrivacyType, this.pageNum);
     }
+  }
+  uploadNotificationBadFileType() {
+    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Bad file type</b>.', '', {
+      disableTimeOut: false,
+      closeButton: true,
+      enableHtml: true,
+      toastClass: "alert alert-info alert-with-icon",
+      positionClass: 'toast-top-center'
+    });
+  }
+  error() {
+    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
+      disableTimeOut: false,
+      closeButton: true,
+      enableHtml: true,
+      toastClass: "alert alert-info alert-with-icon",
+      positionClass: 'toast-top-center'
+    });
   }
 }
