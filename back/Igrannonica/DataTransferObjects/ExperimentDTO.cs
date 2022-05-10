@@ -11,6 +11,7 @@ namespace Igrannonica.DataTransferObjects
         public string realName { get; set; }
         public string description { get; set; }
         public bool visibility { get; set; }
+        public bool overwrite { get; set; }
         public List<Model> models { get; set; }
     }
 }

@@ -380,11 +380,22 @@ namespace Igrannonica.Controllers
             experiment.userId = user.id;
 
             var client = new MongoClient(getMongoDBConnString());
-            Console.WriteLine(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<ExperimentDTO>("experiment");
 
-            collection.InsertOne(experiment);
+            var tmp = collection.Find(e => e.name == experiment.name && e.userId == user.id);
+
+            if(tmp != null && experiment.overwrite == false)
+            {
+                return Ok(new { responseMessage = "There is already an experiment with the same name, do you want to overwrite it?" });
+            }
+
+            else if (tmp != null && experiment.overwrite == true)
+            {
+                var result = collection.ReplaceOne(e => e.name == experiment.name, experiment);
+            }
+
+            else collection.InsertOne(experiment);
 
             return Ok(experiment);
         }
