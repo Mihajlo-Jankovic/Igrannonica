@@ -4,37 +4,104 @@
             <div class=" card">
                 <div class="card-header">
                     <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing experiment</h3>
+                    <div class="header-filter">
+                        <div class="filter-left" style="margin-bottom: 10px;">
+                            <h6 *ngIf="cookieCheck" >Filter experiments</h6>
+                            <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Experiment Privacy" ngbTooltip="Experiment Privacy" style="float:left;">
+                                <option class='option' value="public">Public</option>
+                                <option class='option' value="myexperiments">My experiment</option>
+                            </select>
+                        </div>
+                        <div class="filter-right">
+                            <div class="buttons" [hidden]="!numOfPages">
+                                <button class=" btn btn-link page" style="padding-left: 0;" (click)="lastPage()">
+                                    <i class="tim-icons icon-double-right arrow"></i>
+                                </button>
+                                <button class=" btn btn-link page" style="padding-left: 0; padding-right: 0px;" (click)="nextPage(1)">
+                                    <i class="tim-icons icon-minimal-right arrow"></i>
+                                </button>
+                                <button class=" btn btn-link page" style="padding-right: 0px;" (click)="nextPage(2)" [hidden]="pageNum >= numOfPages-1">
+                                    {{pageNum+2}}
+                                </button>
+                                <button class=" btn btn-link page" (click)="nextPage(1)" [hidden]="pageNum == numOfPages">
+                                    {{pageNum+1}}
+                                </button>
+                                <button class=" btn btn-link page" style="color: white;">{{pageNum}}</button>
+                                <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="pageNum == 1">
+                                    {{pageNum-1}}
+                                </button>
+                                <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="pageNum < 3">
+                                    {{pageNum-2}}
+                                </button>
+                                <button class=" btn btn-link page" style="padding-left:0px;" (click)="previousPage(1)">
+                                    <i class="tim-icons icon-minimal-left arrow"></i>
+                                </button>
+                                <button class=" btn btn-link page" (click)="firstPage()">
+                                    <i class="tim-icons icon-double-left arrow"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
-                    <div class="authorized">
-                        <div *ngFor="let item of experimentList">
+                    <div class="authorized" *ngIf="cookieCheck">
+                        <div *ngFor="let item of experimentListAuthorized">
                             <div class="file">
                                 <div class="fileContent">
-                                    <div class="row">
+                                    <div class=" row">
                                         <div class="titleHeader">
                                             <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">Experiment: {{item.name}}</h4>
-                                            <!--
                                             <div class="settings">
-                                                <button class=" btn btn-link trash " placement="left" ngbTooltip="Delete file" container="body" style="left: 90px;" (click)="deleteExperiments(item['_id'])">
-                                                    <i class="tim-icons icon-trash-simple"> </i>
-                                                </button>
-                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:right; margin-right:20px; width:60px; height:20px;" (click)="useExperiments(item)">Use this</button>
+                                                <label class="switch" ngbTooltip="Change file's privacy by toggling this">
+                                                    <input type="checkbox" *ngIf="item.visibility" (change)="onCheckboxChange($event,item)" checked>
+                                                    <input type="checkbox" *ngIf="!item.visibility" (change)="onCheckboxChange($event,item)">
+                                                    <span class="slider round"></span>
+                                                </label>
                                             </div>
-                                            -->
                                         </div>
-
                                         <div class="fileName">Desription:</div>
-                                        <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
-                                        <div class="fileName">Date : {{item.date}}</div>
+                                            <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
+                                            <div class="fileName">Date : {{item.date}}</div>
                                         <div class="fileName" style="height:auto;">Dataset : {{item.realName}}</div>
                                         <div style="width:100%; height:auto;">
                                             <div class="fileName" style="width:210px; float: left; margin-right: 0px;">Problem type : {{item.models[0]['parameters']['problemType']}}</div>
                                             <div class="settings">
                                                 <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">Use this</button>
                                                 <button class=" btn btn-link trash " placement="left" ngbTooltip="Delete file" container="body" (click)="deleteExperiments(item['_id'])" style="float:right;">
-                                                    <i class="tim-icons icon-trash-simple"> </i>
-                                                </button>
+                                                <i class="tim-icons icon-trash-simple"> </i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="authorized" *ngIf="cookieCheck">
+                        <div *ngFor="let item of experimentListUnAuthorized">
+                            <div class="file">
+                                <div class="fileContent">
+                                    <div class=" row">
+                                        <div class="titleHeader">
+                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">Experiment: {{item.name}}</h4>
+                                            <div class="settings">
+                                                <label class="switch" ngbTooltip="Change file's privacy by toggling this">
+                                                    <input type="checkbox" *ngIf="item.visibility" (change)="onCheckboxChange($event,item)" checked>
+                                                    <input type="checkbox" *ngIf="!item.visibility" (change)="onCheckboxChange($event,item)">
+                                                    <span class="slider round"></span>
+                                                </label>
                                             </div>
+                                        </div>
+                                        <div class="fileName">Desription:</div>
+                                            <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
+                                            <div class="fileName">Date : {{item.date}}</div>
+                                        <div class="fileName" style="height:auto;">Dataset : {{item.realName}}</div>
+                                        <div style="width:100%; height:auto;">
+                                            <div class="fileName" style="width:210px; float: left; margin-right: 0px;">Problem type : {{item.models[0]['parameters']['problemType']}}</div>
+                                            <div class="settings">
+                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">Use this</button>
+                                                <button class=" btn btn-link trash " placement="left" ngbTooltip="Delete file" container="body" (click)="deleteExperiments(item['_id'])" style="float:right;">
+                                                <i class="tim-icons icon-trash-simple"> </i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

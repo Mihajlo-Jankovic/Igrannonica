@@ -59,7 +59,7 @@ export class UserComponent implements OnInit {
     this.userInfo = this.userInfoService.info().subscribe(data=> {
       this.userInfo = data;
     })
-    this.showExperiments()
+    //this.showExperiments()
   }
 
   public get m() {
@@ -115,27 +115,27 @@ export class UserComponent implements OnInit {
     }
   }
 
-  showExperiments()
-  {
-    this.userService.getAllUserExperiments().subscribe(exp =>{
-      for(let i = 0; i< exp.length; i++)
-      {
-        let expData : any = {};
-        expData = exp[i];
-        this.data = expData;
+  // showExperiments()
+  // {
+  //   this.userService.getAllUserExperiments().subscribe(exp =>{
+  //     for(let i = 0; i< exp.length; i++)
+  //     {
+  //       let expData : any = {};
+  //       expData = exp[i];
+  //       this.data = expData;
 
-        this.experiments.push(this.data)
-      }
-    })
-  }
+  //       this.experiments.push(this.data)
+  //     }
+  //   })
+  // }
 
-  deleteExperiments(id : any)
-  {
-    this.userService.deleteExperiment(id).subscribe(res => {
-      this.experiments = [];
-      this.showExperiments();
-    })
-    location.reload();
-  }
+  // deleteExperiments(id : any)
+  // {
+  //   this.userService.deleteExperiment(id).subscribe(res => {
+  //     this.experiments = [];
+  //     this.showExperiments();
+  //   })
+  //   location.reload();
+  // }
 
 }
