@@ -56,7 +56,7 @@ namespace Igrannonica.Controllers
             file.RandomFileName = RandomFileName;
             file.DateCreated = DateTime.Now;
             var task = UploadFile(request, RandomFileName);
-            if (task.Result == "Bad file type in the request" || task.Result == "No files data in the request.")
+            if (task.Result == _configuration.GetSection("ResponseMessages:BadFileType").Value || task.Result == _configuration.GetSection("ResponseMessages:NoFile").Value)
                 return BadRequest(task.Result);
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
@@ -75,7 +75,7 @@ namespace Igrannonica.Controllers
             var request = HttpContext.Request;
             
             var task = UploadFile(request, RandomFileName);
-            if (task.Result == "Bad file type in the request" || task.Result == "No files data in the request.")
+            if (task.Result == _configuration.GetSection("ResponseMessages:BadFileType").Value || task.Result == _configuration.GetSection("ResponseMessages:NoFile").Value)
                 return BadRequest(task.Result);
             Models.File file = new();
             file.RandomFileName = RandomFileName;
@@ -138,7 +138,7 @@ namespace Igrannonica.Controllers
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                return "Bad file type in the request";
+                return _configuration.GetSection("ResponseMessages:BadFileType").Value;
             }
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
@@ -183,7 +183,7 @@ namespace Igrannonica.Controllers
                 section = await reader.ReadNextSectionAsync();
             }
             // If the code runs to this location, it means that no files have been saved
-            return "No files data in the request.";
+            return _configuration.GetSection("ResponseMessages:NoFile").Value;
         }
 
     }
