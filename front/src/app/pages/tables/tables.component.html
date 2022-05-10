@@ -1,4 +1,20 @@
 <div class=" content">
+    <div class="warning-wrapper" [hidden]="!deleteWarning">
+        <div class="warning-modal">
+            <div class="warning-modal-body">
+                <div class="warning-body" style="padding: 0.5%;overflow: auto;">
+                    <div class="warning-content">
+                        <h3>Are you sure you want to delete selected rows?</h3>
+                        <h4 style="margin-bottom: 30px;">There is no going back</h4>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteRows(); deleteWarning=false">Delete</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteWarning=false">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="warning-modal-background"></div>
+    </div>
+
     <div class=" row">
         <div class="statistics col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideStatistics">
             <div class=" card card-height" id="stat">
@@ -221,7 +237,7 @@
                     </div>
                     <div class="headerRight">
                         <div class="trash">
-                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteRows()">
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteCheck()">
                                 <i class="tim-icons icon-trash-simple" style="font-size: 2em;"> </i>
                             </button>
                         </div>
@@ -261,8 +277,8 @@
                         <table class=" table tablesorter">
                             <thead>
                                 <tr>
-                                    <th class="f"></th>
-                                    <th class="f" *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>
+                                    <th></th>
+                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>

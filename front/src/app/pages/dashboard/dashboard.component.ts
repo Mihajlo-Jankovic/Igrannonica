@@ -102,6 +102,9 @@ export class DashboardComponent implements OnInit {
   public firstTraining: boolean = false;
 
   public loginWarning: boolean = false;
+  public deleteWarning: boolean = false;
+
+  public modelToDiscard: number = -1;
 
   public evaluationData : {};
 
@@ -1032,7 +1035,13 @@ export class DashboardComponent implements OnInit {
     this.evaluationChart.update();
   }
 
+  discardCheck(id: number){
+    this.deleteWarning = true;
+    this.modelToDiscard = id;
+  }
+
   discardModel(id: number) {
+    this.deleteWarning = false;
     this.modelsList.pop(id);
     if(this.modelsTrained == id+1) {
       this.modelsTrained--;

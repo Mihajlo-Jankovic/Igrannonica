@@ -144,6 +144,8 @@ export class TablesComponent {
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
 
+  deleteWarning: boolean = false;
+
   filter = 0;
 
   constructor(private tableService: TableService, private cookie : CookieService,private toastr: ToastrService) {
@@ -658,40 +660,41 @@ export class TablesComponent {
     console.log(this.selectedRows)
   }
 
+  deleteCheck() {
+    this.deleteWarning = true;
+  }
+
   async deleteRows()
   {
-      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res =>
-        {
-          this.clearStorage();
-          this.reset();
-          this.showTable(this.selectedType, this.selectedRow, this.page, false);
-          sessionStorage.removeItem('statistics');
-          this.resetStatistic();
-          this.showStatistics(this.selectedCol);
-          this.selectedRows = [];
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Delete successfull</b>.', '', {
+    await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res =>
+      {
+        this.clearStorage();
+        this.reset();
+        this.showTable(this.selectedType, this.selectedRow, this.page, false);
+        sessionStorage.removeItem('statistics');
+        this.resetStatistic();
+        this.showStatistics(this.selectedCol);
+        this.selectedRows = [];
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Delete successfull</b>.', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken=="Error encoundered while deleting a row from the dataset."){
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting a row from the dataset</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
             enableHtml: true,
             toastClass: "alert alert-info alert-with-icon",
             positionClass: 'toast-top-center'
           });
-        },err=>{
-          let JSONtoken: string = JSON.stringify(err.error);
-          let StringToken = JSON.parse(JSONtoken).responseMessage;
-          if(StringToken=="Error encoundered while deleting a row from the dataset."){
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting a row from the dataset</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
-          }
-
-
-        });
-
+        }
+      });
   }
 
   async editCell(id : number, value : any, columnName : string)
