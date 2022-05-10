@@ -227,8 +227,8 @@
                             </div>
                         </div>
                         <div [hidden]="firstTraining">
-                            <h1>
-                                You haven't trained any models yet.
+                            <h1 style="text-align:center">
+                                Start training new model.
                             </h1>
                         </div>
                     </div>
@@ -276,12 +276,18 @@
                             <table class=" table tablesorter">
                                 <thead>
                                     <tr>
+                                        <th style="width: 30px;"></th>
                                         <th>MODEL</th>
-                                        <th *ngFor="let item of modelsHeader; let i = index" style="text-align: center;">{{item}}</th>
+                                        <th *ngFor="let item of modelsHeader; let i = index">{{item}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let item of modelsList; let i = index">
+                                        <td style="width: 30px;">
+                                            <button class=" btn btn-link" placement="left" ngbTooltip="Discard this model" container="body" (click)="discardModel(item.id-1)">
+                                                <i class="tim-icons icon-trash-simple" style="font-size: 2em; color:#7d3c8b"> </i>
+                                            </button>
+                                        </td>
                                         <td style="text-align: center;">{{item.id}}</td>
                                         <td *ngFor="let value of modelsHeader; let j = index">{{item.data[value][selectedEpoch].toFixed(10)}}</td>
 

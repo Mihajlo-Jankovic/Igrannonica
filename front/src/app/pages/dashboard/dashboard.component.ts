@@ -563,6 +563,9 @@ export class DashboardComponent implements OnInit {
     
     this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
     
+    
+    this.changeTab(0);
+
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
         this.modelsTrained++;
@@ -1027,6 +1030,30 @@ export class DashboardComponent implements OnInit {
 
     this.evaluationChart.options.scales.yAxes[0].scaleLabel.labelString = metric;
     this.evaluationChart.update();
+  }
+
+  discardModel(id: number) {
+    this.modelsList.pop(id);
+    if(this.modelsTrained == id+1) {
+      this.modelsTrained--;
+      sessionStorage.removeItem("chartData");
+      sessionStorage.removeItem("buttons");
+      sessionStorage.removeItem("chart_labels");
+      sessionStorage.removeItem("label");
+      this.firstTraining = false;
+    }
+    else {
+      for(let i = id+1; i < this.modelsList.length; i++) {
+        this.modelsList[i].id--;
+      }
+      this.modelsTrained--;
+    }
+    sessionStorage.setItem("modelsList", JSON.stringify(this.modelsList));
+    sessionStorage.setItem('modelsTrained', (this.modelsTrained).toString());
+
+    this.chartThisMetric("loss");
+    this.chartEvaluation("loss");
+    this.updateOptions();
   }
 
   //SOKETI

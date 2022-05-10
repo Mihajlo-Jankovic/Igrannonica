@@ -326,6 +326,14 @@ $spin-duration: 1s;
     width: 122px;
 }
 
+#table td {
+    text-align: center;
+}
+
+#table th {
+    text-align: center;
+}
+
 #table::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
