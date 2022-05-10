@@ -199,6 +199,23 @@ def startTraining(connid, fileName, inputList, output, encodingType, ratio1, rat
     model = m.fit(x=X_train, y=y_train, validation_split=ratio2, epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])
     score = m.evaluate(X_test, y_test)
     print(score)
+    
+    data = {}
+    data['connID'] = connid
+    data['epoch'] = numEpochs
+    data['ended'] = 2
+    i = 0
+
+    data['trainingData'] = {"loss" : score[i]}
+    i = i + 1
+
+    for metric in metrics:
+        data['trainingData'][metric] = score[i]
+        i = i + 1
+
+    headers = {'content-type': 'application/json'}
+    r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
+    
     return score
 
 

@@ -14,6 +14,7 @@
     min-width: 200px;
     position: relative;
     bottom: 0;
+    cursor: pointer;
 }
 
 .file-upload {
@@ -333,6 +334,7 @@ button {
     width: 40%;
     height: 65px;
     float: left;
+    margin-bottom: 1rem;
 }
 
 .filter-right {

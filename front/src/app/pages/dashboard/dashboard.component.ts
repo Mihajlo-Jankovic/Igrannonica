@@ -12,7 +12,6 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
-import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: "app-dashboard",
@@ -91,19 +90,71 @@ export class DashboardComponent implements OnInit {
   public metricsChart;
   public selectedChartMetric: string = "none";
 
-  public mtrCanvas = [];
-  public mtrCtx = [];
-  public mtrCharts = [];
+  public evaluationCtx: any;
+  public evaluationCanvas: any;
+  public evaluationChart : any;
+  public evaluationMetric: string = "loss";
+  public evaluationMetrics = ["loss"];
+
+  public metricDropdown: string = "loss";
 
   public openMetricsChart: boolean = false;
   public firstTraining: boolean = false;
 
   public loginWarning: boolean = false;
 
+  public evaluationData : {};
+
+  public liveButton = true;
+  public resultsButton = false;
+  public evaluationButton = false;
+
   constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
   configuration = new Configuration();
+  
+  changeTab(id: number){
+    let btn1 = document.getElementsByClassName("tab-button")[0];
+    let btn2 = document.getElementsByClassName("tab-button")[1];
+    let btn3 = document.getElementsByClassName("tab-button")[2];
 
+    if(id == 0) {
+      this.liveButton = true;
+      this.resultsButton = false;
+      this.evaluationButton = false;
+      btn1.classList.add("raised-tab-button");
+      if(btn2.classList.contains("raised-tab-button")) {
+        btn2.classList.remove("raised-tab-button");
+      }
+      if(btn3.classList.contains("raised-tab-button")) {
+        btn3.classList.remove("raised-tab-button");
+      }
+    }
+    else if(id == 1) {
+      this.liveButton = false;
+      this.resultsButton = true;
+      this.evaluationButton = false;
+      if(btn1.classList.contains("raised-tab-button")) {
+        btn1.classList.remove("raised-tab-button");
+      }
+      btn2.classList.add("raised-tab-button");
+      if(btn3.classList.contains("raised-tab-button")) {
+        btn3.classList.remove("raised-tab-button");
+      }
+    }
+    else if(id == 2) {
+      this.liveButton = false;
+      this.resultsButton = false;
+      this.evaluationButton = true;
+      if(btn1.classList.contains("raised-tab-button")) {
+        btn1.classList.remove("raised-tab-button");
+      }
+      if(btn2.classList.contains("raised-tab-button")) {
+        btn2.classList.remove("raised-tab-button");
+      }
+      btn3.classList.add("raised-tab-button");
+    }
+  }
 
   clearEverything() {
     this.problemType = "Regression";
@@ -148,12 +199,16 @@ export class DashboardComponent implements OnInit {
     this.firstTraining = false;
   
     this.loginWarning = false;
+
+    this.evaluationMetric= "loss";
+    this.evaluationMetrics = ["loss"];
   }
   
   ngOnInit() {
 
     this.loggedUser = this.loginService.isAuthenticated();
     this.configureGraph();
+    this.makeEvaluationChart();
     
     this.startConnection();
     this.addTrainingDataListener();
@@ -484,6 +539,7 @@ export class DashboardComponent implements OnInit {
       });
       return;
     }
+
     this.loginWarning = false;
     this.chartData = {};
     this.training = true;
@@ -497,12 +553,16 @@ export class DashboardComponent implements OnInit {
       layerList[i] = this.neuronsList[i];
     }
     let metrics = [];
+    this.evaluationMetrics = ["loss"];
     for (let i = 0; i < this.selectedItems.length; i++) {
       sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems))
       metrics[i] = this.selectedItems[i].item_id;
+      this.evaluationMetrics.push(metrics[i]);
     }
+    sessionStorage.setItem('evaluationMetrics', JSON.stringify(this.evaluationMetrics));
+    
     this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
-    //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
+    
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
         this.modelsTrained++;
@@ -516,7 +576,7 @@ export class DashboardComponent implements OnInit {
           sessionStorage.setItem('metricsLabel', JSON.stringify(this.metricLabels));
         }
 
-        this.modelsHeader = [];
+        this.modelsHeader = ["loss", "val_loss"];
         for (let i = 0; i < this.selectedItems.length; i++) {
           this.modelsHeader.push(this.selectedItems[i]['item_id']);
           this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
@@ -542,9 +602,7 @@ export class DashboardComponent implements OnInit {
     let options = { headers: headers };
 
     let fileName = this.cookieService.get('filename');
-    let realName = this.cookieService.get('realName');
-    let inputList = JSON.parse(sessionStorage.getItem('inputList'));
-    let output = sessionStorage.getItem('output');
+    let realName = this.cookieService.get('realName'); 
     let layerList = [];
     for (let i = 0; i < this.layersLabel; i++){
       layerList[i] = this.neuronsList[i];
@@ -664,6 +722,7 @@ export class DashboardComponent implements OnInit {
       this.modelsList = JSON.parse(sessionStorage.getItem('modelsList'));
       this.openMetricsChart = true;
       this.trained = true;
+      this.chartEvaluation("loss");
     }
     if(sessionStorage.getItem('maxEpoch'))
     {
@@ -681,6 +740,24 @@ export class DashboardComponent implements OnInit {
     if(sessionStorage.getItem('description'))
     {
       this.description = sessionStorage.getItem('description');
+    }
+    if(sessionStorage.getItem('evaluationMetrics'))
+    {
+      this.evaluationMetrics = JSON.parse(sessionStorage.getItem('evaluationMetrics'));
+    }
+    if(sessionStorage.getItem('chartData'))
+    {
+      this.firstTraining = true;
+      this.chartData = JSON.parse(sessionStorage.getItem('chartData'));
+      this.buttons = JSON.parse(sessionStorage.getItem('buttons'));
+      this.chart_labels = JSON.parse(sessionStorage.getItem('chart_labels'));
+      this.label = sessionStorage.getItem("label");
+      
+      this.data = this.chartData[this.selectedMetric];
+      this.val_data = this.chartData['val_'+this.selectedMetric];
+
+      console.log(this.chartData);
+      this.updateOptions();
     }
   }
 
@@ -815,7 +892,7 @@ export class DashboardComponent implements OnInit {
     this.metricsChart.data.datasets = [];
 
     for (let i = 0; i < this.modelsList.length; i++) {
-      //console.log(this.modelsList[i].data);
+      
       var r = Math.floor(Math.random() * 255);
       var g = Math.floor(Math.random() * 255);
       var b = Math.floor(Math.random() * 255);
@@ -843,8 +920,11 @@ export class DashboardComponent implements OnInit {
     //this.uradinesto(metric);
   }
 
-  makeMetricCharts() {
-    var mtrChartOptions = {
+  makeEvaluationChart() {
+    this.evaluationCanvas = document.getElementById("evaluation-chart");
+    this.evaluationCtx = this.evaluationCanvas.getContext("2d");
+
+    var evaluationOptions: any = {
       maintainAspectRatio: false,
       legend: {
         display: true
@@ -863,13 +943,13 @@ export class DashboardComponent implements OnInit {
       responsive: true,
       scales: {
         yAxes: [{
-          barPercentage: 1.6,
           gridLines: {
             drawBorder: false,
-            color: 'rgba(29,140,248,0.0)',
+            color: 'rgba(29,140,248,0.1)',
             zeroLineColor: "transparent",
           },
           ticks: {
+            suggestedMin: 0,
             padding: 20,
             fontColor: "#ffffff"
           },
@@ -881,84 +961,64 @@ export class DashboardComponent implements OnInit {
         }],
 
         xAxes: [{
-          barPercentage: 1.6,
           gridLines: {
             drawBorder: false,
-            color: 'rgba(233,32,16,0.1)',
+            color: 'rgba(29,140,248,0.1)',
             zeroLineColor: "transparent",
           },
           ticks: {
             padding: 20,
             fontColor: "#ffffff"
-          },
-          scaleLabel: {
-            display: true,
-            labelString: "Epochs",
-            fontColor : "#ffffff"
           }
         }]
-      },
-      animation: {
-        duration: 0
-      },
-      hover: {
-          animationDuration: 0
-      },
-      responsiveAnimationDuration: 0
+      }
     };
 
-    var mtrChartConfig = {
-      type : "line",
+    var evaluationConfig = {
+      type : "bar",
       data : {
-        labels: [],
+        labels: ["Models"],
         datasets: []
       },
-      options: mtrChartOptions
+      options: evaluationOptions
     };
 
-    for (let i = 0; i < this.modelsHeader.length; i++) {
-      this.mtrCanvas[i] = document.getElementById(this.modelsHeader[i] + "-chart");
-      this.mtrCtx[i] = this.mtrCanvas[i].getContext("2d");
+    this.evaluationChart = new Chart(this.evaluationCtx, evaluationConfig)
 
-      this.mtrCharts[i] = new Chart(this.mtrCtx[i], mtrChartConfig);
-      this.nesto2(this.modelsHeader[i], i);
-    }
-    document.getElementById("tab-0").setAttribute("checked", "true");
-    //this.uradinesto();
   }
 
-  nesto2(metric: string, index: number) {
+  chartEvaluation(metric: string) {
+    
+    var barData = []
 
-    this.mtrCharts[index].data.labels = this.metricLabels;
-    this.mtrCharts[index].data.datasets = [];
+    let x = this.modelsList[0].evaluationData;
 
-    for (let i = 0; i < this.modelsList.length; i++) {
-      //console.log(this.modelsList[i].data);
+    for(let i = 0; i < this.modelsList.length; i++) {
+      barData.push(this.modelsList[i].evaluationData[metric]);
+    }
+    
+    this.evaluationChart.data.datasets = [];
+
+    for (let i = 0; i < barData.length; i++) {
       var r = Math.floor(Math.random() * 255);
       var g = Math.floor(Math.random() * 255);
       var b = Math.floor(Math.random() * 255);
 
-      this.mtrCharts[index].data.datasets.push({
-        label: "model " + this.modelsList[i].id,
-        fill: false,
+      this.evaluationChart.data.datasets.push({
+        label: "Model " + (i + 1),
+        fill: true,
+        backgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        hoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
         borderColor: "rgb(" + r + "," + g + "," + b + ")",
         borderWidth: 2,
         borderDash: [],
         borderDashOffset: 0.0,
-        pointBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
-        pointBorderColor: 'rgba(255,255,255,0)',
-        pointHoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
-        pointBorderWidth: 20,
-        pointHoverRadius: 4,
-        pointHoverBorderWidth: 15,
-        pointRadius: 4,
-        data: this.modelsList[i].data[metric],
+        data: [barData[i]],
       });
     }
 
-    this.mtrCharts[index].options.scales.yAxes[0].scaleLabel.labelString = metric;
-    this.mtrCharts[index].update();
-    //this.uradinesto(metric);
+    this.evaluationChart.options.scales.yAxes[0].scaleLabel.labelString = metric;
+    this.evaluationChart.update();
   }
 
   //SOKETI
@@ -1003,7 +1063,11 @@ export class DashboardComponent implements OnInit {
         }
         this.updateOptions();
       }
-      else {
+      else if(data['ended'] == 1){
+        sessionStorage.setItem("chartData", JSON.stringify(this.chartData));
+        sessionStorage.setItem("buttons", JSON.stringify(this.buttons));
+        sessionStorage.setItem("chart_labels", JSON.stringify(this.chart_labels));
+        sessionStorage.setItem("label", this.label);
 
         this.training = false;
         this.trained = true;
@@ -1022,7 +1086,11 @@ export class DashboardComponent implements OnInit {
         sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
         this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
 
-        this.makeMetricCharts();
+      }
+      else {
+        this.modelsList[this.modelsTrained-1].evaluationData = data['trainingData'];
+        sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
+        this.chartEvaluation("loss");
       }
     });
   }

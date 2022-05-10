@@ -296,7 +296,6 @@ $spin-duration: 1s;
 .headerLeft {
     height: 70px;
     width: 325px;
-    padding: 1rem;
     padding-right: 0;
     float: left;
 }
@@ -304,7 +303,6 @@ $spin-duration: 1s;
 .headerRight {
     height: 70px;
     width: auto;
-    padding: 1rem;
     float: right;
 }
 
@@ -449,136 +447,6 @@ body.cm-modal-open {
     }
 }
 
-$breakpoint: 1092px;
-$tabs-base-color: #27293d;
-// #####################################
-// CSS definition for functionality
-.responsive-tabs {
-    overflow: overlay;
-    >input {
-        display: none;
-        &:checked {
-            +label {
-                +section {
-                    display: block;
-                }
-            }
-        }
-    }
-    >label {
-        display: block;
-        @media (min-width: $breakpoint) {
-            display: inline-block;
-        }
-    }
-    >section {
-        width: 100%;
-        display: none;
-        @media (min-width: $breakpoint) {
-            float: left;
-        }
-    }
-}
-
-// Classes for simple presentation
-.responsive-tabs {
-    margin-bottom: 30px;
-    >input {
-        &:checked {
-            +label {
-                background-color: $tabs-base-color;
-                color: white;
-            }
-        }
-    }
-    >label {
-        background-color: darken($tabs-base-color, 10);
-        margin: 0;
-        padding: 15px 20px;
-        cursor: pointer;
-        @media (min-width: $breakpoint) {
-            margin-left: 0px;
-        }
-    }
-    >section {
-        background-color: $tabs-base-color;
-    }
-}
-
-// Classes for better presentation 
-.responsive-tabs {
-    overflow: overlay;
-    margin-bottom: 30px;
-    >input {
-        display: none;
-        &:checked {
-            +label {
-                background-color: $tabs-base-color;
-                color: white;
-                font-weight: normal;
-                padding-top: 15px;
-                cursor: default;
-                &::after {
-                    transform: translateY(-5px) rotateZ(180deg);
-                    opacity: 0;
-                }
-                +section {
-                    max-height: 250px;
-                    @media (min-width: $breakpoint) {
-                        display: block;
-                    }
-                }
-            }
-        }
-    }
-    >label {
-        border-radius: 0.4rem 0.4rem 0rem 0rem;
-        font-size: 15px;
-        position: relative;
-        background-color: darken($tabs-base-color, 10);
-        cursor: pointer;
-        margin: 0px;
-        font-weight: normal;
-        margin: 0;
-        display: block;
-        @media (min-width: $breakpoint) {
-            display: inline-block;
-            padding: 10px 10px;
-        }
-        &::after {
-            content: '';
-            position: absolute;
-            top: 26px;
-            right: 25px;
-            border-color: #4d4d4d transparent transparent transparent;
-            border-style: solid;
-            border-width: 5px;
-            transform: rotateY(180deg);
-            @media (min-width: $breakpoint) {
-                content: none;
-            }
-        }
-        &:hover {
-            color: white;
-            padding-top: 15px;
-            background: $tabs-base-color;
-        }
-    }
-    >section {
-        max-height: 0;
-        //padding: 1rem;
-        overflow: hidden;
-        width: 100%;
-        background-color: $tabs-base-color;
-        display: block;
-        border-radius: 0rem 0.286rem 0.286rem 0.286rem;
-        @media (min-width: $breakpoint) {
-            float: left;
-            display: none;
-        }
-    }
-}
-
 .range-container {
     width: 100%;
     height: 100%;
@@ -613,6 +481,59 @@ $tabs-base-color: #27293d;
         background-color: white;
         border-radius: 5px;
         outline: none;
+    }
+}
+
+.filter-left {
+    width: 285px;
+    height: 65px;
+    float: left;
+    margin-bottom: 1rem;
+    .dropdown {
+        position: static;
+    }
+    h6 {
+        text-align: left;
+    }
+}
+
+.tab-button {
+    border: none;
+    color: #ffffff;
+    background: #1e1e2e;
+    padding: 10px;
+    padding-bottom: 0;
+    position: relative;
+    cursor: pointer;
+    bottom: 34px;
+    z-index: 0;
+    border-radius: 5px 5px 0 0;
+    font-size: 1rem;
+}
+
+.raised-tab-button {
+    bottom: 44px;
+    padding-bottom: 14px;
+    background: #27293d;
+}
+
+.tab-button:hover {
+    bottom: 44px;
+    padding-bottom: 14px;
+    background: #27293d;
+}
+
+.tab-button:focus {
+    outline: none;
+}
+
+canvas {
+    max-height: 230px;
+}
+
+@media(max-width: 805px) {
+    canvas {
+        max-height: 300px;
     }
 }
 
