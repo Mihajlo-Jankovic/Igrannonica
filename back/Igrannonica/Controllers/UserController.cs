@@ -477,5 +477,32 @@ namespace Igrannonica.Controllers
 
             return Ok(new { obj.Id });
         }
+
+        [HttpPost("updateExperimentVisibility"), Authorize]
+        public async Task<ActionResult<string>> UpdateExperimentVisibility(ExperimentVisibilityDTO request)
+        {
+            var username = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == username).FirstOrDefault();
+
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
+
+            var client = new MongoClient(getMongoDBConnString());
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+
+            var filter = Builders<Experiment>.Filter.Eq("_id", request._id);
+            var update = Builders<Experiment>.Update.Set("visibility", request.Visibility);
+
+            var result = collection.UpdateOne(filter,update);
+
+            if (result == null)
+                return BadRequest(new
+                {
+                    responseMessage = "Error: The file you are trying to change doesn't belong to you!"
+                });
+
+            return Ok(new { responseMessage = "Success!" });
+        }
     }
 }
