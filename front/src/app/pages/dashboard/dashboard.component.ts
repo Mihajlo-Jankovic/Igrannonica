@@ -12,7 +12,6 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
-import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: "app-dashboard",
