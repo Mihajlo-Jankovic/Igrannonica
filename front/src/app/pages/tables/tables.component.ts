@@ -152,11 +152,12 @@ export class TablesComponent {
 
   //*
   missingValuesList = [];
-  fillMissingValuesList = ["MIN", "MAX", "AVG", "MEAN"];
+  fillMissingValuesList = ["", "MIN", "MAX", "AVG", "MEAN"];
   dataOutliers: any = {"columns": ["RANK", "Country", "Happiness score", "Whisker-high", "Whisker-low", "Dystopia (1.83) + residual", "Explained by: GDP per capita", "Explained by: Social support", "Explained by: Healthy life expectancy", "Explained by: Freedom to make life choices", "Explained by: Generosity", "Explained by: Perceptions of corruption"], "data": [[1, "Finland", 7.821, 7.886, 7.756, 2.518, 1.892, 1.258, 0.775, 0.736, 0.109, 0.534], [2, "Denmark", 7.636, 7.71, 7.563, 2.226, 1.953, 1.243, 0.777, 0.719, 0.188, 0.532 ], [3, "Iceland", 7.557, 7.651, 7.464, 2.32, 1.936, 1.32, 0.803, 0.718, 0.27, 0.191 ], [ 4, "Switzerland", 7.512, 7.586, 7.437, 2.153, 2.026, 1.226, 0.822, 0.677, 0.147, 0.461], [5, "Netherlands", 7.415, 7.471, 7.359, 2.137, 1.945, 1.206, 0.787, 0.651, 0.271, 0.419], [6, "Luxembourg*", 7.404, 7.501, 7.307, 2.042, 2.209, 1.155, 0.79, 0.7, 0.12, 0.388], [ 7, "Sweden", 7.384, 7.454, 7.315, 2.003, 1.92, 1.204, 0.803, 0.724, 0.218, 0.512], [8, "Norway", 7.365, 7.44, 7.29, 1.925, 1.997, 1.239, 0.786, 0.728, 0.217, 0.474], [9, "Israel", 7.364, 7.426, 7.301, 2.634, 1.826, 1.221, 0.818, 0.568, 0.155, 0.143], [10, "New Zealand", 7.2, 7.279, 7.12, 1.954, 1.852, 1.235, 0.752, 0.68, 0.245, 0.483 ]], "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }
   selectedMissingValCol;
   selectedMissingValColBoolean: boolean = true;
   selectedToFillMissingValCol: string = "MIN";
+  enteredToFillMissingValCol: any = "";
   
   selectedOutliersRows: any = [];
   headingLinesOutliers: any = [];
@@ -981,17 +982,6 @@ export class TablesComponent {
     console.log(height);
   }
 
-
-  /*
-  selectedfillMissingValuesCol() {
-    
-  }
-
-  confirmSelectedMissingValue() {
-    
-  }
-  */
-  
   showOutliers() {
 
     let headersArray: any = [];
@@ -1072,4 +1062,38 @@ export class TablesComponent {
   deleteOutliers() {
     
   }
+
+  public isFillMissValDisabled = true;
+
+  isMVDisabled() {
+    if(this.selectedToFillMissingValCol == "")
+      this.isFillMissValDisabled = false;
+    else
+      this.isFillMissValDisabled = true;
+
+    return this.isFillMissValDisabled;
+  }
+
+  isMVDisabled1() {
+    if(this.enteredToFillMissingValCol == "")
+      return false;
+    else
+      return true;
+
+    return this.isFillMissValDisabled;
+  }
+
+  onInputToFillMissingValCol(event: any) {
+    const value = event.target.value;
+  }
+
+  confirmToFillMissingValues() {
+    if(this.selectedToFillMissingValCol == "" && this.enteredToFillMissingValCol == "") {
+      alert("Izaberite vrednost ili popunite polje!");
+    }
+    else {
+
+    }
+  }
+  
 }

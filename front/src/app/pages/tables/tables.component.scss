@@ -816,16 +816,17 @@ $tabs-base-color: #27293d;
 }
 
 .orDiv {
-    //width: 5%;
-    float: left;
-    height: auto;
-    margin-bottom: 0px !important;
+    font-size: 14px;
+    background: transparent;
+    overflow: hidden;
+    color: white;
     margin-top: 8px;
-    margin-right: 20px;
-}
-.or {
-    margin: auto;
-    margin-top: 5px;
+    height: 42px;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    min-width: none;
+    text-align: center;
 }
 
 .divMissingValues {
@@ -837,110 +838,6 @@ $tabs-base-color: #27293d;
     margin: auto;
     margin-bottom: 1rem;
 }
-/*
-@media(max-width: 1877px) {
-    .inputMissingValue {
-        max-width: 20%;
-    }
-}
-
-@media(max-width: 1629px) {
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 50%;
-    }
-    .inputMissingValue {
-        max-width: 15%;
-    }
-}
-
-@media(max-width: 1509px) {
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 45%;
-    }
-}
-
-@media(max-width: 1319px) {
-    .dropdown2Text,.dropdown2, .orDiv {
-        margin-right: 10px;
-    }
-}
-
-@media(max-width: 1112px) {
-    .dropdown2Text,.dropdown2, .orDiv {
-        margin-right: 5px;
-    }
-}
-
-@media(max-width: 1011px) {
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 40%;
-    }
-}
-
-@media(max-width: 991px) {
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 45%;
-    }
-    .dropdown2Text, .dropdown2, .orDiv {
-        margin-right: 10px;
-    }
-}
-
-@media(max-width: 869px) {
-    .divMissingValues, .divOutliers {
-        width: 100%;
-    }
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 50%;
-    }
-    .dropdown2Text, .dropdown2, .orDiv {
-        margin-right: 20px;
-    }
-}
-
-@media(max-width: 729px) {
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 50%;
-    }
-}
-
-@media(max-width: 615px) {
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 45%;
-    }
-    .dropdown2Text, .dropdown2, .orDiv {
-        margin-right: 10px;
-    }
-}
-
-@media(max-width: 484px) {
-
-    .dropdown2Text, .dropdown2, .orDiv {
-        margin-right: 5px;
-    }
-}
-
-@media(max-width: 426px) {
-    .dropdown2Text {
-        overflow: none;
-        height: auto;
-        max-width: 38%;
-    }
-}*/
 
 .dropdown2 {
     font-size: 14px;
@@ -1043,4 +940,34 @@ $tabs-base-color: #27293d;
 .selectedMissingValueCol{
     /*background-color: #7d3c8b;*/
     border: 1px solid #7d3c8b !important;
+}
+
+
+.dropdownContainerMissingVal {
+    padding-right: 1rem;
+    float: left;
+    width: 25%
+}
+
+.dropdownMissingVal {
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-top: 8px;
+    height: 42px;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    min-width: none;
+}
+
+.dropdownMissingVal:focus {
+    border-color: #7d3c8b;
+}
+
+.divMissingValuesCont {
+    padding: 1rem;
 }
