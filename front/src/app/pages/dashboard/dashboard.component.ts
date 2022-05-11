@@ -12,6 +12,7 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-dashboard",
@@ -112,7 +113,7 @@ export class DashboardComponent implements OnInit {
   public resultsButton = false;
   public evaluationButton = false;
 
-  constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
+  constructor(private router: Router,private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
 
   configuration = new Configuration();
   
@@ -157,6 +158,10 @@ export class DashboardComponent implements OnInit {
       }
       btn3.classList.add("raised-tab-button");
     }
+  }
+
+  login(){
+    this.router.navigate(['login']);
   }
 
   clearEverything() {
