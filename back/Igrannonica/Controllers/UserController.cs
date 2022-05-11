@@ -383,19 +383,30 @@ namespace Igrannonica.Controllers
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<ExperimentDTO>("experiment");
 
-            var tmp = collection.Find(e => e.name == experiment.name && e.userId == user.id);
+            var tmp = await collection.FindAsync(e => e.name == experiment.name && e.userId == user.id);
+            string temp;
+            if(tmp.FirstOrDefault() != null)
+            {
+                temp = tmp.FirstOrDefault().name;
+            }
+            else
+            {
+                temp = null;
+            }
 
-            if(tmp != null && experiment.overwrite == false)
+            if(temp != null && experiment.overwrite == false)
             {
                 return Ok(new { responseMessage = "There is already an experiment with the same name, do you want to overwrite it?" });
             }
 
-            else if (tmp != null && experiment.overwrite == true)
+            else if (temp != null && experiment.overwrite == true)
             {
-                var result = collection.ReplaceOne(e => e.name == experiment.name, experiment);
+                var result = await collection.ReplaceOneAsync(e => e.name == experiment.name && e.userId == user.id, experiment);
             }
-
-            else collection.InsertOne(experiment);
+            else
+            {
+                collection.InsertOne(experiment);
+            }
 
             return Ok(experiment);
         }
@@ -484,7 +495,7 @@ namespace Igrannonica.Controllers
 
             //MongoDB.Bson.BsonDocument id = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(obj.Id);
 
-            collection.DeleteOne(e => e._id == obj.Id);
+            //collection.DeleteOne(e => e._id == obj.Id);
 
             return Ok(new { obj.Id });
         }
