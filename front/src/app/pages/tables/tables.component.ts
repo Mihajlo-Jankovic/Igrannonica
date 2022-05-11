@@ -136,6 +136,8 @@ export class TablesComponent {
   hideBoxplot: boolean = false;
   hideMatrix: boolean = false;
 
+  public deleteWarning: boolean = false;
+
   statsButton: string = "Full Statistics";
   matrixButton: string = "View Full Matrix";
 
@@ -143,6 +145,8 @@ export class TablesComponent {
   ioSelection: boolean = false;
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
+  
+  deleteIndicator: boolean=false;
 
   filter = 0;
 
@@ -655,11 +659,26 @@ export class TablesComponent {
         if(element == id) this.selectedRows.splice(index,1)
       });
     }
-    console.log(this.selectedRows)
+    
+    // if(this.selectedRows.length == 0){
+    //   this.deleteIndicator=false;
+    // }
+    // else this.deleteIndicator=true;
+    // console.log(this.selectedRows)
+  }
+
+  noDelete(){
+    this.deleteWarning=false;
+  }
+  deleteR(){
+    if(this.selectedRows.length!=0)this.deleteWarning = true;
   }
 
   async deleteRows()
   {
+    this.deleteWarning = true;
+
+    if(this.selectedRows.length != 0){
       await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res =>
         {
           this.clearStorage();
@@ -676,6 +695,7 @@ export class TablesComponent {
             toastClass: "alert alert-info alert-with-icon",
             positionClass: 'toast-top-center'
           });
+          this.deleteWarning=false;
         },err=>{
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -691,7 +711,7 @@ export class TablesComponent {
 
 
         });
-
+      }
   }
 
   async editCell(id : number, value : any, columnName : string)

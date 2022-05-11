@@ -3,6 +3,19 @@
     margin-right: 0px;
 }
 
+.warning-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    top: 0;
+    left: 0;
+    z-index: 20000;
+    //padding-left: 5%;
+    //padding-right: 5%;
+}
+
+
 .table {
     margin: 0px;
 }
@@ -62,12 +75,7 @@
     color: #7d3c8b;
 }
 
-button {
-    float: right;
-    height: 100%;
-    vertical-align: top;
-    padding: 0px;
-}
+
 
 i {
     font-size: 3em;
@@ -368,38 +376,6 @@ input[type='radio']:checked:after {
     border: 3px solid #7d3c8b;
     border-radius: 3px;
     margin-bottom: 2%;
-}
-
-.cm-modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    //overflow: auto;
-}
-
-.cm-modal-body {
-    padding: 20px;
-    background: transparent;
-    margin: 40px;
-    //overflow: auto;
-}
-
-.cm-modal-background {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: #000;
-    opacity: 0.75;
-    z-index: 900;
-}
-
-body.cm-modal-open {
-    overflow: hidden;
 }
 
 .Ooption .Ioption {
@@ -717,3 +693,74 @@ $tabs-base-color: #27293d;
     background-color: #7d3c8b;
 }
 */
+
+
+
+
+.warning-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    top: 0;
+    left: 0;
+    z-index: 20000;
+    //padding-left: 5%;
+    //padding-right: 5%;
+}
+
+.warning-body {
+    width: 325px;
+    height: 325px;
+    background: #1e1e2e;
+    color: #ffff;
+    text-align: center;
+    border: 3px solid #7d3c8b;
+    border-radius: 3px;
+    margin-bottom: 2%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.warning-content {
+    width: 300px;
+    height: 300px;
+    background: #27293d;
+    padding-top: 0.5rem;
+}
+
+.warning-btn {
+    width: 80%;
+    margin: auto;
+}
+
+.cm-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    //overflow: auto;
+}
+
+.cm-modal-body {
+    padding: 60px;
+    background: transparent;
+    //overflow: auto;
+}
+
+.cm-modal-background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    opacity: 0.75;
+    z-index: 900;
+}
+
+// body.cm-modal-open {
+//     overflow: hidden;
+// }

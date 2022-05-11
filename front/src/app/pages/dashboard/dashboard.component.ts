@@ -12,6 +12,7 @@ import { NotificationsService } from "src/app/services/notifications.service";
 import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-dashboard",
@@ -99,7 +100,7 @@ export class DashboardComponent implements OnInit {
 
   public loginWarning: boolean = false;
 
-  constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
+  constructor(private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService,private router: Router) { }
 
   configuration = new Configuration();
 
@@ -244,6 +245,8 @@ export class DashboardComponent implements OnInit {
         }]
       }
     };
+
+   
 
     this.chart_labels = [];
 
@@ -456,6 +459,10 @@ export class DashboardComponent implements OnInit {
       itemsShowLimit: 6,
       allowSearchFilter: false
     };
+  }
+
+  login(){
+    this.router.navigate(['login']);
   }
 
   checkBeforeTraining() {

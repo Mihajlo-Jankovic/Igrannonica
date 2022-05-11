@@ -1,4 +1,20 @@
 <div class=" content">
+
+    <div class="warning-wrapper" [hidden]="!deleteWarning">
+        <div class="cm-modal">
+            <div class="cm-modal-body">
+                <div class="warning-body" style="padding: 0.5%;overflow: auto;">
+                    <div class="warning-content">
+                        <h4 style="margin-bottom: 30px;">Are you sure you want to delete?</h4>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteRows();">OK</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="noDelete();">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cm-modal-background"></div>
+    </div>
+
     <div class=" row">
         <div class="statistics col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideStatistics">
             <div class=" card card-height" id="stat">
@@ -220,8 +236,8 @@
                         </div>
                     </div>
                     <div class="headerRight">
-                        <div class="trash">
-                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteRows()">
+                        <div class="trash" >
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteR()">
                                 <i class="tim-icons icon-trash-simple" style="font-size: 2em;"> </i>
                             </button>
                         </div>
