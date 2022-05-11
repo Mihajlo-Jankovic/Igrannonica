@@ -94,21 +94,23 @@ export class TablesComponent {
   checks1: any = [];
   pret: number = -1;
 
-  selectedType : string = "all";
-  selectedRow : number = 10;
+  selectedType: string = "all";
+  selectedRow: number = 10;
   selectedColName: string = "";
   selectedCol: number;
   selectedColDiv: boolean = false;
+
+  deleteIndicator: boolean = false;
 
   listCheckedI: any = [];
   disabledOutput: any;
 
   selectedOutput: any;
-  checked : any;
-  selectedRows : Array<number> = [];
+  checked: any;
+  selectedRows: Array<number> = [];
 
-  page : number = 1;
-  maxPage : any = 1000;
+  page: number = 1;
+  maxPage: any = 1000;
 
   showStatisticDiv: boolean = false;
 
@@ -121,8 +123,8 @@ export class TablesComponent {
   thirdQ: number;
   corrMatrix: any = {};
   mixArray: any = []; //niz za boxplot
-  numArray: any= []; //niz za kor matricu
-  outliers : any = [];
+  numArray: any = []; //niz za kor matricu
+  outliers: any = [];
 
   arr: any = [];
   arrMin: any = [];
@@ -148,70 +150,66 @@ export class TablesComponent {
 
   filter = 0;
 
-  constructor(private tableService: TableService, private cookie : CookieService,private toastr: ToastrService) {
+  constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService) {
     sessionStorage.removeItem('statistics');
     this.showTable(this.selectedType, this.selectedRow, this.page, false)
     this.boxPlotFun();
   }
 
-  clearStorage()
-  {
+  clearStorage() {
     sessionStorage.removeItem('csv');
     sessionStorage.removeItem('numOfPages');
     sessionStorage.removeItem('numericValues');
   }
 
-  showTable(type : string, rows : number, page : number, filter : boolean)
-  {
-    if(sessionStorage.getItem('csv') != null)
-    {
+  showTable(type: string, rows: number, page: number, filter: boolean) {
+    if (sessionStorage.getItem('csv') != null) {
       let dataCSV: any = {};
       dataCSV = JSON.parse(sessionStorage.getItem('csv'));
       this.data = dataCSV;
-      this.maxPage=sessionStorage.getItem('numOfPages');
+      this.maxPage = sessionStorage.getItem('numOfPages');
       this.numericValues = JSON.parse(sessionStorage.getItem('numericValues'));
       this.loadTable(filter);
     }
-    else{
+    else {
       let filename = this.cookie.get('filename');
-      this.tableService.getAll(filename,type, rows, page).subscribe(
-      (response) => {
-        this.csv = response;
-        let dataCSV: any = {};
-        dataCSV = this.csv['csv'];
-        this.data = dataCSV;
+      this.tableService.getAll(filename, type, rows, page).subscribe(
+        (response) => {
+          this.csv = response;
+          let dataCSV: any = {};
+          dataCSV = this.csv['csv'];
+          this.data = dataCSV;
 
-        sessionStorage.setItem('csv', JSON.stringify(this.data));
+          sessionStorage.setItem('csv', JSON.stringify(this.data));
 
-        this.maxPage=this.csv['numOfPages'];
-        sessionStorage.setItem('numOfPages', this.maxPage);
+          this.maxPage = this.csv['numOfPages'];
+          sessionStorage.setItem('numOfPages', this.maxPage);
 
-        //ucitavanje numericValues
-        let numerValuesCSV: any = {};
-        numerValuesCSV = this.csv['numericValues'];
-        this.numericValues = numerValuesCSV;
-        console.log("numeric values " + this.numericValues)
+          //ucitavanje numericValues
+          let numerValuesCSV: any = {};
+          numerValuesCSV = this.csv['numericValues'];
+          this.numericValues = numerValuesCSV;
+          console.log("numeric values " + this.numericValues)
 
-        sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
-        this.loadTable(filter);
-      },err=>{
-        let JSONtoken: string = JSON.stringify(err.error);
-        let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if(StringToken=="Error encoundered while reading dataset content."){
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while reading dataset content</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-        }
-      })
+          sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
+          this.loadTable(filter);
+        }, err => {
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error encoundered while reading dataset content.") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while reading dataset content</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+        })
     }
   }
 
-  public loadTable(filter: boolean)
-  {
+  public loadTable(filter: boolean) {
     let headersArray: any = [];
     for (let i = 0; i < this.data['columns'].length; i++) {
       headersArray.push(this.data['columns'][i]);
@@ -246,34 +244,34 @@ export class TablesComponent {
       numValueIndexArray.push(i);
       this.numericValuesArray.push(numValueIndexArray);
     }
-    
+
     this.selectedColName = this.numericValuesArray[0][0];
     this.selectedCol = this.numericValuesArray[0][1];
     this.selectedColDiv = true;
 
 
-    if(this.numericValues['col'].length > 0 && !filter) {
+    if (this.numericValues['col'].length > 0 && !filter) {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedCol);
     }
 
     //setovanje I/O
-    for (let i = 0; i < this.data['columns'].length-1; i++) {
+    for (let i = 0; i < this.data['columns'].length - 1; i++) {
       this.radios1[i] = false;
       this.checks1[i] = true;
       this.listCheckedI.push(this.data['columns'][i]);
     }
 
-    this.checks[this.data['columns'].length-1] = true;
-    this.checks1[this.data['columns'].length-1] = false;
-    this.listCheckedI.splice(this.data['columns'].length-1, 1);
+    this.checks[this.data['columns'].length - 1] = true;
+    this.checks1[this.data['columns'].length - 1] = false;
+    this.listCheckedI.splice(this.data['columns'].length - 1, 1);
     sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
 
-    this.radios[this.data['columns'].length-1] = false;
-    this.radios1[this.data['columns'].length-1] = true;
-    this.selectedOutput = this.data['columns'][this.data['columns'].length-1];
+    this.radios[this.data['columns'].length - 1] = false;
+    this.radios1[this.data['columns'].length - 1] = true;
+    this.selectedOutput = this.data['columns'][this.data['columns'].length - 1];
     sessionStorage.setItem('output', this.selectedOutput);
-    this.pret = this.headingLines[0].length-2;
+    this.pret = this.headingLines[0].length - 2;
   }
 
   public onSelectedType(event: any, filter: boolean) {
@@ -283,7 +281,7 @@ export class TablesComponent {
     this.clearStorage();
     this.reset();
     this.showTable(this.selectedType, this.selectedRow, this.page, filter);
-  } 
+  }
 
   public onSelectedRow(event: any, filter: boolean) {
     this.page = 1;
@@ -294,53 +292,49 @@ export class TablesComponent {
     this.showTable(this.selectedType, this.selectedRow, this.page, filter);
   }
 
-  reset()
-  {
-    this.headingLines  = [];
+  reset() {
+    this.headingLines = [];
     this.numberData = [];
     this.numberLines = [];
     this.rowLines = [];
   }
-  
-  showStatistics(col : number)
-  {
-    if(sessionStorage.getItem('statistics'))
-    {
+
+  showStatistics(col: number) {
+    if (sessionStorage.getItem('statistics')) {
       //this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
       //this.loadStatistics();
       this.statistic = JSON.parse(sessionStorage.getItem('statistics'));
       this.loadStatistics(col);
     }
-    else{
-    let filename = this.cookie.get('filename');
-    this.tableService.getStatistics(filename, col).subscribe(
-      (response) => {
-        this.statistic = response;
-        //console.log(this.statistic);
-        sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
-        this.loadStatistics(col);
-        this.boxPlotFun();
-      },err=>{
-        let JSONtoken: string = JSON.stringify(err.error);
-        let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if(StringToken=="Error encoundered while calculating statistics."){
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while calculating statistics</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-        }
-      })
+    else {
+      let filename = this.cookie.get('filename');
+      this.tableService.getStatistics(filename, col).subscribe(
+        (response) => {
+          this.statistic = response;
+          //console.log(this.statistic);
+          sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
+          this.loadStatistics(col);
+          this.boxPlotFun();
+        }, err => {
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error encoundered while calculating statistics.") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while calculating statistics</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+        })
     }
   }
 
 
-  colListData: any=[];
-  public loadStatistics(col:number)
-  {
-    this.colListData=[];
+  colListData: any = [];
+  public loadStatistics(col: number) {
+    this.colListData = [];
     for (let i = 0; i < this.statistic['colList'].length; i++) {
       this.colListData.push(this.statistic['colList'][i]);
     }
@@ -363,7 +357,7 @@ export class TablesComponent {
     }
 
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
-      if(i == col) {
+      if (i == col) {
         this.statisticData = this.statistic['jsonList'][i];
         this.mixArray = [];
         this.rowsNum = this.statisticData['rowsNum'];
@@ -381,35 +375,36 @@ export class TablesComponent {
 
         let permName: string;
         for (let i = 0; i < this.colListData.length; i++) {
-          if(i == col) {
-            permName = this.colListData[i]; }
+          if (i == col) {
+            permName = this.colListData[i];
+          }
         }
-    
+
         this.numArray = [];
         for (let i = 0; i < this.statisticData['corrMatrix'][permName].length; i++) {
           this.numArray.push(this.statisticData['corrMatrix'][permName][i]);
         }
-        
+
         this.outliers = [];
-        for(let i=0;i<this.statisticData['outliers'].length;i++){
+        for (let i = 0; i < this.statisticData['outliers'].length; i++) {
           this.outliers.push(this.statisticData['outliers'][i]);
         }
 
         let fullMatrix: any = {};
-          fullMatrix = this.statisticData['fullCorrMatrix'];
-          this.fullMatrixData = fullMatrix;
+        fullMatrix = this.statisticData['fullCorrMatrix'];
+        this.fullMatrixData = fullMatrix;
 
-          this.fullCorrColNamesArray = [];
-          for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
-            this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
-          }
+        this.fullCorrColNamesArray = [];
+        for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
+          this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
+        }
 
-          this.fullCorrValArray = [];
-          let valArray: any = [];
-          for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
+        this.fullCorrValArray = [];
+        let valArray: any = [];
+        for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
           valArray = [];
 
-          for(let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
+          for (let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
             valArray.push(this.fullMatrixData['values'][i][j]);
           }
           this.fullCorrValArray.push(valArray);
@@ -435,12 +430,12 @@ export class TablesComponent {
     this.outliers = [];
   }
 
-  boxPlotFun()  {
+  boxPlotFun() {
     //console.log(this.mixArray[0], this.mixArray[1], this.mixArray[2], this.mixArray[3], this.mixArray[4]);
     this.chartOptions = {
       series: [
         {
-          name : "box",
+          name: "box",
           type: "boxPlot",
           data: [
             {
@@ -453,24 +448,24 @@ export class TablesComponent {
           name: 'outliers',
           type: 'scatter',
           data: [{
-            x : this.selectedColName,
-            y : this.outliers[0]
+            x: this.selectedColName,
+            y: this.outliers[0]
           },
           {
-            x : this.selectedColName,
-            y : this.outliers[1]
+            x: this.selectedColName,
+            y: this.outliers[1]
           },
           {
-            x : this.selectedColName,
-            y : this.outliers[2]
+            x: this.selectedColName,
+            y: this.outliers[2]
           },
           {
-            x : this.selectedColName,
-            y : this.outliers[this.outliers.length-1]
+            x: this.selectedColName,
+            y: this.outliers[this.outliers.length - 1]
           },
           {
-            x : this.selectedColName,
-            y : this.outliers[this.outliers.length-2]
+            x: this.selectedColName,
+            y: this.outliers[this.outliers.length - 2]
           }
           ]
         }
@@ -501,18 +496,18 @@ export class TablesComponent {
               headerCategory: 'category',
               headerValue: 'value',
               dateFormatter(timestamp) {
-              return new Date(timestamp).toDateString()
-            }
+                return new Date(timestamp).toDateString()
+              }
             },
             svg: {
               filename: "boxplot"
             },
             png: {
               filename: "boxplot"
-              }
-            },
-            autoSelected: 'zoom'
-          }
+            }
+          },
+          autoSelected: 'zoom'
+        }
       },
       title: {
         text: "",
@@ -553,7 +548,7 @@ export class TablesComponent {
   }
 
   nextPage(i: number) {
-    if(this.page + i <= this.maxPage){
+    if (this.page + i <= this.maxPage) {
       this.page += i;
       this.clearStorage();
       this.reset();
@@ -561,8 +556,8 @@ export class TablesComponent {
     }
   }
 
-  previousPage(i : number) {
-    if(this.page - i >= 1){
+  previousPage(i: number) {
+    if (this.page - i >= 1) {
       this.page -= i;
       this.clearStorage();
       this.reset();
@@ -570,8 +565,8 @@ export class TablesComponent {
     }
   }
 
-  firstPage(){
-    if(this.page != 1){
+  firstPage() {
+    if (this.page != 1) {
       this.page = 1;
       this.clearStorage();
       this.reset();
@@ -579,8 +574,8 @@ export class TablesComponent {
     }
   }
 
-  lastPage(){
-    if(this.page != this.maxPage){
+  lastPage() {
+    if (this.page != this.maxPage) {
       this.page = this.maxPage;
       this.clearStorage();
       this.reset();
@@ -589,41 +584,41 @@ export class TablesComponent {
   }
 
   showIOFun() {
-    if(this.showIO == false)
+    if (this.showIO == false)
       this.showIO = true;
     else
       this.showIO = false;
   }
 
-  
+
   inputCheckedFun(event: any) {
     var value = event.target.value;
 
     var exists = false;
     for (let i = 0; i < this.listCheckedI.length; i++) {
-      if(this.listCheckedI[i] == value) {
-        var index = i; 
+      if (this.listCheckedI[i] == value) {
+        var index = i;
         exists = true;
         break;
       }
     }
 
-    if(exists == true)
+    if (exists == true)
       this.listCheckedI.splice(index, 1);
     else
       this.listCheckedI.push(value);
-    
+
     sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
     //console.log(this.listCheckedI);
   }
 
-  
+
   selectedOutputFun(event: any) {
     var value = event.target.value;
     var ind: number = -1;
 
     for (let i = 0; i < this.headingLines[0].length; i++) {
-      if(this.selectedOutput == this.headingLines[0][i])
+      if (this.selectedOutput == this.headingLines[0][i])
         ind = i;
     }
 
@@ -634,40 +629,39 @@ export class TablesComponent {
     //console.log(this.selectedOutput);
   }
 
-  disableOutput(id : number) {
+  disableOutput(id: number) {
     this.radios[id] = !this.radios[id];
   }
-  
-  disableInput(id : number) {
+
+  disableInput(id: number) {
     this.checks[id] = !this.checks[id];
-    
-    if(this.pret != -1)
+
+    if (this.pret != -1)
       this.checks[this.pret] = !this.checks[this.pret];
     console.log(this.pret);
   }
 
-  selectedID(event, id : number){
-    if(event.target.checked){
-      id = id + (this.page - 1)*this.selectedRow
+  selectedID(event, id: number) {
+    if (event.target.checked) {
+      id = id + (this.page - 1) * this.selectedRow
       this.selectedRows.push(id);
     }
-    else{
-      id = id + (this.page - 1)*this.selectedRow
-      this.selectedRows.forEach((element, index)=> {
-        if(element == id) this.selectedRows.splice(index,1)
+    else {
+      id = id + (this.page - 1) * this.selectedRow
+      this.selectedRows.forEach((element, index) => {
+        if (element == id) this.selectedRows.splice(index, 1)
       });
     }
     console.log(this.selectedRows)
   }
 
   deleteCheck() {
-    this.deleteWarning = true;
+    if (this.selectedRows.length != 0) this.deleteWarning = true;
   }
 
-  async deleteRows()
-  {
-    await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res =>
-      {
+  async deleteRows() {
+    if (this.selectedRows.length != 0) {
+      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res => {
         this.clearStorage();
         this.reset();
         this.showTable(this.selectedType, this.selectedRow, this.page, false);
@@ -682,10 +676,10 @@ export class TablesComponent {
           toastClass: "alert alert-info alert-with-icon",
           positionClass: 'toast-top-center'
         });
-      },err=>{
+      }, err => {
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if(StringToken=="Error encoundered while deleting a row from the dataset."){
+        if (StringToken == "Error encoundered while deleting a row from the dataset.") {
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting a row from the dataset</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
@@ -695,13 +689,13 @@ export class TablesComponent {
           });
         }
       });
+    }
   }
 
-  async editCell(id : number, value : any, columnName : string)
-  {
-    id = id + (this.page - 1)*this.selectedRow;
+  async editCell(id: number, value: any, columnName: string) {
+    id = id + (this.page - 1) * this.selectedRow;
 
-    await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(res =>{
+    await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(res => {
       this.clearStorage();
       sessionStorage.removeItem('statistics');
       this.reset()
@@ -715,11 +709,11 @@ export class TablesComponent {
         toastClass: "alert alert-info alert-with-icon",
         positionClass: 'toast-top-center'
       });
-      
-    },err=>{
+
+    }, err => {
       let JSONtoken: string = JSON.stringify(err.error);
       let StringToken = JSON.parse(JSONtoken).responseMessage;
-      if(StringToken=="Error encoundered while deleting a row from the dataset."){
+      if (StringToken == "Error encoundered while deleting a row from the dataset.") {
         this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while editing cell content</b>.', '', {
           disableTimeOut: false,
           closeButton: true,
@@ -732,8 +726,8 @@ export class TablesComponent {
   }
 
   previewMatrix() {
-   // this.showToolBar = false;
-   // this.boxPlotFun();
+    // this.showToolBar = false;
+    // this.boxPlotFun();
     this.opndMatrix = true;
   }
 
@@ -746,7 +740,7 @@ export class TablesComponent {
 
   expandStats() {
     var stats = document.getElementsByClassName('statistics')[0];
-    if(this.statsButton == "Full Statistics") {
+    if (this.statsButton == "Full Statistics") {
       this.hideBoxplot = true;
       this.hideMatrix = true;
       this.hideS = true;
@@ -769,7 +763,7 @@ export class TablesComponent {
   expandMatrix() {
     var matrix = document.getElementsByClassName('matrix')[0];
 
-    if(this.matrixButton == "View Full Matrix") {
+    if (this.matrixButton == "View Full Matrix") {
       this.hideBoxplot = true;
       this.hideStatistics = true;
       this.hideM = true;
@@ -785,7 +779,7 @@ export class TablesComponent {
     }
   }
 
-  openedTab(id : number) {
+  openedTab(id: number) {
     var buttons = document.getElementsByClassName('tabBtn');
 
     /*
@@ -796,50 +790,50 @@ export class TablesComponent {
     buttons[id].classList.add('tabOpened');
     */
 
-    if(id == 0) {
+    if (id == 0) {
       this.X = true;
-      this.ioSelection = false; 
-      this.encoding = false; 
-      this.dataPreprocessing = false; 
+      this.ioSelection = false;
+      this.encoding = false;
+      this.dataPreprocessing = false;
     }
-    else if(id == 1) {
+    else if (id == 1) {
       this.X = false;
-      this.ioSelection = true; 
-      this.encoding = false; 
-      this.dataPreprocessing = false; 
+      this.ioSelection = true;
+      this.encoding = false;
+      this.dataPreprocessing = false;
       //this.heightCorrection();
     }
     else if (id == 2) {
       this.X = false;
-      this.ioSelection = false; 
-      this.encoding = true; 
-      this.dataPreprocessing = false; 
+      this.ioSelection = false;
+      this.encoding = true;
+      this.dataPreprocessing = false;
     }
     else if (id == 3) {
       this.X = false;
-      this.ioSelection = false; 
-      this.encoding = false; 
-      this.dataPreprocessing = true; 
+      this.ioSelection = false;
+      this.encoding = false;
+      this.dataPreprocessing = true;
     }
   }
 
   heightCorrection() {
     var tabs = document.getElementsByClassName('tabs')[0];
     var height: number = 0;
-    if(this.ioSelection) { 
+    if (this.ioSelection) {
       height = document.getElementsByClassName('io-selection')[0].clientHeight;
     }
-    else if(this.encoding) {
+    else if (this.encoding) {
       height = document.getElementsByClassName('encoding')[0].clientHeight;
     }
-    else if(this.dataPreprocessing) {
+    else if (this.dataPreprocessing) {
       height = document.getElementsByClassName('data-preprocessing')[0].clientHeight;
     }
-    else if(this.X) {
+    else if (this.X) {
       height = document.getElementsByClassName('X')[0].clientHeight;
     }
     height += 70;
-    tabs.setAttribute('style', 'height: '+ height +'px;');
+    tabs.setAttribute('style', 'height: ' + height + 'px;');
     console.log(height);
   }
 }
