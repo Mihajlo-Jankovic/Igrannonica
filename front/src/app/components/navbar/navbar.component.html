@@ -13,7 +13,8 @@
             </div>
             <div class="img"></div>
         </div>
-        <button aria-label="Toggle navigation" class=" navbar-toggler" (click)="collapse()" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample" id="navigation" type="button">
+        <button aria-label="Toggle navigation" class=" navbar-toggler" (click)="collapse()"
+            [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample" id="navigation" type="button">
             <span class=" navbar-toggler-bar navbar-kebab"> </span>
             <span class=" navbar-toggler-bar navbar-kebab"> </span>
             <span class=" navbar-toggler-bar navbar-kebab"> </span>
@@ -62,7 +63,8 @@
                     </ul>
                 </li>
                 -->
-                <li class=" nav-item navbar-collapse" ngbDropdown *ngIf="cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
+                <li class=" nav-item navbar-collapse" ngbDropdown *ngIf="cookieCheck" [ngbCollapse]="isCollapsed"
+                    id="navigation">
                     <a class=" nav-link" data-toggle="dropdown" href="javascript:void(0)" ngbDropdownToggle>
                         <div class=" photo">
                             <img alt="Profile Photo" src="assets/img/anime3.png" />
@@ -72,7 +74,8 @@
                     </a>
                     <ul class=" dropdown-navbar" ngbDropdownMenu>
                         <li class=" nav-link">
-                            <a class=" nav-item" routerLink="/user" routerLinkActive="active" ngbDropdownItem style="color: #bcb8b7;">
+                            <a class=" nav-item" routerLink="/user" routerLinkActive="active" ngbDropdownItem
+                                style="color: #bcb8b7;">
                                 Profile
                             </a>
                         </li>
@@ -84,11 +87,16 @@
                         </li>
                     </ul>
                 </li>
+                <select class='dropdown' #selLang (change)="translateLanguageTo(selLang.value)">
+                    <option *ngFor="let language of translate.getLangs()" [value]="language">{{ language }}</option>
+                </select>
+                <!-- <h1>{{ "TITLE" | translate}}</h1> -->
+
                 <li class=" nav-item  navbar-collapse" *ngIf="!cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <ul class=" navbar-nav ml-auto">
                         <li class=" nav-link">
                             <a class="login" routerLink="/login" routerLinkActive="active" ngbDropdownItem>
-                                LOG IN
+                                {{'Login' | translate}}
                             </a>
                         </li>
                     </ul>
@@ -103,7 +111,8 @@
     <div class=" modal-header">
         <input class=" form-control" id="inlineFormInputGroup" placeholder="SEARCH" type="text" />
 
-        <button aria-label="Close" class=" close" data-dismiss="modal" type="button" (click)="modal.dismiss('Cross click')">
+        <button aria-label="Close" class=" close" data-dismiss="modal" type="button"
+            (click)="modal.dismiss('Cross click')">
             <i class=" tim-icons icon-simple-remove"> </i>
         </button>
     </div>

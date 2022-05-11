@@ -3,8 +3,8 @@
         <div class="img"></div>
     </div>
     <div class="headerRight">
-        <a class="navItem white register" routerLink="/register" routerLinkActive="active"><i class=" tim-icons icon-laptop"></i> Register </a>
-        <a class="navItem text-primary upload" routerLink="/upload" routerLinkActive="active"><i class=" tim-icons icon-minimal-left"></i> Back to Playground </a>
+        <a class="navItem white register" routerLink="/register" routerLinkActive="active"><i class=" tim-icons icon-laptop"></i> {{'Register' | translate}} </a>
+        <a class="navItem text-primary upload" routerLink="/upload" routerLinkActive="active"><i class=" tim-icons icon-minimal-left"></i> {{'Back to playground' | translate}} </a>
     </div>
 </div>
 <div class="wrapper wrapper-full-page" style="min-height: 665px;">
@@ -15,7 +15,7 @@
                     <form class="form" novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Log in</h1>
+                                <h1 class=" card-title">{{'Login' | translate}}</h1>
                             </div>
                             <div class=" card-body">
                                 <div class="input-group">
@@ -24,7 +24,7 @@
                                             <i class=" tim-icons icon-single-02"></i>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="Username" name="username" formControlName="username" class="form-control">
+                                    <input type="text" placeholder="{{'Username' | translate}}" name="username" formControlName="username" class="form-control">
                                 </div>
                                 <div class="input-group">
                                     <div class=" input-group-prepend">
@@ -32,7 +32,7 @@
                                             <i class=" tim-icons icon-lock-circle"></i>
                                         </div>
                                     </div>
-                                    <input type="password" placeholder="Password" name="password" formControlName="password" class="form-control">
+                                    <input type="password" placeholder="{{'Password' | translate}}" name="password" formControlName="password" class="form-control">
                                 </div>
                                 <div class="input-group">
                                     <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
@@ -41,15 +41,15 @@
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" [disabled]="!loginForm.valid" class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
+                                <button type="submit" [disabled]="!loginForm.valid" class="btn btn-primary btn-lg btn-block mb-3">{{'Login' | translate}}</button>
                                 <div class=" pull-left">
                                     <h6>
-                                        <a class="text-primary" routerLink="/register" routerLinkActive="active"> Create Account </a>
+                                        <a class="text-primary" routerLink="/register" routerLinkActive="active"> {{'Create account' | translate}} </a>
                                     </h6>
                                 </div>
                                 <div class=" pull-right">
                                     <h6>
-                                        <a class="text-primary" routerLink="" routerLinkActive="active"> Need Help? </a>
+                                        <a class="text-primary" routerLink="" routerLinkActive="active"> {{'Need help' | translate}} </a>
                                     </h6>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
     <div class=" container-fluid">
         <ul class=" nav">
             <li class=" nav-item">
-                <a class=" nav-link" href="#"> About Us </a>
+                <a class=" nav-link" href="#"> {{'About us' | translate}} </a>
             </li>
         </ul>
         <div class=" copyright">

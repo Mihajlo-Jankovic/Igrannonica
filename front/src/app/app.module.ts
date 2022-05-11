@@ -1,7 +1,7 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
+//import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserModule } from '@angular/platform-browser';
@@ -13,6 +13,10 @@ import { LoginLayoutComponent } from './layouts/login-layout/login-layout.compon
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UserComponent } from "./pages/user/user.component";
 
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
 import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
@@ -20,12 +24,25 @@ import { LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { NgApexchartsModule } from "ng-apexcharts";
 import { ExperimentsComponent } from './pages/experiments/experiments.component';
 
+
+export function httpTranslateLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http,'./assets/i18n/', '.json');
+}
+
 @NgModule({
   imports: [
     BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
+    TranslateModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpTranslateLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
     ComponentsModule,
     NgbModule,
     AppRoutingModule,
@@ -34,6 +51,9 @@ import { ExperimentsComponent } from './pages/experiments/experiments.component'
     ToastrModule.forRoot(),
     NgApexchartsModule,
     RouterModule
+  ],
+  exports:[
+    TranslateModule
   ],
   declarations: [
     AppComponent,
