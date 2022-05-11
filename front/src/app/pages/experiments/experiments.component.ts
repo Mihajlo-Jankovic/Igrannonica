@@ -95,25 +95,13 @@ export class ExperimentsComponent implements OnInit {
     this.showExperiments(this.selectedPrivacyType, this.pageNum);
   }
 
-  // showExperiments()
-  // {
-  //   this.userService.getAllUserExperiments().subscribe(exp =>{
-  //     for(let i = 0; i< exp.length; i++)
-  //     {
-  //       let expData : any = {};
-  //       expData = exp[i];
-  //       this.data = expData;
-
-  //       this.experimentList.push(this.data)
-  //     }
-  //   })
-  // }
-
   getUsername() {
     return this.cookie.get('username');
   }
 
   showExperiments(privacyType: string, page: number) {
+    this.experimentListAuthorized = []
+    this.experimentListUnauthorized = []
     this.loggedUser = this.loginService.isAuthenticated();
     this.numOfPages = 0;
     if (this.cookieCheck) {
@@ -132,12 +120,6 @@ export class ExperimentsComponent implements OnInit {
 
         this.allExperiments = [];
         this.myExperiments = [];
-
-        // for (let i = 0; i < this.experimentListAuthorized.length; i++) {
-        //   if(this.experimentListAuthorized[i]['visibility'] == true) {
-        //     this.experimentListAuthorized[i]['Public']="true";
-        //   }
-        // } 
 
         for (let i = 0; i < this.experimentListAuthorized.length; i++) {
           if(this.experimentListAuthorized[i]['visibility'] == true)  {
@@ -206,12 +188,52 @@ export class ExperimentsComponent implements OnInit {
     }
   }
 
+  onCheckboxChange(event: any,item) {
+    
+    if(!event.target.checked){
+      item.visibility = false;
+      this.loggedUser = this.loginService.isAuthenticated();
+      if (this.loggedUser) {
+        this.token = this.cookie.get('token');
+      }
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      this.http.post<string>(this.configuration.updateVisibilityExperimets,
+      {
+        "_id" : item._id,
+        "visibility" : item.visibility
+      }, options).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+      })
+    }
+    if(event.target.checked){
+      item.visibility = true;
+      this.loggedUser = this.loginService.isAuthenticated();
+      if (this.loggedUser) {
+        this.token = this.cookie.get('token');
+      }
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      this.http.post<string>(this.configuration.updateVisibilityExperimets ,
+      {
+        "_id" : item._id,
+        "visibility" : item.visibility
+      }, options).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+      })
+    }
+  }
+
   deleteExperiments(id : any)
   {
     this.userService.deleteExperiment(id).subscribe(res => {
       this.experimentListAuthorized = [];
       this.experimentListUnauthorized = [];
-      //this.showExperiments();
+      this.showExperiments(this.selectedPrivacyType, this.pageNum);
     })
   }
 
