@@ -592,6 +592,19 @@ export class DashboardComponent implements OnInit {
     }
     let today = new Date();
     let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
+
+    this.encodingList = [];
+    let colNameTemp = []; let encodingTypeTemp = [];
+    let encodingListTemp = JSON.parse(sessionStorage.getItem('columnData'));
+    for(let i = 0; i < encodingListTemp.length; i++) {
+      if(encodingListTemp[i]['isSelected']) {
+        colNameTemp.push(encodingListTemp[i]['colName']);
+        encodingTypeTemp.push(encodingListTemp[i]['encoding']);
+      }
+    }
+    this.encodingList.push(colNameTemp);
+    this.encodingList.push(encodingTypeTemp);
+
     let experiment = {
       'userId' : 0,
       'name' : this.experimentName,
@@ -599,7 +612,8 @@ export class DashboardComponent implements OnInit {
       'fileName' : fileName, 
       'inputList' : inputList, 
       'output' : output, 
-      'encodingType' : this.encodingType, 
+      'encodingType' : this.encodingType,
+      //'encodingList' : this.encodingList,
       'ratio' : 1 - (1 * (this.range/100)), 
       'numLayers' : this.layersLabel, 
       'layerList' : layerList, 

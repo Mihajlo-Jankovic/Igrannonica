@@ -1032,3 +1032,15 @@ $tabs-base-color: #27293d;
     margin: auto;
     padding: 10px;
 }
+
+
+.dropdownContainerButton {
+    padding-right: 1rem;
+    float: left;
+    //width: 50%
+}
+
+.selectedMissingValueCol{
+    /*background-color: #7d3c8b;*/
+    border: 1px solid #7d3c8b !important;
+}
