@@ -176,7 +176,7 @@ namespace Igrannonica.Controllers
         public async Task<ActionResult<List<Models.File>>> GetCSVAuthorized(FileDTO dto)
         {
             var usernameOriginal = _userService.GetUsername();
-            User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            User? user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
 
             if (user == null) return BadRequest("JWT is bad!");
 
@@ -193,7 +193,7 @@ namespace Igrannonica.Controllers
                 {
                     if (i < (dto.PageNum - 1) * dto.NumPerPage) { i++; continue; }
 
-                    User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+                    User? tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
 
                     var file = new { fileId = tmp.Id, fileName = tmp.FileName, dateCreated = tmp.DateCreated.ToString("MM/dd/yyyy hh:mm tt"), userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
                     files.Add(file);
@@ -233,7 +233,7 @@ namespace Igrannonica.Controllers
             {
                 if (i < (dto.PageNum - 1) * dto.NumPerPage) { i++; continue; }
 
-                User tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
+                User? tmpUser = _mySqlContext.User.Where(u => u.id == tmp.UserForeignKey).FirstOrDefault();
 
                 var file = new { fileName = tmp.FileName, dateCreated = tmp.DateCreated.ToString("MM/dd/yyyy hh:mm tt"), userId = tmp.UserForeignKey, username = tmpUser.username, isPublic = tmp.IsPublic, randomFileName = tmp.RandomFileName };
                 files.Add(file);
@@ -246,14 +246,14 @@ namespace Igrannonica.Controllers
         public async Task<ActionResult<string>> UpdateVisibility(VisibilityDTO request)
         {
             var usernameOriginal = _userService.GetUsername();
-            User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+            User? user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
             
             if (user == null) 
                 return BadRequest(new
                 {
                     responseMessage = "Error: No user found with that name!"
                 });
-            Models.File file = _mySqlContext.File.Where(f => f.Id == request.Id).FirstOrDefault();
+            Models.File? file = _mySqlContext.File.Where(f => f.Id == request.Id).FirstOrDefault();
 
             if (file.UserForeignKey != user.id)
                 return BadRequest(new
@@ -271,7 +271,7 @@ namespace Igrannonica.Controllers
 
         private IActionResult checkCredentials(int fileID, string username)
         {
-            User user = _mySqlContext.User.Where(u => u.username == username).FirstOrDefault();
+            User? user = _mySqlContext.User.Where(u => u.username == username).FirstOrDefault();
 
             if (user == null)
                 return BadRequest(new
@@ -279,9 +279,9 @@ namespace Igrannonica.Controllers
                     responseMessage = "Error: No user found with that name!"
                 });
 
-            Models.File file = _mySqlContext.File.Where(f => f.Id == fileID).FirstOrDefault();
+            Models.File? file = _mySqlContext.File.Where(f => f.Id == fileID).FirstOrDefault();
 
-            if (file.UserForeignKey != user.id && file.IsPublic == false)
+            if (file != null && file.UserForeignKey != user.id && file.IsPublic == false)
                 return BadRequest(new
                 {
                     responseMessage = "Error: The file you are trying to change doesn't belong to you!"

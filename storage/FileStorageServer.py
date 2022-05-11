@@ -6,6 +6,7 @@ import pandas as pd
 import FileStorageProgram
 import json
 import io
+import shutil
 
 UPLOAD_FOLDER = os.path.join('Resources','CSVFiles')
 ALLOWED_EXTENSIONS = {'csv'}
@@ -114,6 +115,22 @@ def delete_row():
         
     else:
         return {"message" : "Error encoundered while deleting a row from the dataset."}
+
+@app.route('/copyfile', methods=['POST'])
+def copy_file():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json; charset=utf-8'):
+        json = request.json
+        original = os.path.join(app.config['UPLOAD_FOLDER'], json['OldRandomFileName'])
+        target = os.path.join(app.config['UPLOAD_FOLDER'], json['NewRandomFileName'])
+
+        shutil.copyfile(original, target)
+
+        return {"message": "Copy successfull."}
+        
+    else:
+        return {"message" : "Error encoundered while deleting a row from the dataset."}
+    
 
 if __name__ == '__main__':
     app.run(port=10108)

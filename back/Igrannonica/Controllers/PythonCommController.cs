@@ -178,7 +178,7 @@ namespace Igrannonica.Controllers
 
         private IActionResult checkCredentials(int fileID, string username)
         {
-            User user = _mySqlContext.User.Where(u => u.username == username).FirstOrDefault();
+            var user = _mySqlContext.User.Where(u => u.username == username).FirstOrDefault();
 
             if (user == null)
                 return BadRequest(new
@@ -186,9 +186,9 @@ namespace Igrannonica.Controllers
                     responseMessage = "Error: No user found with that name!"
                 });
 
-            Models.File file = _mySqlContext.File.Where(f => f.Id == fileID).FirstOrDefault();
+            var file = _mySqlContext.File.Where(f => f.Id == fileID).FirstOrDefault();
 
-            if (file.UserForeignKey != user.id && file.IsPublic == false)
+            if (file != null && file.UserForeignKey != user.id && file.IsPublic == false)
                 return BadRequest(new
                 {
                     responseMessage = "Error: The file you are trying to change doesn't belong to you!"
