@@ -53,7 +53,10 @@ export class LoginLayoutComponent implements OnInit {
           toastClass: "alert alert-info alert-with-icon",
           positionClass: 'toast-top-center'
         });
-        this.router.navigate(['upload']);
+        if(this.cookie.get('home'))
+          this.router.navigate(['upload']);
+        else
+          this.router.navigate(['home']);
 
       }, err => {
         let JSONtoken: string = JSON.stringify(err.error);

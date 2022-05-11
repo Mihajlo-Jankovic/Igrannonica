@@ -52,7 +52,7 @@
                                         <div class="titleHeader">
                                             <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">Experiment: {{item.name}}</h4>
                                             <div class="settings">
-                                                <label class="switch" ngbTooltip="Change file's privacy by toggling this">
+                                                <label class="switch" ngbTooltip="Change experiment's privacy by toggling this">
                                                     <input type="checkbox" *ngIf="item.visibility" (change)="onCheckboxChange($event,item)" checked>
                                                     <input type="checkbox" *ngIf="!item.visibility" (change)="onCheckboxChange($event,item)">
                                                     <span class="slider round"></span>
@@ -60,31 +60,32 @@
                                             </div>
                                         </div>
                                         <div class="fileName">Desription:</div>
-                                            <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
-                                            <div class="fileName">Date : {{item.date}}</div>
+                                        <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
+                                        <div class="fileName">Date : {{item.date}}</div>
                                         <div class="fileName" style="height:auto;">Dataset : {{item.realName}}</div>
                                         <div style="width:100%; height:auto;">
                                             <div class="fileName" style="width:210px; float: left; margin-right: 0px;">Problem type : {{item.models[0]['parameters']['problemType']}}</div>
                                             <div class="settings">
                                                 <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">Use this</button>
                                                 <button class=" btn btn-link trash " placement="left" ngbTooltip="Delete file" container="body" (click)="deleteExperiments(item['_id'])" style="float:right;">
-                                                <i class="tim-icons icon-trash-simple"> </i>
-                                            </button>
+                                                    <i class="tim-icons icon-trash-simple"> </i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="authorized" *ngIf="cookieCheck">
-                        <div *ngFor="let item of experimentListUnAuthorized">
+                    <div class="unauthorized" *ngIf="!cookieCheck">
+                        <div *ngFor="let item of experimentListUnauthorized">
                             <div class="file">
                                 <div class="fileContent">
                                     <div class=" row">
                                         <div class="titleHeader">
                                             <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">Experiment: {{item.name}}</h4>
                                             <div class="settings">
-                                                <label class="switch" ngbTooltip="Change file's privacy by toggling this">
+                                                <label class="switch" ngbTooltip="Change experiment's privacy by toggling this">
                                                     <input type="checkbox" *ngIf="item.visibility" (change)="onCheckboxChange($event,item)" checked>
                                                     <input type="checkbox" *ngIf="!item.visibility" (change)="onCheckboxChange($event,item)">
                                                     <span class="slider round"></span>
@@ -100,8 +101,9 @@
                                             <div class="settings">
                                                 <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">Use this</button>
                                                 <button class=" btn btn-link trash " placement="left" ngbTooltip="Delete file" container="body" (click)="deleteExperiments(item['_id'])" style="float:right;">
-                                                <i class="tim-icons icon-trash-simple"> </i>
-                                            </button>
+                                                    <i class="tim-icons icon-trash-simple"> </i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

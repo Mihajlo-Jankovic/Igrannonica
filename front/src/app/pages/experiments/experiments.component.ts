@@ -100,11 +100,10 @@ export class ExperimentsComponent implements OnInit {
   }
 
   showExperiments(privacyType: string, page: number) {
-    this.experimentListAuthorized = []
-    this.experimentListUnauthorized = []
     this.loggedUser = this.loginService.isAuthenticated();
     this.numOfPages = 0;
     if (this.cookieCheck) {
+      this.experimentListAuthorized = []
       this.listOfExperimentsAuthorized = this.userService.getAllUserExperiments(privacyType, page, this.numPerPage, this.numOfPages).subscribe(exp =>{
             for(let i = 0; i< exp['experiments'].length; i++)
             {
@@ -134,6 +133,7 @@ export class ExperimentsComponent implements OnInit {
       })  
     }
     else {
+      this.experimentListUnauthorized = []
       this.listOfExperimentsUnauthorized = this.userService.getPublicExperiments("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(exp =>{
         for(let i = 0; i< exp.length; i++)
         {
@@ -150,6 +150,7 @@ export class ExperimentsComponent implements OnInit {
             this.publicExperimentsUnauthorized.push(this.experimentListUnauthorized[i]);
         }
       });
+      console.log(this.experimentListUnauthorized)
     }
   }
 

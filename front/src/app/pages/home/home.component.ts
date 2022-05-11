@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
     }
 
     oldExperiment() {
+        this.cookie.set('home', 'true');
         this.router.navigate(['experiments']);
     }
 }
