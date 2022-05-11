@@ -28,4 +28,5 @@ export class Configuration
     public downloadFileUnauthorized = this.port + "/api/FileUpload/delete-authorized/";
     public updateVisibility = this.port + "/api/Csv/updateVisibility";
     public refreshToken = this.port + "/api/User/refreshToken/";
+    public tempPassword = this.port + "/api/User/sendtemppasswordmail";
 }

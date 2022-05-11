@@ -75,7 +75,7 @@
 
 
                     <form *ngIf="forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator"
-                        class="form" novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
+                        class="form" novalidate [formGroup]="tempPasswordForm" (ngSubmit)="tempPassword(tempPasswordForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Find Your Account</h1>
@@ -93,7 +93,7 @@
                             </div>
                             <div class=" card-footer">
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3"
-                                    (click)="createTemporaryPassword()">Search</button>
+                                    (click)="tempPassword()">Search</button>
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3"
                                     (click)="backToLogin()">Cancel</button>
 
