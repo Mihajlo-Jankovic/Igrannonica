@@ -380,17 +380,38 @@ namespace Igrannonica.Controllers
             experiment.userId = user.id;
 
             var client = new MongoClient(getMongoDBConnString());
-            Console.WriteLine(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<ExperimentDTO>("experiment");
 
-            collection.InsertOne(experiment);
+            var tmp = collection.Find(e => e.name == experiment.name && e.userId == user.id);
+
+            if(tmp != null && experiment.overwrite == false)
+            {
+                return Ok(new { responseMessage = "There is already an experiment with the same name, do you want to overwrite it?" });
+            }
+
+            else if (tmp != null && experiment.overwrite == true)
+            {
+                var result = collection.ReplaceOne(e => e.name == experiment.name, experiment);
+            }
+
+            else collection.InsertOne(experiment);
 
             return Ok(experiment);
         }
 
-        [HttpGet("getUserExperiments"), Authorize]
-        public async Task<ActionResult<List<Experiment>>> GetUserExperiments()
+        private int paging(long numOfFiles, int numPerPage)
+        {
+            int numOfPages;
+
+            if (numOfFiles % numPerPage != 0) { numOfPages = (int)numOfFiles / numPerPage; numOfPages++; }
+            else numOfPages = (int)numOfFiles / numPerPage;
+
+            return numOfPages;
+        }
+
+        [HttpPost("getExperimentAuthorized"), Authorize]
+        public async Task<ActionResult<List<Experiment>>> GetExperimentAuthorized(PagingDTO dto)
         {
             var usernameOriginal = _userService.GetUsername();
             User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
@@ -402,16 +423,51 @@ namespace Igrannonica.Controllers
             var database = client.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
 
-            List<Experiment> experiments = collection.Find(e => e.userId == user.id).ToList();
+            List<Experiment> experiments = new List<Experiment>();
 
-           /* foreach (Experiment experiment in experiments)
+            if (dto.Visibility == "public")
             {
-                Models.File file = _context.File.Where(f => f.RandomFileName == experiment.fileName).FirstOrDefault();
-                experiment.realName = file.FileName;
-            }*/
+                if (dto.NumOfPages == 0)
+                {
+                    var numOfFiles = collection.Count(e => e.visibility == true);
+                    dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
+                }
 
-            return Ok(experiments);
+                experiments = collection.Find(e => e.visibility == true).Skip((dto.PageNum-1)*dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+            }
+
+            else
+            {
+                if (dto.NumOfPages == 0)
+                {
+                    var numOfFiles = collection.Count(e => e.userId == user.id);
+                    dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
+                }
+
+                experiments = collection.Find(e => e.userId == user.id).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+            }
+
+            return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
         }
+
+        [HttpPost("getExperimentUnauthorized")]
+        public async Task<ActionResult<List<Experiment>>> GetExperimentUnauthorized(PagingDTO dto)
+        {
+            var client = new MongoClient(getMongoDBConnString());
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+
+            if (dto.NumOfPages == 0)
+            {
+                var numOfFiles = collection.Count(e => e.visibility == true);
+                dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
+            }
+
+            List<Experiment> experiments = collection.Find(e => e.visibility == true).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+
+            return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
+        }
+
 
         [HttpPost("deleteExperiment"), Authorize]
         public async Task<ActionResult<string>> DeleteExperiment(DeleteDTO obj)
@@ -431,6 +487,33 @@ namespace Igrannonica.Controllers
             collection.DeleteOne(e => e._id == obj.Id);
 
             return Ok(new { obj.Id });
+        }
+
+        [HttpPost("updateExperimentVisibility"), Authorize]
+        public async Task<ActionResult<string>> UpdateExperimentVisibility(ExperimentVisibilityDTO request)
+        {
+            var username = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == username).FirstOrDefault();
+
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
+
+            var client = new MongoClient(getMongoDBConnString());
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+
+            var filter = Builders<Experiment>.Filter.Eq("_id", request._id);
+            var update = Builders<Experiment>.Update.Set("visibility", request.Visibility);
+
+            var result = collection.UpdateOne(filter,update);
+
+            if (result == null)
+                return BadRequest(new
+                {
+                    responseMessage = "Error: The file you are trying to change doesn't belong to you!"
+                });
+
+            return Ok(new { responseMessage = "Success!" });
         }
     }
 }

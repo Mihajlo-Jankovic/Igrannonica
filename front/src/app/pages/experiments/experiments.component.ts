@@ -1,6 +1,9 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { Configuration } from 'src/app/configuration';
+import { LoginService } from 'src/app/services/login.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -9,6 +12,22 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./experiments.component.scss']
 })
 export class ExperimentsComponent implements OnInit {
+
+  configuration = new Configuration();
+
+  cookieCheck : any;
+  token : string;
+  loggedUser : boolean;
+  pageNum: any = 1;
+  numOfPages: any = 0;
+  numPerPage: any = 4;
+  listOfExperimentsAuthorized: any = [];
+  listOfExperimentsUnauthorized: any = [];
+  selectedPrivacyType: string = "public";
+  publicExperiments: any = [];
+  publicExperimentsUnauthorized: any = [];
+  allExperiments: any = [];
+  myExperiments: any = [];
 
   experiment = {
     'name' : "",
@@ -23,6 +42,7 @@ export class ExperimentsComponent implements OnInit {
     "fileName": "",
     "realName": "",
     "description": "",
+    "visibility" : false,
     "models": [
       {
         "id": 0,
@@ -62,33 +82,158 @@ export class ExperimentsComponent implements OnInit {
     ]
   }
 
-  experimentList : any = []
 
-  constructor(private userService : UserService, private cookie : CookieService, private router :  Router) { }
+  experimentListAuthorized : any = []
+  experimentListUnauthorized : any = []
+
+  constructor(private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
+      if(this.cookie.get('token'))
+        this.cookieCheck = this.cookie.get('token');
+   }
 
   ngOnInit(): void {
-    this.showExperiments()
+    this.showExperiments(this.selectedPrivacyType, this.pageNum);
   }
 
-  showExperiments()
-  {
-    this.userService.getAllUserExperiments().subscribe(exp =>{
-      for(let i = 0; i< exp.length; i++)
-      {
-        let expData : any = {};
-        expData = exp[i];
-        this.data = expData;
+  getUsername() {
+    return this.cookie.get('username');
+  }
 
-        this.experimentList.push(this.data)
+  showExperiments(privacyType: string, page: number) {
+    this.experimentListAuthorized = []
+    this.experimentListUnauthorized = []
+    this.loggedUser = this.loginService.isAuthenticated();
+    this.numOfPages = 0;
+    if (this.cookieCheck) {
+      this.listOfExperimentsAuthorized = this.userService.getAllUserExperiments(privacyType, page, this.numPerPage, this.numOfPages).subscribe(exp =>{
+            for(let i = 0; i< exp['experiments'].length; i++)
+            {
+              let expData : any = {};
+              expData = exp['experiments'][i];
+              this.data = expData;
+      
+              this.experimentListAuthorized.push(this.data);
+              console.log(this.experimentListAuthorized);
+              this.numOfPages = exp['numOfPages'];
+            }
+        
+
+        this.allExperiments = [];
+        this.myExperiments = [];
+
+        for (let i = 0; i < this.experimentListAuthorized.length; i++) {
+          if(this.experimentListAuthorized[i]['visibility'] == true)  {
+            this.allExperiments.push(this.experimentListAuthorized[i]);
+          }
+            this.myExperiments.push(this.experimentListAuthorized[i]);
+        }
+        if(this.selectedPrivacyType == "public")
+          this.experimentListAuthorized = this.allExperiments;
+        else if(this.selectedPrivacyType == "myexperiments")
+          this.experimentListAuthorized = this.myExperiments;
+      })  
+    }
+    else {
+      this.listOfExperimentsUnauthorized = this.userService.getPublicExperiments("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(exp =>{
+        for(let i = 0; i< exp.length; i++)
+        {
+          let expData : any = {};
+          expData = exp[i];
+          this.data = expData;
+  
+          this.experimentListUnauthorized.push(this.data);
+          this.numOfPages = exp['numOfPages'];
+        }
+
+        for (let i = 0; i < this.experimentListUnauthorized.length; i++) {
+          if (this.experimentListUnauthorized[i]['visibility'])
+            this.publicExperimentsUnauthorized.push(this.experimentListUnauthorized[i]);
+        }
+      });
+    }
+  }
+
+  public onSelectedType(event: any) {
+    const value = event.target.value;
+    this.selectedPrivacyType = value;
+    this.pageNum = 1;
+    this.showExperiments(this.selectedPrivacyType, this.pageNum);
+  }
+
+  nextPage(i: number) {
+    if(this.pageNum + i <= this.numOfPages){
+      this.pageNum += i;
+      this.showExperiments(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  previousPage(i : number) {
+    if(this.pageNum - i >= 1){
+      this.pageNum -= i;
+      this.showExperiments(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  firstPage(){
+    if(this.pageNum != 1){
+      this.pageNum = 1;
+      this.showExperiments(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  lastPage(){
+    if(this.pageNum != this.numOfPages){
+      this.pageNum = this.numOfPages;
+      this.showExperiments(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  onCheckboxChange(event: any,item) {
+    
+    if(!event.target.checked){
+      item.visibility = false;
+      this.loggedUser = this.loginService.isAuthenticated();
+      if (this.loggedUser) {
+        this.token = this.cookie.get('token');
       }
-    })
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      this.http.post<string>(this.configuration.updateVisibilityExperimets,
+      {
+        "_id" : item._id,
+        "visibility" : item.visibility
+      }, options).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+      })
+    }
+    if(event.target.checked){
+      item.visibility = true;
+      this.loggedUser = this.loginService.isAuthenticated();
+      if (this.loggedUser) {
+        this.token = this.cookie.get('token');
+      }
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.token
+      });
+      let options = { headers: headers };
+      this.http.post<string>(this.configuration.updateVisibilityExperimets ,
+      {
+        "_id" : item._id,
+        "visibility" : item.visibility
+      }, options).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+      })
+    }
   }
 
   deleteExperiments(id : any)
   {
     this.userService.deleteExperiment(id).subscribe(res => {
-      this.experimentList = [];
-      this.showExperiments();
+      this.experimentListAuthorized = [];
+      this.experimentListUnauthorized = [];
+      this.showExperiments(this.selectedPrivacyType, this.pageNum);
     })
   }
 

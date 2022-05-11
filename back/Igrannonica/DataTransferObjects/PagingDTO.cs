@@ -1,6 +1,6 @@
 ﻿namespace Igrannonica.DataTransferObjects
 {
-    public class FileDTO
+    public class PagingDTO
     {
         public string Visibility { get; set; }
         public int PageNum { get; set; }

@@ -21,11 +21,13 @@ export class Configuration
     public fileUploadUnauthorized = this.port + "/api/FileUpload/unauthorized";
     public testiranje : string = this.port + "/api/PythonComm/testLive";
     public startTesting : string = this.port + "/api/PythonComm/startTraining";
-    public userExperiments : string = this.port + "/api/User/getUserExperiments";
+    public userExperiments : string = this.port + "/api/User/getExperimentAuthorized";
+    public publicExperiments : string = this.port + "/api/User/getExperimentUnauthorized";
     public deleteExperiment : string = this.port + "/api/User/deleteExperiment";
     public saveExperiment : string = this.port + "/api/User/saveExperiment";
     public downloadFile : string = this.port + "/api/Csv/";
     public downloadFileUnauthorized = this.port + "/api/FileUpload/delete-authorized/";
     public updateVisibility = this.port + "/api/Csv/updateVisibility";
     public refreshToken = this.port + "/api/User/refreshToken/";
+    public updateVisibilityExperimets = this.port + "/api/User/updateExperimentVisibility";
 }
