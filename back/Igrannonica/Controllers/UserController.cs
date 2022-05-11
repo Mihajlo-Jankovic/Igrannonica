@@ -381,18 +381,11 @@ namespace Igrannonica.Controllers
 
             var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");
+
             var collection = database.GetCollection<ExperimentDTO>("experiment");
 
             var tmp = await collection.FindAsync(e => e.name == experiment.name && e.userId == user.id);
-            string temp;
-            if(tmp.FirstOrDefault() != null)
-            {
-                temp = tmp.FirstOrDefault().name;
-            }
-            else
-            {
-                temp = null;
-            }
+            var temp = tmp.FirstOrDefault();
 
             if(temp != null && experiment.overwrite == false)
             {
@@ -401,6 +394,7 @@ namespace Igrannonica.Controllers
 
             else if (temp != null && experiment.overwrite == true)
             {
+                experiment._id = temp._id;
                 var result = await collection.ReplaceOneAsync(e => e.name == experiment.name && e.userId == user.id, experiment);
             }
             else
