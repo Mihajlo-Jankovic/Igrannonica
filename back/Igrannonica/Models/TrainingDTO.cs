@@ -6,9 +6,10 @@
         public string fileName { get; set; }
         public string[] inputList { get; set; }
         public string output { get; set; }
-        public string encodingType { get; set; }
+        //public string encodingType { get; set; }
         public float ratio1 { get; set; }
         public float ratio2 { get; set; }
+        public List<List<string>> encodingList { get; set; }
         public int numLayers { get; set; }
         public int[] layerList { get; set; }
         public string activationFunction { get; set; }

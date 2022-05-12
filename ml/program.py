@@ -118,50 +118,50 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
 
     return model
 
-def encode(df, encodingType):
+def encode(df, encodingList):
     for col in df:
-        
-        # Provera da li je kolona kategorijska
-        if(df[col].dtypes == object):
-            
-            # Label encoding
-            if(encodingType == 'label'):
-                encoder = LabelEncoder()
-                df[col] = encoder.fit_transform(df[col])
-
-            # One-hot encoding
-            elif(encodingType == 'one-hot'):
-                df = pd.get_dummies(df, columns=[col], prefix = [col])
-                print(df.head)
-
-            # Binary encoding
-            elif(encodingType == 'binary'):
-                encoder = ce.BinaryEncoder(cols=[col])
-                df = encoder.fit_transform(df)
-            
-            # Frequency encoding
-            elif(encodingType == 'frequency'):
-                encoder = df.groupby(col).size()/len(df)
-                df.loc[:,col + '_freq'] = df[col].map(encoder)
-
-            '''
-            # Backward encoding (ima problem sa duplikatima indexa)
-            elif(encodingType == 'backward'):
-                encoder = ce.BackwardDifferenceEncoder(cols=[col])
-                df = encoder.fit_transform(df)
-
-                print()
-                print()
-                print(df[df.index.duplicated()])
-                print()
-                print()
-            
-            #Mean encoder (Treba da bude poznat izlaz)
-            elif(encodingType == 'mean'):
-                    encoder = df.groupby(col)[IZLAZ].mean()
-                    df.loc[:, col + '_mean'] = df[col].map(encoder)
-            '''
+        for colName in encodingList[0]:
+            if(col == colName):
+                index = encodingList[0].index(colName)
+                encodingType = encodingList[1][index]
                 
+                # Label encoding
+                if(encodingType == 'label'):
+                    encoder = LabelEncoder()
+                    df[col] = encoder.fit_transform(df[col])
+
+                # One-hot encoding
+                elif(encodingType == 'one-hot'):
+                    df = pd.get_dummies(df, columns=[col], prefix = [col])
+                    print(df.head)
+
+                # Binary encoding
+                elif(encodingType == 'binary'):
+                    encoder = ce.BinaryEncoder(cols=[col])
+                    df = encoder.fit_transform(df)
+                
+                # Frequency encoding
+                elif(encodingType == 'frequency'):
+                    encoder = df.groupby(col).size()/len(df)
+                    df.loc[:,col + '_freq'] = df[col].map(encoder)
+
+                '''
+                # Backward encoding (ima problem sa duplikatima indexa)
+                elif(encodingType == 'backward'):
+                    encoder = ce.BackwardDifferenceEncoder(cols=[col])
+                    df = encoder.fit_transform(df)
+
+                    print()
+                    print()
+                    print(df[df.index.duplicated()])
+                    print()
+                    print()
+                
+                #Mean encoder (Treba da bude poznat izlaz)
+                elif(encodingType == 'mean'):
+                        encoder = df.groupby(col)[IZLAZ].mean()
+                        df.loc[:, col + '_mean'] = df[col].map(encoder)
+                '''            
     return df
 
 # Izbacivanje kolona koje nisu input i output
@@ -169,10 +169,10 @@ def input_output(df, inputList, outputList):
     df.drop(columns=[col for col in df if col not in (inputList + outputList)], inplace=True)
 
 # Pripremanje podataka za trening
-def prepare_data(df, inputList, outputList, encodingType, testSize):
+def prepare_data(df, inputList, outputList, encodingList, testSize):
 
     input_output(df, inputList, outputList)
-    df = encode(df, encodingType)
+    df = encode(df, encodingList)
 
     df = df.dropna()
     
@@ -190,10 +190,10 @@ def prepare_data(df, inputList, outputList, encodingType, testSize):
 def output_unique_values(df,output):
     return df[output].nunique()
 
-def startTraining(connid, fileName, inputList, output, encodingType, ratio1, ratio2, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
+def startTraining(connid, fileName, inputList, output, encodingList, ratio1, ratio2, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
     PATH = 'http://127.0.0.1:10108/downloadFile/'
     df = openCSV(PATH + fileName)
-    X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingType, ratio1)
+    X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingList, ratio1)
     outputUniqueValues = output_unique_values(df,output)
     m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
     model = m.fit(x=X_train, y=y_train, validation_split=ratio2, epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])

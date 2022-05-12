@@ -74,7 +74,16 @@ export class TablesComponent {
     'columns': [],
     'values': []
   }
-
+  //*
+  column = {
+    'id': 0,
+    'colName': "",
+    'isSelected': false,
+    'isNum': false,
+    'encoding': "",
+    'encList': []
+  }
+  //*
   //data: any = { "columns": ["title", "genre", "description", "director", "actors", "year", "runtime_(minutes)", "rating", "votes", "revenue_(millions)", "metascore"], "index": [1, 2, 3, 4, 5], "data": [["Guardians of the Galaxy", "Action,Adventure,Sci-Fi", "A group of intergalactic criminals are forced to work together to stop a fanatical warrior from taking control of the universe.", "James Gunn", "Chris Pratt, Vin Diesel, Bradley Cooper, Zoe Saldana", 2014, 121, 8.1, 757074, 333.13, 76], ["Prometheus", "Adventure,Mystery,Sci-Fi", "Following clues to the origin of mankind, a team finds a structure on a distant moon, but they soon realize they are not alone.", "Ridley Scott", "Noomi Rapace, Logan Marshall-Green, Michael Fassbender, Charlize Theron", 2012, 124, 7.0, 485820, 126.46, 65], ["Split", "Horror,Thriller", "Three girls are kidnapped by a man with a diagnosed 23 distinct personalities. They must try to escape before the apparent emergence of a frightful new 24th.", "M. Night Shyamalan", "James McAvoy, Anya Taylor-Joy, Haley Lu Richardson, Jessica Sula", 2016, 117, 7.3, 157606, 138.12, 62], ["Sing", "Animation,Comedy,Family", "In a city of humanoid animals, a hustling theater impresario's attempt to save his theater with a singing competition becomes grander than he anticipates even as its finalists' find that their lives will never be the same.", "Christophe Lourdelet", "Matthew McConaughey,Reese Witherspoon, Seth MacFarlane, Scarlett Johansson", 2016, 108, 7.2, 60545, 270.32, 59], ["Suicide Squad", "Action,Adventure,Fantasy", "A secret government agency recruits some of the most dangerous incarcerated super-villains to form a defensive task force. Their first mission: save the world from the apocalypse.", "David Ayer", "Will Smith, Jared Leto, Margot Robbie, Viola Davis", 2016, 123, 6.2, 393727, 325.02, 40]] }
 
   showIO: boolean = false;
@@ -146,6 +155,27 @@ export class TablesComponent {
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
 
+  //*
+  notChecked: boolean = false;
+  encodingList = ["label", "one-hot", "binary", "frequency"];
+  colDataList: any = [];
+  //*
+
+  //*
+  missingValuesList = [];
+  fillMissingValuesList = ["", "MIN", "MAX", "AVG", "MEAN"];
+  dataOutliers: any = {"columns": ["RANK", "Country", "Happiness score", "Whisker-high", "Whisker-low", "Dystopia (1.83) + residual", "Explained by: GDP per capita", "Explained by: Social support", "Explained by: Healthy life expectancy", "Explained by: Freedom to make life choices", "Explained by: Generosity", "Explained by: Perceptions of corruption"], "data": [[1, "Finland", 7.821, 7.886, 7.756, 2.518, 1.892, 1.258, 0.775, 0.736, 0.109, 0.534], [2, "Denmark", 7.636, 7.71, 7.563, 2.226, 1.953, 1.243, 0.777, 0.719, 0.188, 0.532 ], [3, "Iceland", 7.557, 7.651, 7.464, 2.32, 1.936, 1.32, 0.803, 0.718, 0.27, 0.191 ], [ 4, "Switzerland", 7.512, 7.586, 7.437, 2.153, 2.026, 1.226, 0.822, 0.677, 0.147, 0.461], [5, "Netherlands", 7.415, 7.471, 7.359, 2.137, 1.945, 1.206, 0.787, 0.651, 0.271, 0.419], [6, "Luxembourg*", 7.404, 7.501, 7.307, 2.042, 2.209, 1.155, 0.79, 0.7, 0.12, 0.388], [ 7, "Sweden", 7.384, 7.454, 7.315, 2.003, 1.92, 1.204, 0.803, 0.724, 0.218, 0.512], [8, "Norway", 7.365, 7.44, 7.29, 1.925, 1.997, 1.239, 0.786, 0.728, 0.217, 0.474], [9, "Israel", 7.364, 7.426, 7.301, 2.634, 1.826, 1.221, 0.818, 0.568, 0.155, 0.143], [10, "New Zealand", 7.2, 7.279, 7.12, 1.954, 1.852, 1.235, 0.752, 0.68, 0.245, 0.483 ]], "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }
+  selectedMissingValCol;
+  selectedMissingValColBoolean: boolean = true;
+  selectedToFillMissingValCol: string = "MIN";
+  enteredToFillMissingValCol: any = "";
+  
+  selectedOutliersRows: any = [];
+  headingLinesOutliers: any = [];
+  numberLinesOutliers: any = [];
+  numberDataOutliers: any = [];
+  rowLinesOutliers: any = [];
+  //*
   deleteWarning: boolean = false;
 
   filter = 0;
@@ -154,6 +184,11 @@ export class TablesComponent {
     sessionStorage.removeItem('statistics');
     this.showTable(this.selectedType, this.selectedRow, this.page, false)
     this.boxPlotFun();
+    this.showOutliers();
+  }
+
+  ngOnInit() {
+    
   }
 
   clearStorage() {
@@ -213,8 +248,6 @@ export class TablesComponent {
     let headersArray: any = [];
     for (let i = 0; i < this.data['columns'].length; i++) {
       headersArray.push(this.data['columns'][i]);
-      this.radios[i] = true;
-      this.checks[i] = false;
     }
     this.headingLines.push(headersArray);
 
@@ -254,25 +287,140 @@ export class TablesComponent {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedCol);
     }
+    //*
+    this.setInputOutput();
+    //*
+  }
 
-    //setovanje I/O
-    for (let i = 0; i < this.data['columns'].length - 1; i++) {
-      this.radios1[i] = false;
-      this.checks1[i] = true;
-      this.listCheckedI.push(this.data['columns'][i]);
+  setInputOutput() {
+
+    if(sessionStorage.getItem("inputList") == null) {
+      for (let i = 0; i < this.headingLines[0].length-1; i++) {
+        this.radios[i] = true; //disabled
+        this.checks[i] = false; //disabled
+        this.radios1[i] = false; //checked
+        this.checks1[i] = true; //checked
+        this.listCheckedI.push(this.headingLines[0][i])
+      }
+
+      this.checks[this.headingLines[0].length-1] = true;
+      this.checks1[this.headingLines[0].length-1] = false;
+      this.listCheckedI.splice(this.headingLines[0].length-1, 1);
+      sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+
+      this.radios[this.headingLines[0].length-1] = false;
+      this.radios1[this.headingLines[0].length-1] = true;
+      this.selectedOutput = this.headingLines[0][this.headingLines[0].length-1];
+      sessionStorage.setItem('output', this.selectedOutput);
+      this.pret = this.headingLines[0].length-2;
+      
+      this.setEncoding();
+    }
+    else {
+      this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
+      this.selectedOutput = sessionStorage.getItem('output');
+
+      let f: number = 0;
+      for (let i = 0; i < this.headingLines[0].length; i++) {
+        f = 0;
+        for (let j = 0; j < this.listCheckedI.length; j++) {
+          if(this.headingLines[0][i] == this.listCheckedI[j]) {
+            this.checks1[i] = true;
+            this.checks[i] = false;
+            this.radios1[i] = false;
+            this.radios[i] = true;
+            f = 1;
+          }
+        }
+        if(f == 0)
+        {
+          if(this.headingLines[0][i] == this.selectedOutput) {
+            this.checks1[i] = false;
+            this.checks[i] = true;
+            this.radios1[i] = true;
+            this.radios[i] = false;
+          }
+          else {
+            this.radios[i] = false;
+            this.checks[i] = false;
+            this.radios1[i] = false;
+            this.checks1[i] = false;
+          }
+        }
+      }
+      sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+      sessionStorage.setItem('output', this.selectedOutput);
+      this.updateEncoding();
+    }
+  }
+  //*
+  setEncoding() {
+    for (let i = 0; i < this.headingLines[0].length-1; i++) {   
+      let f: any = 0;
+      this.restartColData();
+
+      for(let j = 0; j < this.numericValues['col'].length; j++) {
+        if(this.numericValues['col'][j] == this.headingLines[0][i]) {
+          this.column['encoding'] = "none";
+          f = 1;
+        }
+      }
+        
+      if(f == 0) {
+        this.column['encoding'] = this.encodingList[0];
+      }
+      this.column['id'] = i;
+      this.column['colName'] = this.headingLines[0][i]
+      this.column['isSelected'] = true;
+      this.column['isNum'] = this.isNumericFun(this.headingLines[0][i]);
+      this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
+        
+      this.colDataList.push(this.column);
     }
 
-    this.checks[this.data['columns'].length - 1] = true;
-    this.checks1[this.data['columns'].length - 1] = false;
-    this.listCheckedI.splice(this.data['columns'].length - 1, 1);
-    sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
-
-    this.radios[this.data['columns'].length - 1] = false;
-    this.radios1[this.data['columns'].length - 1] = true;
-    this.selectedOutput = this.data['columns'][this.data['columns'].length - 1];
-    sessionStorage.setItem('output', this.selectedOutput);
-    this.pret = this.headingLines[0].length - 2;
+    let f: any = 0;
+    this.restartColData();
+    this.column['id'] = this.headingLines[0].length-1;
+    this.column['colName'] = this.headingLines[0][this.headingLines[0].length-1];
+    this.column['isSelected'] = false;
+    this.column['isNum'] = this.isNumericFun(this.headingLines[0][this.headingLines[0].length-1]);
+  
+    f = 0;
+    for(let j = 0; j < this.numericValues['col'].length; j++) {
+      if(this.numericValues['col'][j] == this.headingLines[0][this.headingLines[0].length-1]) {
+        this.column['encoding'] = "none";
+        f = 1;
+      }
+    }
+    if(f == 0) {
+      this.column['encoding'] = this.encoding[0];
+    }
+    this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
+    this.colDataList.push(this.column);
+  
+    sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
   }
+
+  isNumericFun(colName: any) {
+    for(let i = 0; i < this.numericValues['col'].length; i++) {
+      if(this.numericValues['col'][i] == colName) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  restartColData() {
+    this.column = {
+      'id': 0,
+      'colName': "",
+      'isSelected': false,
+      'isNum': false,
+      'encoding': "",
+      'encList': []
+    };
+  }
+  //*
 
   public onSelectedType(event: any, filter: boolean) {
     this.page = 1;
@@ -590,9 +738,15 @@ export class TablesComponent {
       this.showIO = false;
   }
 
-
   inputCheckedFun(event: any) {
     var value = event.target.value;
+
+    //*
+    if(sessionStorage.getItem('inputList')) {
+      this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
+      this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
+    }
+    //*
 
     var exists = false;
     for (let i = 0; i < this.listCheckedI.length; i++) {
@@ -603,15 +757,75 @@ export class TablesComponent {
       }
     }
 
-    if (exists == true)
-      this.listCheckedI.splice(index, 1);
+    //*
+    this.listCheckedI = [];
+    //*
+
+    if(exists == true) {
+      //*
+      for(let i = 0; i < this.colDataList.length; i++) {
+        if(this.colDataList[i]['colName'] == value) {
+
+          this.colDataList[i]['isSelected'] = false;
+              
+          if(this.colDataList[i]['isNum'])
+            this.colDataList[i]['encoding'] = "none";
+          else
+            this.colDataList[i]['encoding'] = this.encodingList[0];
+          
+          this.colDataList[i]['encList'] = this.getSelectedEnc(this.colDataList[i]['isNum'], this.colDataList[i]['encoding']);
+        }
+      }
+      //*
+    }
+    else {
+      //*
+      for(let i = 0; i < this.colDataList.length; i++) {
+        if(this.colDataList[i]['colName'] == value)
+          this.colDataList[i]['isSelected'] = true;
+      }
+      //*
+    }
+
+    for(let i = 0; i < this.colDataList.length; i++) {
+      if(this.colDataList[i]['isSelected'] == true) {
+        this.listCheckedI.push(this.colDataList[i]['colName']);
+      }
+    }
+
+    //*
+    if(this.listCheckedI.length == 0)
+      this.notChecked = true;
     else
-      this.listCheckedI.push(value);
+      this.notChecked = false;
 
     sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
-    //console.log(this.listCheckedI);
+    sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
+    //console.log(this.colDataList);
+    //*
   }
 
+  updateEncoding() {
+    let f: number = 0;
+
+    this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
+    this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
+
+    for (let i = 0; i < this.colDataList.length; i++) {
+      f = 0;
+      for (let j = 0; j < this.listCheckedI.length; j++) {
+        if(this.colDataList[i]['colName'] == this.listCheckedI[j]) {
+          this.colDataList[i]['isSelected'] = true;
+          f = 1;
+        }
+      }
+      if(f == 0)
+        this.colDataList[i]['isSelected'] = false;
+  }
+
+  sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
+  sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
+  }
 
   selectedOutputFun(event: any) {
     var value = event.target.value;
@@ -623,10 +837,10 @@ export class TablesComponent {
     }
 
     this.pret = ind;
-    console.log(this.pret);
+    //console.log(this.pret);
     this.selectedOutput = value;
+
     sessionStorage.setItem('output', this.selectedOutput);
-    //console.log(this.selectedOutput);
   }
 
   disableOutput(id: number) {
@@ -638,7 +852,7 @@ export class TablesComponent {
 
     if (this.pret != -1)
       this.checks[this.pret] = !this.checks[this.pret];
-    console.log(this.pret);
+    }
   }
 
   selectedID(event, id: number) {
@@ -655,42 +869,87 @@ export class TablesComponent {
     console.log(this.selectedRows)
   }
 
-  deleteCheck() {
-    if (this.selectedRows.length != 0) this.deleteWarning = true;
+  onSelectedEnc(event : any)
+  {
+    const value = event.target.value;
+    var splitted = value.split("|", 2);
+    let selectedEncoding: string = splitted[0];
+    let selectedcol: string = splitted[1];
+
+    for(let i = 0; i < this.colDataList.length; i++) {
+      if(this.colDataList[i]['colName'] == selectedcol) {
+        this.colDataList[i]['encoding'] = selectedEncoding;
+        this.colDataList[i]['encList'] = this.getSelectedEnc(this.colDataList[i]['isNum'], selectedEncoding);
+      }
+    }
+
+    sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
   }
 
-  async deleteRows() {
-    if (this.selectedRows.length != 0) {
-      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res => {
-        this.clearStorage();
-        this.reset();
-        this.showTable(this.selectedType, this.selectedRow, this.page, false);
-        sessionStorage.removeItem('statistics');
-        this.resetStatistic();
-        this.showStatistics(this.selectedCol);
-        this.selectedRows = [];
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Delete successfull</b>.', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
-      }, err => {
-        let JSONtoken: string = JSON.stringify(err.error);
-        let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if (StringToken == "Error encoundered while deleting a row from the dataset.") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting a row from the dataset</b>.', '', {
+  //*
+  getSelectedEnc(isNum: any, encName: any) {
+    let temp = [];
+    if(encName == "none")
+      temp.push(true, false, false, false, false);
+    else if(encName == this.encodingList[0] && isNum == true)
+      temp.push(false, true, false, false, false);
+    else if(encName == this.encodingList[0] && isNum == false)
+      temp.push(false, true, false, false, false);
+    else if(encName == this.encodingList[1] && isNum == true)
+      temp.push(false, false, true, false, false);
+    else if(encName == this.encodingList[1] && isNum == false)
+      temp.push(false, false, true, false, false);
+    else if(encName == this.encodingList[2] && isNum == true)
+      temp.push(false, false, false, true, false);
+    else if(encName == this.encodingList[2] && isNum == false)
+      temp.push(false, false, false, true, false);
+    else if(encName == this.encodingList[3] && isNum == true)
+      temp.push(false, false, false, false, true);
+    else if(encName == this.encodingList[3] && isNum == false)
+      temp.push(false, false, false, false, true);
+
+    return temp;
+  }
+
+  async deleteRows()
+  {
+      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
+        {
+          this.clearStorage();
+          this.reset();
+          this.showTable(this.selectedType, this.selectedRow, this.page);
+          sessionStorage.removeItem('statistics');
+          this.resetStatistic();
+          this.showStatistics(this.selectedCol);
+          this.selectedRows = [];
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Delete successfull</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
             enableHtml: true,
             toastClass: "alert alert-info alert-with-icon",
             positionClass: 'toast-top-center'
           });
+        }, err => {
+            let JSONtoken: string = JSON.stringify(err.error);
+            let StringToken = JSON.parse(JSONtoken).responseMessage;
+            if (StringToken == "Error encoundered while deleting a row from the dataset.") {
+              this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting a row from the dataset</b>.', '', {
+                disableTimeOut: false,
+                closeButton: true,
+                enableHtml: true,
+                toastClass: "alert alert-info alert-with-icon",
+                positionClass: 'toast-top-center'
+              });
+            }
+          });
         }
-      });
-    }
+      }
+
+  deleteCheck() {
+    if (this.selectedRows.length != 0) this.deleteWarning = true;
   }
+
+  
 
   async editCell(id: number, value: any, columnName: string) {
     id = id + (this.page - 1) * this.selectedRow;
@@ -836,4 +1095,119 @@ export class TablesComponent {
     tabs.setAttribute('style', 'height: ' + height + 'px;');
     console.log(height);
   }
+
+  showOutliers() {
+
+    let headersArray: any = [];
+    for (let i = 0; i < this.dataOutliers['columns'].length; i++) {
+      headersArray.push(this.dataOutliers['columns'][i]);
+    }
+    this.headingLinesOutliers.push(headersArray);
+
+    let index = [];
+    for (let i = 0; i < this.dataOutliers['index'].length; i++) {
+      index.push([i]);
+    }
+    this.numberLinesOutliers.push(index);
+
+    let dataArr = [];
+    for (let i = 0; i < this.dataOutliers['columns'].length; i++) {
+      dataArr.push([i]);
+    }
+    this.numberDataOutliers.push(dataArr);
+
+    let rowsArray = [];
+    for (let i = 0; i < this.dataOutliers['data'].length; i++) {
+      rowsArray.push(this.dataOutliers['data'][i]);
+    }
+    this.rowLinesOutliers.push(rowsArray);
+
+    this.selectedMissingValCol = this.headingLinesOutliers[0][0];
+  }
+
+  onSelectedMissingValueCol(event: any) {
+    const value = event.target.value;
+    this.selectedMissingValCol = value;
+  }
+
+  isSelectedMissingValuesCol(item: any) {
+    if(item == this.selectedMissingValCol)
+      this.selectedMissingValColBoolean = true;
+    else
+      this.selectedMissingValColBoolean = false;
+
+    return this.selectedMissingValColBoolean;
+  }
+
+  isSelectedMissingValuesField(id: number) {
+    for (let i = 0; i < this.headingLinesOutliers[0].length; i++) {
+      if(this.headingLinesOutliers[0][i] == this.selectedMissingValCol) {
+        if(i == id) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  onSelectedToFillMissingValCol(event: any) {
+    const value = event.target.value;
+    this.selectedToFillMissingValCol = value;
+  }
+  
+  selectedIDOutliers(id : number) {
+    let exists: boolean = false;
+    for(let i = 0; i < this.selectedOutliersRows.length; i++) {
+      if(this.selectedOutliersRows[i] == id) {
+        console.log("Postoji");
+        exists = true;
+        break;
+      }
+    }
+
+    if(exists == true)
+      this.selectedOutliersRows.splice(id, 1);
+    else
+      this.selectedOutliersRows.push(id);
+
+    //console.log(this.selectedOutliersRows);
+  }
+  
+  deleteOutliers() {
+    
+  }
+
+  public isFillMissValDisabled = true;
+
+  isMVDisabled() {
+    if(this.selectedToFillMissingValCol == "")
+      this.isFillMissValDisabled = false;
+    else
+      this.isFillMissValDisabled = true;
+
+    return this.isFillMissValDisabled;
+  }
+
+  isMVDisabled1() {
+    if(this.enteredToFillMissingValCol == "")
+      return false;
+    else
+      return true;
+
+    return this.isFillMissValDisabled;
+  }
+
+  onInputToFillMissingValCol(event: any) {
+    const value = event.target.value;
+  }
+
+  confirmToFillMissingValues() {
+    if(this.selectedToFillMissingValCol == "" && this.enteredToFillMissingValCol == "") {
+      alert("Izaberite vrednost ili popunite polje!");
+    }
+    else {
+
+    }
+  }
+  
 }
