@@ -278,10 +278,12 @@ export class UploadComponent implements OnInit {
 
   useThis(event, item) {
     this.cookie.set("filename", item.randomFileName);
+    this.cookie.set("realName", item.fileName);
     sessionStorage.clear();
   }
   useThisUn(event, item) {
     this.cookie.set("filename", item.randomFileName);
+    this.cookie.set("realName", item.fileName);
     sessionStorage.clear();
   }
 

@@ -18,7 +18,7 @@
         public List<string> metrics { get; set; }
         public int numEpochs { get; set; }
         public string connID { get; set; }
-        public string encodingType { get; set; }
+        public List<List<string>> encodingList { get; set; }
         public string fileName { get; set; }
     }
 }

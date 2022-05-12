@@ -850,7 +850,7 @@ export class TablesComponent {
   disableInput(id: number) {
     this.checks[id] = !this.checks[id];
 
-    if (this.pret != -1)
+    if (this.pret != -1) {
       this.checks[this.pret] = !this.checks[this.pret];
     }
   }
@@ -917,7 +917,7 @@ export class TablesComponent {
         {
           this.clearStorage();
           this.reset();
-          this.showTable(this.selectedType, this.selectedRow, this.page);
+          this.showTable(this.selectedType, this.selectedRow, this.page, false);
           sessionStorage.removeItem('statistics');
           this.resetStatistic();
           this.showStatistics(this.selectedCol);
@@ -942,8 +942,7 @@ export class TablesComponent {
               });
             }
           });
-        }
-      }
+  }
 
   deleteCheck() {
     if (this.selectedRows.length != 0) this.deleteWarning = true;
@@ -1193,8 +1192,6 @@ export class TablesComponent {
       return false;
     else
       return true;
-
-    return this.isFillMissValDisabled;
   }
 
   onInputToFillMissingValCol(event: any) {

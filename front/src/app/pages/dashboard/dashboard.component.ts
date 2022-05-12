@@ -666,8 +666,8 @@ export class DashboardComponent implements OnInit {
       'models' : this.modelsList,
       'inputList' : inputList, 
       'output' : output, 
-      'encodingType' : this.encodingType,
-      //'encodingList' : this.encodingList,
+      //'encodingType' : this.encodingType,
+      'encodingList' : this.encodingList,
       'ratio' : 1 - (1 * (this.range/100)), 
       'numLayers' : this.layersLabel, 
       'layerList' : layerList, 
@@ -1182,7 +1182,7 @@ export class DashboardComponent implements OnInit {
 
         sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
         this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
-
+        
       }
       else {
         this.modelsList[this.modelsTrained-1].evaluationData = data['trainingData'];

@@ -89,7 +89,7 @@ export class ExperimentsComponent implements OnInit {
   constructor(private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
       if(this.cookie.get('token'))
         this.cookieCheck = this.cookie.get('token');
-   }
+  }
 
   ngOnInit(): void {
     this.showExperiments(this.selectedPrivacyType, this.pageNum);
