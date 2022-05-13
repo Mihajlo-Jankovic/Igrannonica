@@ -43,8 +43,8 @@ def numeric_column_statistics(df,col):
 def not_numeric_column_statistics(df,col):
     rowsNum = df.shape[0]
     unique = df[col].nunique()
-    mostFrequent = df['Genre'].mode()[0]
-    frequency = df['Genre'].value_counts()[0]
+    mostFrequent = df[col].mode()[0]
+    frequency = df[col].value_counts()[0]
     numOfNulls = df[col].isnull().sum()
 
     return(rowsNum, unique, mostFrequent, frequency, numOfNulls)
@@ -102,7 +102,14 @@ def statistics(df,colIndex):
 def missing_values(df, colName, fillMethod, specificVal):
 
     if(df[colName].dtypes == object):
-        pass
+        rowsNum, unique, mostFrequent, frequency, numOfNulls = not_numeric_column_statistics(df,colName)
+
+        if(fillMethod == "none"):
+            df[colName].fillna(specificVal, inplace=True)
+
+        elif(fillMethod == "mostFrequent"):
+            df[colName].fillna(mostFrequent, inplace=True)
+
 
     else:
         rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, zscore, iqr = numeric_column_statistics(df,colName)
@@ -199,3 +206,6 @@ def editCell(df, rowNum, colName, value):
 def deleteRow(df,rowNum):
     df.drop(rowNum, axis = 0, inplace=True)
     return df
+
+df = pd.read_csv('Movies.csv', index_col = False, engine = 'python') 
+print(df)
