@@ -29,23 +29,22 @@ def numeric_column_statistics(df,col):
     firstQ = round(firstQ,3)
     thirdQ = round(thirdQ,3)
     stdev = df[col].std()
-    zscore = stats.zscore(df[col])
 
     iqr = thirdQ - firstQ
 
     min = round(firstQ - 1.5 * iqr,3)
     max = round(thirdQ + 1.5 * iqr,3)
 
-    numOfNulls = df[col].isnull().sum()
+    numOfNulls = (int)(df[col].isnull().sum())
 
-    return (rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, zscore, iqr, numOfNulls)
+    return (rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls)
 
 def not_numeric_column_statistics(df,col):
     rowsNum = df.shape[0]
     unique = df[col].nunique()
     mostFrequent = df[col].mode()[0]
-    frequency = df[col].value_counts()[0]
-    numOfNulls = df[col].isnull().sum()
+    frequency = (int)(df[col].value_counts()[0])
+    numOfNulls = (int)(df[col].isnull().sum())
 
     return(rowsNum, unique, mostFrequent, frequency, numOfNulls)
     
@@ -64,7 +63,7 @@ def statistics(df,colIndex):
                             "frequency": frequency, "numOfNulls": numOfNulls})
 
         else:
-            rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, zscore, iqr, numOfNulls = numeric_column_statistics(df,col)
+            rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,col)
             corrMatrix = df.corr() # Korelaciona matrica
 
             outliers = []
@@ -90,9 +89,8 @@ def statistics(df,colIndex):
             numericFlagList.append(1)
             
             jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
-                            "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "zscore": zscore,
-                            "iqr": iqr, "outliers": outliers, "corrMatrix": {col: corrArr},
-                            "numOfNulls": {col: numOfNulls},
+                            "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, 
+                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": {col: numOfNulls},
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
         
         colList.append(col)
@@ -112,7 +110,7 @@ def missing_values(df, colName, fillMethod, specificVal):
 
 
     else:
-        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, zscore, iqr = numeric_column_statistics(df,colName)
+        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr = numeric_column_statistics(df,colName)
 
         if(fillMethod == "none"):
             df[colName].fillna(specificVal, inplace=True)
@@ -137,9 +135,6 @@ def missing_values(df, colName, fillMethod, specificVal):
 
         elif(fillMethod == "stdev"):
             df[colName].fillna(stdev, inplace=True)
-
-        elif(fillMethod == "zscore"):
-            df[colName].fillna(zscore, inplace=True)
 
         elif(fillMethod == "iqr"):
             df[colName].fillna(iqr, inplace=True)

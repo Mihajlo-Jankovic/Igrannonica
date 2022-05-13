@@ -107,7 +107,7 @@ def delete_row():
         json = request.json
         df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
         df = FileStorageProgram.deleteRow(df,json['rowNumber'])
-    
+
         df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']), index=False)
 
         return {"message" : "Delete successfull."}
