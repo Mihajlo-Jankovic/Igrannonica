@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
+import statistics
+import scipy.stats as stats
 import csv
 import urllib
+
 
 def numberOfPages(df,rowNum):
     numOfPages = len(df)
@@ -16,57 +19,125 @@ def numberOfPages(df,rowNum):
 
     return numOfPages
 
+def numeric_column_statistics(df,col):
+    rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
+    #min = round(float(df[col].min()), 3) # Minimum
+    #max = round(float(df[col].max()), 3) # Maksimum
+    avg = round(df[col].mean(), 3) # Srednja vrednost
+    med = round(df[col].median(), 3) # Mediana
+    firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
+    firstQ = round(firstQ,3)
+    thirdQ = round(thirdQ,3)
+    stdev = statistics.stdev(df)
+    zscore = stats.zscore(df)
+
+    iqr = thirdQ - firstQ
+
+    min = round(firstQ - 1.5 * iqr,3)
+    max = round(thirdQ + 1.5 * iqr,3)
+
+    numOfNulls = df[col].isnull().sum()
+
+    return (rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, zscore, iqr, numOfNulls)
+
+def not_numeric_column_statistics(df,col):
+    rowsNum = df.shape[0]
+    unique = df[col].nunique()
+    mostFrequent = df['Genre'].mode()[0]
+    frequency = df['Genre'].value_counts()[0]
+    numOfNulls = df[col].isnull().sum()
+
+    return(rowsNum, unique, mostFrequent, frequency, numOfNulls)
+    
+
 # Izracunavanje statistika za odredjenu kolonu iz tabele
 def statistics(df,colIndex):
+    numericFlagList = []
     colList = []
     jsonList = []
 
     for col in df:
-        if(df[col].dtypes == object): continue
+        if(df[col].dtypes == object):
+            rowsNum, unique, mostFrequent, frequency, numOfNulls = not_numeric_column_statistics(df,col)
+            numericFlagList.append(0)
+            jsonList.append({"rowsNum": rowsNum, "unique": unique, "mostFrequent": mostFrequent, 
+                            "frequency": frequency, "numOfNulls": numOfNulls})
 
-        rowsNum = df.shape[0] # Ukupan broj podataka za kolonu
-        #min = round(float(df[col].min()), 3) # Minimum
-        #max = round(float(df[col].max()), 3) # Maksimum
-        avg = round(df[col].mean(), 3) # Srednja vrednost
-        med = round(df[col].median(), 3) # Mediana
-        firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
-        firstQ = round(firstQ,3)
-        thirdQ = round(thirdQ,3)
-        corrMatrix = df.corr() # Korelaciona matrica
+        else:
+            rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, zscore, iqr, numOfNulls = numeric_column_statistics(df,col)
+            corrMatrix = df.corr() # Korelaciona matrica
 
-        iqr = thirdQ - firstQ
-
-        min = round(firstQ - 1.5 * iqr,3)
-        max = round(thirdQ + 1.5 * iqr,3)
-
-        outliers = []
-        for value in df[col]:
-            if(value < min or value > max): 
-                outliers.append(value)
-                
-        corrArr = []
-        for value in corrMatrix[col]:
-            corrArr.append(round(value,3))
-        
-        colArr = []
-        valArr = []
-        for column in corrMatrix:
-            colArr.append(column)
-
-            tmpArr = []
-            for value in corrMatrix[column]:
-                tmpArr.append(round(value,3))
+            outliers = []
+            for value in df[col]:
+                if(value < min or value > max): 
+                    outliers.append(value)
+                    
+            corrArr = []
+            for value in corrMatrix[col]:
+                corrArr.append(round(value,3))
             
-            valArr.append(tmpArr)
+            colArr = []
+            valArr = []
+            for column in corrMatrix:
+                colArr.append(column)
+
+                tmpArr = []
+                for value in corrMatrix[column]:
+                    tmpArr.append(round(value,3))
+                
+                valArr.append(tmpArr)
+            
+            numericFlagList.append(1)
+            
+            jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
+                            "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "zscore": zscore,
+                            "iqr": iqr, "outliers": outliers, "corrMatrix": {col: corrArr},
+                            "numOfNulls": {col: numOfNulls},
+                            "fullCorrMatrix": {"columns": colArr, "values": valArr}})
         
         colList.append(col)
-        jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
-                        "firstQ": firstQ, "thirdQ": thirdQ, "outliers": outliers, 
-                        "corrMatrix": {col: corrArr},
-                        "fullCorrMatrix": {"columns": colArr, "values": valArr}})
     
-    return { "colList": colList, "jsonList": jsonList }
+    return {"numericFlagList": numericFlagList, "colList": colList, "jsonList": jsonList }
 
+def missing_values(df, colName, fillMethod, specificVal):
+
+    if(df[colName].dtypes == object):
+        pass
+
+    else:
+        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, zscore, iqr = numeric_column_statistics(df,colName)
+
+        if(fillMethod == "none"):
+            df[colName].fillna(specificVal, inplace=True)
+
+        elif(fillMethod == "min"):
+            df[colName].fillna(min, inplace=True)
+
+        elif(fillMethod == "max"):
+            df[colName].fillna(max, inplace=True)
+
+        elif(fillMethod == "avg"):
+            df[colName].fillna(avg, inplace=True)
+
+        elif(fillMethod == "med"):
+            df[colName].fillna(med, inplace=True)
+
+        elif(fillMethod == "firstQ"):
+            df[colName].fillna(firstQ, inplace=True)
+
+        elif(fillMethod == "thirdQ"):
+            df[colName].fillna(thirdQ, inplace=True)
+
+        elif(fillMethod == "stdev"):
+            df[colName].fillna(stdev, inplace=True)
+
+        elif(fillMethod == "zscore"):
+            df[colName].fillna(zscore, inplace=True)
+
+        elif(fillMethod == "iqr"):
+            df[colName].fillna(iqr, inplace=True)
+
+    return df
 
 def openCSV(path):
     #with open(path) as f: 
@@ -131,4 +202,4 @@ def deleteRow(df,rowNum):
 
 
 
-
+#df = pd.read_csv("movies.csv", index_col = False, engine = 'python') 
