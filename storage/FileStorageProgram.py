@@ -207,5 +207,5 @@ def deleteRow(df,rowNum):
     df.drop(rowNum, axis = 0, inplace=True)
     return df
 
-df = pd.read_csv('Movies.csv', index_col = False, engine = 'python') 
-print(df)
+#df = pd.read_csv('Movies.csv', index_col = False, engine = 'python') 
+#print(df)
