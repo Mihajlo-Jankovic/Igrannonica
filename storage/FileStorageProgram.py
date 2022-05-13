@@ -28,8 +28,8 @@ def numeric_column_statistics(df,col):
     firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
     firstQ = round(firstQ,3)
     thirdQ = round(thirdQ,3)
-    stdev = statistics.stdev(df)
-    zscore = stats.zscore(df)
+    stdev = df[col].std()
+    zscore = stats.zscore(df[col])
 
     iqr = thirdQ - firstQ
 
@@ -199,7 +199,3 @@ def editCell(df, rowNum, colName, value):
 def deleteRow(df,rowNum):
     df.drop(rowNum, axis = 0, inplace=True)
     return df
-
-
-
-#df = pd.read_csv("movies.csv", index_col = False, engine = 'python') 
