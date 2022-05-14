@@ -51,16 +51,14 @@ def not_numeric_column_statistics(df,col):
 
 # Izracunavanje statistika za odredjenu kolonu iz tabele
 def statistics(df,colIndex):
-    numericFlagList = []
     colList = []
     jsonList = []
 
     for col in df:
         if(df[col].dtypes == object):
             rowsNum, unique, mostFrequent, frequency, numOfNulls = not_numeric_column_statistics(df,col)
-            numericFlagList.append(0)
             jsonList.append({"rowsNum": rowsNum, "unique": unique, "mostFrequent": mostFrequent, 
-                            "frequency": frequency, "numOfNulls": numOfNulls})
+                            "isNumeric": 0, "frequency": frequency, "numOfNulls": numOfNulls})
 
         else:
             rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,col)
@@ -86,16 +84,14 @@ def statistics(df,colIndex):
                 
                 valArr.append(tmpArr)
             
-            numericFlagList.append(1)
-            
             jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
-                            "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, 
+                            "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, "isNumeric": 1,
                             "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": {col: numOfNulls},
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
         
         colList.append(col)
     
-    return {"numericFlagList": numericFlagList, "colList": colList, "jsonList": jsonList }
+    return {"colList": colList, "jsonList": jsonList }
 
 def missing_values(df, colName, fillMethod, specificVal):
 
