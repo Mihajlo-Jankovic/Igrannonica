@@ -216,5 +216,70 @@ namespace Igrannonica.Controllers
             return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
 
+        [HttpPost("fillmissingvaluesAuthorized"), Authorize]
+        public async Task<IActionResult> FillMissingValuesAuthorized(ValuesToChangeDTO missingValues)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            var result = await changeValues(_configuration.GetSection("Endpoints:FillMissingValues").Value, missingValues, usernameOriginal);
+
+            return Ok(result);
+        }
+
+        [HttpPost("fillmissingvaluesunauthorized")]
+        public async Task<IActionResult> FillMissingValuesUnauthorized(ValuesToChangeDTO missingValues)
+        {
+            var result = await changeValues(_configuration.GetSection("Endpoints:FillMissingValues").Value, missingValues, null);
+
+            return Ok(result);
+        }
+
+        [HttpPost("changeoutliersauthorized"), Authorize]
+        public async Task<IActionResult> ChangeOutliersAuthorized(ValuesToChangeDTO missingValues)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            var result = await changeValues(_configuration.GetSection("Endpoints:ChangeOutliers").Value, missingValues, usernameOriginal);
+
+            return Ok(result);
+        }
+
+        [HttpPost("changeoutliersunauthorized")]
+        public async Task<IActionResult> ChangeOutliersUnauthorized(ValuesToChangeDTO missingValues)
+        {
+            var result = await changeValues(_configuration.GetSection("Endpoints:ChangeOutliers").Value, missingValues, null);
+
+            return Ok(result);
+        }
+
+        private async Task<IActionResult> changeValues(string endpointValue, ValuesToChangeDTO missingValues, string? usernameOriginal)
+        {
+            if (usernameOriginal != null)
+            {
+                User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+
+                if (user == null)
+                    return BadRequest(new
+                    {
+                        responseMessage = "Error: No user found with that name!"
+                    });
+
+                Models.File file = _mySqlContext.File.Where(f => f.FileName == missingValues.FileName).FirstOrDefault();
+
+                if (file.UserForeignKey != user.id)
+                    return BadRequest(new
+                    {
+                        responseMessage = "Error: The file you are trying to change doesn't belong to you!"
+                    });
+            }
+            using var client = new HttpClient();
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+                + _configuration.GetSection("PythonServerPorts:TrainingServer").Value
+                + endpointValue);
+
+            var newPostJson = JsonConvert.SerializeObject(missingValues);
+            var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
+            var result = client.PostAsync(endpoint, payload).Result.Content.ReadAsStringAsync().Result;
+
+            return Ok(result);
+        }
     }
 }
