@@ -811,9 +811,11 @@ export class DashboardComponent implements OnInit {
     {
       this.modelsList = [];
       this.modelsList = JSON.parse(sessionStorage.getItem('modelsList'));
-      this.openMetricsChart = true;
-      this.trained = true;
-      this.chartEvaluation("loss");
+      if(this.modelsList.length > 0) {
+        this.openMetricsChart = true;
+        this.trained = true;
+        this.chartEvaluation("loss");
+      }
     }
     if(sessionStorage.getItem('maxEpoch'))
     {
@@ -1120,6 +1122,10 @@ export class DashboardComponent implements OnInit {
   discardModel(id: number) {
     this.deleteWarning = false;
     this.modelsList.pop(id);
+    if(this.modelsTrained == 1) {
+      this.trained = false;
+      this.changeTab(0);
+    }
     if(this.modelsTrained == id+1) {
       this.modelsTrained--;
       sessionStorage.removeItem("chartData");

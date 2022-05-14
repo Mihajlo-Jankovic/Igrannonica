@@ -226,8 +226,8 @@
             <div class="card" style="margin-top:20px; z-index: 1; border-radius: 0 0.2857rem 0.2857rem 0.2857rem;">
                 <div style="position:absolute">
                     <button class="tab-button raised-tab-button" id="tab-btn1" (click)="changeTab(0)">Live Training</button>
-                    <button class="tab-button" id="tab-btn1" (click)="changeTab(1)">Results</button>
-                    <button class="tab-button" id="tab-btn1" (click)="changeTab(2)">Evaluation</button>
+                    <button class="tab-button" id="tab-btn1" (click)="changeTab(1)" [disabled]="trained == false">Results</button>
+                    <button class="tab-button" id="tab-btn1" (click)="changeTab(2)" [disabled]="trained == false">Evaluation</button>
                 </div>
                 <div class="card-body">
                     <div class="tab1" [hidden]="!liveButton">
