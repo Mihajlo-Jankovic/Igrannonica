@@ -12,6 +12,7 @@ from keras.regularizers import L1, L2
 from sklearn.preprocessing import LabelEncoder
 from tensorflow import keras
 
+ENDPOINT_PATH = 'https://localhost:7219/api/PythonComm/testLive' #http://147.91.204.115:10106/api/PythonComm/testLive
 
 path = 'csv\movies.csv'
 class CustomCallback(keras.callbacks.Callback):
@@ -38,7 +39,7 @@ class CustomCallback(keras.callbacks.Callback):
         data['ended'] = 0
         data['trainingData'] = self.modelHistory
         headers = {'content-type': 'application/json'}
-        r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
+        r = requests.post(ENDPOINT_PATH, headers=headers, data=json.dumps(data), verify=False)
 
     def on_train_end(self, logs=None):
         data = {}
@@ -47,7 +48,7 @@ class CustomCallback(keras.callbacks.Callback):
         data['ended'] = 1
         data['trainingData'] = self.modelHistory
         headers = {'content-type': 'application/json'}
-        r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
+        r = requests.post(ENDPOINT_PATH, headers=headers, data=json.dumps(data), verify=False)
         
 
 
@@ -214,7 +215,7 @@ def startTraining(connid, fileName, inputList, output, encodingList, ratio1, rat
         i = i + 1
 
     headers = {'content-type': 'application/json'}
-    r = requests.post("https://localhost:7219/api/PythonComm/testLive", headers=headers, data=json.dumps(data), verify=False)
+    r = requests.post(ENDPOINT_PATH, headers=headers, data=json.dumps(data), verify=False)
     
     return score
 
