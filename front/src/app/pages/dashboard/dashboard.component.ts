@@ -577,8 +577,6 @@ export class DashboardComponent implements OnInit {
 
     this.loginWarning = false;
     this.chartData = {};
-    this.training = true;
-    this.firstTraining = true;
     let fileName = this.cookieService.get('filename');
     let connID = this.cookieService.get('connID');
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
@@ -1174,6 +1172,8 @@ export class DashboardComponent implements OnInit {
   public addTrainingDataListener = () => {
     this.hubConnection.on('trainingdata', (data) => {
       if(data['ended'] == 0) {
+        this.training = true;
+        this.firstTraining = true;
         this.liveData = data;
         this.chartData = this.liveData['trainingData'];
         this.buttons = Object.keys(this.chartData);
