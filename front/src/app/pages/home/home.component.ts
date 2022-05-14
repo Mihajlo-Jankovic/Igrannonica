@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
             this.cookie.set("token", StringToken);
         }, err=>{
             let JSONtoken: string = JSON.stringify(err.error);
-            let StringToken = JSON.parse(JSONtoken).responseMessage;
+            let StringToken = JSON.parse(JSONtoken).token;
             if(StringToken == "Error: Token not valid"){
                 this.onLogout();
                 location.reload();

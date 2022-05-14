@@ -95,6 +95,24 @@ export class ExperimentsComponent implements OnInit {
     this.showExperiments(this.selectedPrivacyType, this.pageNum);
   }
 
+  refreshToken(){
+    this.token = this.cookie.get('token');
+    
+    this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        this.cookie.set("token", StringToken);
+    }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if(StringToken == "Error: Token not valid"){
+            this.cookie.deleteAll();
+            sessionStorage.clear();
+            this.router.navigate(["home"]);
+        }
+    });
+  }
+
   getUsername() {
     return this.cookie.get('username');
   }

@@ -192,41 +192,58 @@ namespace Igrannonica.Controllers
         [HttpGet("refreshToken/{jwtString}")]
         public async Task<ActionResult<TokenDTO>> RefreshToken(string jwtString)
         {
+            ClaimsPrincipal claims = null;
 
-            var claims = ValidateToken(jwtString);
+            try
+            {
+                claims = ValidateToken(jwtString);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("REFRESH EXCEPTION");
+                return BadRequest(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
+            }
+
             if(claims == null)
             {
-                return Ok(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
+                return BadRequest(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
             }
             var username = claims.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value;
             User user = _context.User.Where(u => u.username == username).FirstOrDefault();
             if (user == null)
             {
-                return Ok(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
+                return BadRequest(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
             }
             return Ok(new { token = CreateToken(user) });
         }
 
         private ClaimsPrincipal ValidateToken(string jwtString)
         {
-
-            var jwtToken = new JwtSecurityToken(jwtString);
-            if ((jwtToken == null) || (jwtToken.ValidFrom > DateTime.UtcNow) || (jwtToken.ValidTo < DateTime.UtcNow))
-                return null;
-            TokenValidationParameters validationParameters = new()
+            try
             {
-                ValidateActor = false,
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateLifetime = true,
+                var jwtToken = new JwtSecurityToken(jwtString);
+                if ((jwtToken == null) || (jwtToken.ValidFrom > DateTime.UtcNow) || (jwtToken.ValidTo < DateTime.UtcNow))
+                    return null;
+                TokenValidationParameters validationParameters = new()
+                {
+                    ValidateActor = false,
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateLifetime = true,
 
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value))
-            };
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value))
+                };
 
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtString, validationParameters, out _);
-            
+                ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtString, validationParameters, out _);
 
-            return principal;
+
+                return principal;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("VALIDATE EXCEPTION");
+                throw;
+            }
         }
 
         private string CreateToken(User user)

@@ -114,7 +114,12 @@ export class DashboardComponent implements OnInit {
   public resultsButton = false;
   public evaluationButton = false;
 
-  constructor(private router: Router,private toastr: ToastrService,private cookieService:CookieService, private signal : SignalRService,private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
+  token: string;
+  cookieCheck: any;
+
+  constructor(private router: Router,private toastr: ToastrService,private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { 
+    this.cookieCheck = this.cookieService.get('token');
+  }
 
   configuration = new Configuration();
   
@@ -214,6 +219,9 @@ export class DashboardComponent implements OnInit {
   }
   
   ngOnInit() {
+    if (this.cookieCheck) {
+      this.refreshToken();
+    }
 
     this.loggedUser = this.loginService.isAuthenticated();
     this.configureGraph();
@@ -371,6 +379,24 @@ export class DashboardComponent implements OnInit {
     this.checkStorage();
   }
   
+  refreshToken(){
+    this.token = this.cookieService.get('token');
+    
+    this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        this.cookieService.set("token", StringToken);
+    }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if(StringToken == "Error: Token not valid"){
+            this.cookieService.deleteAll();
+            sessionStorage.clear();
+            this.router.navigate(["home"]);
+        }
+    });
+  }
+
   configureGraph() {
     this.metricChartOptions = {
       maintainAspectRatio: false,

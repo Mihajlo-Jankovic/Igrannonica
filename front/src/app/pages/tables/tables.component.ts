@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { TableService } from 'src/app/services/table.service';
 import { CookieService } from "ngx-cookie-service";
+import { Configuration } from "src/app/configuration";
 
 import {
   ChartComponent,
@@ -14,6 +15,7 @@ import {
 } from "ng-apexcharts";
 import { AnyForUntypedForms } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
+import { Router } from "@angular/router";
 
 declare function myFunc(): any;
 
@@ -180,15 +182,40 @@ export class TablesComponent {
 
   filter = 0;
 
-  constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService) {
+  token: string;
+  cookieCheck: any;
+  configuration = new Configuration();
+
+  constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private router: Router, private http: HttpClient) {
     sessionStorage.removeItem('statistics');
+    this.cookieCheck = this.cookie.get('token');
     this.showTable(this.selectedType, this.selectedRow, this.page, false)
     this.boxPlotFun();
     this.showOutliers();
   }
 
   ngOnInit() {
+    if (this.cookieCheck) {
+      this.refreshToken();
+    }
+  }
+
+  refreshToken(){
+    this.token = this.cookie.get('token');
     
+    this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        this.cookie.set("token", StringToken);
+    }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if(StringToken == "Error: Token not valid"){
+            this.cookie.deleteAll();
+            sessionStorage.clear();
+            this.router.navigate(["home"]);
+        }
+    });
   }
 
   clearStorage() {
