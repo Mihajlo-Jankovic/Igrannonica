@@ -216,7 +216,7 @@ namespace Igrannonica.Controllers
             return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
 
-        [HttpPost("fillmissingvaluesAuthorized"), Authorize]
+        [HttpPost("fillMissingValuesAuthorized"), Authorize]
         public async Task<IActionResult> FillMissingValuesAuthorized(ValuesToChangeDTO missingValues)
         {
             var usernameOriginal = _userService.GetUsername();
@@ -225,7 +225,7 @@ namespace Igrannonica.Controllers
             return Ok(result);
         }
 
-        [HttpPost("fillmissingvaluesunauthorized")]
+        [HttpPost("fillMissingValuesunaUthorized")]
         public async Task<IActionResult> FillMissingValuesUnauthorized(ValuesToChangeDTO missingValues)
         {
             var result = await changeValues(_configuration.GetSection("Endpoints:FillMissingValues").Value, missingValues, null);
