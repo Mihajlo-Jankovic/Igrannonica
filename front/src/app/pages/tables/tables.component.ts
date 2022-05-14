@@ -200,6 +200,10 @@ export class TablesComponent {
     }
   }
 
+  getFileName() {
+    return sessionStorage.getItem("fileName");
+  }
+
   refreshToken(){
     this.token = this.cookie.get('token');
     

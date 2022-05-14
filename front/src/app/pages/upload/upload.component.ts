@@ -333,7 +333,10 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
-        location.reload();
+        setTimeout(() => { 
+          this.showDatasets("public", this.pageNum); 
+        }, 350);
+        //location.reload();
       },err=>{
         let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -362,7 +365,7 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
-        location.reload();
+        //location.reload();
       },err=>{
         let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;

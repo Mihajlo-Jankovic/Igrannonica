@@ -107,8 +107,8 @@
                     <div class="hyperparameter">
                         <h6 id="range-text" style="height: 15px;">Training : validation : test - {{range1}}% : {{this.range2 - this.range1}}% : {{100 - this.range2}}%</h6>
                         <section class="range-container">
-                            <input name="range1" min="10" max="90" step="5" type="range" class="range" id="range1" [(ngModel)]="range1" (change)="onSelected($event)" [disabled]="firstTraining">
-                            <input name="range2" min="10" max="90" step="5" type="range" class="range" id="range2" [(ngModel)]="range2" (change)="onSelected($event)" [disabled]="firstTraining">
+                            <input name="range1" min="1" max="99" step="1" type="range" class="range" id="range1" [(ngModel)]="range1" (change)="onSelected($event)" [disabled]="firstTraining">
+                            <input name="range2" min="1" max="99" step="1" type="range" class="range" id="range2" [(ngModel)]="range2" (change)="onSelected($event)" [disabled]="firstTraining">
                         </section>
                     </div>
                     <div class="hyperparameter">
@@ -243,9 +243,9 @@
                             </div>
                         </div>
                         <div [hidden]="firstTraining">
-                            <h1 style="text-align:center">
+                            <h2 style="text-align:center">
                                 Start training new model.
-                            </h1>
+                            </h2>
                         </div>
                     </div>
                     <div class="tab2" [hidden]="!resultsButton">

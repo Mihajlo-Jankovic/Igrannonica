@@ -685,6 +685,12 @@ body.warning-modal-open {
     overflow: hidden;
 }
 
+#table {
+    th {
+        text-transform: none !important;
+    }
+}
+
 @media(max-width: 785px) {
     .headerLeft {
         width: 100%;

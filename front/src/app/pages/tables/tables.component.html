@@ -203,22 +203,22 @@
                             <h3>Please choose input!</h3>
                         </div>
                         <div [hidden]="notChecked" class="encoding">
-                                <div class="encRow" *ngFor="let item of colDataList; let i = index">
-                                    <div style="clear: both;" *ngIf="item['isSelected']">
-                                        <div class="dropdown1Text"> 
-                                            <p class="encText">{{item['colName']}}</p>
-                                        </div>
-                                        <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
+                            <div class="encRow" *ngFor="let item of colDataList; let i = index">
+                                <div style="clear: both;" *ngIf="item['isSelected']">
+                                    <div class="dropdown1Text">
+                                        <p class="encText">{{item['colName']}}</p>
+                                    </div>
+                                    <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
                                             <option class='option' value="none|{{item['colName']}}" [selected]="item['encList'][0]" *ngIf="item['isNum']">None</option>
                                             <option class='option' value="label|{{item['colName']}}" [selected]="item['encList'][1]">Label</option>
                                             <option class='option' value="one-hot|{{item['colName']}}" [selected]="item['encList'][2]">One-Hot</option>
                                             <option class='option' value="binary|{{item['colName']}}" [selected]="item['encList'][3]">Binary</option>
                                             <option class='option' value="frequency|{{item['colName']}}" [selected]="item['encList'][4]">Frequency</option>
                                         </select>
-                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </section>
 
                 <input type="radio" name="tab" id="tab-3">
@@ -248,7 +248,7 @@
                             </div>
                             <div class="dropdownContainerMissingVal" style="width: 20%; margin-top: 14px;">
                                 <h6 style="margin-top: 14px;"></h6>
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()" >CONFIRM</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">CONFIRM</button>
                             </div>
                         </div>
                         <div class=" card-header" style="padding:0px;background-color: none; border-bottom: none;">
@@ -293,7 +293,7 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class=" card-header" style="padding:0px;">
-                    <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">Uploaded data</h3>
+                    <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">{{getFileName()}}</h3>
                     <div class="headerLeft" style="padding-top: 8px;">
                         <div class="dropdownContainer">
                             <h6>Filter rows</h6>

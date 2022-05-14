@@ -937,14 +937,14 @@ export class DashboardComponent implements OnInit {
     else if(target == "range1")
     {
       if(this.range1 >= this.range2) {
-        this.range1 = this.range2 - 10;
+        this.range1 = this.range2 - 1;
       }
       sessionStorage.setItem('range1', (this.range1).toString());
     }
     else if(target == "range2")
     {
       if(this.range2 <= this.range1) {
-        this.range2 = this.range1 + 10;
+        this.range2 = this.range1 + 1;
       }
       sessionStorage.setItem('range2', (this.range2).toString());
     }
