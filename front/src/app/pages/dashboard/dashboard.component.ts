@@ -711,7 +711,7 @@ export class DashboardComponent implements OnInit {
     */
     this.http.post(this.configuration.saveExperiment, experiment, options).subscribe(
       (response) => {
-        this.notify.showNotification("Experiment saved to your profile successfully!");
+        this.notify.showNotification("Experiment saved successfully!");
       }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
