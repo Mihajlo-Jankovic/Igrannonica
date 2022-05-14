@@ -75,7 +75,7 @@ export class ExperimentsComponent implements OnInit {
           "lossFunction": "",
           "metrics": [],
           "numEpochs": 0,
-          "encodingType": "",
+          "encodingList": [],
           "fileName": ""
         }
       }
@@ -112,7 +112,6 @@ export class ExperimentsComponent implements OnInit {
               this.data = expData;
       
               this.experimentListAuthorized.push(this.data);
-              console.log(this.experimentListAuthorized);
               this.numOfPages = exp['numOfPages'];
             }
         
@@ -135,10 +134,10 @@ export class ExperimentsComponent implements OnInit {
     else {
       this.experimentListUnauthorized = []
       this.listOfExperimentsUnauthorized = this.userService.getPublicExperiments("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(exp =>{
-        for(let i = 0; i< exp.length; i++)
+        for(let i = 0; i< exp['experiments'].length; i++)
         {
           let expData : any = {};
-          expData = exp[i];
+          expData = exp['experiments'][i];
           this.data = expData;
   
           this.experimentListUnauthorized.push(this.data);
@@ -150,7 +149,6 @@ export class ExperimentsComponent implements OnInit {
             this.publicExperimentsUnauthorized.push(this.experimentListUnauthorized[i]);
         }
       });
-      console.log(this.experimentListUnauthorized)
     }
   }
 
