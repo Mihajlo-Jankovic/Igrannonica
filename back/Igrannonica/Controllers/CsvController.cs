@@ -259,7 +259,7 @@ namespace Igrannonica.Controllers
                 if (user == null)
                     return BadRequest(new
                     {
-                        responseMessage = "Error: No user found with that name!"
+                        responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value
                     });
 
                 Models.File file = _mySqlContext.File.Where(f => f.FileName == missingValues.FileName).FirstOrDefault();
@@ -267,7 +267,7 @@ namespace Igrannonica.Controllers
                 if (file.UserForeignKey != user.id)
                     return BadRequest(new
                     {
-                        responseMessage = "Error: The file you are trying to change doesn't belong to you!"
+                        responseMessage = _configuration.GetSection("ResponseMessages:WrongFileAccess").Value
                     });
             }
             using var client = new HttpClient();
