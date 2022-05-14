@@ -37,6 +37,7 @@ export class ExperimentsComponent implements OnInit {
   data = {
     "_id": "",
     "userId": 0,
+    "username" : "",
     "name": "",
     "date": "",
     "fileName": "",
@@ -168,6 +169,14 @@ export class ExperimentsComponent implements OnInit {
         }
       });
     }
+  }
+
+  public checkForDelete(username:any)
+  {
+      if(username == this.cookie.get('username'))
+        return false;
+      else 
+        return true;
   }
 
   public onSelectedType(event: any) {

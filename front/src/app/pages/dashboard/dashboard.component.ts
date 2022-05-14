@@ -680,6 +680,7 @@ export class DashboardComponent implements OnInit {
 
     let experiment = {
       'userId' : 0,
+      'username' : this.cookieService.get('username'),
       'name' : this.experimentName,
       'date' : date,
       'fileName' : fileName, 
