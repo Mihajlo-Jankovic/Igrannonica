@@ -150,7 +150,7 @@ export class TablesComponent {
   hideMatrix: boolean = false;
 
   statsButton: string = "Full Statistics";
-  matrixButton: string = "View Full Matrix";
+  matrixButton: string = "Full Matrix";
 
   X: boolean = true;
   ioSelection: boolean = false;
@@ -1048,7 +1048,7 @@ export class TablesComponent {
   expandMatrix() {
     var matrix = document.getElementsByClassName('matrix')[0];
 
-    if (this.matrixButton == "View Full Matrix") {
+    if (this.matrixButton == "Full Matrix") {
       this.hideBoxplot = true;
       this.hideStatistics = true;
       this.hideM = true;
@@ -1060,7 +1060,7 @@ export class TablesComponent {
       this.hideStatistics = false;
       this.hideM = false;
       matrix.classList.remove('col-lg-12');
-      this.matrixButton = "View Full Matrix"
+      this.matrixButton = "Full Matrix"
     }
   }
 
