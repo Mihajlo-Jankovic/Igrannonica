@@ -2,13 +2,13 @@
 {
     public class ValuesToChangeDTO
     {
-        public string[] ColumnName { get; set; }
+        public string colName { get; set; }
 
-        public string FileName { get; set; }
+        public string fileName { get; set; }
 
-        public string Method { get; set; }
+        public string fillMethod { get; set; }
 
-        public string Value { get; set; }
+        public string specificVal { get; set; }
 
     }
 }

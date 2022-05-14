@@ -101,6 +101,9 @@ def missing_values(df, colName, fillMethod, specificVal):
         if(fillMethod == "none"):
             df[colName].fillna(specificVal, inplace=True)
 
+        elif(fillMethod == "deleteAll"):
+            df[colName].dropna()
+
         elif(fillMethod == "mostFrequent"):
             df[colName].fillna(mostFrequent, inplace=True)
 
@@ -110,6 +113,9 @@ def missing_values(df, colName, fillMethod, specificVal):
 
         if(fillMethod == "none"):
             df[colName].fillna(specificVal, inplace=True)
+
+        elif(fillMethod == "deleteAll"):
+            df[colName].dropna()
 
         elif(fillMethod == "min"):
             df[colName].fillna(min, inplace=True)

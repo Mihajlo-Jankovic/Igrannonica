@@ -115,5 +115,21 @@ def delete_row():
     else:
         return {"message" : "Error encoundered while deleting a row from the dataset."}
 
+@app.route('/fillMissingValues', methods=['POST'])
+def fill_missing_values():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json; charset=utf-8'):
+        json = request.json
+        df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
+        df = FileStorageProgram.missing_values(df, json["colName"], json["fillMethod"], json["specificVal"])
+
+        
+        df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']), index=False)
+
+        return {"message" : "Edit successfull."}
+        
+    else:
+        return {"message" : "Error encoundered while editing cell content."}
+
 if __name__ == '__main__':
     app.run(port=10108)

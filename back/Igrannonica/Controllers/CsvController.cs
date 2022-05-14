@@ -262,7 +262,7 @@ namespace Igrannonica.Controllers
                         responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value
                     });
 
-                Models.File file = _mySqlContext.File.Where(f => f.FileName == missingValues.FileName).FirstOrDefault();
+                Models.File file = _mySqlContext.File.Where(f => f.FileName == missingValues.fileName).FirstOrDefault();
 
                 if (file.UserForeignKey != user.id)
                     return BadRequest(new
