@@ -378,6 +378,7 @@ namespace Igrannonica.Controllers
                 return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
 
             experiment.userId = user.id;
+            experiment.username = user.username;
 
             var client = new MongoClient(getMongoDBConnString());
             var database = client.GetDatabase("igrannonica");

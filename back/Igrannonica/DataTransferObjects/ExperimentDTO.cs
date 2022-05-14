@@ -7,6 +7,7 @@ namespace Igrannonica.DataTransferObjects
     {
         public ObjectId? _id { get; set; }
         public int userId { get; set; }
+        public string username { get; set; }
         public string name { get; set; }
         public string date { get; set; }
         public string fileName { get; set; }
