@@ -225,7 +225,7 @@ namespace Igrannonica.Controllers
             return Ok(result);
         }
 
-        [HttpPost("fillMissingValuesunaUthorized")]
+        [HttpPost("fillMissingValuesUnauthorized")]
         public async Task<IActionResult> FillMissingValuesUnauthorized(ValuesToChangeDTO missingValues)
         {
             var result = await changeValues(_configuration.GetSection("Endpoints:FillMissingValues").Value, missingValues, null);
@@ -233,7 +233,7 @@ namespace Igrannonica.Controllers
             return Ok(result);
         }
 
-        [HttpPost("changeoutliersauthorized"), Authorize]
+        [HttpPost("changeOutliersAuthorized"), Authorize]
         public async Task<IActionResult> ChangeOutliersAuthorized(ValuesToChangeDTO missingValues)
         {
             var usernameOriginal = _userService.GetUsername();
@@ -242,7 +242,7 @@ namespace Igrannonica.Controllers
             return Ok(result);
         }
 
-        [HttpPost("changeoutliersunauthorized")]
+        [HttpPost("changeOutliersUnauthorized")]
         public async Task<IActionResult> ChangeOutliersUnauthorized(ValuesToChangeDTO missingValues)
         {
             var result = await changeValues(_configuration.GetSection("Endpoints:ChangeOutliers").Value, missingValues, null);
@@ -272,7 +272,7 @@ namespace Igrannonica.Controllers
             }
             using var client = new HttpClient();
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
-                + _configuration.GetSection("PythonServerPorts:TrainingServer").Value
+                + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
                 + endpointValue);
 
             var newPostJson = JsonConvert.SerializeObject(missingValues);

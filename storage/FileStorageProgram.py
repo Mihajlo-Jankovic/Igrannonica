@@ -109,7 +109,7 @@ def missing_values(df, colName, fillMethod, specificVal):
 
 
     else:
-        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr = numeric_column_statistics(df,colName)
+        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,colName)
 
         if(fillMethod == "none"):
             df[colName].fillna(specificVal, inplace=True)
@@ -204,5 +204,5 @@ def deleteRow(df,rowNum):
     df.drop(rowNum, axis = 0, inplace=True)
     return df
 
-#df = pd.read_csv('Movies.csv', index_col = False, engine = 'python') 
-#print(df)
+df = pd.read_csv('Movies.csv', index_col = False, engine = 'python') 
+print(df)

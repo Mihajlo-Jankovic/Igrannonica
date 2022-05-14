@@ -121,6 +121,7 @@ def fill_missing_values():
     if (content_type == 'application/json; charset=utf-8'):
         json = request.json
         df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
+        print(df.isnull().sum())
         df = FileStorageProgram.missing_values(df, json["colName"], json["fillMethod"], json["specificVal"])
 
         
