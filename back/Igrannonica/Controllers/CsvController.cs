@@ -264,7 +264,7 @@ namespace Igrannonica.Controllers
 
                 Models.File file = _mySqlContext.File.Where(f => f.FileName == missingValues.fileName).FirstOrDefault();
 
-                if (file.UserForeignKey != user.id)
+                if (file == null || file.UserForeignKey != user.id)
                     return BadRequest(new
                     {
                         responseMessage = _configuration.GetSection("ResponseMessages:WrongFileAccess").Value
