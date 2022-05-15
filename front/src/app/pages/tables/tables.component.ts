@@ -176,7 +176,7 @@ export class TablesComponent {
   fillMissingValuesListNonNum = ["none", "mostFrequent", "deleteAll"];
   selectedMissingValCol: string;
   selectedMissingValColBoolean: boolean = true;
-  selectedToFillMissingValCol: string = "no";
+  selectedToFillMissingValCol: string;
   enteredToFillMissingValCol: string = "";
   
   selectedOutliersRows: any = [];
@@ -338,6 +338,7 @@ export class TablesComponent {
       this.pret = this.headingLines[0].length-2;
       
       this.setEncoding();
+      this.setMissingValuesandOutliers();
     }
     else {
       this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
@@ -374,6 +375,7 @@ export class TablesComponent {
       sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
       sessionStorage.setItem('output', this.selectedOutput);
       this.updateEncoding();
+      this.setMissingValuesandOutliers();
     }
   }
   //*
@@ -446,6 +448,13 @@ export class TablesComponent {
     };
   }
   //*
+
+  setMissingValuesandOutliers() {
+    this.selectedMissingValCol = this.headingLines[0][0];
+    this.selectedToFillMissingValCol= this.fillMissingValuesListNonNum[0];
+    this.selectedOutliersCol = this.headingLines[0][0];
+    this.selectedToReplaceOutliers = this.fillMissingValuesListNonNum[0];
+  }
 
   public onSelectedType(event: any, filter: boolean) {
     this.page = 1;
@@ -1216,6 +1225,7 @@ export class TablesComponent {
   onSelectedToFillMissingValCol(event: any) {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
+
     console.log(this.selectedToFillMissingValCol);
   }
 
@@ -1274,14 +1284,14 @@ export class TablesComponent {
       if (this.cookie.get('token')) {
         this.tableService.fillMissingValuesAuthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
-            console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
+            //console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
             console.log(response);
         })
       }
       else {
         this.tableService.fillMissingValuesUnauthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
-            console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
+            //console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
             console.log(response);       
           })
         }
