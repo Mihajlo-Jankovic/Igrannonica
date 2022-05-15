@@ -92,8 +92,10 @@ export class ExperimentsComponent implements OnInit {
   experimentListUnauthorized : any = []
 
   constructor(private notify: NotificationsService, private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
-      if(this.cookie.get('token'))
+      if(this.cookie.get('token')) {
         this.cookieCheck = this.cookie.get('token');
+        this.selectedPrivacyType = 'myexperiments'
+      }
   }
 
   ngOnInit(): void {

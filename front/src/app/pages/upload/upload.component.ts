@@ -44,9 +44,11 @@ export class UploadComponent implements OnInit {
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
 
   constructor(private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
-   // this.username = this.getUsername();
-  
-    this.cookieCheck = this.cookie.get('token');
+    // this.username = this.getUsername();
+    if(this.cookie.get('token')) {
+      this.cookieCheck = this.cookie.get('token');
+      this.selectedPrivacyType = 'mydatasets'
+    }
   }
 
   getUsername() {
