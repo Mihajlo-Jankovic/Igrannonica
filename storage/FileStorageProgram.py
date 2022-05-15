@@ -225,16 +225,22 @@ def paging(df,rowNum,pageNum):
 def filterCSV(path, rowNum, dataType, pageNum):
     df = openCSV(path)
 
-    numOfPages = numberOfPages(df,rowNum)
-    
-    df = paging(df,rowNum,pageNum)
+    # Dodavanje novog id reda
+    hidden_id = [i for i in range(0,df.shape[0])]
+    df['hidden_id'] = hidden_id
     
     if(dataType == 'not null'):
         df = df.dropna()
+        df.reset_index(drop=True, inplace=True)
 
     elif(dataType == 'null'):
         na_free = df.dropna()
         df = df[~df.index.isin(na_free.index)]
+        df.reset_index(drop=True, inplace=True)
+
+    numOfPages = numberOfPages(df,rowNum)
+    
+    df = paging(df,rowNum,pageNum)
 
     return [df,numOfPages]
 
