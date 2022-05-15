@@ -14,31 +14,31 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/home",
     title: "Home",
-    icon: "icon-tv-2",
+    icon: "fa fa-home",
     class: ""
   },
   {
     path: "/upload",
     title: "Upload",
-    icon: "icon-upload",
+    icon: "tim-icons icon-upload",
     class: ""
   },
   {
     path: "/datapreview",
     title: "Data Preview",
-    icon: "icon-bullet-list-67",
+    icon: "tim-icons icon-bullet-list-67",
     class: ""
   },
   {
     path: "/training",
     title: "Model Training",
-    icon: "icon-chart-pie-36",
+    icon: "tim-icons icon-chart-pie-36",
     class: ""
   },
   {
     path: "/experiments",
     title: "Experiments",
-    icon: "icon-single-copy-04",
+    icon: "tim-icons icon-single-copy-04",
     class: ""
   }
 ];

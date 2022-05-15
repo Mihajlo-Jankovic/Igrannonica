@@ -246,7 +246,7 @@ export class DashboardComponent implements OnInit {
     this.evaluationMetrics = ["loss"];
     sessionStorage.removeItem('evaluationMetrics');
   }
-  
+
   ngOnInit() {
     if(sessionStorage.getItem('lastPage') == 'experiments'){
       sessionStorage.setItem('lastPage', 'training');
