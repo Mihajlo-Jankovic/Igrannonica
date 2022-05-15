@@ -83,7 +83,9 @@ export class TablesComponent {
     'isSelected': false,
     'isNum': false,
     'encoding': "",
-    'encList': []
+    'encList': [],
+    'numOfOutliers': 0,
+    'outliers': []
   }
   //*
   //data: any = { "columns": ["title", "genre", "description", "director", "actors", "year", "runtime_(minutes)", "rating", "votes", "revenue_(millions)", "metascore"], "index": [1, 2, 3, 4, 5], "data": [["Guardians of the Galaxy", "Action,Adventure,Sci-Fi", "A group of intergalactic criminals are forced to work together to stop a fanatical warrior from taking control of the universe.", "James Gunn", "Chris Pratt, Vin Diesel, Bradley Cooper, Zoe Saldana", 2014, 121, 8.1, 757074, 333.13, 76], ["Prometheus", "Adventure,Mystery,Sci-Fi", "Following clues to the origin of mankind, a team finds a structure on a distant moon, but they soon realize they are not alone.", "Ridley Scott", "Noomi Rapace, Logan Marshall-Green, Michael Fassbender, Charlize Theron", 2012, 124, 7.0, 485820, 126.46, 65], ["Split", "Horror,Thriller", "Three girls are kidnapped by a man with a diagnosed 23 distinct personalities. They must try to escape before the apparent emergence of a frightful new 24th.", "M. Night Shyamalan", "James McAvoy, Anya Taylor-Joy, Haley Lu Richardson, Jessica Sula", 2016, 117, 7.3, 157606, 138.12, 62], ["Sing", "Animation,Comedy,Family", "In a city of humanoid animals, a hustling theater impresario's attempt to save his theater with a singing competition becomes grander than he anticipates even as its finalists' find that their lives will never be the same.", "Christophe Lourdelet", "Matthew McConaughey,Reese Witherspoon, Seth MacFarlane, Scarlett Johansson", 2016, 108, 7.2, 60545, 270.32, 59], ["Suicide Squad", "Action,Adventure,Fantasy", "A secret government agency recruits some of the most dangerous incarcerated super-villains to form a defensive task force. Their first mission: save the world from the apocalypse.", "David Ayer", "Will Smith, Jared Leto, Margot Robbie, Viola Davis", 2016, 123, 6.2, 393727, 325.02, 40]] }
@@ -170,22 +172,16 @@ export class TablesComponent {
 
   //*
   missingValuesList = [];
-  fillMissingValuesList = ["none", "min", "max", "avg", "mean"];
-  dataOutliers: any = {"columns": ["RANK", "Country", "Happiness score", "Whisker-high", "Whisker-low", "Dystopia (1.83) + residual", "Explained by: GDP per capita", "Explained by: Social support", "Explained by: Healthy life expectancy", "Explained by: Freedom to make life choices", "Explained by: Generosity", "Explained by: Perceptions of corruption"], "data": [[1, "Finland", 7.821, 7.886, 7.756, 2.518, 1.892, 1.258, 0.775, 0.736, 0.109, 0.534], [2, "Denmark", 7.636, 7.71, 7.563, 2.226, 1.953, 1.243, 0.777, 0.719, 0.188, 0.532 ], [3, "Iceland", 7.557, 7.651, 7.464, 2.32, 1.936, 1.32, 0.803, 0.718, 0.27, 0.191 ], [ 4, "Switzerland", 7.512, 7.586, 7.437, 2.153, 2.026, 1.226, 0.822, 0.677, 0.147, 0.461], [5, "Netherlands", 7.415, 7.471, 7.359, 2.137, 1.945, 1.206, 0.787, 0.651, 0.271, 0.419], [6, "Luxembourg*", 7.404, 7.501, 7.307, 2.042, 2.209, 1.155, 0.79, 0.7, 0.12, 0.388], [ 7, "Sweden", 7.384, 7.454, 7.315, 2.003, 1.92, 1.204, 0.803, 0.724, 0.218, 0.512], [8, "Norway", 7.365, 7.44, 7.29, 1.925, 1.997, 1.239, 0.786, 0.728, 0.217, 0.474], [9, "Israel", 7.364, 7.426, 7.301, 2.634, 1.826, 1.221, 0.818, 0.568, 0.155, 0.143], [10, "New Zealand", 7.2, 7.279, 7.12, 1.954, 1.852, 1.235, 0.752, 0.68, 0.245, 0.483 ]], "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }
+  fillMissingValuesListNum = ["none", "min", "max", "avg", "med", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
+  fillMissingValuesListNonNum = ["none", "mostFrequent", "deleteAll"];
   selectedMissingValCol: string;
   selectedMissingValColBoolean: boolean = true;
-  selectedToFillMissingValCol: string = "min";
+  selectedToFillMissingValCol: string = "no";
   enteredToFillMissingValCol: string = "";
-
-  fillOutliers = ["z-index", "iqr"];
-  selectedOutliersMethod = "z-index";
   
   selectedOutliersRows: any = [];
-  headingLinesOutliers: any = [];
-  numberLinesOutliers: any = [];
-  numberDataOutliers: any = [];
-  rowLinesOutliers: any = [];
   //*
+
   deleteWarning: boolean = false;
 
   filter = 0;
@@ -194,16 +190,24 @@ export class TablesComponent {
   token: string;
 
   isNumCol: any;
-  frequency: any;
+  frequency: string;
   mostFrequent: any;
   numOfNulls: any;
   unique: any;
+
+  //*
+  numCol: boolean = true; //za prikaz numerickih/nenumerickih - statistika
+  numCol1: boolean = true; //za prikaz numerickih/nenumerickih - missingValues
+  selectedOutliersCol: string;
+  selectedToReplaceOutliers: any;
+  replaceOutliersList = ["none", "min", "max", "avg", "med", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
+  enteredToReplaceOutliersCol: string = "";
+  //*
 
   constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService) {
     sessionStorage.removeItem('statistics');
     this.showTable(this.selectedType, this.selectedRow, this.page, false)
     this.boxPlotFun();
-    this.showOutliers();
   }
 
   ngOnInit() {
@@ -436,7 +440,9 @@ export class TablesComponent {
       'isSelected': false,
       'isNum': false,
       'encoding': "",
-      'encList': []
+      'encList': [],
+      'numOfOutliers': 0,
+      'outliers': []
     };
   }
   //*
@@ -472,7 +478,6 @@ export class TablesComponent {
       //this.loadStatistics();
       this.statistic = JSON.parse(sessionStorage.getItem('statistics'));
       this.loadStatistics(col);
-      console.log(this.statistic);
     }
     else {
       let filename = this.cookie.get('filename');
@@ -500,8 +505,10 @@ export class TablesComponent {
   }
 
   colListData: any = [];
+  numOfOutliers: any;
   public loadStatistics(col: number) {
     console.log(this.statistic['jsonList']);
+    this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
     this.colListData = [];
     for (let i = 0; i < this.statistic['colList'].length; i++) {
       this.colListData.push(this.statistic['colList'][i]);
@@ -523,13 +530,24 @@ export class TablesComponent {
       this.arrStDev.push(this.arrNum[i]['stdev']);
       this.arrIQR.push(this.arrNum[i]['iqr']);
     }
-
+    
+    //cuvanje outliers i numOfOutliers za svaku kolonu
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
+      this.statisticData = this.statistic['jsonList'][i];
+      this.outliers = [];
+     for (let j = 0; j < this.statisticData['numOfOutliers']; j++) {
+        this.outliers.push(this.statisticData['outliers'][j]);
+      }
+
+      this.colDataList[i]['numOfOutliers'] = this.statisticData['numOfOutliers'];
+      this.colDataList[i]['outliers'] = this.outliers;
+    }
+    
+    for (let i = 0; i < this.statistic['jsonList'].length; i++) {
+      this.statisticData = this.statistic['jsonList'][i];
       if (i == col) {
-        this.statisticData = this.statistic['jsonList'][i];
 
-        //if(this.statisticData['isNumeric'] == 1) {
-
+        if(this.statisticData['isNumeric'] == 1) {
         this.mixArray = [];
         this.rowsNum = this.statisticData['rowsNum'];
         this.min = this.statisticData['min'];
@@ -545,6 +563,7 @@ export class TablesComponent {
         this.mixArray.push(this.max);
         this.stdev = this.statisticData['stdev'];
         this.iqr = this.statisticData['iqr'];
+        this.numOfOutliers = this.statisticData['numOfOutliers'];
 
         let permName: string;
         for (let i = 0; i < this.colListData.length; i++) {
@@ -583,15 +602,17 @@ export class TablesComponent {
           this.fullCorrValArray.push(valArray);
         }
         this.boxPlotFun();
-      //}
-      /*else {
+      }
+      else {
         this.frequency = this.statisticData['frequency'];
         this.mostFrequent = this.statisticData['mostFrequent'];
         this.numOfNulls = this.statisticData['numOfNulls'];
         this.unique = this.statisticData['unique'];
-      }*/
+        this.numOfOutliers = this.statisticData['numOfOutliers'];
+      }
       }
     }
+    sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
   }
 
   restartStat() {
@@ -607,12 +628,32 @@ export class TablesComponent {
 
   public onSelectedCol(event: any) {
     const value = event.target.value;
+    /*
     var splitted = value.split("|", 2);
     this.selectedColName = splitted[0];
     this.selectedCol = parseInt(splitted[1]);
     sessionStorage.removeItem('statistics');
     this.resetStatistic();
     this.showStatistics(this.selectedCol);
+    */
+    let index: number = -1;
+    for (let i = 0; i < this.statistic['colList'].length; i++){
+      if(this.statistic['colList'][i] == value) {
+        let kolona = this.statistic['jsonList'][i];
+        index = i;
+        if(kolona['isNumeric'] == 1) {
+          this.numCol = true;
+        }
+        else {
+          this.numCol = false;
+        }
+      }
+    }
+
+    this.selectedColName = value;
+    sessionStorage.removeItem('statistics');
+    this.resetStatistic();
+    this.showStatistics(index);
   }
 
   resetStatistic() {
@@ -1137,39 +1178,17 @@ export class TablesComponent {
     tabs.setAttribute('style', 'height: ' + height + 'px;');
     console.log(height);
   }
-
-  showOutliers() {
-
-    let headersArray: any = [];
-    for (let i = 0; i < this.dataOutliers['columns'].length; i++) {
-      headersArray.push(this.dataOutliers['columns'][i]);
-    }
-    this.headingLinesOutliers.push(headersArray);
-
-    let index = [];
-    for (let i = 0; i < this.dataOutliers['index'].length; i++) {
-      index.push([i]);
-    }
-    this.numberLinesOutliers.push(index);
-
-    let dataArr = [];
-    for (let i = 0; i < this.dataOutliers['columns'].length; i++) {
-      dataArr.push([i]);
-    }
-    this.numberDataOutliers.push(dataArr);
-
-    let rowsArray = [];
-    for (let i = 0; i < this.dataOutliers['data'].length; i++) {
-      rowsArray.push(this.dataOutliers['data'][i]);
-    }
-    this.rowLinesOutliers.push(rowsArray);
-
-    this.selectedMissingValCol = this.headingLinesOutliers[0][0];
-  }
+  
 
   onSelectedMissingValueCol(event: any) {
     const value = event.target.value;
     this.selectedMissingValCol = value;
+
+    if(this.isNumericFun(value))
+      this.numCol1 = true;
+    else
+      this.numCol1 = false;
+
     console.log(this.selectedMissingValCol);
   }
 
@@ -1183,8 +1202,8 @@ export class TablesComponent {
   }
 
   isSelectedMissingValuesField(id: number) {
-    for (let i = 0; i < this.headingLinesOutliers[0].length; i++) {
-      if(this.headingLinesOutliers[0][i] == this.selectedMissingValCol) {
+    for (let i = 0; i < this.headingLines[0].length; i++) {
+      if(this.headingLines[0][i] == this.selectedMissingValCol) {
         if(i == id) {
           return true;
         }
@@ -1268,5 +1287,49 @@ export class TablesComponent {
         }
     }
   }
+
   
+  confirmToReplaceOutliers() {
+    
+    let filename = this.cookie.get('filename');
+    if(this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
+      alert("Popunite sva polja!");
+    }
+    else {
+      if (this.cookie.get('token')) {
+        this.tableService.changeOutliersAuthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
+          (response) => {
+            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
+            console.log(response);
+        })
+      }
+      else {
+        this.tableService.changeOutliersUnauthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
+          (response) => {
+            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
+            console.log(response);       
+          })
+        }
+    }
+    
+  }
+
+  onSelectedToChangeOutliers(event: any) {
+    const value = event.target.value;
+    this.selectedOutliersCol = value;
+    console.log(value);
+  }
+
+  onSelectedValueOutliers(event: any) {
+    const value = event.target.value;
+    this.selectedToReplaceOutliers = value;
+    console.log(this.selectedToReplaceOutliers);
+  }
+
+  onInputToFillOutliers(event: any) {
+    const value = event.target.value;
+    this.enteredToReplaceOutliersCol = value;
+    console.log(this.enteredToReplaceOutliersCol);
+  }
+
 }
