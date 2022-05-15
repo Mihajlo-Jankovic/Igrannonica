@@ -33,4 +33,6 @@ export class Configuration
     //public fillMissingValuesUnauthorized = this.port + "/api/Csv/fillMissingValuesunaUthorized";
     public fillMissingValuesUnauthorized = this.port + "/api/Csv/fillMissingValuesUnauthorized";
     public fillMissingValuesAuthorized = this.port + "/api/Csv/fillMissingValuesAuthorized";
+    public changeOutliersUnauthorized = this.port + "/api/Csv/changeOutliersUnauthorized";
+    public changeOutliersAuthorized = this.port + "/api/Csv/changeOutliersAuthorized";
 }

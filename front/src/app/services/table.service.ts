@@ -52,4 +52,23 @@ export class TableService {
   {
     return this.http.post(this.configuration.fillMissingValuesUnauthorized, {"colName": colName, "fileName": fileName, "fillMethod": fillMethod, "specificVal": specificVal});
   }
+
+  changeOutliersAuthorized(colName: string, fileName: string, fillMethod: string, specificVal: string)
+  {
+    this.loggedUser = this.loginService.isAuthenticated();
+    if (this.loggedUser) {
+      this.token = this.cookie.get('token');
+    }
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + this.token
+    });
+    let options = { headers: headers };
+
+    return this.http.post(this.configuration.changeOutliersAuthorized, {"colName": colName, "fileName": fileName, "fillMethod": fillMethod, "specificVal": specificVal, }, options);
+  }
+
+  changeOutliersUnauthorized(colName: string, fileName: string, fillMethod: string, specificVal: string)
+  {
+    return this.http.post(this.configuration.changeOutliersUnauthorized, {"colName": colName, "fileName": fileName, "fillMethod": fillMethod, "specificVal": specificVal});
+  }
 }
