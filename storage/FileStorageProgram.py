@@ -1,3 +1,4 @@
+from re import L
 import numpy as np
 import pandas as pd
 import statistics
@@ -143,6 +144,58 @@ def missing_values(df, colName, fillMethod, specificVal):
 
     return df
 
+def z_score(df,colName):
+    mean = df[colName].mean()
+    stdev = df[colName].std()
+
+    z_scores = [np.abs((el - mean) / stdev) for el in df[colName]]
+
+    return z_scores
+
+def outliers(df,colName,fillMethod,specificVal):
+    rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,colName)
+
+    #threshold = 3
+    #z_scores = z_score(df,colName)
+
+    #i = 0
+    for i in range(0,df.shape[0]): #for score in z_scores:
+        if(df[colName][i] < min or df[colName][i] > max): #if(score > threshold):
+  
+            if(fillMethod == "none"):
+                df[colName][i] = specificVal
+
+            elif(fillMethod == "deleteAll"):
+                df.drop(i, axis=0, inplace=True)
+
+            elif(fillMethod == "min"):
+                df[colName][i] = min
+
+            elif(fillMethod == "max"):
+                df[colName][i] = max
+
+            elif(fillMethod == "avg"):
+                df[colName][i] = avg
+
+            elif(fillMethod == "med"):
+                df[colName][i] = med
+
+            elif(fillMethod == "firstQ"):
+                df[colName][i] = firstQ
+
+            elif(fillMethod == "thirdQ"):
+                df[colName][i] = thirdQ
+
+            elif(fillMethod == "stdev"):
+                df[colName][i] = stdev
+
+            elif(fillMethod == "iqr"):
+                df[colName][i] = iqr
+
+        #i = i + 1
+
+    return df
+
 def openCSV(path):
     #with open(path) as f: 
         #header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
@@ -204,5 +257,5 @@ def deleteRow(df,rowNum):
     df.drop(rowNum, axis = 0, inplace=True)
     return df
 
-df = pd.read_csv('Movies.csv', index_col = False, engine = 'python') 
-print(df)
+#df = pd.read_csv('Movies.csv', index_col = False, engine = 'python') 
+#outliers(df,'Revenue (Millions)')
