@@ -75,7 +75,7 @@
 
 
                     <form *ngIf="forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator"
-                        class="form" novalidate [formGroup]="tempPasswordForm">
+                        class="form" novalidate [formGroup]="searchEmailForm">
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Find Your Account</h1>
@@ -93,7 +93,7 @@
                             </div>
                             <div class=" card-footer">
                                 <button type="button" class="btn btn-primary btn-lg btn-block mb-3"
-                                    (click)="tempPassword(tempPasswordForm)">Search</button>
+                                    (click)="tempPassword(searchEmailForm)">Search</button>
                                 <button type="button" class="btn btn-primary btn-lg btn-block mb-3"
                                     (click)="backToLogin()">Cancel</button>
 
@@ -102,7 +102,7 @@
                     </form>
 
                     <form *ngIf="temporaryPasswordIndicator && !newPasswordIndicator" class="form" novalidate
-                        [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
+                        [formGroup]="tempPasswordForm" >
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Enter Temporary Password</h1>
@@ -124,9 +124,9 @@
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3"
-                                    (click)="createNewPassword()">Continue</button>
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3"
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3"
+                                    (click)="loginTemp(tempPasswordForm)">Continue</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3"
                                     (click)="backToLogin()">Cancel</button>
 
                             </div>
@@ -134,8 +134,7 @@
                     </form>
 
 
-                    <form *ngIf="newPasswordIndicator" class="form" novalidate [formGroup]="loginForm"
-                        (ngSubmit)="login(loginForm)">
+                    <form *ngIf="newPasswordIndicator" class="form" novalidate [formGroup]="changePasswordForm">
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Choose a New Password</h1>
@@ -154,25 +153,14 @@
                                             <i class=" tim-icons icon-lock-circle"></i>
                                         </div>
                                     </div>
-                                    <input type="password" placeholder="Enter temporary password"
-                                        name="temporaryPassword" formControlName="temporaryPassword"
-                                        class="form-control">
-                                </div>
-                                <div class="input-group">
-                                    <div class=" input-group-prepend">
-                                        <div class=" input-group-text">
-                                            <i class=" tim-icons icon-lock-circle"></i>
-                                        </div>
-                                    </div>
                                     <input type="password" placeholder="Enter new password" name="newPassword"
                                         formControlName="newPassword" class="form-control">
                                 </div>
 
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3">Continue</button>
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3"
-                                    (click)="backToLogin()">Cancel</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="changePassword(changePasswordForm)">Continue</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">Cancel</button>
 
                             </div>
                         </div>

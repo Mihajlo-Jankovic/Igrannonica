@@ -27,4 +27,6 @@ export class RegistrationService {
     return this.http.get<any>(this.configuration.verifyMail + "?verifyNumber="+ code + "&" + "email=" + email);
   }
 
+  
+
 }

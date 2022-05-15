@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { UserInfoService } from 'src/app/services/edit/user-info.service';
 import { Configuration } from 'src/app/configuration';
+import { EditPasswordService } from 'src/app/services/edit/edit-password.service';
 
 @Component({
   selector: 'app-auth-layout',
@@ -19,20 +20,31 @@ export class LoginLayoutComponent implements OnInit {
 
   public loginForm: FormGroup;
   public tempPasswordForm: FormGroup;
+  public changePasswordForm: FormGroup;
+  public searchEmailForm: FormGroup;
   public forgotPasswordIndicator: boolean;
   public temporaryPasswordIndicator: boolean;
   public newPasswordIndicator: boolean;
 
+  public tempUsername: any;
+  public tempPass: any;
+
   configuration = new Configuration();
 
-  constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private loginService: LoginService, private cookie: CookieService, private router: Router, private http: HttpClient) {
+  constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private loginService: LoginService, private editPasswordService : EditPasswordService, private cookie: CookieService, private router: Router, private http: HttpClient) {
     this.loginForm = formBuilder.group({
       username: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$")]],
       password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     })
 
-    this.tempPasswordForm = formBuilder.group({
+    this.searchEmailForm = formBuilder.group({
       email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]]
+    })
+    this.changePasswordForm = formBuilder.group({
+      newPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
+    })
+    this.tempPasswordForm = formBuilder.group({
+      temporaryPassword: ""
     })
 
   }
@@ -118,12 +130,60 @@ export class LoginLayoutComponent implements OnInit {
     }
   }
 
+  loginTemp(form: FormGroup) {
+    if (form.value.temporaryPassword) {
+      this.loginService.login(this.tempUsername, form.value.temporaryPassword).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+
+        this.save(form.value.username, form.value.password);
+        this.cookie.set("token", StringToken);
+        this.cookie.set("username", form.value.username);
+        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
+          disableTimeOut: false,
+          closeButton: true,
+          enableHtml: true,
+          toastClass: "alert alert-info alert-with-icon",
+          positionClass: 'toast-top-center'
+        });
+        this.createNewPassword();
+
+      }, err => {
+
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+
+        if (StringToken == "Error: Wrong password!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+        else if (StringToken == "Error: Username not found!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong username</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+      })
+    }
+  }
+
   tempPassword(form: FormGroup) {
-    console.log("1111");
     if (form.value.email) {
       this.loginService.resetPassword(form.value.email).subscribe((response: any) => {
         let JSONtoken: string = JSON.stringify(response);
+        let StringToken = JSON.parse(JSONtoken).username;
+
         this.createTemporaryPassword();
+        this.tempUsername = StringToken;
+        console.log(this.tempUsername);
       },err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -138,4 +198,22 @@ export class LoginLayoutComponent implements OnInit {
       })
     }
   }
+
+  changePassword(form: FormGroup) {
+    if (form.value.newPassword) {
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
+      this.editPasswordService.edit(this.tempPass, form.value.newPassword).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        this.router.navigate(["upload"]);
+      })
+    }
+  }
+  
+
 }
