@@ -254,7 +254,7 @@ namespace Igrannonica.Controllers
         {
             if (usernameOriginal != null)
             {
-                User user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+                User? user = _mySqlContext.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
 
                 if (user == null)
                     return BadRequest(new
@@ -262,9 +262,9 @@ namespace Igrannonica.Controllers
                         responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value
                     });
 
-                Models.File file = _mySqlContext.File.Where(f => f.FileName == missingValues.fileName).FirstOrDefault();
+                Models.File? file = _mySqlContext.File.Where(f => f.FileName == missingValues.fileName).FirstOrDefault();
 
-                if (file == null || file.UserForeignKey != user.id)
+                if (file != null && file.UserForeignKey != user.id)
                     return BadRequest(new
                     {
                         responseMessage = _configuration.GetSection("ResponseMessages:WrongFileAccess").Value
