@@ -96,11 +96,11 @@
                             <option class='option' value="0.1">0.1</option>
                             <option class='option' value="0.3">0.3</option>
                             <option class='option' value="1">1</option>
-                            <option class='option' value="3">3</option>
+                            <option class='option' value="3">3</option> 
                             <option class='option' value="10">10</option>
                         </select>
                     </div>
-                    <div class="hyperparameter" style="margin-bottom: 1rem;">
+                    <div class="hyperparameter">
                         <h6>Number of Epochs</h6>
                         <input class="dropdown" name="epochs" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs" (change)="onSelected($event)">
                     </div>
@@ -306,13 +306,6 @@
                                         </td>
                                         <td style="text-align: center;">{{item.id}}</td>
                                         <td *ngFor="let value of modelsHeader; let j = index">{{item.data[value][selectedEpoch].toFixed(10)}}</td>
-
-                                        <!--
-                                        <td *ngFor="let value of modelsHeader; let j = index">
-                                            metric-chart{{j}}
-                                            <canvas id="{{value}}-chart{{j}}" class="smallChart"></canvas>
-                                        </td>
-                                        -->
                                     </tr>
                                 </tbody>
                             </table>

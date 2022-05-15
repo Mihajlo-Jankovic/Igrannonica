@@ -74,6 +74,10 @@ i {
     padding: 0px;
 }
 
+#corr {
+    scrollbar-width: thin;
+}
+
 #corr::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -485,6 +489,10 @@ $breakpoint: 569px;
 $tabs-base-color: #27293d;
 // #####################################
 // CSS definition for functionality
+section {
+    margin-bottom: 30px;
+}
+
 .responsive-tabs {
     overflow: overlay;
     >input {
@@ -514,7 +522,6 @@ $tabs-base-color: #27293d;
 
 // Classes for simple presentation
 .responsive-tabs {
-    margin-bottom: 30px;
     >input {
         &:checked {
             +label {
@@ -540,7 +547,6 @@ $tabs-base-color: #27293d;
 // Classes for better presentation 
 .responsive-tabs {
     overflow: overlay;
-    margin-bottom: 30px;
     >input {
         display: none;
         &:checked {
@@ -686,6 +692,7 @@ body.warning-modal-open {
 }
 
 #table {
+    scrollbar-width: thin;
     th {
         text-transform: none !important;
     }
