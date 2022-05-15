@@ -49,12 +49,21 @@ export const ROUTES: RouteInfo[] = [
 })
 export class SidebarComponent implements OnInit {
   menuItems: any[];
+  experimentName : string = "Unnamed experiment";
 
   constructor(private cookie : CookieService) {}
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
+    this.refreshExperimentName();
   }
+
+  refreshExperimentName() {
+    if(sessionStorage.getItem('experimentName')) {
+      this.experimentName = sessionStorage.getItem('experimentName');
+    }
+  }
+
   isMobileMenu() {
     if (window.innerWidth > 991) {
       return false;

@@ -398,6 +398,7 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.removeItem('epochs');
 
     this.router.navigate(['training']);
+    location.reload();
 
   }
 
