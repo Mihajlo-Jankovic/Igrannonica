@@ -16,6 +16,10 @@ import { ToastrService } from 'ngx-toastr';
 export class RegistrationLayoutComponent implements OnInit {
 
   public registerForm: FormGroup;
+  public registerCodeForm: FormGroup;
+  public emailVerificationForm: FormGroup;
+  public registerCodeIndicator: boolean =false;
+  public emailVerificationIndicator: boolean=false;
 
   constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private registerService: RegistrationService, private cookie: CookieService, private router: Router) {
     this.registerForm = formBuilder.group({
@@ -26,13 +30,73 @@ export class RegistrationLayoutComponent implements OnInit {
       password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
       confirmPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     })
+    this.registerCodeForm = formBuilder.group({
+      emailCode: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
+      code: ""
+    })
+    this.emailVerificationForm = formBuilder.group({})
   }
 
   ngOnInit(): void {
+   
   }
 
   public get m() {
     return this.registerForm.controls;
+  }
+
+  emailCode(form:FormGroup){
+    console.log("123");
+    if(form.value.emailCode && form.value.code){
+      this.registerService.verifyMail(form.value.code,form.value.emailCode).subscribe(token=>{
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        this.registerCodeIndicator=false;
+        this.emailVerificationIndicator=true;
+        console.log("123456");
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+
+        console.log(form.value.code);
+        console.log(form.value.emailCode);
+
+
+        if (StringToken == "Error: Username not found!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username not found</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+        else if (StringToken == "Error: Wrong number!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong code</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+        else if (StringToken == "Error: Mail already verified!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Mail already verified!</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+
+      }) 
+      
+    }
+  }
+
+  toLogin(){
+    this.router.navigate(["login"]);
   }
 
   registration(form: FormGroup) {
@@ -41,26 +105,7 @@ export class RegistrationLayoutComponent implements OnInit {
         .subscribe(token => {
           let JSONtoken: string = JSON.stringify(token);
           let StringToken = JSON.parse(JSONtoken).token;
-          if (StringToken == "Email is taken!") {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
-          }
-          else if (StringToken == "Username already exists!") {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
-          }
-          else if (StringToken == "Success" && form.value.password == form.value.confirmPassword) {
-            this.router.navigate(['/login']);
+          if (form.value.password == form.value.confirmPassword) {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Congratulations, your account has been successfully created </b>.', '', {
               disableTimeOut: false,
               closeButton: true,
@@ -69,6 +114,32 @@ export class RegistrationLayoutComponent implements OnInit {
               positionClass: 'toast-top-center'
             });
           }
+          this.registerCodeIndicator=true;
+          this.emailVerificationIndicator=false;
+          
+        },err=>{
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+
+          if (StringToken == "Error: Email is taken!") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+          else if (StringToken == "Error: Username already exists!") {
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
+          }
+
         })
     }
     else {

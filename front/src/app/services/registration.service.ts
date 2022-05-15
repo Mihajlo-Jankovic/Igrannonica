@@ -22,4 +22,12 @@ export class RegistrationService {
       "password": password
     })
   }
+
+  verifyMail(code:any,email:any){
+    return this.http.post<any>(this.configuration.verifyMail,{
+      "verifyNumber":code,
+      "email":email
+    })
+  }
+
 }

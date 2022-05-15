@@ -29,4 +29,5 @@ export class Configuration
     public updateVisibility = this.port + "/api/Csv/updateVisibility";
     public refreshToken = this.port + "/api/User/refreshToken/";
     public tempPassword = this.port + "/api/User/sendtemppasswordmail";
+    public verifyMail = this.port + "/api/User/verifyMail";
 }

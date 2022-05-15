@@ -106,7 +106,7 @@ namespace Igrannonica.Controllers
             return Ok(new { responseMessage = "Successful registration!" });
         }
 
-        [HttpGet("verifyMail")]
+        [HttpPost("verifyMail")]
         public async Task<IActionResult> VerifyMail(int verifyNumber, string email)
         {
             User user = _context.User.Where(u => u.email == email).FirstOrDefault();
