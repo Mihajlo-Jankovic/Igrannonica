@@ -79,16 +79,16 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
         reg = L2(regRate)
     # Input layer
     if(regularizer != 'None'):
-        model.add(tf.keras.layers.Dense(neurons[0], activation=activation, kernel_regularizer=reg, input_dim=inputs))
+        model.add(tf.keras.layers.Dense(neurons[0], activation=activation[0], kernel_regularizer=reg, input_dim=inputs))
     else:
-        model.add(tf.keras.layers.Dense(neurons[0], activation=activation, input_dim=inputs))
+        model.add(tf.keras.layers.Dense(neurons[0], activation=activation[0], input_dim=inputs))
     # Hidden layers
     for i in range (1, len(neurons)):
         # Provera da li je izabran regularizer
         if(regularizer != 'None'):
-            model.add(tf.keras.layers.Dense(neurons[i], activation=activation, kernel_regularizer=reg))
+            model.add(tf.keras.layers.Dense(neurons[i], activation=activation[i], kernel_regularizer=reg))
         else:
-            model.add(tf.keras.layers.Dense(neurons[i], activation=activation))
+            model.add(tf.keras.layers.Dense(neurons[i], activation=activation[i]))
     # Output layer
     if(problemType == 'Regression'):
         model.add(tf.keras.layers.Dense(1, activation='linear'))
@@ -191,12 +191,12 @@ def prepare_data(df, inputList, outputList, encodingList, testSize):
 def output_unique_values(df,output):
     return df[output].nunique()
 
-def startTraining(connid, fileName, inputList, output, encodingList, ratio1, ratio2, numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
+def startTraining(connid, fileName, inputList, output, encodingList, ratio1, ratio2, numLayers, layerList, activationFunctions, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
     PATH = 'http://127.0.0.1:10108/downloadFile/'
     df = openCSV(PATH + fileName)
     X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingList, ratio1)
     outputUniqueValues = output_unique_values(df,output)
-    m = build_model(numLayers, layerList, activationFunction, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
+    m = build_model(numLayers, layerList, activationFunctions, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
     model = m.fit(x=X_train, y=y_train, validation_split=ratio2, epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])
     score = m.evaluate(X_test, y_test)
     print(score)

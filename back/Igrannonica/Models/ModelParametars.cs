@@ -8,7 +8,7 @@
         public double ratio2 { get; set; }
         public int numLayers { get; set; }
         public List<int> layerList { get; set; }
-        public string activationFunction { get; set; }
+        public string[] activationFunctions { get; set; }
         public string regularization { get; set; }
         public double regularizationRate { get; set; }
         public string optimizer { get; set; }

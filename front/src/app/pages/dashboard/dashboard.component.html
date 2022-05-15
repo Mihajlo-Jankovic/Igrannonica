@@ -56,12 +56,13 @@
                         </select>
                     </div>
                     <div class="hyperparameter">
-                        <h6>Activation function</h6>
+                        <h6>Activation function for all layers</h6>
                         <select class='dropdown' name="activationFunction" [(ngModel)]="activationFunction" ngbTooltip="Activation function" (change)="onSelected($event)">
                             <option class='option' value="sigmoid">Sigmoid</option>
                             <option class='option' value="tanh">Tanh</option>
                             <option class='option' value="relu">Relu</option>
                             <option class='option' value="linear">Linear</option>
+                            <option class='option' value="custom">Custom</option>
                         </select>
                     </div>
                     <div class="hyperparameter" [hidden]="true">
@@ -105,7 +106,7 @@
                         <input class="dropdown" name="epochs" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameter">
-                        <h6 id="range-text" style="height: 15px;">Training : validation : test - {{range1}}% : {{this.range2 - this.range1}}% : {{100 - this.range2}}%</h6>
+                        <h6 id="range-text" style="height: 28px;">Training : validation : test - {{range1}}% : {{this.range2 - this.range1}}% : {{100 - this.range2}}%</h6>
                         <section class="range-container">
                             <input name="range1" min="1" max="99" step="1" type="range" class="range" id="range1" [(ngModel)]="range1" (change)="onSelected($event)" [disabled]="firstTraining">
                             <input name="range2" min="1" max="99" step="1" type="range" class="range" id="range2" [(ngModel)]="range2" (change)="onSelected($event)" [disabled]="firstTraining">
@@ -205,6 +206,13 @@
                                     <h3 style="width: auto; margin:0; padding:0; float: left;">Neurons</h3>
                                     <input type="text" class="textInput" [(ngModel)]="neuronsList[layer.id-1]" ngbTooltip="Type in number of neurons">
                                 </div>
+                                <h6 style="text-align: center; margin: 0; margin-top: 0.5rem">Activation function:</h6>
+                                <select class='dropdown' name="afList" [(ngModel)]="activationFunctionList[layer.id-1]" (change)="onSelected($event)" ngbTooltip="Activation function">
+                                    <option class='option' value="sigmoid">Sigmoid</option>
+                                    <option class='option' value="tanh">Tanh</option>
+                                    <option class='option' value="relu">Relu</option>
+                                    <option class='option' value="linear">Linear</option>
+                                </select>
                             </div>
                         </div>
                     </div>

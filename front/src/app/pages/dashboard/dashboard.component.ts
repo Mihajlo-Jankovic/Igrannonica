@@ -61,6 +61,7 @@ export class DashboardComponent implements OnInit {
   neuron = new neuron(1);
 
   layerList = [];
+  activationFunctionList = [this.activationFunction];
   neuronsList = [1,1,1,1,1,1,1,1];
 
   public fileName: string = this.cookieService.get('filename');
@@ -277,6 +278,7 @@ export class DashboardComponent implements OnInit {
         this.layersLabel = i + 1;
         this.layer = new layer(this.layersLabel);
         this.layerList.push(this.layer);
+        this.activationFunctionList.push(this.activationFunction);
       }
 
       if(sessionStorage.getItem('neuronsList'))
@@ -514,6 +516,13 @@ export class DashboardComponent implements OnInit {
       this.layersLabel++;
       this.layer = new layer(this.layersLabel);
       this.layerList.push(this.layer);
+      if(this.activationFunction == 'custom') {
+        this.activationFunctionList.push('sigmoid');
+      }
+      else {
+        this.activationFunctionList.push(this.activationFunction);
+      }
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
       sessionStorage.setItem('numLayers', (this.layerList.length).toString())
     }
   }
@@ -522,7 +531,9 @@ export class DashboardComponent implements OnInit {
     if(this.layersLabel > 1) {
       this.layersLabel--;
       this.layerList.splice(index);
+      this.activationFunctionList.splice(index);
       this.neuronsList[index] = 1;
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
       sessionStorage.setItem('numLayers', (this.layerList.length).toString())
       sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
     }
@@ -629,9 +640,6 @@ export class DashboardComponent implements OnInit {
     }
     sessionStorage.setItem('evaluationMetrics', JSON.stringify(this.evaluationMetrics));
     
-    //this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
-    
-    
     this.changeTab(0);
 
     this.encodingList = [];
@@ -646,7 +654,7 @@ export class DashboardComponent implements OnInit {
     this.encodingList.push(colNameTemp);
     this.encodingList.push(encodingTypeTemp);
 
-    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
+    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunctions' : this.activationFunctionList, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
     //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
@@ -732,7 +740,7 @@ export class DashboardComponent implements OnInit {
       'ratio2' : 1 * ((this.range2 - this.range1)/100),
       'numLayers' : this.layersLabel, 
       'layerList' : layerList, 
-      'activationFunction' : this.activationFunction, 
+      'activationFunctions' : this.activationFunctionList, 
       'regularization' : this.regularization, 
       'regularizationRate' : this.regularizationRate, 
       'optimizer' : this.optimizer, 
@@ -874,6 +882,10 @@ export class DashboardComponent implements OnInit {
     {
       this.evaluationMetrics = JSON.parse(sessionStorage.getItem('evaluationMetrics'));
     }
+    if(sessionStorage.getItem('afList')) 
+    {
+      this.activationFunctionList = JSON.parse(sessionStorage.getItem('afList'));
+    }
     if(sessionStorage.getItem('chartData'))
     {
       this.firstTraining = true;
@@ -947,7 +959,19 @@ export class DashboardComponent implements OnInit {
     else if(target == "activationFunction")
     {
       this.activationFunction = value;
+      console.log(this.activationFunction);
+      for(let i=0; i < this.activationFunctionList.length; i++){
+        if(this.activationFunction != 'custom') {
+          this.activationFunctionList[i] = this.activationFunction;
+        }
+      }
       sessionStorage.setItem('activationFunction', this.activationFunction);
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
+    }
+    else if(target == "afList"){
+      this.activationFunction = 'custom';
+      sessionStorage.setItem('activationFunction', this.activationFunction);
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
     }
     else if(target == "learningRate")
     {
