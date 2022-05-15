@@ -746,7 +746,7 @@ body.warning-modal-open {
     height: auto;
 }
 
-.f {
+.corrMatrixHeader {
     position: sticky;
     top: 0;
     z-index: 20000;
@@ -1115,3 +1115,17 @@ body.warning-modal-open {
 .divMissingValuesCont {
     padding: 1rem;
 }
+
+$cell-color: #27293d;
+
+.tdCorrMatrix0 { background-color: lighten($cell-color, 11); }
+.tdCorrMatrix1 { background-color: lighten($cell-color, 10); }
+.tdCorrMatrix2 { background-color: lighten($cell-color, 9); }
+.tdCorrMatrix3 { background-color: lighten($cell-color, 8); }
+.tdCorrMatrix4 { background-color: lighten($cell-color, 7); }
+.tdCorrMatrix5 { background-color: lighten($cell-color, 6); }
+.tdCorrMatrix6 { background-color: lighten($cell-color, 5); }
+.tdCorrMatrix7 { background-color: lighten($cell-color, 4); }
+.tdCorrMatrix8 { background-color: lighten($cell-color, 3); }
+.tdCorrMatrix9 { background-color: lighten($cell-color, 2); }
+.tdCorrMatrix10 { background-color: lighten($cell-color, 1); }

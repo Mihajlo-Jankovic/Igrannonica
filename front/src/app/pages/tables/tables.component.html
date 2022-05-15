@@ -139,14 +139,14 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th class="f"></th>
-                                    <th class="f" *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
+                                    <th class="corrMatrixHeader"></th>
+                                    <th class="corrMatrixHeader" *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let item of fullCorrColNamesArray; let i = index">
                                     <td>{{item}}</td>
-                                    <td *ngFor="let item1 of fullCorrValArray[i]; let j = index">{{item1}}</td>
+                                    <td *ngFor="let item1 of fullCorrValArray[i]; let j = index" class="tdCorrMatrix{{floatToInt(item1)}}">{{item1}}</td>
                                 </tr>
                             </tbody>
                         </table>
