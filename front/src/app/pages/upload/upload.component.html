@@ -55,8 +55,11 @@
                     </div>
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
-                    <div style="margin: auto" *ngIf="noFiles">
+                    <div style="margin: auto" *ngIf="noFiles && selectedPrivacyType == 'public'">
                         <h2 style="text-align:center">No public datasets available.</h2>
+                    </div>
+                    <div style="margin: auto" *ngIf="noFiles && selectedPrivacyType == 'mydatasets'">
+                        <h2 style="text-align:center">You haven't uploaded any files yet.</h2>
                     </div>
                     <div class="authorized" *ngIf="cookieCheck">
                         <div *ngFor="let item of FilesList">

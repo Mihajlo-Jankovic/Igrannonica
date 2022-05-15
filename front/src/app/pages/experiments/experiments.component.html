@@ -6,7 +6,7 @@
                     <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing experiment</h3>
                     <div class="header-filter">
                         <div class="filter-left" style="margin-bottom: 10px;">
-                            <h6 *ngIf="cookieCheck" >Filter experiments</h6>
+                            <h6 *ngIf="cookieCheck">Filter experiments</h6>
                             <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Experiment Privacy" ngbTooltip="Experiment Privacy" style="float:left;">
                                 <option class='option' value="public">Public</option>
                                 <option class='option' value="myexperiments">My experiment</option>
@@ -44,6 +44,15 @@
                     </div>
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
+                    <div style="margin: auto" *ngIf="noExperiments && selectedPrivacyType == 'public' && cookieCheck">
+                        <h2 style="text-align:center">No public experiments available.</h2>
+                    </div>
+                    <div style="margin: auto" *ngIf="noExperiments && !cookieCheck">
+                        <h2 style="text-align:center">No public experiments available.</h2>
+                    </div>
+                    <div style="margin: auto" *ngIf="noExperiments && selectedPrivacyType == 'myexperiments'">
+                        <h2 style="text-align:center">You haven't saved any experiments yet.</h2>
+                    </div>
                     <div class="authorized" *ngIf="cookieCheck">
                         <div *ngFor="let item of experimentListAuthorized">
                             <div class="file">
@@ -87,8 +96,8 @@
                                             <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">Experiment: {{item.name}}</h4>
                                         </div>
                                         <div class="fileName">Desription:</div>
-                                            <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
-                                            <div class="fileName">Date : {{item.date}}</div>
+                                        <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
+                                        <div class="fileName">Date : {{item.date}}</div>
                                         <div class="fileName" style="height:auto;">Dataset : {{item.realName}}</div>
                                         <div class="fileName" style="height:auto;">Owner : {{item.username}}</div>
                                         <div style="width:100%; height:auto;">

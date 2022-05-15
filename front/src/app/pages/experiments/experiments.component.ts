@@ -15,7 +15,7 @@ export class ExperimentsComponent implements OnInit {
 
   configuration = new Configuration();
 
-  cookieCheck : any;
+  cookieCheck : any = false;
   token : string;
   loggedUser : boolean;
   pageNum: any = 1;
@@ -83,7 +83,7 @@ export class ExperimentsComponent implements OnInit {
     ]
   }
 
-
+  noExperiments : boolean = true;
   experimentListAuthorized : any = []
   experimentListUnauthorized : any = []
 
@@ -124,17 +124,16 @@ export class ExperimentsComponent implements OnInit {
     if (this.cookieCheck) {
       this.experimentListAuthorized = []
       this.listOfExperimentsAuthorized = this.userService.getAllUserExperiments(privacyType, page, this.numPerPage, this.numOfPages).subscribe(exp =>{
-            for(let i = 0; i< exp['experiments'].length; i++)
-            {
-              let expData : any = {};
-              expData = exp['experiments'][i];
-              this.data = expData;
+        for(let i = 0; i< exp['experiments'].length; i++)
+        {
+          let expData : any = {};
+          expData = exp['experiments'][i];
+          this.data = expData;
       
-              this.experimentListAuthorized.push(this.data);
-              this.numOfPages = exp['numOfPages'];
-            }
+          this.experimentListAuthorized.push(this.data);
+          this.numOfPages = exp['numOfPages'];
+        }
         
-
         this.allExperiments = [];
         this.myExperiments = [];
 
@@ -144,14 +143,23 @@ export class ExperimentsComponent implements OnInit {
           }
             this.myExperiments.push(this.experimentListAuthorized[i]);
         }
-        if(this.selectedPrivacyType == "public")
+        if(this.selectedPrivacyType == "public") {
           this.experimentListAuthorized = this.allExperiments;
-        else if(this.selectedPrivacyType == "myexperiments")
+        }
+        else if(this.selectedPrivacyType == "myexperiments") {
           this.experimentListAuthorized = this.myExperiments;
+        }
+
+        if(this.experimentListAuthorized.length != 0) {
+          this.noExperiments = false;
+        }
+        else {
+          this.noExperiments = true;
+        }
       })  
     }
     else {
-      this.experimentListUnauthorized = []
+      this.experimentListUnauthorized = [];
       this.listOfExperimentsUnauthorized = this.userService.getPublicExperiments("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(exp =>{
         for(let i = 0; i< exp['experiments'].length; i++)
         {
@@ -164,8 +172,16 @@ export class ExperimentsComponent implements OnInit {
         }
 
         for (let i = 0; i < this.experimentListUnauthorized.length; i++) {
-          if (this.experimentListUnauthorized[i]['visibility'])
+          if (this.experimentListUnauthorized[i]['visibility']) {
             this.publicExperimentsUnauthorized.push(this.experimentListUnauthorized[i]);
+          }
+        }
+
+        if(this.publicExperimentsUnauthorized.length != 0) {
+          this.noExperiments = false;
+        }
+        else {
+          this.noExperiments = true;
         }
       });
     }
