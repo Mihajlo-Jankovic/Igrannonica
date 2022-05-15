@@ -1237,5 +1237,17 @@ export class TablesComponent {
 
     }
   }
+
+  floatToInt(num: any) {
+    if(parseInt(num) == num) {
+      return 10;
+    }
+    else {
+      let str = parseFloat(num).toString();
+      let s = str.split(".", 2);
+
+      return s[1].substring(0, 1);
+    }
+  }
   
 }
