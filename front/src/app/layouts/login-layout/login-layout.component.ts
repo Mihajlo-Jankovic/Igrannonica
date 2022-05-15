@@ -121,12 +121,13 @@ export class LoginLayoutComponent implements OnInit {
   tempPassword(form: FormGroup) {
     console.log("1111");
     if (form.value.email) {
-      this.http.get<any>(this.configuration.tempPassword + form.value.email).subscribe((response: any) => {
+      this.loginService.resetPassword(form.value.email).subscribe((response: any) => {
         let JSONtoken: string = JSON.stringify(response);
         this.createTemporaryPassword();
       },err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken == "There is no user with this email.")
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>There is no user with this email.</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
