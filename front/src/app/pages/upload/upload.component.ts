@@ -187,7 +187,7 @@ export class UploadComponent implements OnInit {
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
           this.cookie.set('realName', file.name);
-          this.router.navigate(['/tables']);
+          this.router.navigate(['datapreview']);
           this.uploadNotificationSuccess();
         },err=>{
           let JSONtoken: string = JSON.stringify(err.error);
@@ -204,7 +204,7 @@ export class UploadComponent implements OnInit {
           let StringName = JSON.parse(JSONname).randomFileName;
           this.cookie.set("filename", StringName);
           this.cookie.set('realName', file.name);
-          this.router.navigate(['/tables']);
+          this.router.navigate(['datapreview']);
           this.uploadNotificationSuccess();
         },err=>{
           let JSONtoken: string = JSON.stringify(err.error);

@@ -24,13 +24,13 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   },
   {
-    path: "/tables",
+    path: "/datapreview",
     title: "Data Preview",
     icon: "icon-bullet-list-67",
     class: ""
   },
   {
-    path: "/dashboard",
+    path: "/training",
     title: "Model Training",
     icon: "icon-chart-pie-36",
     class: ""

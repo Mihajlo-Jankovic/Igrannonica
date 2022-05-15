@@ -394,7 +394,7 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.removeItem('regularizationRate');
     sessionStorage.removeItem('epochs');
 
-    this.router.navigate(['dashboard']);
+    this.router.navigate(['training']);
 
   }
 
