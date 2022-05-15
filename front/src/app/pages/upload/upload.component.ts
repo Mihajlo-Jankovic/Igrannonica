@@ -8,6 +8,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import files from 'src/files.json';
 import { Router } from '@angular/router';
+import { NotificationsService } from 'src/app/services/notifications.service';
 
 @Component({
   selector: 'app-upload',
@@ -36,11 +37,13 @@ export class UploadComponent implements OnInit {
   numPerPage: any = 8;
 
   noFiles: boolean = true;
+  deleteWarning: boolean = false;
+  toDelete: any;
 
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string, dateCreated:Date}[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
 
-  constructor(private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
+  constructor(private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
    // this.username = this.getUsername();
   
     this.cookieCheck = this.cookie.get('token');
@@ -156,7 +159,7 @@ export class UploadComponent implements OnInit {
     return sessionStorage.getItem('fileName');
   }
 
-    async uploadFile(files: any) {
+  async uploadFile(files: any) {
     if (files.length === 0)
       return;
     
@@ -288,7 +291,12 @@ export class UploadComponent implements OnInit {
     sessionStorage.clear();
   }
 
-  delete(event, item) {
+  deleteCheck(item) {
+    this.deleteWarning = true;
+    this.toDelete = item;
+  }
+
+  delete(item) {
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
       this.token = this.cookie.get('token');
@@ -299,18 +307,13 @@ export class UploadComponent implements OnInit {
     let options = { headers: headers };
     this.http.get<any>(this.configuration.downloadFileUnauthorized + item.randomFileName, options).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
+      this.notify.showNotification("Dataset deleted successfully.")
       location.reload();
     },err=>{
       let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while deleting dataset.") {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting dataset</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.notify.showNotification(StringToken);
           }
     })
   }
@@ -382,13 +385,7 @@ export class UploadComponent implements OnInit {
 
 
   uploadNotificationSuccess() {
-    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>File uploaded successfully</b>.', '', {
-      disableTimeOut: false,
-      closeButton: true,
-      enableHtml: true,
-      toastClass: "alert alert-info alert-with-icon",
-      positionClass: 'toast-top-center'
-    });
+    this.notify.showNotification("Dataset uploaded successfully.");
   }
 
   nextPage(i: number) {
@@ -419,21 +416,9 @@ export class UploadComponent implements OnInit {
     }
   }
   uploadNotificationBadFileType() {
-    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Bad file type</b>.', '', {
-      disableTimeOut: false,
-      closeButton: true,
-      enableHtml: true,
-      toastClass: "alert alert-info alert-with-icon",
-      positionClass: 'toast-top-center'
-    });
+    this.notify.showNotification("Bad file type.");
   }
   error() {
-    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
-      disableTimeOut: false,
-      closeButton: true,
-      enableHtml: true,
-      toastClass: "alert alert-info alert-with-icon",
-      positionClass: 'toast-top-center'
-    });
+    this.notify.showNotification("Error.");
   }
 }

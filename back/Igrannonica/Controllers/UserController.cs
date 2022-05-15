@@ -507,7 +507,7 @@ namespace Igrannonica.Controllers
 
             //MongoDB.Bson.BsonDocument id = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(obj.Id);
 
-            //collection.DeleteOne(e => e._id == obj.Id);
+            collection.DeleteOne(e => e._id == obj.Id);
 
             return Ok(new { obj.Id });
         }

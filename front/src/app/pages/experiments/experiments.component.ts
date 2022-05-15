@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Configuration } from 'src/app/configuration';
 import { LoginService } from 'src/app/services/login.service';
 import { UserService } from 'src/app/services/user.service';
+import { NotificationsService } from 'src/app/services/notifications.service';
 
 @Component({
   selector: 'app-experiments',
@@ -83,11 +84,14 @@ export class ExperimentsComponent implements OnInit {
     ]
   }
 
+  deleteWarning: boolean = false;
+  toDelete : any;
+
   noExperiments : boolean = true;
   experimentListAuthorized : any = []
   experimentListUnauthorized : any = []
 
-  constructor(private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
+  constructor(private notify: NotificationsService, private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
       if(this.cookie.get('token'))
         this.cookieCheck = this.cookie.get('token');
   }
@@ -273,9 +277,19 @@ export class ExperimentsComponent implements OnInit {
     }
   }
 
+  deleteCheck(item) {
+    this.deleteWarning = true;
+    this.toDelete = item;
+    console.log(item);
+  }
+
   deleteExperiments(id : any)
   {
+    console.log(this.toDelete);
     this.userService.deleteExperiment(id).subscribe(res => {
+      if(res['id']) {
+        this.notify.showNotification("Experiment deleted successfully.");
+      }
       this.experimentListAuthorized = [];
       this.experimentListUnauthorized = [];
       this.showExperiments(this.selectedPrivacyType, this.pageNum);
