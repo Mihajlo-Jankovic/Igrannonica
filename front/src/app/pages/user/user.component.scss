@@ -18,10 +18,6 @@
     background-color: #7d3c8b;
     color: #ffff;
 }
-button {
-    margin-left: 1em;
-
-}
 
 i {
     color: #ffff;
@@ -135,6 +131,20 @@ h5 {
     bottom: 0;
     width: 100%;
     cursor: pointer;
+}
+
+.author {
+    h5 {
+        text-align: center;
+    }
+}
+
+.user-btn {
+    width: 150px;
+    margin: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin: 0px 10px 0px 10px;
 }
 
 @media(max-width: 1350px) {

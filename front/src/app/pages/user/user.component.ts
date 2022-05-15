@@ -6,6 +6,7 @@ import { UserInfoService } from "src/app/services/edit/user-info.service";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "src/app/services/user.service";
 import { ToastrService } from "ngx-toastr";
+import { NotificationsService } from "src/app/services/notifications.service";
 
 
 @Component({
@@ -41,7 +42,6 @@ export class UserComponent implements OnInit {
   experiments : any = []
 
   username: string;
-  messageEditProfile: string;
   indicatorInfo : boolean=false;
   indicatorPassword : boolean=false;
   userInfo : any;
@@ -50,8 +50,7 @@ export class UserComponent implements OnInit {
     return sessionStorage.getItem('username');
   }
 
-  constructor(private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder, private userService : UserService) {
-    this.messageEditProfile = "";
+  constructor(private notify: NotificationsService, private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder, private userService : UserService) {
     this.editForm = formBuilder.group({ 
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
@@ -66,10 +65,13 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getInfo();
+  }
+
+  getInfo() {
     this.userInfo = this.userInfoService.info().subscribe(data=> {
       this.userInfo = data;
     })
-    //this.showExperiments()
   }
 
   public get m() {
@@ -85,7 +87,7 @@ export class UserComponent implements OnInit {
     else {
       this.indicatorInfo=true;
       this.indicatorPassword = false;
-   }
+    }
   }
   changePassword(){
     if(this.indicatorPassword==true)
@@ -100,78 +102,41 @@ export class UserComponent implements OnInit {
   edit (form: FormGroup) {
     if (form.value.firstname && form.value.lastname && form.value.password && form.value.confirmPassword) {
       if(form.value.password != form.value.confirmPassword){
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
+        this.notify.showNotification("Password mismatched!");
       }
-     else{
+      else{
       this.editService.edit(form.value.firstname, form.value.lastname,form.value.password).subscribe(async token => {
         let JSONtoken: string = JSON.stringify(token);
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
+        this.notify.showNotification("Succesfully changed!");
         await new Promise(f=>setTimeout(f,50));
-        location.reload();
-       
+        this.getInfo();
       },err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if(StringToken == "Error: Wrong password!"){
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-        }
-      })
-     }
+          this.notify.showNotification("Wrong password!");
+          }
+        })
+      }
     }
   }
 
   editPassword(form: FormGroup) {
     if (form.value.currentPassword && form.value.newPassword && form.value.confirmNewPassword) {
       if(form.value.newPassword != form.value.confirmNewPassword){
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
+        this.notify.showNotification("Password mismatched!");
       }
       else{
         this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(async token => {
           let JSONtoken: string = JSON.stringify(token);
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.notify.showNotification("Succesfully changed!");
           await new Promise(f=>setTimeout(f,50));
-          location.reload();
+          this.getInfo();
         },err=>{
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if(StringToken == "Error: Wrong password!"){
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.notify.showNotification("Wrong password!");
           }
         })
       }

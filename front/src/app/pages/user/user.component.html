@@ -1,160 +1,5 @@
 <div class=" content">
     <div class=" row">
-        <!-- <div class=" col-md-8">
-            <div class=" card">
-                <div class=" card-header">
-                    <h3 class="card-title">My Projects</h3>
-                </div>
-                <div class=" card-body">
-                    <div class=" container b" style="padding-top:4px;">
-                        Experiments
-                    </div>
-
-                    <div class=" container" *ngFor="let exp of experiments; index as i">
-                        <div style="min-height: 10px;">
-                            <div style="position: relative; float: left">
-                                <h5 style="margin-bottom: 0px; margin-top: 10px;">{{exp['name']}}</h5>
-                            </div>
-                            <div *ngIf="!clcDiv[i]" style="position: relative; float: right; margin-top: 5px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-down"></i></div>
-                            <div *ngIf="clcDiv[i]" style="position: relative; float: right; margin-top: 5px;" (click)="openDiv(i)"><i class="tim-icons icon-minimal-up"></i></div>
-                        </div>
-                        <div *ngIf="clcDiv[i]" class="box" style="margin-top: 30px;">
-                            <div class="hyperparameter" style="margin-left: 0em;">
-                                <h6>File name</h6>
-                                <input type="text" class="dropdown" value="{{exp['fileName']}}" disabled>
-                            </div>
-                            <div class="filenameparameter" style="float: right; margin-right: 1%; padding-top: 2px;">
-                                <br>
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" style=" padding: 0px;" (click)="deleteExperiments(exp['_id'])">DELETE</button>
-                            </div>
-                            <div class="filenameparameter" style="float: right; margin-right: 1%; padding-top: 2px;">
-                                <br>
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" style=" padding: 0px;">USE</button>
-                            </div>
-                            <div class="hyperparameter" style="margin-left: 0em; clear: both;">
-                                <h6>Inputs</h6>
-                                <select class="dropdown">
-                                    <option  *ngFor="let item of exp['inputList']; index as j" class="option">{{item}}</option>
-                                </select>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Output</h6>
-                                <input type="text" class="dropdown" value="{{exp['output']}}" disabled>
-                            </div>
-                            <div class="titleDiv">
-                                <h4>Hyperparameters</h4>
-                            </div>
-                            <div class="hyperparameter" style="clear: both;">
-                                <h6>Problem type</h6>
-                                <input type="text" class="dropdown" value="{{exp['problemType']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Encoding type</h6>
-                                <input type="text" class="dropdown" value="{{exp['encodingType']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Optimizer</h6>
-                                <input type="text" class="dropdown" value="{{exp['optimizer']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Regularization</h6>
-                                <input type="text" class="dropdown" value="{{exp['regularization']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Loss Function</h6>
-                                <input type="text" class="dropdown" value="{{exp['lossFunction']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Ratio of training</h6>
-                                <input type="text" class="dropdown" value="{{exp['ratio']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Activation function</h6>
-                                <input type="text" class="dropdown" value="{{exp['activationFunction']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Learning rate</h6>
-                                <input type="text" class="dropdown" value="{{exp['learningRate']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Regularization rate</h6>
-                                <input type="text" class="dropdown" value="{{exp['regularizationRate']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Number of epochs</h6>
-                                <input type="text" class="dropdown" value="{{exp['numEpochs']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Number of layers</h6>
-                                <input type="text" class="dropdown" value="{{exp['numLayers']}}" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>Number of neurons</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-
-                            <div class="hyperparameter" style="width: 100%;">
-                                <h6>Metrics</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="titleDiv">
-                                <h4>Performance</h4>
-                            </div>
-                            <div class="hyperparameter" style="clear: both;">
-                                <h6>logcosh</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>loss</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>mae</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>mape</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>mse</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>msle</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter" style="clear: both;">
-                                <h6>val_logcosh</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>val_loss</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>val_mae</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>val_mape</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>val_mse</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                            <div class="hyperparameter">
-                                <h6>val_msle</h6>
-                                <input type="text" class="dropdown" disabled>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class=" card-footer">
-                </div>
-            </div>
-        </div> -->
         <div class=" col-md-4">
         </div>
         <div class=" col-md-4">
@@ -174,8 +19,8 @@
                         <h5 class=" title">E-mail: {{userInfo.email}}</h5><br><br>
                         <p class=" description"></p><br>
 
-                        <button class="btn btn-primary btn-lg " (click)="editInfo()">Edit Info</button>
-                        <button class="btn btn-primary btn-lg " (click)="changePassword()">Edit Password</button>
+                        <button class="btn btn-primary btn-lg user-btn" (click)="editInfo()">Edit Info</button>
+                        <button class="btn btn-primary btn-lg user-btn" (click)="changePassword()">Edit Password</button>
                     </div>
                 </div>
             </div>
@@ -186,7 +31,8 @@
 
 
                         <h6 class=" title">Edit Profile</h6>
-                        <form class="form" novalidate  [formGroup]="editForm" (ngSubmit)="edit(editForm)">
+                        <br>
+                        <form class="form" novalidate [formGroup]="editForm" (ngSubmit)="edit(editForm)">
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="{{userInfo.firstname}}" name="firstname" formControlName="firstname" type="text" />
                             </div>
@@ -199,11 +45,8 @@
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="Confirm password" name="confirmPassword" formControlName="confirmPassword" type="password" />
                             </div>
-
+                            <br>
                             <button [disabled]="!editForm.valid" class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button><br>
-
-                            <label>{{messageEditProfile}}</label>
-
                         </form>
                     </div>
                 </div>
@@ -231,6 +74,7 @@
                             <div class=" input-group">
                                 <input class=" form-control" placeholder="Confirm new password" type="password" name="confirmNewPassword" formControlName="confirmNewPassword" />
                             </div>
+                            <br>
 
                             <button [disabled]="!editPasswordForm.valid" class="btn btn-primary btn-lg btn-block mb-3" type="submit">Save</button>
                         </form>
