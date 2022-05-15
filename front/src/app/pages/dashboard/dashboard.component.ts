@@ -44,7 +44,6 @@ export class DashboardComponent implements OnInit {
   public lossFunction: string;
   public metrics: any = [];
   public epochs: number = 100;
-  public range: number = 80;
   public range1: number = 75;
   public range2: number = 90;
   public experimentName: string = "";
@@ -178,17 +177,27 @@ export class DashboardComponent implements OnInit {
 
   clearEverything() {
     this.problemType = "Regression";
+    sessionStorage.removeItem('problemType');
     this.encodingType = "label";
+    sessionStorage.removeItem('encodingType');
     this.activationFunction = "sigmoid";
+    sessionStorage.removeItem('activationFunction');
     this.optimizer = "Adam";
+    sessionStorage.removeItem('optimizer');
     this.learningRate = 0.0001;
+    sessionStorage.removeItem('learningRate');
     this.regularization = "None";
+    sessionStorage.removeItem('regularization');
     this.regularizationRate = 0;
+    sessionStorage.removeItem('regularizationRate');
     this.metrics = [];
+    sessionStorage.removeItem('metrics');
     this.epochs = 100;
-    this.range = 80;
-    this.experimentName = "";
-    this.description = "";
+    sessionStorage.removeItem('epochs');
+    this.range1 = 75;
+    sessionStorage.removeItem('range1');
+    this.range2 = 90;
+    sessionStorage.removeItem('range2');
     this.checkProblemType();
 
     this.selectedMetric = "loss";
@@ -199,18 +208,31 @@ export class DashboardComponent implements OnInit {
     this.neuronsList = [1,1,1,1,1,1,1,1];
     this.layer.id = 1;
     this.layerList.push(this.layer);
+    sessionStorage.setItem('numLayers', (this.layerList.length).toString())
+    sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
 
     this.layersLabel = 1;
 
     this.liveData = {};
     this.chartData = {};
+    this.buttons = [];
+    this.chart_labels = [];
+    this.label = "";
+    sessionStorage.removeItem('label');
+    sessionStorage.removeItem('chartData');
+    sessionStorage.removeItem('buttons');
+    sessionStorage.removeItem('chart_labels');
     
     this.parameters = {};
     this.modelsList = [];
+    sessionStorage.removeItem('modelsList');
     this.modelsTrained = 0;
+    sessionStorage.removeItem('modelsTrained');
     this.modelsHeader = [];
+    sessionStorage.removeItem('modelsHeader');
     this.selectedEpoch = 0;
     this.maxEpochs = 0;
+    sessionStorage.removeItem('maxEpoch');
 
     this.metricLabels = [];
     this.selectedChartMetric = "none";
@@ -222,6 +244,7 @@ export class DashboardComponent implements OnInit {
 
     this.evaluationMetric= "loss";
     this.evaluationMetrics = ["loss"];
+    sessionStorage.removeItem('evaluationMetrics');
   }
   
   ngOnInit() {
@@ -705,7 +728,8 @@ export class DashboardComponent implements OnInit {
       'output' : output, 
       //'encodingType' : this.encodingType,
       'encodingList' : this.encodingList,
-      'ratio' : 1 - (1 * (this.range/100)), 
+      'ratio1' : 1 * ((100 - this.range2)/100), 
+      'ratio2' : 1 * ((this.range2 - this.range1)/100),
       'numLayers' : this.layersLabel, 
       'layerList' : layerList, 
       'activationFunction' : this.activationFunction, 
@@ -785,10 +809,6 @@ export class DashboardComponent implements OnInit {
     if(sessionStorage.getItem('lossFunction'))
     {
       this.lossFunction = sessionStorage.getItem('lossFunction');
-    }
-    if(sessionStorage.getItem('range'))
-    {
-      this.range = Number(sessionStorage.getItem('range'));
     }
     if(sessionStorage.getItem('range1'))
     {
@@ -923,11 +943,6 @@ export class DashboardComponent implements OnInit {
     {
       this.lossFunction = value;
       sessionStorage.setItem('lossFunction', this.lossFunction);
-    }
-    else if(target == "range")
-    {
-      this.range = value;
-      sessionStorage.setItem('range', (this.range).toString());
     }
     else if(target == "activationFunction")
     {
