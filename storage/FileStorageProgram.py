@@ -30,7 +30,7 @@ def numeric_column_statistics(df,col):
     firstQ = round(firstQ,3)
     thirdQ = round(thirdQ,3)
     stdev = df[col].std()
-
+    
     iqr = thirdQ - firstQ
 
     min = round(firstQ - 1.5 * iqr,3)
@@ -222,7 +222,7 @@ def paging(df,rowNum,pageNum):
     return df.loc[np.r_[row:row+rowNum], :]
 
 # Filtriranje CSV fajlova prema parametrima klijenta
-def filterCSV(path, rowNum, dataType, pageNum):
+def filterCSV(path, rowNum, dataType, pageNum, colName):
     df = openCSV(path)
 
     # Dodavanje novog id reda
@@ -236,6 +236,20 @@ def filterCSV(path, rowNum, dataType, pageNum):
     elif(dataType == 'null'):
         na_free = df.dropna()
         df = df[~df.index.isin(na_free.index)]
+        df.reset_index(drop=True, inplace=True)
+    
+    elif(dataType == 'outlier'):
+        firstQ, thirdQ = df[colName].quantile([.25, .75])
+        iqr = thirdQ - firstQ
+        min = round(firstQ - 1.5 * iqr,3)
+        max = round(thirdQ + 1.5 * iqr,3)
+
+        tmp = pd.DataFrame()
+        for i in range(0,df.shape[0]):
+            if(df[colName][i] < min or df[colName][i] > max):
+                tmp = pd.concat([df.iloc[[i]],tmp.loc[:]]).reset_index(drop=True)
+        
+        df = tmp
         df.reset_index(drop=True, inplace=True)
 
     numOfPages = numberOfPages(df,rowNum)

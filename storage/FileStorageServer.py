@@ -58,7 +58,7 @@ def table_data():
     if (content_type == 'application/json; charset=utf-8'):
         jsonObject = request.json
 
-        filterList = FileStorageProgram.filterCSV(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']), int(jsonObject['Rows']), jsonObject['DataType'], jsonObject['PageNum'])
+        filterList = FileStorageProgram.filterCSV(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']), int(jsonObject['Rows']), jsonObject['DataType'], jsonObject['PageNum'], jsonObject['ColName'])
         df = filterList[0]
         numOfPages = filterList[1]
         numericValues = FileStorageProgram.numericValues(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']))
