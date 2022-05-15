@@ -15,7 +15,8 @@
             <div class="container">
                 <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
 
-                    <form *ngIf="!registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate [formGroup]="registerForm" (ngSubmit)="registration(registerForm)">
+                    <form *ngIf="!registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate
+                        [formGroup]="registerForm" (ngSubmit)="registration(registerForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Register</h1>
@@ -128,21 +129,17 @@
                         </div>
                     </form>
 
-                    <form *ngIf="registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate [formGroup]="registerCodeForm"
-                        (ngSubmit)="emailCode(registerCodeForm)">
+                    <form *ngIf="registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate
+                        [formGroup]="registerCodeForm" (ngSubmit)="emailCode(registerCodeForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Mail verification</h1>
+                                <h1 class=" card-title">Mail Verification</h1>
                             </div>
                             <div class=" card-body">
-                                <div class="input-group">
-                                    <div class=" input-group-prepend">
-                                        <div class=" input-group-text">
-                                            <i class=" tim-icons icon-single-02"></i>
-                                        </div>
-                                    </div>
-                                    <input type="text" placeholder="Email" name="emailCode" formControlName="emailCode"
-                                        class="form-control">
+                                <div class=" pull-left">
+                                    <h6>
+                                        <p class="text-primary"> {{emailCodeVerification}} </p>
+                                    </h6>
                                 </div>
                                 <div class="input-group">
                                     <div class=" input-group-prepend">
@@ -155,33 +152,25 @@
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" [disabled]="!registerCodeForm.valid"
+                                <button type="submit" 
                                     class="btn btn-primary btn-lg btn-block mr-1">Verify</button>
                             </div>
                         </div>
                     </form>
 
-                    <form *ngIf="!registerCodeIndicator && emailVerificationIndicator" class="form" novalidate [formGroup]="emailVerificationForm"
-                        (ngSubmit)="registration(emailVerificationForm)">
+                    <form *ngIf="!registerCodeIndicator && emailVerificationIndicator" class="form" novalidate
+                        [formGroup]="emailVerificationForm" (ngSubmit)="registration(emailVerificationForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Thank you for verification</h1>
                             </div>
                             <div class=" card-body">
-                                <div class="input-group">
-                                    <div class=" input-group-prepend">
-                                        <div class=" input-group-text">
-                                            <i class=" tim-icons icon-single-02"></i>
-                                        </div>
-                                    </div>
-                                    <input type="text" placeholder="Code" name="code" formControlName="code"
-                                        class="form-control">
-                                </div>
-                            </div>
-                            <div class=" card-footer">
                                 <div class="text-center">
                                     <a class="text-primary" routerLink="/login" routerLinkActive="active">Login</a>
                                 </div>
+                            </div>
+                            <div class=" card-footer">
+
                             </div>
                         </div>
                     </form>
