@@ -214,7 +214,7 @@ namespace Igrannonica.Controllers
 
             _context.User.Update(user);
             await _context.SaveChangesAsync();
-            return Ok( new { responseMessage = "Success!"});
+            return Ok( new { responseMessage = "Success!", user.username});
         }
 
         [HttpPost("resetpassword")]
