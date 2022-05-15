@@ -216,7 +216,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="checkBeforeTraining()" [disabled]="training">START TRAINING</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="checkBeforeTraining(); scrollTo(target);" [disabled]="training">START TRAINING</button>
                 </div>
             </div>
         </div>
@@ -224,10 +224,10 @@
     <div class="row">
         <div class="col-12">
             <div class="card" style="margin-top:20px; z-index: 1; border-radius: 0 0.2857rem 0.2857rem 0.2857rem;">
-                <div style="position:absolute">
-                    <button class="tab-button raised-tab-button" id="tab-btn1" (click)="changeTab(0)">Live Training</button>
-                    <button class="tab-button" id="tab-btn1" (click)="changeTab(1)" [disabled]="trained == false">Results</button>
-                    <button class="tab-button" id="tab-btn1" (click)="changeTab(2)" [disabled]="trained == false">Evaluation</button>
+                <div style="position:absolute" #target>
+                    <button class="tab-button raised-tab-button" id="tab-btn1" (click)="changeTab(0); scrollTo(target);">Live Training</button>
+                    <button class="tab-button" id="tab-btn1" (click)="changeTab(1); scrollTo(target2);" [disabled]="trained == false">Results</button>
+                    <button class="tab-button" id="tab-btn1" (click)="changeTab(2); scrollTo(target);" [disabled]="trained == false">Evaluation</button>
                 </div>
                 <div class="card-body">
                     <div class="tab1" [hidden]="!liveButton">
@@ -248,7 +248,7 @@
                             </h2>
                         </div>
                     </div>
-                    <div class="tab2" [hidden]="!resultsButton">
+                    <div class="tab2" [hidden]="!resultsButton" #target2>
                         <div class="tab-header" style="padding: 0px; width:100%; height: auto">
                             <div class="headerLeft">
                                 <h3 class="card-title" style="padding:0; margin: 0px;">Trained Models-Epoch: {{selectedEpoch+1}} </h3>

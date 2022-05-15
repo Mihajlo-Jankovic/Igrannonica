@@ -485,7 +485,6 @@ body.cm-modal-open {
         background-size: contain;
         width: 20px;
         height: 20px;
-        border-radius: 50%;
         margin-top: -5px;
         z-index: 10;
         outline: 0;
@@ -508,12 +507,13 @@ body.cm-modal-open {
     &::-moz-range-thumb {
         pointer-events: all;
         cursor: pointer;
-        background-color: #7d3c8b;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
+        background: transparent;
+        border: none;
+        background-size: contain;
+        width: 20px;
+        height: 20px;
         margin-top: -5px;
-        z-index: 10;
+        z-index: 1000;
         outline: 0;
         position: relative;
     }
@@ -537,7 +537,7 @@ body.cm-modal-open {
     }
     &::-moz-range-thumb {
         background-image: url("/assets/img/top-slider.png");
-        top: 10px;
+        margin-top: 10px;
     }
 }
 

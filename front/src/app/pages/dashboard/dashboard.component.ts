@@ -166,6 +166,12 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  scrollTo(el: HTMLElement) {
+    setTimeout(() => { 
+      el.scrollIntoView();
+    }, 30);
+  }
+
   login(){
     this.router.navigate(['login']);
   }
@@ -1126,6 +1132,7 @@ export class DashboardComponent implements OnInit {
     if(this.modelsTrained == 1) {
       this.trained = false;
       this.changeTab(0);
+
     }
     if(this.modelsTrained == id+1) {
       this.modelsTrained--;
