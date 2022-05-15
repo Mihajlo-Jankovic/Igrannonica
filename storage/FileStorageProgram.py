@@ -64,11 +64,14 @@ def statistics(df,colIndex):
         else:
             rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,col)
             corrMatrix = df.corr() # Korelaciona matrica
+            print(corrMatrix)
+            numOfOutliers = 0
 
             outliers = []
             for value in df[col]:
                 if(value < min or value > max): 
                     outliers.append(value)
+                    numOfOutliers += 1
                     
             corrArr = []
             for value in corrMatrix[col]:
@@ -85,7 +88,7 @@ def statistics(df,colIndex):
                 
                 valArr.append(tmpArr)
             
-            jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med,
+            jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med, 'numOfOutliers': numOfOutliers,
                             "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, "isNumeric": 1,
                             "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": {col: numOfNulls},
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
