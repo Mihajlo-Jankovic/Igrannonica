@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { TableService } from 'src/app/services/table.service';
 import { CookieService } from "ngx-cookie-service";
+import { Configuration } from 'src/app/configuration';
+
 
 import {
   ChartComponent,
@@ -130,18 +132,23 @@ export class TablesComponent {
   med: number;
   firstQ: number;
   thirdQ: number;
+  stdev: any;
+  iqr: any;
   corrMatrix: any = {};
   mixArray: any = []; //niz za boxplot
   numArray: any = []; //niz za kor matricu
   outliers: any = [];
 
-  arr: any = [];
+  arrNum: any = [];
+  arrNonNum: any = [];
   arrMin: any = [];
   arrQ1: any = [];
   arrMean: any = [];
   arrMedian: any = [];
   arrQ3: any = [];
   arrMax: any = [];
+  arrStDev: any = [];
+  arrIQR: any = [];
 
   hideStatistics: boolean = false;
   hideBoxplot: boolean = false;
@@ -163,12 +170,15 @@ export class TablesComponent {
 
   //*
   missingValuesList = [];
-  fillMissingValuesList = ["", "MIN", "MAX", "AVG", "MEAN"];
+  fillMissingValuesList = ["none", "min", "max", "avg", "mean"];
   dataOutliers: any = {"columns": ["RANK", "Country", "Happiness score", "Whisker-high", "Whisker-low", "Dystopia (1.83) + residual", "Explained by: GDP per capita", "Explained by: Social support", "Explained by: Healthy life expectancy", "Explained by: Freedom to make life choices", "Explained by: Generosity", "Explained by: Perceptions of corruption"], "data": [[1, "Finland", 7.821, 7.886, 7.756, 2.518, 1.892, 1.258, 0.775, 0.736, 0.109, 0.534], [2, "Denmark", 7.636, 7.71, 7.563, 2.226, 1.953, 1.243, 0.777, 0.719, 0.188, 0.532 ], [3, "Iceland", 7.557, 7.651, 7.464, 2.32, 1.936, 1.32, 0.803, 0.718, 0.27, 0.191 ], [ 4, "Switzerland", 7.512, 7.586, 7.437, 2.153, 2.026, 1.226, 0.822, 0.677, 0.147, 0.461], [5, "Netherlands", 7.415, 7.471, 7.359, 2.137, 1.945, 1.206, 0.787, 0.651, 0.271, 0.419], [6, "Luxembourg*", 7.404, 7.501, 7.307, 2.042, 2.209, 1.155, 0.79, 0.7, 0.12, 0.388], [ 7, "Sweden", 7.384, 7.454, 7.315, 2.003, 1.92, 1.204, 0.803, 0.724, 0.218, 0.512], [8, "Norway", 7.365, 7.44, 7.29, 1.925, 1.997, 1.239, 0.786, 0.728, 0.217, 0.474], [9, "Israel", 7.364, 7.426, 7.301, 2.634, 1.826, 1.221, 0.818, 0.568, 0.155, 0.143], [10, "New Zealand", 7.2, 7.279, 7.12, 1.954, 1.852, 1.235, 0.752, 0.68, 0.245, 0.483 ]], "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }
-  selectedMissingValCol;
+  selectedMissingValCol: string;
   selectedMissingValColBoolean: boolean = true;
-  selectedToFillMissingValCol: string = "MIN";
-  enteredToFillMissingValCol: any = "";
+  selectedToFillMissingValCol: string = "min";
+  enteredToFillMissingValCol: string = "";
+
+  fillOutliers = ["z-index", "iqr"];
+  selectedOutliersMethod = "z-index";
   
   selectedOutliersRows: any = [];
   headingLinesOutliers: any = [];
@@ -179,6 +189,15 @@ export class TablesComponent {
   deleteWarning: boolean = false;
 
   filter = 0;
+
+  configuration = new Configuration();
+  token: string;
+
+  isNumCol: any;
+  frequency: any;
+  mostFrequent: any;
+  numOfNulls: any;
+  unique: any;
 
   constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService) {
     sessionStorage.removeItem('statistics');
@@ -274,7 +293,7 @@ export class TablesComponent {
     for (let i = 0; i < this.numericValues['col'].length; i++) {
       numValueIndexArray = [];
       numValueIndexArray.push(this.numericValues['col'][i]);
-      numValueIndexArray.push(i);
+      numValueIndexArray.push(this.numericValues['index'][i]);
       this.numericValuesArray.push(numValueIndexArray);
     }
 
@@ -453,13 +472,14 @@ export class TablesComponent {
       //this.loadStatistics();
       this.statistic = JSON.parse(sessionStorage.getItem('statistics'));
       this.loadStatistics(col);
+      console.log(this.statistic);
     }
     else {
       let filename = this.cookie.get('filename');
       this.tableService.getStatistics(filename, col).subscribe(
         (response) => {
           this.statistic = response;
-          //console.log(this.statistic);
+          console.log(this.statistic);
           sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
           this.loadStatistics(col);
           this.boxPlotFun();
@@ -479,34 +499,37 @@ export class TablesComponent {
     }
   }
 
-
   colListData: any = [];
   public loadStatistics(col: number) {
+    console.log(this.statistic['jsonList']);
     this.colListData = [];
     for (let i = 0; i < this.statistic['colList'].length; i++) {
       this.colListData.push(this.statistic['colList'][i]);
     }
-
-    this.arr = [];
-    this.arrMin = [];
-    this.arrQ1 = [];
-    this.arrMean = [];
-    this.arrMedian = [];
-    this.arrQ3 = [];
-    this.arrMax = [];
+    
+    this.arrNum = [];
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
-      this.arr.push(this.statistic['jsonList'][i]);
-      this.arrMin.push(this.arr[i]['min']);
-      this.arrQ1.push(this.arr[i]['firstQ']);
-      this.arrMean.push(this.arr[i]['avg']);
-      this.arrMedian.push(this.arr[i]['med']);
-      this.arrQ3.push(this.arr[i]['thirdQ']);
-      this.arrMax.push(this.arr[i]['max']);
+        this.arrNum.push(this.statistic['jsonList'][i]);
+    }
+
+    this.restartStat();
+    for (let i = 0; i < this.arrNum.length; i++) {
+      this.arrMin.push(this.arrNum[i]['min']);
+      this.arrQ1.push(this.arrNum[i]['firstQ']);
+      this.arrMean.push(this.arrNum[i]['avg']);
+      this.arrMedian.push(this.arrNum[i]['med']);
+      this.arrQ3.push(this.arrNum[i]['thirdQ']);
+      this.arrMax.push(this.arrNum[i]['max']);
+      this.arrStDev.push(this.arrNum[i]['stdev']);
+      this.arrIQR.push(this.arrNum[i]['iqr']);
     }
 
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
       if (i == col) {
         this.statisticData = this.statistic['jsonList'][i];
+
+        //if(this.statisticData['isNumeric'] == 1) {
+
         this.mixArray = [];
         this.rowsNum = this.statisticData['rowsNum'];
         this.min = this.statisticData['min'];
@@ -520,6 +543,8 @@ export class TablesComponent {
         this.mixArray.push(this.thirdQ);
         this.max = this.statisticData['max'];
         this.mixArray.push(this.max);
+        this.stdev = this.statisticData['stdev'];
+        this.iqr = this.statisticData['iqr'];
 
         let permName: string;
         for (let i = 0; i < this.colListData.length; i++) {
@@ -558,8 +583,26 @@ export class TablesComponent {
           this.fullCorrValArray.push(valArray);
         }
         this.boxPlotFun();
+      //}
+      /*else {
+        this.frequency = this.statisticData['frequency'];
+        this.mostFrequent = this.statisticData['mostFrequent'];
+        this.numOfNulls = this.statisticData['numOfNulls'];
+        this.unique = this.statisticData['unique'];
+      }*/
       }
     }
+  }
+
+  restartStat() {
+    this.arrMin = [];
+    this.arrQ1 = [];
+    this.arrMean = [];
+    this.arrMedian = [];
+    this.arrQ3 = [];
+    this.arrMax = [];
+    this.arrStDev = [];
+    this.arrIQR = [];
   }
 
   public onSelectedCol(event: any) {
@@ -1127,6 +1170,7 @@ export class TablesComponent {
   onSelectedMissingValueCol(event: any) {
     const value = event.target.value;
     this.selectedMissingValCol = value;
+    console.log(this.selectedMissingValCol);
   }
 
   isSelectedMissingValuesCol(item: any) {
@@ -1149,11 +1193,13 @@ export class TablesComponent {
     return false;
   }
 
+  
   onSelectedToFillMissingValCol(event: any) {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
+    console.log(this.selectedToFillMissingValCol);
   }
-  
+
   selectedIDOutliers(id : number) {
     let exists: boolean = false;
     for(let i = 0; i < this.selectedOutliersRows.length; i++) {
@@ -1179,7 +1225,7 @@ export class TablesComponent {
   public isFillMissValDisabled = true;
 
   isMVDisabled() {
-    if(this.selectedToFillMissingValCol == "")
+    if(this.selectedToFillMissingValCol == "none")
       this.isFillMissValDisabled = false;
     else
       this.isFillMissValDisabled = true;
@@ -1194,16 +1240,32 @@ export class TablesComponent {
       return true;
   }
 
+  
   onInputToFillMissingValCol(event: any) {
     const value = event.target.value;
+    this.enteredToFillMissingValCol = value;
   }
 
   confirmToFillMissingValues() {
-    if(this.selectedToFillMissingValCol == "" && this.enteredToFillMissingValCol == "") {
-      alert("Izaberite vrednost ili popunite polje!");
+    let filename = this.cookie.get('filename');
+    if(this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
+      alert("Popunite sva polja!");
     }
     else {
-
+      if (this.cookie.get('token')) {
+        this.tableService.fillMissingValuesAuthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
+          (response) => {
+            console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
+            console.log(response);
+        })
+      }
+      else {
+        this.tableService.fillMissingValuesUnauthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
+          (response) => {
+            console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
+            console.log(response);       
+          })
+        }
     }
   }
   

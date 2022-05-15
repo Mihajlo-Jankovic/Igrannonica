@@ -226,9 +226,9 @@
                 <section>
                     <div class="tab-content">
                         <div class="divMissingValuesCont">
-                            <h4 class=" card-title">Choose or enter to fill missing values</h4>
+                            <h4 class=" card-title">Select or enter to fill missing values</h4>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Choose column</h6>
+                                <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
                                     <option class='option' *ngFor="let item of headingLinesOutliers[0]; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
@@ -251,6 +251,7 @@
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()" >CONFIRM</button>
                             </div>
                         </div>
+                        <!--
                         <div class=" card-header" style="padding:0px;background-color: none; border-bottom: none;">
                             <div class="headerLeft" style="padding-top: 8px;">
                                 <h4 class=" card-title" style="margin-top: 25px;">Outliers</h4>
@@ -286,6 +287,7 @@
                                 </table>
                             </div>
                         </div>
+                        -->
                     </div>
                 </section>
             </div>
