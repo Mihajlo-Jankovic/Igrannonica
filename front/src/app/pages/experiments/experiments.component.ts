@@ -232,6 +232,9 @@ export class ExperimentsComponent implements OnInit {
         "visibility" : item.visibility
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
+        setTimeout(() => { 
+          this.showExperiments("public", this.pageNum); 
+        }, 350);
       })
     }
     if(event.target.checked){
