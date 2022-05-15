@@ -65,6 +65,7 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
+    sessionStorage.setItem('lastPage', 'profile');
     this.getInfo();
   }
 

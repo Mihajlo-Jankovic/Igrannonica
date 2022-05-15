@@ -78,6 +78,7 @@ export class UploadComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    sessionStorage.setItem('lastPage', 'upload');
     this.showDatasets(this.selectedPrivacyType, this.pageNum);
   }
   

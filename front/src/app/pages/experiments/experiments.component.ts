@@ -97,6 +97,7 @@ export class ExperimentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    sessionStorage.setItem('lastPage', 'experiments');
     this.showExperiments(this.selectedPrivacyType, this.pageNum);
   }
 

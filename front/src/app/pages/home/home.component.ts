@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit {
         if (this.cookieCheck) {
             this.refreshToken();
         }
+        sessionStorage.setItem('lastPage', 'home');
     }
 
     refreshToken(){

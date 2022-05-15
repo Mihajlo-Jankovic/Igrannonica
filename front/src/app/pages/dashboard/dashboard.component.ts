@@ -225,6 +225,7 @@ export class DashboardComponent implements OnInit {
   }
   
   ngOnInit() {
+    sessionStorage.setItem('lastPage', 'training');
     if (this.cookieCheck) {
       this.refreshToken();
     }

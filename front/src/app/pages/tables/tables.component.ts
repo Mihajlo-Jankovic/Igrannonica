@@ -195,6 +195,7 @@ export class TablesComponent {
   }
 
   ngOnInit() {
+    sessionStorage.setItem('lastPage', 'datapreviw');
     if (this.cookieCheck) {
       this.refreshToken();
     }
