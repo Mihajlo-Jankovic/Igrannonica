@@ -350,7 +350,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" [hidden]="modelsTrained == 0">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
@@ -366,7 +366,7 @@
                         <input type="text" class="experimentName" ngbTooltip="Enter description of your experiment" [(ngModel)]="description">
                     </div>
                     <div class="expContainer" style="float: right; padding-top:22px;">
-                        <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveCheck()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveCheck()" [disabled]="experimentName=='' || training">SAVE EXPERIMENT</button>
                     </div>
                 </div>
             </div>
