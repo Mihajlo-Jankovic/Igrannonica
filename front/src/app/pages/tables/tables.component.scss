@@ -968,13 +968,11 @@ body.warning-modal-open {
     width: 125px;
     height: auto;
     padding: 5px;
-    float: right;
     border: 1px solid #7d3c8b;
     border-radius: 5px;
     color: #ffff;
-    margin-bottom: 0px !important;
-    margin-top: 8px;
-    margin-right: 5px;
+    margin-bottom: 1rem;
+    margin-left: 90px;
 }
 
 .orDiv {
@@ -982,13 +980,13 @@ body.warning-modal-open {
     background: transparent;
     overflow: hidden;
     color: white;
-    margin-top: 8px;
-    height: 42px;
+    height: auto;
     width: 100%;
     position: relative;
     bottom: 0;
     min-width: none;
     text-align: center;
+    margin: 0;
 }
 
 .divMissingValues {
@@ -1051,18 +1049,6 @@ body.warning-modal-open {
     margin-top: 8px;
 }
 
-.orDiv {
-    float: left;
-    height: auto;
-    margin-bottom: 0px !important;
-    margin-top: 8px;
-    margin-right: 10px;
-}
-
-.or {
-    margin-top: 5px;
-}
-
 .divMissingValues,
 .divOutliers {
     width: 50%;
@@ -1109,10 +1095,16 @@ body.warning-modal-open {
     border: 1px solid #7d3c8b !important;
 }
 
+.msHeader {
+    width: 305px;
+    margin: auto;
+    margin-bottom: 1rem;
+}
+
 .dropdownContainerMissingVal {
-    padding-right: 1rem;
-    float: left;
-    width: 25%
+    width: 305px;
+    margin: auto;
+    margin-bottom: 1rem;
 }
 
 .dropdownMissingVal {
@@ -1135,8 +1127,9 @@ body.warning-modal-open {
 }
 
 .divMissingValuesCont {
-    height: 150px;
-    padding: 1rem;
+    width: 50%;
+    float: left;
+    padding-bottom: 1rem;
 }
 
 $cell-color: #27293d;
@@ -1182,4 +1175,10 @@ $cell-color: #27293d;
 
 .tdCorrMatrix10 {
     background-color: lighten($cell-color, 1);
+}
+
+@media (max-width: 730px) {
+    .divMissingValuesCont {
+        width: 100%;
+    }
 }

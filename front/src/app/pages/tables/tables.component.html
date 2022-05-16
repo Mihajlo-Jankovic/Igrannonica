@@ -286,10 +286,10 @@
                 <section>
                     <div class="tab-content">
                         <div class="divMissingValuesCont" [hidden]="existsMissingValues()" style="height: auto;">
-                            <h4 class=" card-title">There are no missing values in this dataset.</h4>
+                            <h4 class=" card-title msHeader">There are no missing values in this dataset.</h4>
                         </div>
                         <div class="divMissingValuesCont" [hidden]="!existsMissingValues()">
-                            <h4 class=" card-title">Select or enter to fill missing values</h4>
+                            <h4 class=" card-title msHeader">Select or enter to fill missing values</h4>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
@@ -305,23 +305,22 @@
                                     <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
                                 </select>
                             </div>
-                            <div class="dropdownContainerMissingVal" style="width:5%; margin-top: 30px;">
+                            <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
                                 <p class="orDiv">OR</p>
                             </div>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Enter value</h6>
                                 <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToFillMissingValCol" (change)="onInputToFillMissingValCol($event)">
                             </div>
-                            <div class="dropdownContainerMissingVal" style="width: 20%; margin-top: 14px;">
-                                <h6 style="margin-top: 14px;"></h6>
+                            <div class="dropdownContainerMissingVal">
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">CONFIRM</button>
                             </div>
                         </div>
                         <div class="divMissingValuesCont" [hidden]="existsOutliers()" style="height:auto">
-                            <h4 class=" card-title">There are no outliers in this dataset.</h4>
+                            <h4 class=" card-title msHeader">There are no outliers in this dataset.</h4>
                         </div>
                         <div class="divMissingValuesCont" [hidden]="!existsOutliers()">
-                            <h4 class=" card-title">Outliers</h4>
+                            <h4 class=" card-title msHeader">Outliers</h4>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
@@ -334,15 +333,14 @@
                                     <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
                                 </select>
                             </div>
-                            <div class="dropdownContainerMissingVal" style="width:5%; margin-top: 30px;">
+                            <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
                                 <p class="orDiv">OR</p>
                             </div>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Enter value</h6>
                                 <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToReplaceOutliersCol" (change)="onInputToFillOutliers($event)">
                             </div>
-                            <div class="dropdownContainerMissingVal" style="width: 20%; margin-top: 14px;">
-                                <h6 style="margin-top: 14px;"></h6>
+                            <div class="dropdownContainerMissingVal">
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers()">CONFIRM</button>
                             </div>
                         </div>

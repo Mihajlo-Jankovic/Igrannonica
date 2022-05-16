@@ -66,7 +66,6 @@ def statistics(df,colIndex):
         else:
             rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,col)
             corrMatrix = df.corr() # Korelaciona matrica
-            print(corrMatrix)
             numOfOutliers = 0
 
             outliers = []
@@ -247,9 +246,6 @@ def filterCSV(path, rowNum, dataType, pageNum, colName):
         df.reset_index(drop=True, inplace=True)
     
     elif(dataType == 'outlier'):
-        print("###############################")
-        print(colName)
-        print("###############################")
         firstQ, thirdQ = df[colName].quantile([.25, .75])
         iqr = thirdQ - firstQ
         min = round(firstQ - 1.5 * iqr,3)
