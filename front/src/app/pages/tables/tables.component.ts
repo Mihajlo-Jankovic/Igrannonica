@@ -1036,7 +1036,6 @@ export class TablesComponent {
       this.hideS = true;
       stats.classList.add('col-lg-12');
       this.statsButton = "Close Statistics"
-
       document.getElementById("stat").classList.add("height-change");
     }
     else {
@@ -1052,20 +1051,32 @@ export class TablesComponent {
 
   expandMatrix() {
     var matrix = document.getElementsByClassName('matrix')[0];
+    var matrixCard = document.getElementById('matrixCard');
+    var corr = document.getElementById('corr');
+    console.log(matrixCard);
 
+    let height = this.fullCorrColNamesArray.length * 80 + 180;
+    console.log(height);
+    
     if (this.matrixButton == "Full Matrix") {
       this.hideBoxplot = true;
       this.hideStatistics = true;
       this.hideM = true;
       matrix.classList.add('col-lg-12');
-      this.matrixButton = "Close Matrix"
+      matrix.classList.add('largeCorr');
+      this.matrixButton = "Close Matrix";
+      matrixCard.setAttribute("style", "height:" + height + "px;");
+      corr.setAttribute("style", "height: 100%;");
     }
     else {
       this.hideBoxplot = false;
       this.hideStatistics = false;
       this.hideM = false;
       matrix.classList.remove('col-lg-12');
-      this.matrixButton = "Full Matrix"
+      matrix.classList.remove('largeCorr');
+      this.matrixButton = "Full Matrix";
+      matrixCard.setAttribute("style", "height: 410px;");
+      corr.setAttribute("style", "height: 332px;");
     }
   }
 

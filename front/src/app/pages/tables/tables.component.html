@@ -113,13 +113,13 @@
             </div>
         </div>
         <div class="matrix col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideMatrix">
-            <div class=" card card-height">
+            <div class="card card-height" id="matrixCard">
                 <div class=" card-header">
                     <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix(); previewMatrix();">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive stat" id="corr" [hidden]="hideM">
+                    <div class="corr table-responsive stat" [hidden]="hideM">
                         <table class=" table">
                             <thead>
                                 <tr>
@@ -135,8 +135,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class=" table-responsive stat" id="corr" [hidden]="!hideM">
-                        <table class="table">
+                    <div class="corr table-responsive stat" id="corr" [hidden]="!hideM">
+                        <table class="table" id="largeMatrix">
                             <thead>
                                 <tr>
                                     <th class="corrMatrixHeader"></th>

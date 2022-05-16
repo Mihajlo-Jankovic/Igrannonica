@@ -74,25 +74,38 @@ i {
     padding: 0px;
 }
 
-#corr {
+.corr {
     scrollbar-width: thin;
 }
 
-#corr::-webkit-scrollbar-track {
+.largeCorr {
+    th {
+        padding: 0px;
+        width: 120px;
+        height: 80px;
+    }
+    td {
+        padding: 0px;
+        width: 120px;
+        height: 80px;
+    }
+}
+
+.corr::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     background-color: #F5F5F5;
 }
 
-#corr::-webkit-scrollbar {
+.corr::-webkit-scrollbar {
     width: 12px;
     height: 12px;
     border-radius: 10px;
     background-color: #F5F5F5;
 }
 
-#corr::-webkit-scrollbar-thumb {
+.corr::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -1117,15 +1130,46 @@ body.warning-modal-open {
 }
 
 $cell-color: #27293d;
+.tdCorrMatrix0 {
+    background-color: lighten($cell-color, 11);
+}
 
-.tdCorrMatrix0 { background-color: lighten($cell-color, 11); }
-.tdCorrMatrix1 { background-color: lighten($cell-color, 10); }
-.tdCorrMatrix2 { background-color: lighten($cell-color, 9); }
-.tdCorrMatrix3 { background-color: lighten($cell-color, 8); }
-.tdCorrMatrix4 { background-color: lighten($cell-color, 7); }
-.tdCorrMatrix5 { background-color: lighten($cell-color, 6); }
-.tdCorrMatrix6 { background-color: lighten($cell-color, 5); }
-.tdCorrMatrix7 { background-color: lighten($cell-color, 4); }
-.tdCorrMatrix8 { background-color: lighten($cell-color, 3); }
-.tdCorrMatrix9 { background-color: lighten($cell-color, 2); }
-.tdCorrMatrix10 { background-color: lighten($cell-color, 1); }
+.tdCorrMatrix1 {
+    background-color: lighten($cell-color, 10);
+}
+
+.tdCorrMatrix2 {
+    background-color: lighten($cell-color, 9);
+}
+
+.tdCorrMatrix3 {
+    background-color: lighten($cell-color, 8);
+}
+
+.tdCorrMatrix4 {
+    background-color: lighten($cell-color, 7);
+}
+
+.tdCorrMatrix5 {
+    background-color: lighten($cell-color, 6);
+}
+
+.tdCorrMatrix6 {
+    background-color: lighten($cell-color, 5);
+}
+
+.tdCorrMatrix7 {
+    background-color: lighten($cell-color, 4);
+}
+
+.tdCorrMatrix8 {
+    background-color: lighten($cell-color, 3);
+}
+
+.tdCorrMatrix9 {
+    background-color: lighten($cell-color, 2);
+}
+
+.tdCorrMatrix10 {
+    background-color: lighten($cell-color, 1);
+}
