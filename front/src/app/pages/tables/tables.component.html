@@ -301,7 +301,7 @@
                                 <select [hidden]="!numCol1" class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
                                     <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
                                 </select>
-                                <select [hidden]="numCol1" class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
+                                <select [hidden]="numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
                                     <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
                                 </select>
                             </div>
@@ -310,7 +310,7 @@
                             </div>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Enter value</h6>
-                                <input type="text" class="dropdownMissingVal" [disabled]="isMVDisabled()" [(ngModel)]="enteredToFillMissingValCol" (change)="onInputToFillMissingValCol($event)">
+                                <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToFillMissingValCol" (change)="onInputToFillMissingValCol($event)">
                             </div>
                             <div class="dropdownContainerMissingVal" style="width: 20%; margin-top: 14px;">
                                 <h6 style="margin-top: 14px;"></h6>
