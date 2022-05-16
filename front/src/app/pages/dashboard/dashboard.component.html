@@ -14,9 +14,9 @@
                 <div class="warning-body" style="padding: 0.5%;overflow: auto;">
                     <div class="warning-content">
                         <h2>You're not logged in!</h2>
-                        <h4 style="margin-bottom: 30px;">You won't be able to save your experiment if you're not logged in!</h4>
+                        <h4 style="margin-bottom: 30px;">Log in to save your experiment!</h4>
                         <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="login()">LOG IN</button>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="startTraining();">IGNORE</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="loginWarning = false">IGNORE</button>
                     </div>
                 </div>
             </div>
@@ -228,7 +228,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="checkBeforeTraining(); scrollTo(target);" [disabled]="training">START TRAINING</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining(); scrollTo(target);" [disabled]="training">START TRAINING</button>
                 </div>
             </div>
         </div>
@@ -350,7 +350,7 @@
         </div>
     </div>
 
-    <div class="row" [hidden]="!trained || !loggedUser">
+    <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
@@ -366,7 +366,7 @@
                         <input type="text" class="experimentName" ngbTooltip="Enter description of your experiment" [(ngModel)]="description">
                     </div>
                     <div class="expContainer" style="float: right; padding-top:22px;">
-                        <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveExperiment()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveCheck()" [disabled]="experimentName==''">SAVE EXPERIMENT</button>
                     </div>
                 </div>
             </div>

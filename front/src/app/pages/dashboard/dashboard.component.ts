@@ -700,6 +700,15 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  saveCheck() {
+    if(this.loggedUser) {
+      this.saveExperiment();
+    }
+    else {
+      this.loginWarning = true;
+    }
+  }
+
   saveExperiment() {
     let token: string;
 
@@ -773,10 +782,10 @@ export class DashboardComponent implements OnInit {
     */
     this.http.post(this.configuration.saveExperiment, experiment, options).subscribe(
       (response) => {
-        this.notify.showNotification("Experiment saved successfully!");
         sessionStorage.setItem('experimentName', this.experimentName);
         sessionStorage.setItem('description', this.description);
-        location.reload();
+        this.router.navigate(['training']);
+        this.notify.showNotification("Experiment saved successfully!");
       }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
