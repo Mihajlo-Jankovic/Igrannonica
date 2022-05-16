@@ -58,7 +58,7 @@ def table_data():
     if (content_type == 'application/json; charset=utf-8'):
         jsonObject = request.json
 
-        filterList = FileStorageProgram.filterCSV(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']), int(jsonObject['Rows']), jsonObject['DataType'], jsonObject['PageNum'])
+        filterList = FileStorageProgram.filterCSV(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']), int(jsonObject['Rows']), jsonObject['DataType'], jsonObject['PageNum'], jsonObject['ColName'])
         df = filterList[0]
         numOfPages = filterList[1]
         numericValues = FileStorageProgram.numericValues(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']))
@@ -107,13 +107,43 @@ def delete_row():
         json = request.json
         df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
         df = FileStorageProgram.deleteRow(df,json['rowNumber'])
-    
+
         df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']), index=False)
 
         return {"message" : "Delete successfull."}
         
     else:
         return {"message" : "Error encoundered while deleting a row from the dataset."}
+
+@app.route('/fillMissingValues', methods=['POST'])
+def fill_missing_values():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json; charset=utf-8'):
+        json = request.json
+        df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
+        df = FileStorageProgram.missing_values(df, json["colName"], json["fillMethod"], json["specificVal"])
+        
+        df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']), index=False)
+
+        return {"message" : "Edit successfull."}
+        
+    else:
+        return {"message" : "Error encoundered while editing cell content."}
+
+@app.route('/changeOutliers', methods=['POST'])
+def change_outliers():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json; charset=utf-8'):
+        json = request.json
+        df = FileStorageProgram.openCSV(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']))
+        df = FileStorageProgram.outliers(df, json["colName"], json["fillMethod"], json["specificVal"])
+        
+        df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], json['fileName']), index=False)
+
+        return {"message" : "Edit successfull."}
+        
+    else:
+        return {"message" : "Error encoundered while editing cell content."}
 
 if __name__ == '__main__':
     app.run(port=10108)

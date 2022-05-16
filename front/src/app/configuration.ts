@@ -30,4 +30,9 @@ export class Configuration
     public updateVisibility = this.port + "/api/Csv/updateVisibility";
     public refreshToken = this.port + "/api/User/refreshToken/";
     public updateVisibilityExperimets = this.port + "/api/User/updateExperimentVisibility";
+    //public fillMissingValuesUnauthorized = this.port + "/api/Csv/fillMissingValuesunaUthorized";
+    public fillMissingValuesUnauthorized = this.port + "/api/Csv/fillMissingValuesUnauthorized";
+    public fillMissingValuesAuthorized = this.port + "/api/Csv/fillMissingValuesAuthorized";
+    public changeOutliersUnauthorized = this.port + "/api/Csv/changeOutliersUnauthorized";
+    public changeOutliersAuthorized = this.port + "/api/Csv/changeOutliersAuthorized";
 }

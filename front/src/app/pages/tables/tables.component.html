@@ -62,7 +62,7 @@
                         </table>
                     </div>
                     <div class=" table-full-width" [hidden]="hideS"><br>
-                        <table class=" table">
+                        <table class=" table" [hidden]="!numCol">
                             <tbody>
                                 <tr>
                                     <td>MIN</td>
@@ -90,6 +90,26 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <table class=" table" [hidden]="numCol">
+                            <tbody>
+                                <tr>
+                                    <td>FREQUENCY</td>
+                                    <td>{{frequency}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MOST FREQUENT</td>
+                                    <td>{{mostFrequent}}</td>
+                                </tr>
+                                <tr>
+                                    <td>UNIQUE</td>
+                                    <td>{{med}}</td>
+                                </tr>
+                                <tr>
+                                    <td>NUM OF NULLS</td>
+                                    <td>{{avg}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -102,7 +122,9 @@
                         <h3 class=" card-category" style="color: white; float: right;">Choose column to plot</h3>
                     </div>
                     <select class='dropdown' (change)='onSelectedCol($event)' style="width: 100%; right: 0px; top: 0px;">
-                        <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
+                    <!--   <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
+                    -->
+                    <option class="option" *ngFor="let item of headingLines[0]; let i = index" value={{item}}>{{item}}</option>
                     </select>
                 </div>
                 <div class=" card-body">
@@ -226,17 +248,20 @@
                 <section>
                     <div class="tab-content">
                         <div class="divMissingValuesCont">
-                            <h4 class=" card-title">Choose or enter to fill missing values</h4>
+                            <h4 class=" card-title">Select or enter to fill missing values</h4>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Choose column</h6>
+                                <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
-                                    <option class='option' *ngFor="let item of headingLinesOutliers[0]; let i = index" value="{{item}}">{{item}}</option>
+                                    <option class='option' *ngFor="let item of headingLines[0]; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Choose value</h6>
-                                <select class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
-                                    <option class='option' *ngFor="let item of fillMissingValuesList let i = index">{{item}}</option>
+                                <select [hidden]="!numCol1" class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
+                                    <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
+                                </select>
+                                <select [hidden]="numCol1" class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
+                                    <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal" style="width:5%; margin-top: 30px;">
@@ -251,6 +276,7 @@
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">CONFIRM</button>
                             </div>
                         </div>
+                        <!--
                         <div class=" card-header" style="padding:0px;background-color: none; border-bottom: none;">
                             <div class="headerLeft" style="padding-top: 8px;">
                                 <h4 class=" card-title" style="margin-top: 25px;">Outliers</h4>
@@ -286,6 +312,34 @@
                                 </table>
                             </div>
                         </div>
+                        -->
+                        <!--                     OUTLIERS                     -->
+                        <div class="divMissingValuesCont">
+                            <h4 class=" card-title">Outliers</h4>
+                            <div class="dropdownContainerMissingVal">
+                                <h6>Select column</h6>
+                                <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
+                                    <option class='option' *ngFor="let item of headingLines[0]; let i = index" value="{{item}}">{{item}}</option>
+                                </select>
+                            </div>
+                            <div class="dropdownContainerMissingVal">
+                                <h6>Choose value</h6>
+                                <select class='dropdownMissingVal' [(ngModel)]="selectedToReplaceOutliers" (change)="onSelectedValueOutliers($event)">
+                                    <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
+                                </select>
+                            </div>
+                            <div class="dropdownContainerMissingVal" style="width:5%; margin-top: 30px;">
+                                <p class="orDiv">OR</p>
+                            </div>
+                            <div class="dropdownContainerMissingVal">
+                                <h6>Enter value</h6>
+                                <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToReplaceOutliersCol" (change)="onInputToFillOutliers($event)">
+                            </div>
+                            <div class="dropdownContainerMissingVal" style="width: 20%; margin-top: 14px;">
+                                <h6 style="margin-top: 14px;"></h6>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers()">CONFIRM</button>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -301,6 +355,7 @@
                                 <option class='option' value="all">All</option>
                                 <option class='option' value="null">Null</option>
                                 <option class='option' value="not null">Not Null</option>
+                                <option class='option' value="outlier">Outliers</option>
                             </select>
                         </div>
                         <div class="dropdownContainer dpr">
@@ -312,14 +367,20 @@
                                 <option class='option' value="100">100</option>
                             </select>
                         </div>
+                        <div class="dropdownContainer" [hidden] = "selectedType != 'outlier'">
+                            <h6>Choose column to view outliers</h6>
+                            <select class="dropdown" [(ngModel)]="selectedOutlierColumn" ngbTooltip="Showing data with outliers for selected column" (change)="onSelectedOutlierColumn($event, true)">
+                                <option class="option" *ngFor="let item of numericValues['col']; let i = index" >{{item}}</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="headerRight">
-                        <div class="trash">
-                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteCheck()">
+                        <div class="trash" [hidden]="!maxPage">
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteCheck()" >
                                 <i class="tim-icons icon-trash-simple" style="font-size: 2em;"> </i>
                             </button>
                         </div>
-                        <div class="buttons">
+                        <div class="buttons" [hidden]="!maxPage">
                             <button class=" btn btn-link page" style="padding-left: 0;" (click)="lastPage()">
                                 <i class="tim-icons icon-double-right arrow"></i>
                             </button>
@@ -351,23 +412,36 @@
                     </div>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive" style="height: 500px;" id="table">
+                    <div style="margin: auto" *ngIf="!maxPage">
+                        <h1 style="text-align:center">{{selectedTypeMessage()}}</h1>
+                    </div>
+                    <div class=" table-responsive" style="height: 500px;" id="table" [hidden]="!maxPage">
                         <table class=" table tablesorter">
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>
+                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;" [hidden]="i==(headingLines[0].length -1)">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let item of rowLines[0]; let i = index">
                                     <td>
                                         <div style="position: relative; top: 5px">
-                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID($event, i)">
+                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID($event, rowLines[0][i][rowLines[0][i].length -1])">
                                             <label for="{{ 'check' + i }}" class="check-box"></label>
                                         </div>
                                     </td>
-                                    <td *ngFor="let itemm of headingLines[0]; let j = index" class="field"><input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(i,$event.target.value,itemm)"></td>
+                                    <label style="display: none;" *ngIf="selectedType != 'outlier'; then thenBlock1 else elseBlock1"></label>
+                                    <ng-template #thenBlock1>
+                                        <td *ngFor="let itemm of headingLines[0]; let j = index" class="field" [hidden]="j==(headingLines[0].length -1)">
+                                            <input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(rowLines[0][i][rowLines[0][i].length-1],$event.target.value,itemm)">
+                                        </td>
+                                    </ng-template>
+                                    <ng-template #elseBlock1>
+                                        <td *ngFor="let itemm of headingLines[0]; let j = index" class="field" [hidden]="j==(headingLines[0].length -1)" [class.selectedOutlierColumn] = "isSelectedOutlierField(j)">
+                                            <input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(rowLines[0][i][rowLines[0][i].length-1],$event.target.value,itemm)">
+                                        </td>
+                                    </ng-template>
                                 </tr>
                             </tbody>
                         </table>

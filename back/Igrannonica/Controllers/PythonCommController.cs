@@ -39,7 +39,8 @@ namespace Igrannonica.Controllers
                     FileName = parameters.FileName,
                     DataType = parameters.DataType, //all, null, not null
                     Rows = parameters.Rows,
-                    PageNum = parameters.PageNum
+                    PageNum = parameters.PageNum,
+                    ColName = parameters.ColName
                 };
                 var newPostJson = JsonConvert.SerializeObject(newPost);
 
