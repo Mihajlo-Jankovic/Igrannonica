@@ -208,8 +208,9 @@ export class TablesComponent {
 
   constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService) {
     sessionStorage.removeItem('statistics');
-    this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
+    this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
     this.boxPlotFun();
+
   }
 
   ngOnInit() {
@@ -249,7 +250,6 @@ export class TablesComponent {
           let numerValuesCSV: any = {};
           numerValuesCSV = this.csv['numericValues'];
           this.numericValues = numerValuesCSV;
-          console.log("numeric values " + this.numericValues)
 
           sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
           this.loadTable(filter);
@@ -306,7 +306,6 @@ export class TablesComponent {
     this.selectedColName = this.numericValuesArray[0][0];
     this.selectedCol = this.numericValuesArray[0][1];
     this.selectedColDiv = true;
-
 
     if (this.numericValues['col'].length > 0 && !filter) {
       this.showStatisticDiv = true;
@@ -455,6 +454,8 @@ export class TablesComponent {
     this.selectedType = value;
     this.clearStorage();
     this.reset();
+    if(this.selectedType == 'outlier')  
+      this.selectedOutlierColumn = this.numericValues['col'][0];
     this.showTable(this.selectedType, this.selectedRow, this.page, filter, this.selectedOutlierColumn);
   }
 
@@ -1236,7 +1237,17 @@ export class TablesComponent {
     return false;
   }
 
-  
+  isSelectedOutlierField(id: number) {
+    for (let i = 0; i < this.headingLines[0].length; i++) {
+      if(this.headingLines[0][i] == this.selectedOutlierColumn) {
+        if(i == id) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   onSelectedToFillMissingValCol(event: any) {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
@@ -1354,6 +1365,18 @@ export class TablesComponent {
     const value = event.target.value;
     this.enteredToReplaceOutliersCol = value;
     console.log(this.enteredToReplaceOutliersCol);
+  }
+
+  selectedTypeMessage()
+  {
+    if(this.selectedType == 'null')
+      return "No rows with null values."
+    else if(this.selectedType == "not null")
+      return "No rows with not null values."
+    else if(this.selectedType == 'outlier')
+      return "No rows with outliers."
+    else 
+      return "Empty dataset."
   }
 
 }

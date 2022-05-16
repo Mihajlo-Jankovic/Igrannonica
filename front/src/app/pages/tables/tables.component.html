@@ -368,19 +368,19 @@
                             </select>
                         </div>
                         <div class="dropdownContainer" [hidden] = "selectedType != 'outlier'">
-                            <h6>Choose column ...</h6>
-                            <select class="dropdown" [(ngModel)]="selectedOutlierColumn" (change)="onSelectedOutlierColumn($event, true)">
-                                <option class="option" *ngFor="let item of numericValues['col']; let i = index" [hidden]="i==(numericValues['col'].length -1)">{{item}}</option>
+                            <h6>Choose column to view outliers</h6>
+                            <select class="dropdown" [(ngModel)]="selectedOutlierColumn" ngbTooltip="Showing data with outliers for selected column" (change)="onSelectedOutlierColumn($event, true)">
+                                <option class="option" *ngFor="let item of numericValues['col']; let i = index" >{{item}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="headerRight">
-                        <div class="trash">
-                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteCheck()">
+                        <div class="trash" [hidden]="!maxPage">
+                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteCheck()" >
                                 <i class="tim-icons icon-trash-simple" style="font-size: 2em;"> </i>
                             </button>
                         </div>
-                        <div class="buttons">
+                        <div class="buttons" [hidden]="!maxPage">
                             <button class=" btn btn-link page" style="padding-left: 0;" (click)="lastPage()">
                                 <i class="tim-icons icon-double-right arrow"></i>
                             </button>
@@ -412,29 +412,39 @@
                     </div>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive" style="height: 500px;" id="table" >
-                        <label style="display: none;" *ngIf="selectedType != 'outlier'; then thenBlock1"></label>
-                        <ng-template #thenBlock1>
-                            <table class=" table tablesorter" >
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;" [hidden]="i==(headingLines[0].length -1)">{{item}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let item of rowLines[0]; let i = index">
-                                        <td>
-                                            <div style="position: relative; top: 5px">
-                                                <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID($event, rowLines[0][i][rowLines[0].length -1])">
-                                                <label for="{{ 'check' + i }}" class="check-box"></label>
-                                            </div>
+                    <div style="margin: auto" *ngIf="!maxPage">
+                        <h1 style="text-align:center">{{selectedTypeMessage()}}</h1>
+                    </div>
+                    <div class=" table-responsive" style="height: 500px;" id="table" [hidden]="!maxPage">
+                        <table class=" table tablesorter">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;" [hidden]="i==(headingLines[0].length -1)">{{item}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of rowLines[0]; let i = index">
+                                    <td>
+                                        <div style="position: relative; top: 5px">
+                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID($event, rowLines[0][i][rowLines[0][i].length -1])">
+                                            <label for="{{ 'check' + i }}" class="check-box"></label>
+                                        </div>
+                                    </td>
+                                    <label style="display: none;" *ngIf="selectedType != 'outlier'; then thenBlock1 else elseBlock1"></label>
+                                    <ng-template #thenBlock1>
+                                        <td *ngFor="let itemm of headingLines[0]; let j = index" class="field" [hidden]="j==(headingLines[0].length -1)">
+                                            <input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(rowLines[0][i][rowLines[0][i].length-1],$event.target.value,itemm)">
                                         </td>
-                                        <td *ngFor="let itemm of headingLines[0]; let j = index" class="field" [hidden]="j==(headingLines[0].length -1)"><input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(rowLines[0][i][rowLines[0].length-1],$event.target.value,itemm)" ></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </ng-template>
+                                    </ng-template>
+                                    <ng-template #elseBlock1>
+                                        <td *ngFor="let itemm of headingLines[0]; let j = index" class="field" [hidden]="j==(headingLines[0].length -1)" [class.selectedOutlierColumn] = "isSelectedOutlierField(j)">
+                                            <input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(rowLines[0][i][rowLines[0][i].length-1],$event.target.value,itemm)">
+                                        </td>
+                                    </ng-template>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

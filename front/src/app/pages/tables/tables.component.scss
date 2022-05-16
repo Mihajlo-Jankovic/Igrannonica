@@ -23,7 +23,8 @@
 .dropdownContainer {
     padding-right: 0.5rem;
     float: left;
-    width: 33%
+    width: 33%;
+    h6 { height: 28px; margin-bottom: 0;}
 }
 
 .dropdown {
@@ -1070,6 +1071,11 @@ body.warning-modal-open {
 }
 
 .selectedMissingValueCol {
+    /*background-color: #7d3c8b;*/
+    border: 1px solid #7d3c8b !important;
+}
+
+.selectedOutlierColumn {
     /*background-color: #7d3c8b;*/
     border: 1px solid #7d3c8b !important;
 }
