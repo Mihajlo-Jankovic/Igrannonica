@@ -396,6 +396,10 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.removeItem('activationFunction');
     sessionStorage.removeItem('regularizationRate');
     sessionStorage.removeItem('epochs');
+    sessionStorage.removeItem('neuronNum');
+    sessionStorage.removeItem('chartData');
+    sessionStorage.removeItem('numLayers');
+    sessionStorage.removeItem('neuronsList');
 
     this.router.navigate(['training']);
 
