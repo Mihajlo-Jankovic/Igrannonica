@@ -5,8 +5,9 @@
 </div>
 <div class="sidebar-wrapper">
     <ul class="nav">
-        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item" [hidden]="!notSelected(menuItem.title)">
-            <a [routerLink]="[menuItem.path]">
+        <!--[hidden]="!notSelected(menuItem.title)"-->
+        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
+            <a [routerLink]="[menuItem.path]" [hidden]="(hide() && menuItem.title != 'Home') || (menuItem.title == 'Home' && cookie.get('home') == 'true') || ((menuItem.title == 'Data Preview' || menuItem.title == 'Model Training') && !cookie.get('filename'))">
                 <i class="{{ menuItem.icon }}"></i>
                 <p>{{ menuItem.title }}</p>
             </a>

@@ -21,10 +21,17 @@ export class HomeComponent implements OnInit {
     }
     
     ngOnInit() {
-        if (this.cookieCheck) {
-            this.refreshToken();
+        if(sessionStorage.getItem('lastPage') && sessionStorage.getItem('lastPage') != 'home') {
+            console.log(sessionStorage.getItem('lastPage'));
+            this.router.navigate([sessionStorage.getItem('lastPage')]);
         }
-        sessionStorage.setItem('lastPage', 'home');
+        else {
+            if (this.cookieCheck) {
+                this.refreshToken();
+            }
+            sessionStorage.setItem('lastPage', 'home');
+            this.cookie.delete('home');
+        }
     }
 
     refreshToken(){

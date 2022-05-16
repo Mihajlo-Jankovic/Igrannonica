@@ -102,4 +102,13 @@ export class SidebarComponent implements OnInit {
         return false;
     }
   }
+
+  hide() {
+    if(sessionStorage.getItem('lastPage') && sessionStorage.getItem('lastPage') == 'home') {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 }

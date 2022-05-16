@@ -12,7 +12,7 @@
         <div class="content">
             <div class="container">
                 <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
-                    <form class="form" novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
+                    <form class="form" [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Log in</h1>
@@ -35,13 +35,10 @@
                                     <input type="password" placeholder="Password" name="password" formControlName="password" class="form-control">
                                 </div>
                                 <div class="input-group">
-                                    <div *ngIf="(m.username.touched && m.username.invalid) || (m.password.touched && m.password.invalid)">
-                                        <div *ngIf="m.username.errors?.pattern || m.password.errors?.pattern">Wrong username or password!</div>
-                                    </div>
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" [disabled]="!loginForm.valid" class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
                                 <div class=" pull-left">
                                     <h6>
                                         <a class="text-primary" routerLink="/register" routerLinkActive="active"> Create Account </a>
