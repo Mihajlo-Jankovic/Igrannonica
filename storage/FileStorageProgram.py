@@ -220,9 +220,6 @@ def openCSV(path):
 
 
 def paging(df,rowNum,pageNum):
-    print(df)
-    print(rowNum)
-    print(pageNum)
     row = rowNum * (pageNum - 1)
     
     if(len(df.index) <= rowNum):
@@ -250,6 +247,9 @@ def filterCSV(path, rowNum, dataType, pageNum, colName):
         df.reset_index(drop=True, inplace=True)
     
     elif(dataType == 'outlier'):
+        print("###############################")
+        print(colName)
+        print("###############################")
         firstQ, thirdQ = df[colName].quantile([.25, .75])
         iqr = thirdQ - firstQ
         min = round(firstQ - 1.5 * iqr,3)

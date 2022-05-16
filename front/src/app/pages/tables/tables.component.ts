@@ -267,7 +267,7 @@ export class TablesComponent {
     }
     else {
       let filename = this.cookie.get('filename');
-      this.tableService.getAll(filename, type, rows, page, "").subscribe(
+      this.tableService.getAll(filename, type, rows, page, outlierColumn).subscribe(
         (response) => {
           this.csv = response;
           let dataCSV: any = {};
@@ -1430,6 +1430,7 @@ export class TablesComponent {
   
   onInputToFillMissingValCol(event: any) {
     const value = event.target.value;
+    this.selectedToFillMissingValCol = 'none';
     this.enteredToFillMissingValCol = value;
   }
 
@@ -1504,6 +1505,7 @@ export class TablesComponent {
   onInputToFillOutliers(event: any) {
     const value = event.target.value;
     this.enteredToReplaceOutliersCol = value;
+    this.selectedToReplaceOutliers = 'none';
     //console.log(this.enteredToReplaceOutliersCol);
   }
 
