@@ -16,8 +16,8 @@ export class TableService {
 
   configuration = new Configuration();
 
-  getAll(filename: string, dataType : string, rows : number, page : number):Observable<any>{
-    return this.http.post(this.configuration.tableData,{"FileName" : filename, "DataType" : dataType, "Rows" : rows, "PageNum": page});
+  getAll(filename: string, dataType : string, rows : number, page : number, colName: string):Observable<any>{
+    return this.http.post(this.configuration.tableData,{"FileName" : filename, "DataType" : dataType, "Rows" : rows, "PageNum": page, "colName" : colName});
   }
 
   getStatistics(filename: string, colIndex: number):Observable<any> {

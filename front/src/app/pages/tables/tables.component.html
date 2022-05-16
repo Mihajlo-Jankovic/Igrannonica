@@ -355,6 +355,7 @@
                                 <option class='option' value="all">All</option>
                                 <option class='option' value="null">Null</option>
                                 <option class='option' value="not null">Not Null</option>
+                                <option class='option' value="outlier">Outliers</option>
                             </select>
                         </div>
                         <div class="dropdownContainer dpr">
@@ -364,6 +365,12 @@
                                 <option class='option' value="20">20</option>
                                 <option class='option' value="50">50</option>
                                 <option class='option' value="100">100</option>
+                            </select>
+                        </div>
+                        <div class="dropdownContainer" [hidden] = "selectedType != 'outlier'">
+                            <h6>Choose column ...</h6>
+                            <select class="dropdown" [(ngModel)]="selectedOutlierColumn" (change)="onSelectedOutlierColumn($event, true)">
+                                <option class="option" *ngFor="let item of numericValues['col']; let i = index" [hidden]="i==(numericValues['col'].length -1)">{{item}}</option>
                             </select>
                         </div>
                     </div>
@@ -405,26 +412,29 @@
                     </div>
                 </div>
                 <div class=" card-body">
-                    <div class=" table-responsive" style="height: 500px;" id="table">
-                        <table class=" table tablesorter">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;">{{item}}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let item of rowLines[0]; let i = index">
-                                    <td>
-                                        <div style="position: relative; top: 5px">
-                                            <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID($event, i)">
-                                            <label for="{{ 'check' + i }}" class="check-box"></label>
-                                        </div>
-                                    </td>
-                                    <td *ngFor="let itemm of headingLines[0]; let j = index" class="field"><input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(i,$event.target.value,itemm)"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class=" table-responsive" style="height: 500px;" id="table" >
+                        <label style="display: none;" *ngIf="selectedType != 'outlier'; then thenBlock1"></label>
+                        <ng-template #thenBlock1>
+                            <table class=" table tablesorter" >
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th *ngFor="let item of headingLines[0]; let i = index" style="text-align: center;" [hidden]="i==(headingLines[0].length -1)">{{item}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of rowLines[0]; let i = index">
+                                        <td>
+                                            <div style="position: relative; top: 5px">
+                                                <input type="checkbox" id="{{ 'check' + i }}" (change)="selectedID($event, rowLines[0][i][rowLines[0].length -1])">
+                                                <label for="{{ 'check' + i }}" class="check-box"></label>
+                                            </div>
+                                        </td>
+                                        <td *ngFor="let itemm of headingLines[0]; let j = index" class="field" [hidden]="j==(headingLines[0].length -1)"><input type="text" value="{{item[j]}}" class="table-td-input" (change)="editCell(rowLines[0][i][rowLines[0].length-1],$event.target.value,itemm)" ></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </ng-template>
                     </div>
                 </div>
             </div>

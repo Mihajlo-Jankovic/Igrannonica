@@ -182,6 +182,8 @@ export class TablesComponent {
   selectedOutliersRows: any = [];
   //*
 
+  selectedOutlierColumn : string = "";
+
   deleteWarning: boolean = false;
 
   filter = 0;
@@ -206,7 +208,7 @@ export class TablesComponent {
 
   constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService) {
     sessionStorage.removeItem('statistics');
-    this.showTable(this.selectedType, this.selectedRow, this.page, false)
+    this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
     this.boxPlotFun();
   }
 
@@ -220,7 +222,7 @@ export class TablesComponent {
     sessionStorage.removeItem('numericValues');
   }
 
-  showTable(type: string, rows: number, page: number, filter: boolean) {
+  showTable(type: string, rows: number, page: number, filter: boolean, outlierColumn: string) {
     if (sessionStorage.getItem('csv') != null) {
       let dataCSV: any = {};
       dataCSV = JSON.parse(sessionStorage.getItem('csv'));
@@ -231,7 +233,7 @@ export class TablesComponent {
     }
     else {
       let filename = this.cookie.get('filename');
-      this.tableService.getAll(filename, type, rows, page).subscribe(
+      this.tableService.getAll(filename, type, rows, page, outlierColumn).subscribe(
         (response) => {
           this.csv = response;
           let dataCSV: any = {};
@@ -453,7 +455,7 @@ export class TablesComponent {
     this.selectedType = value;
     this.clearStorage();
     this.reset();
-    this.showTable(this.selectedType, this.selectedRow, this.page, filter);
+    this.showTable(this.selectedType, this.selectedRow, this.page, filter, this.selectedOutlierColumn);
   }
 
   public onSelectedRow(event: any, filter: boolean) {
@@ -462,7 +464,16 @@ export class TablesComponent {
     this.selectedRow = value;
     this.clearStorage();
     this.reset();
-    this.showTable(this.selectedType, this.selectedRow, this.page, filter);
+    this.showTable(this.selectedType, this.selectedRow, this.page, filter, this.selectedOutlierColumn);
+  }
+
+  public onSelectedOutlierColumn(event:any, filter: boolean){
+    this.page = 1;
+    const value = event.target.value;
+    this.selectedOutlierColumn = value;
+    this.clearStorage();
+    this.reset();
+    this.showTable(this.selectedType, this.selectedRow, this.page, filter, this.selectedOutlierColumn);
   }
 
   reset() {
@@ -784,7 +795,7 @@ export class TablesComponent {
       this.page += i;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page, true);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true, this.selectedOutlierColumn);
     }
   }
 
@@ -793,7 +804,7 @@ export class TablesComponent {
       this.page -= i;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page, true);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true, this.selectedOutlierColumn);
     }
   }
 
@@ -802,7 +813,7 @@ export class TablesComponent {
       this.page = 1;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page, true);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true, this.selectedOutlierColumn);
     }
   }
 
@@ -811,7 +822,7 @@ export class TablesComponent {
       this.page = this.maxPage;
       this.clearStorage();
       this.reset();
-      this.showTable(this.selectedType, this.selectedRow, this.page, true);
+      this.showTable(this.selectedType, this.selectedRow, this.page, true, this.selectedOutlierColumn);
     }
   }
 
@@ -941,11 +952,9 @@ export class TablesComponent {
 
   selectedID(event, id: number) {
     if (event.target.checked) {
-      id = id + (this.page - 1) * this.selectedRow
       this.selectedRows.push(id);
     }
     else {
-      id = id + (this.page - 1) * this.selectedRow
       this.selectedRows.forEach((element, index) => {
         if (element == id) this.selectedRows.splice(index, 1)
       });
@@ -1001,7 +1010,7 @@ export class TablesComponent {
         {
           this.clearStorage();
           this.reset();
-          this.showTable(this.selectedType, this.selectedRow, this.page, false);
+          this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
           sessionStorage.removeItem('statistics');
           this.resetStatistic();
           this.showStatistics(this.selectedCol);
@@ -1032,16 +1041,30 @@ export class TablesComponent {
     if (this.selectedRows.length != 0) this.deleteWarning = true;
   }
 
-  
+  isNumber(n) {
+    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+  }
 
   async editCell(id: number, value: any, columnName: string) {
-    id = id + (this.page - 1) * this.selectedRow;
 
+    if(this.isNumericFun(columnName) && !this.isNumber(value))
+    {
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>You are trying to insert non numeric value into numeric column</b>.', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
+      this.reset();
+      this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
+    }
+    else{
     await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(res => {
       this.clearStorage();
       sessionStorage.removeItem('statistics');
       this.reset()
-      this.showTable(this.selectedType, this.selectedRow, this.page, false);
+      this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
       this.resetStatistic();
       this.showStatistics(this.selectedCol);
       this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
@@ -1065,6 +1088,7 @@ export class TablesComponent {
         });
       }
     })
+  }
   }
 
   previewMatrix() {
