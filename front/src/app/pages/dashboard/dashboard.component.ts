@@ -629,7 +629,7 @@ export class DashboardComponent implements OnInit {
       });
       return;
     }
-
+    this.training = true;
     this.loginWarning = false;
     this.chartData = {};
     let fileName = this.cookieService.get('filename');
@@ -667,7 +667,7 @@ export class DashboardComponent implements OnInit {
     //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
-        this.modelsTrained++;
+        this.training = false;
         let JSONtoken: string = JSON.stringify(response);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if(this.epochs > this.maxEpochs) {
@@ -684,10 +684,18 @@ export class DashboardComponent implements OnInit {
           this.modelsHeader.push(this.selectedItems[i]['item_id']);
           this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
         }
-        this.notify.showNotification("Training started successfully!");
+        this.notify.showNotification("Starting training...");
 
-        sessionStorage.setItem('modelsTrained', (this.modelsTrained).toString());
+        
         sessionStorage.setItem('modelsHeader', JSON.stringify(this.modelsHeader));
+      }, err=> {
+        this.training = false;
+        if(this.problemType == "Regression") {
+          this.notify.showNotification("Training failed, try again later.");
+        }
+        else {
+          this.notify.showNotification("Training failed, try chaning loss function or metrics.")
+        }
       }
     );
   }
@@ -1252,6 +1260,11 @@ export class DashboardComponent implements OnInit {
   public addTrainingDataListener = () => {
     this.hubConnection.on('trainingdata', (data) => {
       if(data['ended'] == 0) {
+        if(this.training == false) {
+          this.modelsTrained++;
+          sessionStorage.setItem('modelsTrained', (this.modelsTrained).toString());
+        }
+
         this.training = true;
         this.firstTraining = true;
         this.liveData = data;

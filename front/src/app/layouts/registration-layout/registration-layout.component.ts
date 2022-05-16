@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class RegistrationLayoutComponent implements OnInit {
 
+  public disableButton: boolean = false;
   public registerForm: FormGroup;
 
   constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private registerService: RegistrationService, private cookie: CookieService, private router: Router) {
@@ -37,8 +38,10 @@ export class RegistrationLayoutComponent implements OnInit {
 
   registration(form: FormGroup) {
     if (form.value.username && form.value.password && form.value.confirmPassword && form.value.firstname && form.value.lastname && form.value.email) {
+      this.disableButton = true;
       this.registerService.register(form.value.username, form.value.password, form.value.firstname, form.value.lastname, form.value.email)
         .subscribe(token =>{
+          this.disableButton = false;
           let JSONtoken: string = JSON.stringify(token);
           let StringToken = JSON.parse(JSONtoken).token;
           if (form.value.password == form.value.confirmPassword){
@@ -61,6 +64,7 @@ export class RegistrationLayoutComponent implements OnInit {
             });
           }
         }, err => {
+          this.disableButton = false;
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error: Email is taken!") {

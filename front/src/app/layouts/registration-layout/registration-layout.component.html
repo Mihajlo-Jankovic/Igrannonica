@@ -97,7 +97,7 @@
 
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" [disabled]="!registerForm.valid" class="btn btn-primary btn-lg btn-block mr-1">Register</button>
+                                <button type="submit" [disabled]="!registerForm.valid || disableButton" class="btn btn-primary btn-lg btn-block mr-1">Register</button>
                                 <div class=" pull-left">
                                     <h6>
                                         <a class="text-primary" routerLink="/login" routerLinkActive="active"> Already have an account? </a>

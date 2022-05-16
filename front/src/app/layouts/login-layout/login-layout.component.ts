@@ -14,6 +14,7 @@ import { NotificationsService } from 'src/app/services/notifications.service';
 export class LoginLayoutComponent implements OnInit {
 
   public loginForm: FormGroup;
+  public disableButton: boolean = false;
 
   constructor(private notify: NotificationsService, private toastr: ToastrService, private formBuilder: FormBuilder, private loginService: LoginService, private cookie: CookieService, private router: Router) {
     this.loginForm = formBuilder.group({
@@ -36,7 +37,9 @@ export class LoginLayoutComponent implements OnInit {
 
   login(form: FormGroup) {
     if (form.value.username && form.value.password) {
+      this.disableButton = true;
       this.loginService.login(form.value.username, form.value.password).subscribe(token => {
+        this.disableButton = false;
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
         
@@ -51,6 +54,7 @@ export class LoginLayoutComponent implements OnInit {
           this.router.navigate(['home']);
         }
       }, err => {
+        this.disableButton = false;
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         console.log(StringToken);
