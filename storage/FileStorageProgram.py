@@ -164,7 +164,7 @@ def outliers(df,colName,fillMethod,specificVal):
     #i = 0
     for i in range(0,df.shape[0]): #for score in z_scores:
         if(df[colName][i] < min or df[colName][i] > max): #if(score > threshold):
-  
+
             if(fillMethod == "none"):
                 df[colName][i] = specificVal
 
@@ -218,8 +218,17 @@ def openCSV(path):
 
 
 def paging(df,rowNum,pageNum):
+    print(df)
+    print(rowNum)
+    print(pageNum)
     row = rowNum * (pageNum - 1)
-    return df.loc[np.r_[row:row+rowNum], :]
+    
+    if(len(df.index) <= rowNum):
+        return df
+    elif(len(df.index) <= row+rowNum):
+        return df.loc[np.r_[row:len(df.index)], :]
+    else:
+        return df.loc[np.r_[row:row+rowNum], :]
 
 # Filtriranje CSV fajlova prema parametrima klijenta
 def filterCSV(path, rowNum, dataType, pageNum, colName):
