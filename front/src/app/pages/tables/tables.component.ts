@@ -701,6 +701,31 @@ export class TablesComponent {
     this.selectedToReplaceOutliers = this.fillMissingValuesListNonNum[0];
   }
 
+  existsMissingValues() {
+    for(let i = 0; i < this.arrNumOfNulls.length; i++) {
+      if(this.arrNumOfNulls[i] != 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  existsOutliers() {
+
+    for (let i = 0; i < this.statistic['jsonList'].length; i++) {
+      let statData = this.statistic['jsonList'][i];
+
+      if(statData['isNumeric'] == 1) {
+        let outliers = [];
+        for (let j = 0; j < statData['outliers'].length; j++) {
+          outliers.push(statData['outliers'][j]);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   public onSelectedCol(event: any) {
     const value = event.target.value;
     /*

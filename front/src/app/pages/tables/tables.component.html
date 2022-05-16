@@ -59,7 +59,7 @@
                                     <td *ngFor="let item of arrMax; let i = index">{{item}}</td>
                                 </tr>
                                 <tr>
-                                    <td>STANDARD DEVIATION</td>
+                                    <td>SD</td>
                                     <td *ngFor="let item of arrStDev; let i = index">{{item}}</td>
                                 </tr>
                                 <tr>
@@ -285,7 +285,10 @@
                 <label for="tab-3">Missing values & Outliers</label>
                 <section>
                     <div class="tab-content">
-                        <div class="divMissingValuesCont">
+                        <div class="divMissingValuesCont" [hidden]="existsMissingValues()" style="height: auto;">
+                            <h4 class=" card-title">There are no missing values in this dataset.</h4>
+                        </div>
+                        <div class="divMissingValuesCont" [hidden]="!existsMissingValues()">
                             <h4 class=" card-title">Select or enter to fill missing values</h4>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
@@ -314,7 +317,10 @@
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()" >CONFIRM</button>
                             </div>
                         </div>
-                        <div class="divMissingValuesCont">
+                        <div class="divMissingValuesCont" [hidden]="existsOutliers()" style="height:auto">
+                            <h4 class=" card-title">There are no outliers in this dataset.</h4>
+                        </div>
+                        <div class="divMissingValuesCont" [hidden]="!existsOutliers()">
                             <h4 class=" card-title">Outliers</h4>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
