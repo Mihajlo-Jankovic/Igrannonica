@@ -29,9 +29,10 @@ def numeric_column_statistics(df,col):
     firstQ, thirdQ = df[col].quantile([.25, .75]) # Prvi i treci kvartil
     firstQ = round(firstQ,3)
     thirdQ = round(thirdQ,3)
-    stdev = df[col].std()
+    stdev = round(df[col].std(), 3)
     
     iqr = thirdQ - firstQ
+    iqr = round(iqr, 3)
 
     min = round(firstQ - 1.5 * iqr,3)
     max = round(thirdQ + 1.5 * iqr,3)
@@ -90,7 +91,7 @@ def statistics(df,colIndex):
             
             jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med, 'numOfOutliers': numOfOutliers,
                             "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, "isNumeric": 1,
-                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": {col: numOfNulls},
+                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls,
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
         
         colList.append(col)

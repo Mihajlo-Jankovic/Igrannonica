@@ -151,6 +151,12 @@ export class TablesComponent {
   arrMax: any = [];
   arrStDev: any = [];
   arrIQR: any = [];
+  colListData: any = [];
+  numOfOutliers: any;
+  arrFrequency: any = [];
+  arrMostFrequent: any = [];
+  arrNumOfNulls: any = [];
+  arrUnique: any = [];
 
   hideStatistics: boolean = false;
   hideBoxplot: boolean = false;
@@ -194,9 +200,10 @@ export class TablesComponent {
   mostFrequent: any;
   numOfNulls: any;
   unique: any;
+  numCol2: boolean;
 
   //*
-  numCol: boolean = true; //za prikaz numerickih/nenumerickih - statistika
+  numCol: boolean; //za prikaz numerickih/nenumerickih - statistika
   numCol1: boolean = true; //za prikaz numerickih/nenumerickih - missingValues
   selectedOutliersCol: string;
   selectedToReplaceOutliers: any;
@@ -231,7 +238,7 @@ export class TablesComponent {
     }
     else {
       let filename = this.cookie.get('filename');
-      this.tableService.getAll(filename, type, rows, page).subscribe(
+      this.tableService.getAll(filename, type, rows, page, "").subscribe(
         (response) => {
           this.csv = response;
           let dataCSV: any = {};
@@ -301,14 +308,14 @@ export class TablesComponent {
       this.numericValuesArray.push(numValueIndexArray);
     }
 
-    this.selectedColName = this.numericValuesArray[0][0];
-    this.selectedCol = this.numericValuesArray[0][1];
+    this.selectedColName = this.headingLines[0][0];
+    //this.selectedCol = this.numericValuesArray[0][1];
     this.selectedColDiv = true;
-
+    this.numCol2 = this.isNumericFun(this.selectedColName);
 
     if (this.numericValues['col'].length > 0 && !filter) {
       this.showStatisticDiv = true;
-      this.showStatistics(this.selectedCol);
+      this.showStatistics(this.selectedColName);
     }
     //*
     this.setInputOutput();
@@ -318,7 +325,7 @@ export class TablesComponent {
   setInputOutput() {
 
     if(sessionStorage.getItem("inputList") == null) {
-      for (let i = 0; i < this.headingLines[0].length-1; i++) {
+      for (let i = 0; i < this.headingLines[0].length-2; i++) {
         this.radios[i] = true; //disabled
         this.checks[i] = false; //disabled
         this.radios1[i] = false; //checked
@@ -326,14 +333,14 @@ export class TablesComponent {
         this.listCheckedI.push(this.headingLines[0][i])
       }
 
-      this.checks[this.headingLines[0].length-1] = true;
-      this.checks1[this.headingLines[0].length-1] = false;
-      this.listCheckedI.splice(this.headingLines[0].length-1, 1);
+      this.checks[this.headingLines[0].length-2] = true;
+      this.checks1[this.headingLines[0].length-2] = false;
+      this.listCheckedI.splice(this.headingLines[0].length-2, 1);
       sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
 
-      this.radios[this.headingLines[0].length-1] = false;
-      this.radios1[this.headingLines[0].length-1] = true;
-      this.selectedOutput = this.headingLines[0][this.headingLines[0].length-1];
+      this.radios[this.headingLines[0].length-2] = false;
+      this.radios1[this.headingLines[0].length-2] = true;
+      this.selectedOutput = this.headingLines[0][this.headingLines[0].length-2];
       sessionStorage.setItem('output', this.selectedOutput);
       this.pret = this.headingLines[0].length-2;
       
@@ -345,7 +352,7 @@ export class TablesComponent {
       this.selectedOutput = sessionStorage.getItem('output');
 
       let f: number = 0;
-      for (let i = 0; i < this.headingLines[0].length; i++) {
+      for (let i = 0; i < this.headingLines[0].length-1; i++) {
         f = 0;
         for (let j = 0; j < this.listCheckedI.length; j++) {
           if(this.headingLines[0][i] == this.listCheckedI[j]) {
@@ -380,12 +387,12 @@ export class TablesComponent {
   }
   //*
   setEncoding() {
-    for (let i = 0; i < this.headingLines[0].length-1; i++) {   
+    for (let i = 0; i < this.headingLines[0].length-2; i++) {   
       let f: any = 0;
       this.restartColData();
 
       for(let j = 0; j < this.numericValues['col'].length; j++) {
-        if(this.numericValues['col'][j] == this.headingLines[0][i]) {
+        if(this.numericValues['col'][j] == this.statistic['colList'][i]) {
           this.column['encoding'] = "none";
           f = 1;
         }
@@ -395,9 +402,9 @@ export class TablesComponent {
         this.column['encoding'] = this.encodingList[0];
       }
       this.column['id'] = i;
-      this.column['colName'] = this.headingLines[0][i]
+      this.column['colName'] = this.headingLines[0][i];
       this.column['isSelected'] = true;
-      this.column['isNum'] = this.isNumericFun(this.headingLines[0][i]);
+      this.column['isNum'] = this.isNumericFun(this.headingLines[0].length-2[i]);
       this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
         
       this.colDataList.push(this.column);
@@ -405,14 +412,14 @@ export class TablesComponent {
 
     let f: any = 0;
     this.restartColData();
-    this.column['id'] = this.headingLines[0].length-1;
-    this.column['colName'] = this.headingLines[0][this.headingLines[0].length-1];
+    this.column['id'] = this.headingLines[0].length-2;
+    this.column['colName'] = this.headingLines[0][this.headingLines[0].length-2];
     this.column['isSelected'] = false;
-    this.column['isNum'] = this.isNumericFun(this.headingLines[0][this.headingLines[0].length-1]);
+    this.column['isNum'] = this.isNumericFun(this.headingLines[0][this.headingLines[0].length-2]);
   
     f = 0;
     for(let j = 0; j < this.numericValues['col'].length; j++) {
-      if(this.numericValues['col'][j] == this.headingLines[0][this.headingLines[0].length-1]) {
+      if(this.numericValues['col'][j] == this.headingLines[0][this.headingLines[0].length-2]) {
         this.column['encoding'] = "none";
         f = 1;
       }
@@ -481,7 +488,7 @@ export class TablesComponent {
     this.rowLines = [];
   }
 
-  showStatistics(col: number) {
+  showStatistics(col: string) {
     if (sessionStorage.getItem('statistics')) {
       //this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
       //this.loadStatistics();
@@ -490,12 +497,13 @@ export class TablesComponent {
     }
     else {
       let filename = this.cookie.get('filename');
-      this.tableService.getStatistics(filename, col).subscribe(
+      this.tableService.getStatistics(filename, 0).subscribe(
         (response) => {
           this.statistic = response;
           console.log(this.statistic);
           sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
           this.loadStatistics(col);
+          //this.setNumCol();
           this.boxPlotFun();
         }, err => {
           let JSONtoken: string = JSON.stringify(err.error);
@@ -513,10 +521,15 @@ export class TablesComponent {
     }
   }
 
-  colListData: any = [];
-  numOfOutliers: any;
-  public loadStatistics(col: number) {
-    console.log(this.statistic['jsonList']);
+  public setNumCol() {
+    let x = this.statistic['jsonList'][0];
+    if(x['isNumeric'] == 1)
+      this.numCol = true;
+    else
+      this.numCol = false;
+    }
+
+  public loadStatistics(col: string) {
     this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
     this.colListData = [];
     for (let i = 0; i < this.statistic['colList'].length; i++) {
@@ -530,14 +543,38 @@ export class TablesComponent {
 
     this.restartStat();
     for (let i = 0; i < this.arrNum.length; i++) {
-      this.arrMin.push(this.arrNum[i]['min']);
-      this.arrQ1.push(this.arrNum[i]['firstQ']);
-      this.arrMean.push(this.arrNum[i]['avg']);
-      this.arrMedian.push(this.arrNum[i]['med']);
-      this.arrQ3.push(this.arrNum[i]['thirdQ']);
-      this.arrMax.push(this.arrNum[i]['max']);
-      this.arrStDev.push(this.arrNum[i]['stdev']);
-      this.arrIQR.push(this.arrNum[i]['iqr']);
+      this.statisticData = this.statistic['jsonList'][i];
+      if(this.statisticData['isNumeric'] == 1) {
+        this.arrMin.push(this.arrNum[i]['min']);
+        this.arrQ1.push(this.arrNum[i]['firstQ']);
+        this.arrMean.push(this.arrNum[i]['avg']);
+        this.arrMedian.push(this.arrNum[i]['med']);
+        this.arrQ3.push(this.arrNum[i]['thirdQ']);
+        this.arrMax.push(this.arrNum[i]['max']);
+        this.arrStDev.push(this.arrNum[i]['stdev']);
+        this.arrIQR.push(this.arrNum[i]['iqr']);
+
+        this.arrFrequency.push("-");
+        this.arrMostFrequent.push("-");
+        this.arrUnique.push("-");
+        this.arrNumOfNulls.push(this.arrNum[i]['numOfNulls']);
+      }
+      else
+      {
+        this.arrMin.push("-");
+        this.arrQ1.push("-");
+        this.arrMean.push("-");
+        this.arrMedian.push("-");
+        this.arrQ3.push("-");
+        this.arrMax.push("-");
+        this.arrStDev.push("-");
+        this.arrIQR.push("-");
+      
+        this.arrFrequency.push(this.arrNum[i]['frequency']);
+        this.arrMostFrequent.push(this.arrNum[i]['mostFrequent']);
+        this.arrUnique.push(this.arrNum[i]['unique']);
+        this.arrNumOfNulls.push(this.arrNum[i]['numOfNulls']);
+      }
     }
     
     //cuvanje outliers i numOfOutliers za svaku kolonu
@@ -554,71 +591,74 @@ export class TablesComponent {
     
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
       this.statisticData = this.statistic['jsonList'][i];
-      if (i == col) {
-
+      if (this.statistic['colList'][i] == col) {
+        console.log(this.statisticData['isNumeric'], this.statistic['colList'][i]);
+        console.log(this.statisticData);
         if(this.statisticData['isNumeric'] == 1) {
-        this.mixArray = [];
-        this.rowsNum = this.statisticData['rowsNum'];
-        this.min = this.statisticData['min'];
-        this.mixArray.push(this.min);
-        this.firstQ = this.statisticData['firstQ'];
-        this.mixArray.push(this.firstQ);
-        this.avg = this.statisticData['avg'];
-        this.med = this.statisticData['med'];
-        this.mixArray.push(this.med);
-        this.thirdQ = this.statisticData['thirdQ'];
-        this.mixArray.push(this.thirdQ);
-        this.max = this.statisticData['max'];
-        this.mixArray.push(this.max);
-        this.stdev = this.statisticData['stdev'];
-        this.iqr = this.statisticData['iqr'];
-        this.numOfOutliers = this.statisticData['numOfOutliers'];
+          
+          this.mixArray = [];
+          this.rowsNum = this.statisticData['rowsNum'];
+          this.min = this.statisticData['min'];
+          this.mixArray.push(this.min);
+          this.firstQ = this.statisticData['firstQ'];
+          this.mixArray.push(this.firstQ);
+          this.avg = this.statisticData['avg'];
+          this.med = this.statisticData['med'];
+          this.mixArray.push(this.med);
+          this.thirdQ = this.statisticData['thirdQ'];
+          this.mixArray.push(this.thirdQ);
+          this.max = this.statisticData['max'];
+          this.mixArray.push(this.max);
+          this.stdev = this.statisticData['stdev'];
+          this.iqr = this.statisticData['iqr'];
+          this.numOfOutliers = this.statisticData['numOfOutliers'];
 
-        let permName: string;
-        for (let i = 0; i < this.colListData.length; i++) {
-          if (i == col) {
-            permName = this.colListData[i];
+          let permName: string;
+          for (let i = 0; i < this.colListData.length; i++) {
+            if (this.colListData[i] == col) {
+              permName = this.colListData[i];
+            }
           }
-        }
 
-        this.numArray = [];
-        for (let i = 0; i < this.statisticData['corrMatrix'][permName].length; i++) {
-          this.numArray.push(this.statisticData['corrMatrix'][permName][i]);
-        }
-
-        this.outliers = [];
-        for (let i = 0; i < this.statisticData['outliers'].length; i++) {
-          this.outliers.push(this.statisticData['outliers'][i]);
-        }
-
-        let fullMatrix: any = {};
-        fullMatrix = this.statisticData['fullCorrMatrix'];
-        this.fullMatrixData = fullMatrix;
-
-        this.fullCorrColNamesArray = [];
-        for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
-          this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
-        }
-
-        this.fullCorrValArray = [];
-        let valArray: any = [];
-        for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
-          valArray = [];
-
-          for (let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
-            valArray.push(this.fullMatrixData['values'][i][j]);
+          this.numArray = [];
+          for (let i = 0; i < this.statisticData['corrMatrix'][permName].length; i++) {
+            this.numArray.push(this.statisticData['corrMatrix'][permName][i]);
           }
-          this.fullCorrValArray.push(valArray);
+
+          this.outliers = [];
+          for (let i = 0; i < this.statisticData['outliers'].length; i++) {
+            this.outliers.push(this.statisticData['outliers'][i]);
+          }
+
+          let fullMatrix: any = {};
+          fullMatrix = this.statisticData['fullCorrMatrix'];
+          this.fullMatrixData = fullMatrix;
+
+          this.fullCorrColNamesArray = [];
+          for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
+            this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
+          }
+
+          this.fullCorrValArray = [];
+          let valArray: any = [];
+          for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
+            valArray = [];
+
+            for (let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
+              valArray.push(this.fullMatrixData['values'][i][j]);
+            }
+            this.fullCorrValArray.push(valArray);
+          }
+          this.boxPlotFun();
+          //console.log("Num:" + this.min, this.max, this.avg, this.med);
         }
-        this.boxPlotFun();
-      }
-      else {
-        this.frequency = this.statisticData['frequency'];
-        this.mostFrequent = this.statisticData['mostFrequent'];
-        this.numOfNulls = this.statisticData['numOfNulls'];
-        this.unique = this.statisticData['unique'];
-        this.numOfOutliers = this.statisticData['numOfOutliers'];
-      }
+        else {
+          this.frequency = this.statisticData['frequency'];
+          this.mostFrequent = this.statisticData['mostFrequent'];
+          this.numOfNulls = this.statisticData['numOfNulls'];
+          this.unique = this.statisticData['unique'];
+          //console.log(this.frequency, this.mostFrequent, this.unique, this.numOfNulls);
+        }
       }
     }
     sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
@@ -633,6 +673,10 @@ export class TablesComponent {
     this.arrMax = [];
     this.arrStDev = [];
     this.arrIQR = [];
+    this.arrFrequency = [];
+    this.arrMostFrequent = [];
+    this.arrUnique = [];
+    this.arrNumOfNulls = [];
   }
 
   public onSelectedCol(event: any) {
@@ -645,24 +689,15 @@ export class TablesComponent {
     this.resetStatistic();
     this.showStatistics(this.selectedCol);
     */
-    let index: number = -1;
-    for (let i = 0; i < this.statistic['colList'].length; i++){
-      if(this.statistic['colList'][i] == value) {
-        let kolona = this.statistic['jsonList'][i];
-        index = i;
-        if(kolona['isNumeric'] == 1) {
-          this.numCol = true;
-        }
-        else {
-          this.numCol = false;
-        }
-      }
-    }
+    if(this.isNumericFun(value))
+      this.numCol2 = true;
+    else
+      this.numCol2 = false;
 
     this.selectedColName = value;
     sessionStorage.removeItem('statistics');
     this.resetStatistic();
-    this.showStatistics(index);
+    this.showStatistics(value);
   }
 
   resetStatistic() {
@@ -1013,7 +1048,7 @@ export class TablesComponent {
           this.showTable(this.selectedType, this.selectedRow, this.page, false);
           sessionStorage.removeItem('statistics');
           this.resetStatistic();
-          this.showStatistics(this.selectedCol);
+          this.showStatistics(this.selectedColName);
           this.selectedRows = [];
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Delete successfull</b>.', '', {
             disableTimeOut: false,
@@ -1052,7 +1087,7 @@ export class TablesComponent {
       this.reset()
       this.showTable(this.selectedType, this.selectedRow, this.page, false);
       this.resetStatistic();
-      this.showStatistics(this.selectedCol);
+      this.showStatistics(this.selectedColName);
       this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
         disableTimeOut: false,
         closeButton: true,
@@ -1284,14 +1319,12 @@ export class TablesComponent {
       if (this.cookie.get('token')) {
         this.tableService.fillMissingValuesAuthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
-            //console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
             console.log(response);
         })
       }
       else {
         this.tableService.fillMissingValuesUnauthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
-            //console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol);
             console.log(response);       
           })
         }
@@ -1309,14 +1342,12 @@ export class TablesComponent {
       if (this.cookie.get('token')) {
         this.tableService.changeOutliersAuthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
           (response) => {
-            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
             console.log(response);
         })
       }
       else {
         this.tableService.changeOutliersUnauthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
           (response) => {
-            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
             console.log(response);       
           })
         }

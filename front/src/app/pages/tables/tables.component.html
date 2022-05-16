@@ -30,7 +30,7 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th *ngFor="let item of fullCorrColNamesArray; let i = index">{{item}}</th>
+                                    <th *ngFor="let item of statistic['colList']; let i = index">{{item}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,11 +58,39 @@
                                     <td>MAX</td>
                                     <td *ngFor="let item of arrMax; let i = index">{{item}}</td>
                                 </tr>
+                                <tr>
+                                    <td>STANDARD DEVIATION</td>
+                                    <td *ngFor="let item of arrStDev; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>IQR</td>
+                                    <td *ngFor="let item of arrIQR; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>FREQUENCY</td>
+                                    <td *ngFor="let item of arrFrequency; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MOST FREQUENT</td>
+                                    <td *ngFor="let item of arrMostFrequent; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>FREQUENCY</td>
+                                    <td *ngFor="let item of arrFrequency; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>UNIQUE</td>
+                                    <td *ngFor="let item of arrUnique; let i = index">{{item}}</td>
+                                </tr>
+                                <tr>
+                                    <td>NUM OF NULLS</td>
+                                    <td *ngFor="let item of arrNumOfNulls; let i = index">{{item}}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class=" table-full-width" [hidden]="hideS"><br>
-                        <table class=" table" [hidden]="!numCol">
+                        <table class=" table" *ngIf="numCol2">
                             <tbody>
                                 <tr>
                                     <td>MIN</td>
@@ -88,9 +116,19 @@
                                     <td>MAX</td>
                                     <td>{{max}}</td>
                                 </tr>
+                                <!--
+                                <tr>
+                                    <td>SD</td>
+                                    <td>{{stdev}}</td>
+                                </tr>
+                                <tr>
+                                    <td>IQR</td>
+                                    <td>{{iqr}}</td>
+                                </tr>
+                                -->
                             </tbody>
                         </table>
-                        <table class=" table" [hidden]="numCol">
+                        <table class=" table" *ngIf="!numCol2">
                             <tbody>
                                 <tr>
                                     <td>FREQUENCY</td>
@@ -102,11 +140,11 @@
                                 </tr>
                                 <tr>
                                     <td>UNIQUE</td>
-                                    <td>{{med}}</td>
+                                    <td>{{unique}}</td>
                                 </tr>
                                 <tr>
                                     <td>NUM OF NULLS</td>
-                                    <td>{{avg}}</td>
+                                    <td>{{numOfNulls}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -121,14 +159,14 @@
                         <h3 class=" card-category" style="color: white; float: left;">Boxplot</h3>
                         <h3 class=" card-category" style="color: white; float: right;">Choose column to plot</h3>
                     </div>
-                    <select class='dropdown' (change)='onSelectedCol($event)' style="width: 100%; right: 0px; top: 0px;">
+                    <select class='dropdown' (change)='onSelectedCol($event)' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
                     <!--   <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
                     -->
-                    <option class="option" *ngFor="let item of headingLines[0]; let i = index" value={{item}}>{{item}}</option>
+                    <option class="option" *ngFor="let item of statistic['colList']; let i = index" value={{item}}>{{item}}</option>
                     </select>
                 </div>
                 <div class=" card-body">
-                    <div id="chart" *ngIf="selectedColDiv">
+                    <div id="chart" *ngIf="selectedColDiv && numCol2">
                         <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions" [title]="chartOptions.title" [stroke]="chartOptions.stroke"></apx-chart>
                     </div>
                 </div>
@@ -142,7 +180,7 @@
                 </div>
                 <div class=" card-body">
                     <div class=" table-responsive stat" id="corr" [hidden]="hideM">
-                        <table class=" table">
+                        <table class=" table" *ngIf="numCol2">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -192,7 +230,7 @@
                     <div class="tab-content">
                         <div class="divInput">
                             <h4>Input</h4>
-                            <div *ngFor="let item of headingLines[0]; let i = index">
+                            <div *ngFor="let item of statistic['colList']; let i = index">
                                 <div class="Ioption">
                                     <div class="checkDIV">
                                         <input type="checkbox" id="{{ 'check1' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
@@ -204,7 +242,7 @@
                         </div>
                         <div class="divOutput">
                             <h4>Output</h4>
-                            <div *ngFor="let item of headingLines[0]; let i = index">
+                            <div *ngFor="let item of statistic['colList']; let i = index">
                                 <div class="Ooption">
                                     <div class="radioDIV">
                                         <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]" [checked]="radios1[i]">
@@ -252,11 +290,11 @@
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
-                                    <option class='option' *ngFor="let item of headingLines[0]; let i = index" value="{{item}}">{{item}}</option>
+                                    <option class='option' *ngFor="let item of statistic['colList']; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Choose value</h6>
+                                <h6>Select value</h6>
                                 <select [hidden]="!numCol1" class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
                                     <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
                                 </select>
@@ -319,11 +357,11 @@
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
-                                    <option class='option' *ngFor="let item of headingLines[0]; let i = index" value="{{item}}">{{item}}</option>
+                                    <option class='option' *ngFor="let item of statistic['colList']; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Choose value</h6>
+                                <h6>Select value</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedToReplaceOutliers" (change)="onSelectedValueOutliers($event)">
                                     <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
                                 </select>
