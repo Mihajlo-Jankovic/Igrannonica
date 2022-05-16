@@ -55,6 +55,7 @@ def not_numeric_column_statistics(df,col):
 def statistics(df,colIndex):
     colList = []
     jsonList = []
+    fullCorMatrix = []
 
     for col in df:
         if(df[col].dtypes == object):
@@ -93,10 +94,10 @@ def statistics(df,colIndex):
                             "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, "isNumeric": 1,
                             "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls,
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
-        
+            
         colList.append(col)
     
-    return {"colList": colList, "jsonList": jsonList }
+    return {"colList": colList, "jsonList": jsonList, "fullCorrelationMatrix": {"columns": colArr, "values": valArr}}
 
 def missing_values(df, colName, fillMethod, specificVal):
 

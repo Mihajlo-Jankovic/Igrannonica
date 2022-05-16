@@ -75,21 +75,17 @@
                                     <td *ngFor="let item of arrMostFrequent; let i = index">{{item}}</td>
                                 </tr>
                                 <tr>
-                                    <td>FREQUENCY</td>
-                                    <td *ngFor="let item of arrFrequency; let i = index">{{item}}</td>
-                                </tr>
-                                <tr>
                                     <td>UNIQUE</td>
                                     <td *ngFor="let item of arrUnique; let i = index">{{item}}</td>
                                 </tr>
                                 <tr>
-                                    <td>NUM OF NULLS</td>
+                                    <td>NULLS</td>
                                     <td *ngFor="let item of arrNumOfNulls; let i = index">{{item}}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class=" table-full-width" [hidden]="hideS"><br>
+                    <div class=" table-full-width" [hidden]="hideS">
                         <table class=" table" *ngIf="numCol2">
                             <tbody>
                                 <tr>
@@ -126,6 +122,10 @@
                                     <td>{{iqr}}</td>
                                 </tr>
                                 -->
+                                <tr>
+                                    <td>NULLS</td>
+                                    <td>{{numOfNulls}}</td>
+                                </tr>
                             </tbody>
                         </table>
                         <table class=" table" *ngIf="!numCol2">
@@ -143,7 +143,7 @@
                                     <td>{{unique}}</td>
                                 </tr>
                                 <tr>
-                                    <td>NUM OF NULLS</td>
+                                    <td>NULLS</td>
                                     <td>{{numOfNulls}}</td>
                                 </tr>
                             </tbody>
@@ -290,7 +290,7 @@
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
-                                    <option class='option' *ngFor="let item of statistic['colList']; let i = index" value="{{item}}">{{item}}</option>
+                                    <option class='option' *ngFor="let item of arrMissingValues; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
@@ -314,50 +314,12 @@
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()" >CONFIRM</button>
                             </div>
                         </div>
-                        <!--
-                        <div class=" card-header" style="padding:0px;background-color: none; border-bottom: none;">
-                            <div class="headerLeft" style="padding-top: 8px;">
-                                <h4 class=" card-title" style="margin-top: 25px;">Outliers</h4>
-                            </div>
-                            <div class="headerRight">
-                                <div class="trash">
-                                    <button class=" btn btn-link" placement="left" container="body">
-                                        <i class="tim-icons icon-trash-simple" style="font-size: 2em;"> </i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class=" card-body">
-                            <div class=" table-responsive" style="height: 500px;" id="table">
-                                <table class=" table tablesorter" style="margin-top: 1rem;">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th *ngFor="let item of headingLinesOutliers[0]; let i = index" style="text-align: center;" [class.selectedMissingValueCol]="isSelectedMissingValuesCol(item)">{{item}}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let item of rowLinesOutliers[0]; let i = index">
-                                            <td>
-                                                <div style="position: relative; top: 5px">
-                                                    <input type="checkbox" id="{{ 'check2' + i }}" (change)="selectedIDOutliers(i)">
-                                                    <label for="{{ 'check2' + i }}" class="check-box"></label>
-                                                </div>
-                                            </td>
-                                            <td *ngFor="let itemm of headingLinesOutliers[0]; let j = index" class="field" [class.selectedMissingValueCol]="isSelectedMissingValuesField(j)"><input type="text" value="{{item[j]}}" class="table-td-input"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        -->
-                        <!--                     OUTLIERS                     -->
                         <div class="divMissingValuesCont">
                             <h4 class=" card-title">Outliers</h4>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
-                                    <option class='option' *ngFor="let item of statistic['colList']; let i = index" value="{{item}}">{{item}}</option>
+                                    <option class='option' *ngFor="let item of numericValues['col']; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal">

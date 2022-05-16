@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { TableService } from 'src/app/services/table.service';
 import { CookieService } from "ngx-cookie-service";
-import { Configuration } from 'src/app/configuration';
-
 
 import {
   ChartComponent,
@@ -14,7 +12,7 @@ import {
   ApexStroke,
   ApexTooltip
 } from "ng-apexcharts";
-import { AnyForUntypedForms } from "@angular/forms";
+import { Configuration } from 'src/app/configuration';
 import { ToastrService } from "ngx-toastr";
 
 declare function myFunc(): any;
@@ -76,7 +74,7 @@ export class TablesComponent {
     'columns': [],
     'values': []
   }
-  //*
+  
   column = {
     'id': 0,
     'colName': "",
@@ -87,7 +85,7 @@ export class TablesComponent {
     'numOfOutliers': 0,
     'outliers': []
   }
-  //*
+  
   //data: any = { "columns": ["title", "genre", "description", "director", "actors", "year", "runtime_(minutes)", "rating", "votes", "revenue_(millions)", "metascore"], "index": [1, 2, 3, 4, 5], "data": [["Guardians of the Galaxy", "Action,Adventure,Sci-Fi", "A group of intergalactic criminals are forced to work together to stop a fanatical warrior from taking control of the universe.", "James Gunn", "Chris Pratt, Vin Diesel, Bradley Cooper, Zoe Saldana", 2014, 121, 8.1, 757074, 333.13, 76], ["Prometheus", "Adventure,Mystery,Sci-Fi", "Following clues to the origin of mankind, a team finds a structure on a distant moon, but they soon realize they are not alone.", "Ridley Scott", "Noomi Rapace, Logan Marshall-Green, Michael Fassbender, Charlize Theron", 2012, 124, 7.0, 485820, 126.46, 65], ["Split", "Horror,Thriller", "Three girls are kidnapped by a man with a diagnosed 23 distinct personalities. They must try to escape before the apparent emergence of a frightful new 24th.", "M. Night Shyamalan", "James McAvoy, Anya Taylor-Joy, Haley Lu Richardson, Jessica Sula", 2016, 117, 7.3, 157606, 138.12, 62], ["Sing", "Animation,Comedy,Family", "In a city of humanoid animals, a hustling theater impresario's attempt to save his theater with a singing competition becomes grander than he anticipates even as its finalists' find that their lives will never be the same.", "Christophe Lourdelet", "Matthew McConaughey,Reese Witherspoon, Seth MacFarlane, Scarlett Johansson", 2016, 108, 7.2, 60545, 270.32, 59], ["Suicide Squad", "Action,Adventure,Fantasy", "A secret government agency recruits some of the most dangerous incarcerated super-villains to form a defensive task force. Their first mission: save the world from the apocalypse.", "David Ayer", "Will Smith, Jared Leto, Margot Robbie, Viola Davis", 2016, 123, 6.2, 393727, 325.02, 40]] }
 
   showIO: boolean = false;
@@ -134,15 +132,20 @@ export class TablesComponent {
   med: number;
   firstQ: number;
   thirdQ: number;
-  stdev: any;
-  iqr: any;
   corrMatrix: any = {};
   mixArray: any = []; //niz za boxplot
   numArray: any = []; //niz za kor matricu
   outliers: any = [];
+  
+  stdev: any;
+  iqr: any;
+  isNumCol: any;
+  frequency: string;
+  mostFrequent: any;
+  numOfNulls: any;
+  unique: any;
 
   arrNum: any = [];
-  arrNonNum: any = [];
   arrMin: any = [];
   arrQ1: any = [];
   arrMean: any = [];
@@ -157,6 +160,7 @@ export class TablesComponent {
   arrMostFrequent: any = [];
   arrNumOfNulls: any = [];
   arrUnique: any = [];
+  arrMissingValues: any = [];
 
   hideStatistics: boolean = false;
   hideBoxplot: boolean = false;
@@ -184,7 +188,11 @@ export class TablesComponent {
   selectedMissingValColBoolean: boolean = true;
   selectedToFillMissingValCol: string;
   enteredToFillMissingValCol: string = "";
-  
+
+  selectedOutliersCol: string;
+  selectedToReplaceOutliers: any;
+  replaceOutliersList = ["none", "min", "max", "avg", "med", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
+  enteredToReplaceOutliersCol: string = "";
   selectedOutliersRows: any = [];
   //*
 
@@ -192,23 +200,13 @@ export class TablesComponent {
 
   filter = 0;
 
-  configuration = new Configuration();
   token: string;
-
-  isNumCol: any;
-  frequency: string;
-  mostFrequent: any;
-  numOfNulls: any;
-  unique: any;
-  numCol2: boolean;
+  configuration = new Configuration();
 
   //*
   numCol: boolean; //za prikaz numerickih/nenumerickih - statistika
   numCol1: boolean = true; //za prikaz numerickih/nenumerickih - missingValues
-  selectedOutliersCol: string;
-  selectedToReplaceOutliers: any;
-  replaceOutliersList = ["none", "min", "max", "avg", "med", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
-  enteredToReplaceOutliersCol: string = "";
+  numCol2: boolean;
   //*
 
   constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService) {
@@ -254,7 +252,6 @@ export class TablesComponent {
           let numerValuesCSV: any = {};
           numerValuesCSV = this.csv['numericValues'];
           this.numericValues = numerValuesCSV;
-          console.log("numeric values " + this.numericValues)
 
           sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
           this.loadTable(filter);
@@ -309,7 +306,7 @@ export class TablesComponent {
     }
 
     this.selectedColName = this.headingLines[0][0];
-    //this.selectedCol = this.numericValuesArray[0][1];
+    this.selectedCol = this.numericValuesArray[0][1];
     this.selectedColDiv = true;
     this.numCol2 = this.isNumericFun(this.selectedColName);
 
@@ -345,7 +342,6 @@ export class TablesComponent {
       this.pret = this.headingLines[0].length-2;
       
       this.setEncoding();
-      this.setMissingValuesandOutliers();
     }
     else {
       this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
@@ -382,7 +378,6 @@ export class TablesComponent {
       sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
       sessionStorage.setItem('output', this.selectedOutput);
       this.updateEncoding();
-      this.setMissingValuesandOutliers();
     }
   }
   //*
@@ -456,13 +451,6 @@ export class TablesComponent {
   }
   //*
 
-  setMissingValuesandOutliers() {
-    this.selectedMissingValCol = this.headingLines[0][0];
-    this.selectedToFillMissingValCol= this.fillMissingValuesListNonNum[0];
-    this.selectedOutliersCol = this.headingLines[0][0];
-    this.selectedToReplaceOutliers = this.fillMissingValuesListNonNum[0];
-  }
-
   public onSelectedType(event: any, filter: boolean) {
     this.page = 1;
     const value = event.target.value;
@@ -494,6 +482,7 @@ export class TablesComponent {
       //this.loadStatistics();
       this.statistic = JSON.parse(sessionStorage.getItem('statistics'));
       this.loadStatistics(col);
+      this.setMissingValuesandOutliers();
     }
     else {
       let filename = this.cookie.get('filename');
@@ -503,7 +492,7 @@ export class TablesComponent {
           console.log(this.statistic);
           sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
           this.loadStatistics(col);
-          //this.setNumCol();
+          this.setMissingValuesandOutliers();
           this.boxPlotFun();
         }, err => {
           let JSONtoken: string = JSON.stringify(err.error);
@@ -592,8 +581,7 @@ export class TablesComponent {
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
       this.statisticData = this.statistic['jsonList'][i];
       if (this.statistic['colList'][i] == col) {
-        console.log(this.statisticData['isNumeric'], this.statistic['colList'][i]);
-        console.log(this.statisticData);
+        //console.log(this.statisticData);
         if(this.statisticData['isNumeric'] == 1) {
           
           this.mixArray = [];
@@ -612,6 +600,7 @@ export class TablesComponent {
           this.stdev = this.statisticData['stdev'];
           this.iqr = this.statisticData['iqr'];
           this.numOfOutliers = this.statisticData['numOfOutliers'];
+          this.numOfNulls = this.statisticData['numOfNulls'];
 
           let permName: string;
           for (let i = 0; i < this.colListData.length; i++) {
@@ -629,7 +618,7 @@ export class TablesComponent {
           for (let i = 0; i < this.statisticData['outliers'].length; i++) {
             this.outliers.push(this.statisticData['outliers'][i]);
           }
-
+          /*
           let fullMatrix: any = {};
           fullMatrix = this.statisticData['fullCorrMatrix'];
           this.fullMatrixData = fullMatrix;
@@ -648,18 +637,36 @@ export class TablesComponent {
               valArray.push(this.fullMatrixData['values'][i][j]);
             }
             this.fullCorrValArray.push(valArray);
-          }
+          }*/
           this.boxPlotFun();
-          //console.log("Num:" + this.min, this.max, this.avg, this.med);
         }
         else {
           this.frequency = this.statisticData['frequency'];
           this.mostFrequent = this.statisticData['mostFrequent'];
           this.numOfNulls = this.statisticData['numOfNulls'];
           this.unique = this.statisticData['unique'];
-          //console.log(this.frequency, this.mostFrequent, this.unique, this.numOfNulls);
         }
       }
+    }
+
+    let fullMatrix: any = {};
+    fullMatrix = this.statistic['fullCorrelationMatrix'];
+    this.fullMatrixData = fullMatrix;
+
+    this.fullCorrColNamesArray = [];
+    for (let i = 0; i < this.fullMatrixData['columns'].length; i++) {
+      this.fullCorrColNamesArray.push(this.fullMatrixData['columns'][i]);
+    }
+
+    this.fullCorrValArray = [];
+    let valArray: any = [];
+    for (let i = 0; i < this.fullMatrixData['values'].length; i++) {
+      valArray = [];
+
+    for (let j = 0; j < this.fullMatrixData['values'][i].length; j++) {
+      valArray.push(this.fullMatrixData['values'][i][j]);
+    }
+    this.fullCorrValArray.push(valArray);
     }
     sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
   }
@@ -677,6 +684,21 @@ export class TablesComponent {
     this.arrMostFrequent = [];
     this.arrUnique = [];
     this.arrNumOfNulls = [];
+  }
+
+  setMissingValuesandOutliers() {
+
+    this.arrMissingValues = [];
+    for(let i = 0; i < this.statistic['colList'].length; i++) {
+      if(this.arrNumOfNulls[i] != 0) {
+          this.arrMissingValues.push(this.statistic['colList'][i]);
+      }
+    }
+    
+    this.selectedMissingValCol = this.arrMissingValues[0];
+    this.selectedToFillMissingValCol = this.fillMissingValuesListNonNum[0];
+    this.selectedOutliersCol = this.numericValues['col'][0];
+    this.selectedToReplaceOutliers = this.fillMissingValuesListNonNum[0];
   }
 
   public onSelectedCol(event: any) {
@@ -959,7 +981,7 @@ export class TablesComponent {
     var value = event.target.value;
     var ind: number = -1;
 
-    for (let i = 0; i < this.headingLines[0].length; i++) {
+    for (let i = 0; i < this.headingLines[0].length-1; i++) {
       if (this.selectedOutput == this.headingLines[0][i])
         ind = i;
     }
@@ -1233,7 +1255,7 @@ export class TablesComponent {
     else
       this.numCol1 = false;
 
-    console.log(this.selectedMissingValCol);
+    //console.log(this.selectedMissingValCol);
   }
 
   isSelectedMissingValuesCol(item: any) {
@@ -1261,7 +1283,7 @@ export class TablesComponent {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
 
-    console.log(this.selectedToFillMissingValCol);
+    //console.log(this.selectedToFillMissingValCol);
   }
 
   selectedIDOutliers(id : number) {
@@ -1358,19 +1380,19 @@ export class TablesComponent {
   onSelectedToChangeOutliers(event: any) {
     const value = event.target.value;
     this.selectedOutliersCol = value;
-    console.log(value);
+    //console.log(value);
   }
 
   onSelectedValueOutliers(event: any) {
     const value = event.target.value;
     this.selectedToReplaceOutliers = value;
-    console.log(this.selectedToReplaceOutliers);
+    //console.log(this.selectedToReplaceOutliers);
   }
 
   onInputToFillOutliers(event: any) {
     const value = event.target.value;
     this.enteredToReplaceOutliersCol = value;
-    console.log(this.enteredToReplaceOutliersCol);
+    //console.log(this.enteredToReplaceOutliersCol);
   }
 
 }
