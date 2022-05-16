@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
   public lossFunction: string;
   public metrics: any = [];
   public epochs: number = 100;
+  public neuronNum: number = 16;
   public range1: number = 75;
   public range2: number = 90;
   public experimentName: string = "";
@@ -62,7 +63,7 @@ export class DashboardComponent implements OnInit {
 
   layerList = [];
   activationFunctionList = [this.activationFunction];
-  neuronsList = [1,1,1,1,1,1,1,1];
+  neuronsList = [this.neuronNum];
 
   public fileName: string = this.cookieService.get('filename');
   public loggedUser: boolean;
@@ -195,6 +196,8 @@ export class DashboardComponent implements OnInit {
     sessionStorage.removeItem('metrics');
     this.epochs = 100;
     sessionStorage.removeItem('epochs');
+    this.neuronNum = 16;
+    sessionStorage.removeItem('neuronNum');
     this.range1 = 75;
     sessionStorage.removeItem('range1');
     this.range2 = 90;
@@ -204,13 +207,14 @@ export class DashboardComponent implements OnInit {
     this.selectedMetric = "loss";
     this.trained = false;
     this.training = false;
+    this.neuronNum = 16;
 
     this.layerList = [];
-    this.neuronsList = [1,1,1,1,1,1,1,1];
+    this.neuronsList = [this.neuronNum];
     this.layer.id = 1;
     this.layerList.push(this.layer);
-    sessionStorage.setItem('numLayers', (this.layerList.length).toString())
-    sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
+    sessionStorage.removeItem('numLayers');
+    sessionStorage.removeItem('neuronsList');
 
     this.layersLabel = 1;
 
@@ -278,6 +282,7 @@ export class DashboardComponent implements OnInit {
         this.layersLabel = i + 1;
         this.layer = new layer(this.layersLabel);
         this.layerList.push(this.layer);
+        this.neuronsList[i] = this.neuronNum;
         this.activationFunctionList.push(this.activationFunction);
       }
 
@@ -295,6 +300,7 @@ export class DashboardComponent implements OnInit {
     }
     else {
       this.layer.id = 1;
+      this.neuronsList[0] = this.neuronNum;
       this.layerList.push(this.layer);
     }
     
@@ -512,8 +518,9 @@ export class DashboardComponent implements OnInit {
   }
 
   increaseLayers(){
-    if(this.layersLabel < 8) {
+    if(this.layersLabel) {
       this.layersLabel++;
+      this.neuronsList.push(this.neuronNum);
       this.layer = new layer(this.layersLabel);
       this.layerList.push(this.layer);
       if(this.activationFunction == 'custom') {
@@ -524,6 +531,7 @@ export class DashboardComponent implements OnInit {
       }
       sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
       sessionStorage.setItem('numLayers', (this.layerList.length).toString())
+      sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
     }
   }
 
@@ -531,8 +539,9 @@ export class DashboardComponent implements OnInit {
     if(this.layersLabel > 1) {
       this.layersLabel--;
       this.layerList.splice(index);
+      this.neuronsList.splice(index);
       this.activationFunctionList.splice(index);
-      this.neuronsList[index] = 1;
+      this.neuronsList[index] = this.neuronNum;
       sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
       sessionStorage.setItem('numLayers', (this.layerList.length).toString())
       sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
@@ -842,6 +851,10 @@ export class DashboardComponent implements OnInit {
     {
       this.epochs = Number(sessionStorage.getItem('epochs'));
     }
+    if(sessionStorage.getItem('neuronNum'))
+    {
+      this.neuronNum = Number(sessionStorage.getItem('neuronNum'));
+    }
     if(sessionStorage.getItem('modelsTrained'))
     {
       this.modelsTrained = Number(sessionStorage.getItem('modelsTrained'));
@@ -987,6 +1000,11 @@ export class DashboardComponent implements OnInit {
     {
       this.epochs = value;
       sessionStorage.setItem('epochs', (this.epochs).toString());
+    }
+    else if(target == "neuronNum")
+    {
+      this.neuronNum = value;
+      sessionStorage.setItem('neuronNum', (this.neuronNum).toString());
     }
     else if(target == "range1")
     {
