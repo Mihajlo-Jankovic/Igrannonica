@@ -9,12 +9,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from "./app.component";
 import { Error404 } from "./layouts/error-404-page/error-404.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
-import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UserComponent } from "./pages/user/user.component";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
+import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
 import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
 import { LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { NgApexchartsModule } from "ng-apexcharts";

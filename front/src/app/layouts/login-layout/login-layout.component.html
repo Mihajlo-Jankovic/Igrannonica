@@ -14,7 +14,7 @@
         <div class="content">
             <div class="container">
                 <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
-
+                    <!--
                     <div class="warning-wrapper" [hidden]="!validateEmailWarning">
                         <div class="cm-modal">
                             <div class="cm-modal-body">
@@ -29,7 +29,7 @@
                         </div>
                         <div class="cm-modal-background"></div>
                     </div>
-
+                    -->
 
                     <form *ngIf="!forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator && !validateEmailIndicator" class="form" [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
                         <div class=" card card-login">

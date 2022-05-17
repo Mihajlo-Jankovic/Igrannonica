@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NotificationsService } from 'src/app/services/notifications.service';
 import { Configuration } from 'src/app/configuration';
 import { EditPasswordService } from 'src/app/services/edit/edit-password.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-auth-layout',
@@ -53,7 +54,6 @@ export class LoginLayoutComponent implements OnInit {
       email:"",
       code:""
     })
-
   }
 
   ngOnInit(): void {

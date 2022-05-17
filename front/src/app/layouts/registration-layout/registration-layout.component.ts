@@ -111,6 +111,8 @@ export class RegistrationLayoutComponent implements OnInit {
               toastClass: "alert alert-info alert-with-icon",
               positionClass: 'toast-top-center'
             });
+            this.registerCodeIndicator=true;
+            this.emailVerificationIndicator=false;
           }
           else{
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>.', '', {
@@ -121,8 +123,6 @@ export class RegistrationLayoutComponent implements OnInit {
               positionClass: 'toast-top-center'
             });
           }
-          this.registerCodeIndicator=true;
-          this.emailVerificationIndicator=false;
         }, err => {
           this.disableButton = false;
           let JSONtoken: string = JSON.stringify(err.error);
