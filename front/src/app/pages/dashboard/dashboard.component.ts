@@ -563,6 +563,25 @@ export class DashboardComponent implements OnInit {
   
 
   checkProblemType() {
+    if(sessionStorage.getItem('problemType')){
+      this.problemType = sessionStorage.getItem('problemType');
+      console.log("ima u sesiji");
+      console.log(this.problemType);
+    }
+    else {
+      if(sessionStorage.getItem('outputNumeric') == 'false') {
+        this.problemType = "Classification";
+      }
+      else {
+        if (Number(sessionStorage.getItem('outputUniques')) <= Number(sessionStorage.getItem('outputValues')) / 5) {
+          this.problemType = "Classification";
+        }
+        else {
+          this.problemType = "Regression";
+        }
+      }
+    }
+
     if(this.problemType == "Regression"){
       this.lossFunction = "mean_squared_error";
       this.dropdownList = [
@@ -589,7 +608,6 @@ export class DashboardComponent implements OnInit {
       this.metrics = this.selectedItems;
     }
     sessionStorage.setItem('problemType', this.problemType);
-    
   }
 
   multiselect(){
@@ -966,6 +984,12 @@ export class DashboardComponent implements OnInit {
   {
     const target = event.target.name;
     const value = event.target.value;
+    if(target == "problemType")
+    {
+      this.problemType = value;
+      sessionStorage.setItem('problemType', this.problemType);
+      this.checkProblemType();
+    }
     if(target == "encodingType")
     {
       this.encodingType = value;

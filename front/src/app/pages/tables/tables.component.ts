@@ -371,7 +371,7 @@ export class TablesComponent {
       this.selectedOutput = this.headingLines[0][this.headingLines[0].length-2];
       sessionStorage.setItem('output', this.selectedOutput);
       this.pret = this.headingLines[0].length-2;
-      
+      this.outputStorage();
       this.setEncoding();
     }
     else {
@@ -1057,7 +1057,24 @@ export class TablesComponent {
     //console.log(this.pret);
     this.selectedOutput = value;
 
+    this.outputStorage();
+
     sessionStorage.setItem('output', this.selectedOutput);
+  }
+
+  outputStorage() {
+    for(let i = 0; i < this.statistic['colList'].length; i++) {
+      if(this.statistic['colList'][i] == this.selectedOutput) {
+        sessionStorage.setItem('outputValues', this.statistic['jsonList'][i]['rowsNum']);
+        sessionStorage.setItem('outputUniques', this.statistic['jsonList'][i]['uniques']);
+        if(this.statistic['jsonList'][i]['isNumeric'] == 1) {
+          sessionStorage.setItem('outputNumeric', 'true');
+        }
+        else {
+          sessionStorage.setItem('outputNumeric', 'false');
+        }
+      }
+    }
   }
 
   disableOutput(id: number) {

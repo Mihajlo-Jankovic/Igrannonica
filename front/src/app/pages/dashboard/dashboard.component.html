@@ -50,7 +50,7 @@
                 <div class="card-body" style="padding-left: 0; padding-right: 0;">
                     <div class="hyperparameter">
                         <h6>Problem type</h6>
-                        <select class='dropdown' [(ngModel)]="problemType" ngbTooltip="Problem type" (change)='checkProblemType()'>
+                        <select class='dropdown' name="problemType" [(ngModel)]="problemType" ngbTooltip="Problem type" (change)='onSelected($event)'>
                             <option class='option' value="Regression">Regression</option>
                             <option class='option' value="Classification">Classification</option>
                         </select>

@@ -38,8 +38,9 @@ def numeric_column_statistics(df,col):
     max = round(thirdQ + 1.5 * iqr,3)
 
     numOfNulls = (int)(df[col].isnull().sum())
+    unique = df[col].nunique()
 
-    return (rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls)
+    return (rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique)
 
 def not_numeric_column_statistics(df,col):
     rowsNum = df.shape[0]
@@ -64,7 +65,7 @@ def statistics(df,colIndex):
                             "isNumeric": 0, "frequency": frequency, "numOfNulls": numOfNulls})
 
         else:
-            rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,col)
+            rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique = numeric_column_statistics(df,col)
             corrMatrix = df.corr() # Korelaciona matrica
             numOfOutliers = 0
 
@@ -91,7 +92,7 @@ def statistics(df,colIndex):
             
             jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med, 'numOfOutliers': numOfOutliers,
                             "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, "isNumeric": 1,
-                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls,
+                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls, "uniques" : unique,
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
             
         colList.append(col)
@@ -114,7 +115,7 @@ def missing_values(df, colName, fillMethod, specificVal):
 
 
     else:
-        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,colName)
+        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique = numeric_column_statistics(df,colName)
 
         if(fillMethod == "none"):
             df[colName].fillna(specificVal, inplace=True)
@@ -157,7 +158,7 @@ def z_score(df,colName):
     return z_scores
 
 def outliers(df,colName,fillMethod,specificVal):
-    rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls = numeric_column_statistics(df,colName)
+    rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique = numeric_column_statistics(df,colName)
 
     #threshold = 3
     #z_scores = z_score(df,colName)
