@@ -293,17 +293,17 @@
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
-                                    <option class='option' *ngFor="let item of arrMissingValues; let i = index" value="{{item}}">{{item}}</option>
-                                </select>
+                                        <option class='option' *ngFor="let item of arrMissingValues; let i = index" value="{{item}}">{{item}}</option>
+                                    </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select value</h6>
                                 <select [hidden]="!numCol1" class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
-                                    <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
-                                </select>
+                                        <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
+                                    </select>
                                 <select [hidden]="numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
-                                    <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
-                                </select>
+                                        <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
+                                    </select>
                             </div>
                             <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
                                 <p class="orDiv">OR</p>
@@ -324,14 +324,14 @@
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
-                                    <option class='option' *ngFor="let item of numericValues['col']; let i = index" value="{{item}}">{{item}}</option>
-                                </select>
+                                        <option class='option' *ngFor="let item of numericValues['col']; let i = index" value="{{item}}">{{item}}</option>
+                                    </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select value</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedToReplaceOutliers" (change)="onSelectedValueOutliers($event)">
-                                    <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
-                                </select>
+                                        <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
+                                    </select>
                             </div>
                             <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
                                 <p class="orDiv">OR</p>
@@ -343,6 +343,9 @@
                             <div class="dropdownContainerMissingVal">
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers()">CONFIRM</button>
                             </div>
+                        </div>
+                        <div style="border-top: 1px solid #7d3c8b; width: 100%; height:30px; float:left;">
+                            <h6 style="text-align: center; padding-top: 0.5rem;">All unhandled rows with missing values will be deleted when training is started. </h6>
                         </div>
                     </div>
                 </section>
