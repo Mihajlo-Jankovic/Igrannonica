@@ -67,13 +67,6 @@
                             <div class=" card-footer">
                                 <button type="submit" [disabled]="!loginForm.valid"
                                     class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
-                                <div class=" text-center">
-                                    <h6>
-                                        <a class="text-primary" routerLink="/login" routerLinkActive="active"
-                                            (click)="forgotPassword()"> Forgot
-                                            password? </a>
-                                    </h6>
-                                </div>
                                 <div class=" pull-left">
                                     <h6>
                                         <a class="text-primary" routerLink="/register" routerLinkActive="active"> Create
@@ -82,7 +75,9 @@
                                 </div>
                                 <div class=" pull-right">
                                     <h6>
-                                        <a class="text-primary" routerLink="" routerLinkActive="active"> Need Help? </a>
+                                        <a class="text-primary" routerLink="/login" routerLinkActive="active"
+                                        (click)="forgotPassword()"> Forgot
+                                        password? </a>
                                     </h6>
                                 </div>
                             </div>
@@ -222,11 +217,6 @@
 </div>
 <footer class=" footer">
     <div class=" container-fluid">
-        <ul class=" nav">
-            <li class=" nav-item">
-                <a class=" nav-link" href="#"> About Us </a>
-            </li>
-        </ul>
         <div class=" copyright">
             &copy; 2022 made by Cortex.
         </div>
