@@ -112,7 +112,6 @@
                                     <td>MAX</td>
                                     <td>{{max}}</td>
                                 </tr>
-                                <!--
                                 <tr>
                                     <td>SD</td>
                                     <td>{{stdev}}</td>
@@ -121,7 +120,6 @@
                                     <td>IQR</td>
                                     <td>{{iqr}}</td>
                                 </tr>
-                                -->
                                 <tr>
                                     <td>NULLS</td>
                                     <td>{{numOfNulls}}</td>
@@ -179,8 +177,8 @@
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix(); previewMatrix();">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
-                    <div class="corr table-responsive stat" [hidden]="hideM">
-                        <table class=" table" *ngIf="numCol2">
+                    <div class="corr table-responsive stat" [hidden]="hideM" *ngIf="numCol2">
+                        <table class=" table">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -289,7 +287,7 @@
                             <h4 class=" card-title msHeader">There are no missing values in this dataset.</h4>
                         </div>
                         <div class="divMissingValuesCont" [hidden]="!existsMissingValues()">
-                            <h4 class=" card-title msHeader">Select or enter to fill missing values</h4>
+                            <h4 class=" card-title msHeader">Missing values</h4>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
@@ -298,7 +296,7 @@
                             </div>
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select value</h6>
-                                <select [hidden]="!numCol1" class='dropdownMissingVal' [disabled]="isMVDisabled1()" [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
+                                <select [hidden]="!numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
                                         <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
                                     </select>
                                 <select [hidden]="numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
@@ -324,7 +322,7 @@
                             <div class="dropdownContainerMissingVal">
                                 <h6>Select column</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
-                                        <option class='option' *ngFor="let item of numericValues['col']; let i = index" value="{{item}}">{{item}}</option>
+                                        <option class='option' *ngFor="let item of arrAllOutliers; let i = index" value="{{item}}">{{item}}</option>
                                     </select>
                             </div>
                             <div class="dropdownContainerMissingVal">

@@ -161,6 +161,7 @@ export class TablesComponent {
   arrNumOfNulls: any = [];
   arrUnique: any = [];
   arrMissingValues: any = [];
+  arrAllOutliers: any = [];
 
   hideStatistics: boolean = false;
   hideBoxplot: boolean = false;
@@ -182,7 +183,7 @@ export class TablesComponent {
 
   //*
   missingValuesList = [];
-  fillMissingValuesListNum = ["none", "min", "max", "avg", "med", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
+  fillMissingValuesListNum = ["none", "min", "max", "mean", "median", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
   fillMissingValuesListNonNum = ["none", "mostFrequent", "deleteAll"];
   selectedMissingValCol: string;
   selectedMissingValColBoolean: boolean = true;
@@ -191,7 +192,7 @@ export class TablesComponent {
 
   selectedOutliersCol: string;
   selectedToReplaceOutliers: any;
-  replaceOutliersList = ["none", "min", "max", "avg", "med", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
+  replaceOutliersList = ["none", "min", "max", "mean", "median", "firstQ", "thirdQ", "stdev", "iqr", "deleteAll"];
   enteredToReplaceOutliersCol: string = "";
   selectedOutliersRows: any = [];
   //*
@@ -572,6 +573,15 @@ export class TablesComponent {
         this.arrNum.push(this.statistic['jsonList'][i]);
     }
 
+    this.arrAllOutliers = [];
+    for (let i = 0; i < this.statistic['jsonList'].length; i++) {
+      this.statisticData = this.statistic['jsonList'][i];
+
+      if(this.statisticData['isNumeric'] && this.statisticData['numOfOutliers']){
+        this.arrAllOutliers.push(this.statistic['colList'][i]);
+      }
+    }
+
     this.restartStat();
     for (let i = 0; i < this.arrNum.length; i++) {
       this.statisticData = this.statistic['jsonList'][i];
@@ -726,7 +736,7 @@ export class TablesComponent {
     
     this.selectedMissingValCol = this.arrMissingValues[0];
     this.selectedToFillMissingValCol = this.fillMissingValuesListNonNum[0];
-    this.selectedOutliersCol = this.numericValues['col'][0];
+    this.selectedOutliersCol = this.arrAllOutliers[0];
     this.selectedToReplaceOutliers = this.fillMissingValuesListNonNum[0];
   }
 
@@ -1415,7 +1425,7 @@ export class TablesComponent {
   onSelectedToFillMissingValCol(event: any) {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
-
+    this.enteredToFillMissingValCol = "";
     //console.log(this.selectedToFillMissingValCol);
   }
 
@@ -1469,22 +1479,59 @@ export class TablesComponent {
   confirmToFillMissingValues() {
     let filename = this.cookie.get('filename');
     if(this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
-      alert("Popunite sva polja!");
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please choose value to fill missing values.</b>', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
     }
     else {
+      if(this.selectedToFillMissingValCol == "mean")
+        this.selectedToFillMissingValCol = "avg";
+      else if(this.selectedToFillMissingValCol == "median")
+        this.selectedToFillMissingValCol = "med";
+
       if (this.cookie.get('token')) {
         this.tableService.fillMissingValuesAuthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
             console.log(response);
+
+            console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol)
+            this.resetMissingValues();
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
         })
       }
       else {
         this.tableService.fillMissingValuesUnauthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
-            console.log(response);       
+              console.log(response);
+              
+              console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol)  
+              this.resetMissingValues();  
+              this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
           })
         }
     }
+  }
+
+  resetMissingValues() {
+    this.selectedMissingValCol = this.arrMissingValues[0];
+    this.selectedToFillMissingValCol = "none";
+    this.enteredToFillMissingValCol = "";
   }
 
   floatToInt(num: any) {
@@ -1503,23 +1550,60 @@ export class TablesComponent {
     
     let filename = this.cookie.get('filename');
     if(this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
-      alert("Popunite sva polja!");
+      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please choose value to replace outliers.</b>', '', {
+        disableTimeOut: false,
+        closeButton: true,
+        enableHtml: true,
+        toastClass: "alert alert-info alert-with-icon",
+        positionClass: 'toast-top-center'
+      });
     }
     else {
+      if(this.selectedToReplaceOutliers == "mean")
+        this.selectedToReplaceOutliers = "avg";
+      else if(this.selectedToReplaceOutliers == "median")
+        this.selectedToReplaceOutliers = "med";
+
       if (this.cookie.get('token')) {
         this.tableService.changeOutliersAuthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
           (response) => {
             console.log(response);
+
+            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
+            this.resetOutliers();
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
         })
       }
       else {
         this.tableService.changeOutliersUnauthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
           (response) => {
-            console.log(response);       
+            console.log(response);
+            
+            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
+            this.resetOutliers();
+            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
+              disableTimeOut: false,
+              closeButton: true,
+              enableHtml: true,
+              toastClass: "alert alert-info alert-with-icon",
+              positionClass: 'toast-top-center'
+            });
           })
         }
     }
     
+  }
+
+  resetOutliers() {
+    this.selectedOutliersCol = this.arrAllOutliers[0];
+    this.selectedToReplaceOutliers = "none";
+    this.enteredToReplaceOutliersCol = "";
   }
 
   onSelectedToChangeOutliers(event: any) {
@@ -1531,6 +1615,7 @@ export class TablesComponent {
   onSelectedValueOutliers(event: any) {
     const value = event.target.value;
     this.selectedToReplaceOutliers = value;
+    this.enteredToReplaceOutliersCol = "";
     //console.log(this.selectedToReplaceOutliers);
   }
 
