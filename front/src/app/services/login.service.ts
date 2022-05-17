@@ -37,4 +37,14 @@ export class LoginService {
     return this.http.get<any>(this.configuration.tempPassword + email);
   }
 
+  edit(currentPassword: any, newPassword:any){
+    return this.http.post<string>(this.configuration.resetPassword,
+    {
+      "oldPassword": currentPassword,
+      "newPassword": newPassword
+    }
+    
+    )
+  }
+
 }

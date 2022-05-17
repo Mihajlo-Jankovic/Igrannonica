@@ -30,4 +30,5 @@ export class Configuration
     public refreshToken = this.port + "/api/User/refreshToken/";
     public tempPassword = this.port + "/api/User/sendtemppasswordmail/";
     public verifyMail = this.port + "/api/User/verifyMail";
+    public resetPassword = this.port + "/api/User/resetpassword";
 }

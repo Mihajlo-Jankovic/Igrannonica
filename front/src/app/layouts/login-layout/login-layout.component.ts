@@ -31,7 +31,7 @@ export class LoginLayoutComponent implements OnInit {
 
   configuration = new Configuration();
 
-  constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private loginService: LoginService, private editPasswordService : EditPasswordService, private cookie: CookieService, private router: Router, private http: HttpClient) {
+  constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private loginService: LoginService, private editPasswordService: EditPasswordService, private cookie: CookieService, private router: Router, private http: HttpClient) {
     this.loginForm = formBuilder.group({
       username: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$")]],
       password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
@@ -130,51 +130,11 @@ export class LoginLayoutComponent implements OnInit {
     }
   }
 
-  loginTemp(form: FormGroup) {
-    if (form.value.temporaryPassword) {
-      this.loginService.login(this.tempUsername, form.value.temporaryPassword).subscribe(token => {
-        let JSONtoken: string = JSON.stringify(token);
-        let StringToken = JSON.parse(JSONtoken).token;
-
-        this.save(form.value.username, form.value.password);
-        this.cookie.set("token", StringToken);
-        this.cookie.set("username", form.value.username);
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
-        this.createNewPassword();
-
-      }, err => {
-
-        let JSONtoken: string = JSON.stringify(err.error);
-        let StringToken = JSON.parse(JSONtoken).responseMessage;
-
-        if (StringToken == "Error: Wrong password!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-        }
-        else if (StringToken == "Error: Username not found!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong username</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
-        }
-      })
-    }
+  saveTempPassword(form: FormGroup) {
+    this.tempPass = form.value.temporaryPassword;
+    this.createNewPassword();
   }
-
+  
   tempPassword(form: FormGroup) {
     if (form.value.email) {
       this.loginService.resetPassword(form.value.email).subscribe((response: any) => {
@@ -184,10 +144,10 @@ export class LoginLayoutComponent implements OnInit {
         this.createTemporaryPassword();
         this.tempUsername = StringToken;
         console.log(this.tempUsername);
-      },err=>{
+      }, err => {
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if(StringToken == "There is no user with this email.")
+        if (StringToken == "There is no user with this email.")
           this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>There is no user with this email.</b>.', '', {
             disableTimeOut: false,
             closeButton: true,
@@ -200,20 +160,37 @@ export class LoginLayoutComponent implements OnInit {
   }
 
   changePassword(form: FormGroup) {
-    if (form.value.newPassword) {
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
-      this.editPasswordService.edit(this.tempPass, form.value.newPassword).subscribe(token => {
+    console.log(this.tempPass);
+    console.log(form.value.newPassword);
+      this.loginService.edit(this.tempPass, form.value.newPassword).subscribe(token => {
+        console.log("3131");
         let JSONtoken: string = JSON.stringify(token);
-        this.router.navigate(["upload"]);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if (form.value.newPassword) {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+        this.backToLogin();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken == "Wrong password"){
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Temporary password is wrong</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
       })
-    }
+    
   }
-  
+
 
 }
