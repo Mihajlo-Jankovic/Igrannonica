@@ -260,7 +260,7 @@
                 <section>
                     <div class="tab-content">
                         <div [hidden]="!notChecked">
-                            <h3>Please choose input!</h3>
+                            <h4 style="padding: 1rem;">Please choose input.</h4>
                         </div>
                         <div [hidden]="notChecked" class="encoding">
                             <div class="encRow" *ngFor="let item of colDataList; let i = index">
@@ -269,11 +269,11 @@
                                         <p class="encText">{{item['colName']}}</p>
                                     </div>
                                     <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
-                                            <option class='option' value="none|{{item['colName']}}" [selected]="item['encList'][0]" *ngIf="item['isNum']">None</option>
+                                            <option class='option' value="none|{{item['colName']}}" [selected]="item['encList'][0]" *ngIf="item['isNum'] && !item['output']">None</option>
                                             <option class='option' value="label|{{item['colName']}}" [selected]="item['encList'][1]">Label</option>
-                                            <option class='option' value="one-hot|{{item['colName']}}" [selected]="item['encList'][2]">One-Hot</option>
+                                            <option class='option' value="one-hot|{{item['colName']}}" [selected]="item['encList'][2]" *ngIf="!item['output']">One-Hot</option>
                                             <option class='option' value="binary|{{item['colName']}}" [selected]="item['encList'][3]">Binary</option>
-                                            <option class='option' value="frequency|{{item['colName']}}" [selected]="item['encList'][4]">Frequency</option>
+                                            <option class='option' value="frequency|{{item['colName']}}" [selected]="item['encList'][4]" *ngIf="!item['output']">Frequency</option>
                                         </select>
                                 </div>
                             </div>

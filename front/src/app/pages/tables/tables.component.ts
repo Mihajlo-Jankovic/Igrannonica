@@ -83,8 +83,7 @@ export class TablesComponent {
     'isNum': false,
     'encoding': "",
     'encList': [],
-    'numOfOutliers': 0,
-    'outliers': []
+    'output': false
   }
   
   //data: any = { "columns": ["title", "genre", "description", "director", "actors", "year", "runtime_(minutes)", "rating", "votes", "revenue_(millions)", "metascore"], "index": [1, 2, 3, 4, 5], "data": [["Guardians of the Galaxy", "Action,Adventure,Sci-Fi", "A group of intergalactic criminals are forced to work together to stop a fanatical warrior from taking control of the universe.", "James Gunn", "Chris Pratt, Vin Diesel, Bradley Cooper, Zoe Saldana", 2014, 121, 8.1, 757074, 333.13, 76], ["Prometheus", "Adventure,Mystery,Sci-Fi", "Following clues to the origin of mankind, a team finds a structure on a distant moon, but they soon realize they are not alone.", "Ridley Scott", "Noomi Rapace, Logan Marshall-Green, Michael Fassbender, Charlize Theron", 2012, 124, 7.0, 485820, 126.46, 65], ["Split", "Horror,Thriller", "Three girls are kidnapped by a man with a diagnosed 23 distinct personalities. They must try to escape before the apparent emergence of a frightful new 24th.", "M. Night Shyamalan", "James McAvoy, Anya Taylor-Joy, Haley Lu Richardson, Jessica Sula", 2016, 117, 7.3, 157606, 138.12, 62], ["Sing", "Animation,Comedy,Family", "In a city of humanoid animals, a hustling theater impresario's attempt to save his theater with a singing competition becomes grander than he anticipates even as its finalists' find that their lives will never be the same.", "Christophe Lourdelet", "Matthew McConaughey,Reese Witherspoon, Seth MacFarlane, Scarlett Johansson", 2016, 108, 7.2, 60545, 270.32, 59], ["Suicide Squad", "Action,Adventure,Fantasy", "A secret government agency recruits some of the most dangerous incarcerated super-villains to form a defensive task force. Their first mission: save the world from the apocalypse.", "David Ayer", "Will Smith, Jared Leto, Margot Robbie, Viola Davis", 2016, 123, 6.2, 393727, 325.02, 40]] }
@@ -418,7 +417,7 @@ export class TablesComponent {
       this.restartColData();
 
       for(let j = 0; j < this.numericValues['col'].length; j++) {
-        if(this.numericValues['col'][j] == this.statistic['colList'][i]) {
+        if(this.numericValues['col'][j] == this.headingLines[0][i]) {
           this.column['encoding'] = "none";
           f = 1;
         }
@@ -430,9 +429,9 @@ export class TablesComponent {
       this.column['id'] = i;
       this.column['colName'] = this.headingLines[0][i];
       this.column['isSelected'] = true;
-      this.column['isNum'] = this.isNumericFun(this.headingLines[0].length-2[i]);
+      this.column['isNum'] = this.isNumericFun(this.headingLines[0][i]);
       this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
-        
+      this.column['output'] = false;
       this.colDataList.push(this.column);
     }
 
@@ -440,9 +439,9 @@ export class TablesComponent {
     this.restartColData();
     this.column['id'] = this.headingLines[0].length-2;
     this.column['colName'] = this.headingLines[0][this.headingLines[0].length-2];
-    this.column['isSelected'] = false;
+    this.column['isSelected'] = true;
     this.column['isNum'] = this.isNumericFun(this.headingLines[0][this.headingLines[0].length-2]);
-  
+    /*
     f = 0;
     for(let j = 0; j < this.numericValues['col'].length; j++) {
       if(this.numericValues['col'][j] == this.headingLines[0][this.headingLines[0].length-2]) {
@@ -453,7 +452,10 @@ export class TablesComponent {
     if(f == 0) {
       this.column['encoding'] = this.encoding[0];
     }
+    */
+    this.column['encoding'] = this.encoding[0];
     this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
+    this.column['output'] = true;
     this.colDataList.push(this.column);
   
     sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
@@ -476,8 +478,7 @@ export class TablesComponent {
       'isNum': false,
       'encoding': "",
       'encList': [],
-      'numOfOutliers': 0,
-      'outliers': []
+      'output': false
     };
   }
   //*
@@ -561,7 +562,6 @@ export class TablesComponent {
     }
 
   public loadStatistics(col: string) {
-    this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
     this.colListData = [];
     for (let i = 0; i < this.statistic['colList'].length; i++) {
       this.colListData.push(this.statistic['colList'][i]);
@@ -606,18 +606,6 @@ export class TablesComponent {
         this.arrUnique.push(this.arrNum[i]['unique']);
         this.arrNumOfNulls.push(this.arrNum[i]['numOfNulls']);
       }
-    }
-    
-    //cuvanje outliers i numOfOutliers za svaku kolonu
-    for (let i = 0; i < this.statistic['jsonList'].length; i++) {
-      this.statisticData = this.statistic['jsonList'][i];
-      this.outliers = [];
-      for (let j = 0; j < this.statisticData['numOfOutliers']; j++) {
-          this.outliers.push(this.statisticData['outliers'][j]);
-      }
-
-      this.colDataList[i]['numOfOutliers'] = this.statisticData['numOfOutliers'];
-      this.colDataList[i]['outliers'] = this.outliers;
     }
     
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
@@ -710,7 +698,6 @@ export class TablesComponent {
     }
     this.fullCorrValArray.push(valArray);
     }
-    sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
   }
 
   restartStat() {
@@ -982,15 +969,7 @@ export class TablesComponent {
       //*
       for(let i = 0; i < this.colDataList.length; i++) {
         if(this.colDataList[i]['colName'] == value) {
-
           this.colDataList[i]['isSelected'] = false;
-              
-          if(this.colDataList[i]['isNum'])
-            this.colDataList[i]['encoding'] = "none";
-          else
-            this.colDataList[i]['encoding'] = this.encodingList[0];
-          
-          this.colDataList[i]['encList'] = this.getSelectedEnc(this.colDataList[i]['isNum'], this.colDataList[i]['encoding']);
         }
       }
       //*
@@ -998,14 +977,22 @@ export class TablesComponent {
     else {
       //*
       for(let i = 0; i < this.colDataList.length; i++) {
-        if(this.colDataList[i]['colName'] == value)
+        if(this.colDataList[i]['colName'] == value) {
           this.colDataList[i]['isSelected'] = true;
+
+          if(this.colDataList[i]['isNum'])
+            this.colDataList[i]['encoding'] = "none";
+          else
+            this.colDataList[i]['encoding'] = this.encodingList[0];
+    
+          this.colDataList[i]['encList'] = this.getSelectedEnc(this.colDataList[i]['isNum'], this.colDataList[i]['encoding']);
+        }
       }
       //*
     }
 
     for(let i = 0; i < this.colDataList.length; i++) {
-      if(this.colDataList[i]['isSelected'] == true) {
+      if(this.colDataList[i]['isSelected'] == true && this.colDataList[i]['output'] == false) {
         this.listCheckedI.push(this.colDataList[i]['colName']);
       }
     }
@@ -1027,12 +1014,19 @@ export class TablesComponent {
 
     this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
     this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
+    this.selectedOutput = sessionStorage.getItem('output');
 
     for (let i = 0; i < this.colDataList.length; i++) {
       f = 0;
       for (let j = 0; j < this.listCheckedI.length; j++) {
         if(this.colDataList[i]['colName'] == this.listCheckedI[j]) {
           this.colDataList[i]['isSelected'] = true;
+          this.colDataList[i]['output'] = false;
+          f = 1;
+        }
+        else if(this.colDataList[i]['colName'] == this.selectedOutput) {
+          this.colDataList[i]['isSelected'] = true;
+          this.colDataList[i]['output'] = true;
           f = 1;
         }
       }
@@ -1059,6 +1053,21 @@ export class TablesComponent {
 
     this.outputStorage();
 
+    this.colDataList = JSON.parse(sessionStorage.getItem('columnData'));
+
+    this.colDataList[ind]['isSelected'] = false;
+    this.colDataList[ind]['output'] = false;
+    
+    for(let i = 0; i < this.colDataList.length; i++) {
+      if(this.colDataList[i]['colName'] == value) {
+        this.colDataList[i]['isSelected'] = true;
+        this.colDataList[i]['output'] = true;
+        this.colDataList[i]['encoding'] = this.encodingList[0];
+        this.colDataList[i]['encList'] = this.getSelectedEnc(this.colDataList[i]['isNum'], this.colDataList[i]['encoding']);
+      }
+    }
+
+    sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
     sessionStorage.setItem('output', this.selectedOutput);
   }
 
