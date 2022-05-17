@@ -303,6 +303,11 @@ td {
     color: #7d3c8b;
     max-width: 42px;
     font-size: 15px;
+    float: right;
+}
+
+.pageNum {
+    padding-top: 0.5rem;
 }
 
 .divOutput,
@@ -429,7 +434,8 @@ input[type='radio']:checked:after {
 
 .buttons {
     height: 80px;
-    padding-top: 15px;
+    padding-top: 35px;
+    width: auto;
 }
 
 .trash {
@@ -437,7 +443,7 @@ input[type='radio']:checked:after {
     float: right;
     margin: 0;
     padding-left: 0;
-    padding-top: 15px;
+    padding-top: 30px;
     width: 42px;
 }
 
@@ -1092,6 +1098,14 @@ body.warning-modal-open {
     width: 50%;
     float: left;
     padding-bottom: 1rem;
+}
+
+.continue {
+    width: 300px;
+    height: 42px;
+    padding: 0px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 $cell-color: #27293d;

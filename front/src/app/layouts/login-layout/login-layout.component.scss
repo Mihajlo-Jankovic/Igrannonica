@@ -37,39 +37,39 @@ body {
 .warning-btn {
     width: 80%;
     height: 48px;
-    margin-right: 30px;
+    margin: auto;
 }
 
-    .cm-modal {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1000;
-        //overflow: auto;
-    }
-    
-    .cm-modal-body {
-        padding: 60px;
-        background: transparent;
-        //overflow: auto;
-    }
-    
-    .cm-modal-background {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        opacity: 0.75;
-        z-index: 900;
-    }
-    
-    body.cm-modal-open {
-        overflow: hidden;
-    }
-    
+.warning-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    //overflow: auto;
+}
+
+.warning-modal-body {
+    padding: 60px;
+    background: transparent;
+    //overflow: auto;
+}
+
+.warning-modal-background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    opacity: 0.75;
+    z-index: 900;
+}
+
+body.warning-modal-open {
+    overflow: hidden;
+}
 
 .container {
     position: fixed;
@@ -77,8 +77,9 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-p{
-    padding:20px;
+
+p {
+    padding: 20px;
 }
 
 footer {

@@ -1,3 +1,17 @@
+<div class="warning-wrapper" [hidden]="!validateEmailWarning">
+    <div class="warning-modal">
+        <div class="warning-modal-body">
+            <div class="warning-body" style="padding: 0.5%;overflow: auto;">
+                <div class="warning-content">
+                    <h2>You have to verify your mail!</h2>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="validateEmail()">Verify Email</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="backToLogin()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="warning-modal-background"></div>
+</div>
 <div class="header">
     <div class="headerLeft">
         <div class="img"></div>

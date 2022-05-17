@@ -341,7 +341,7 @@
                                 <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToReplaceOutliersCol" (change)="onInputToFillOutliers($event)">
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers()">CONFIRM</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers();">CONFIRM</button>
                             </div>
                         </div>
                         <div style="border-top: 1px solid #7d3c8b; width: 100%; height:30px; float:left;">
@@ -354,7 +354,7 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class=" card-header" style="padding:0px;">
-                    <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">{{getFileName()}}</h3>
+                    <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">Uploaded data</h3>
                     <div class="headerLeft" style="padding-top: 8px;">
                         <div class="dropdownContainer">
                             <h6>Filter rows</h6>
@@ -374,7 +374,7 @@
                                 <option class='option' value="100">100</option>
                             </select>
                         </div>
-                        <div class="dropdownContainer" [hidden]="selectedType != 'outlier'">
+                        <div class="dropdownContainer dpr" [hidden]="selectedType != 'outlier'">
                             <h6>Choose column to view outliers</h6>
                             <select class="dropdown" [(ngModel)]="selectedOutlierColumn" ngbTooltip="Showing data with outliers for selected column" (change)="onSelectedOutlierColumn($event, true)">
                                 <option class="option" *ngFor="let item of numericValues['col']; let i = index" >{{item}}</option>
@@ -394,19 +394,19 @@
                             <button class=" btn btn-link page" style="padding-left: 0; padding-right: 0px;" (click)="nextPage(1)">
                                 <i class="tim-icons icon-minimal-right arrow"></i>
                             </button>
-                            <button class=" btn btn-link page" style="padding-right: 0px;" (click)="nextPage(2)" [hidden]="page >= maxPage-1">
+                            <button class=" btn btn-link page pageNum" style="padding-right: 0px;" (click)="nextPage(2)" [hidden]="page >= maxPage-1">
                                 {{page+2}}
                             </button>
-                            <button class=" btn btn-link page" (click)="nextPage(1)" [hidden]="page == maxPage">
+                            <button class=" btn btn-link page pageNum" (click)="nextPage(1)" [hidden]="page == maxPage">
                                 {{page+1}}
                             </button>
-                            <button class=" btn btn-link page" style="color: white;">
+                            <button class=" btn btn-link page pageNum" style="color: white;">
                                 {{page}}
                             </button>
-                            <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="page == 1">
+                            <button class=" btn btn-link page pageNum" (click)="previousPage(1)" [hidden]="page == 1">
                                 {{page-1}}
                             </button>
-                            <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="page < 3">
+                            <button class=" btn btn-link page pageNum" (click)="previousPage(2)" [hidden]="page < 3">
                                 {{page-2}}
                             </button>
                             <button class=" btn btn-link page" style="padding-left:0px;" (click)="previousPage(1)">
@@ -418,6 +418,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class=" card-body">
                     <div style="margin: auto" *ngIf="!maxPage">
                         <h1 style="text-align:center">{{selectedTypeMessage()}}</h1>
@@ -459,9 +460,9 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="card" style="background : transparent; padding-top: 0px;">
+            <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" routerLink="/dashboard" routerLinkActive="active">Continue</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 continue" routerLink="/dashboard" routerLinkActive="active">Continue</button>
                 </div>
             </div>
         </div>
