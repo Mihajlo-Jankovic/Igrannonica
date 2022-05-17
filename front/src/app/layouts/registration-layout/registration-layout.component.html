@@ -3,8 +3,10 @@
         <div class="img"></div>
     </div>
     <div class="headerRight">
-        <a class="navItem white login" routerLink="/login" routerLinkActive="active"><i class=" tim-icons icon-laptop"></i> LOG IN </a>
-        <a class="navItem text-primary upload" routerLink="/upload" routerLinkActive="active"><i class=" tim-icons icon-minimal-left"></i> Back to Playground </a>
+        <a class="navItem white login" routerLink="/login" routerLinkActive="active"><i
+                class=" tim-icons icon-laptop"></i> LOG IN </a>
+        <a class="navItem text-primary upload" routerLink="/upload" routerLinkActive="active"><i
+                class=" tim-icons icon-minimal-left"></i> Back to Playground </a>
     </div>
 </div>
 <div class="wrapper wrapper-full-page">
@@ -12,7 +14,8 @@
         <div class="content">
             <div class="container">
                 <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
-                    <form class="form" novalidate [formGroup]="registerForm" (ngSubmit)="registration(registerForm)">
+
+                    <form *ngIf="!registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate [formGroup]="registerForm" (ngSubmit)="registration(registerForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
                                 <h1 class=" card-title">Register</h1>
@@ -91,26 +94,68 @@
                                     <input type="password" placeholder="Confirm password" name="confirmPassword" formControlName="confirmPassword" class="form-control">
                                 </div>
                                 <div *ngIf="m.confirmPassword.touched && m.confirmPassword!=m.password" class="input-group">
-                                    <div *ngIf="m.confirmPassword.errors?.required">Please re-enter your password for confirmation!</div>
+                                    <div *ngIf="m.confirmPassword.errors?.required">Please re-enter your password for confirmation!
+                                    </div>
                                     <div *ngIf="m.confirmPassword.errors?.pattern">*Password mismatched!</div>
                                 </div>
 
                             </div>
                             <div class=" card-footer">
                                 <button type="submit" [disabled]="!registerForm.valid || disableButton" class="btn btn-primary btn-lg btn-block mr-1">Register</button>
-                                <div class=" pull-left">
+                                <div class=" text-center">
                                     <h6>
-                                        <a class="text-primary" routerLink="/login" routerLinkActive="active"> Already have an account? </a>
+                                        <a class="text-primary" routerLink="/login" routerLinkActive="active">
+                                            Already have an account? 
+                                        </a>
                                     </h6>
                                 </div>
-                                <div class=" pull-right">
-                                    <h6>
-                                        <a class="text-primary" routerLink="" routerLinkActive="active"> Need Help? </a>
-                                    </h6>
-                                </div>
+
                             </div>
                         </div>
                     </form>
+
+                    <form *ngIf="registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate [formGroup]="registerCodeForm" (ngSubmit)="emailCode(registerCodeForm)">
+                        <div class=" card card-login">
+                            <div class=" card-header">
+                                <h1 class=" card-title">Mail Verification</h1>
+                            </div>
+                            <div class=" card-body">
+                                <div class=" pull-left">
+                                    <h6>
+                                        <p class="text-primary"> {{emailCodeVerification}} </p>
+                                    </h6>
+                                </div>
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Code" name="code" formControlName="code" class="form-control">
+                                </div>
+                            </div>
+                            <div class=" card-footer">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mr-1">Verify</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form *ngIf="!registerCodeIndicator && emailVerificationIndicator" class="form" novalidate [formGroup]="emailVerificationForm" (ngSubmit)="registration(emailVerificationForm)">
+                        <div class=" card card-login">
+                            <div class=" card-header">
+                                <h1 class=" card-title">Thank you for verification</h1>
+                            </div>
+                            <div class=" card-body">
+                                <div class="text-center">
+                                    <a class="text-primary" routerLink="/login" routerLinkActive="active">Login</a>
+                                </div>
+                            </div>
+                            <div class=" card-footer">
+
+                            </div>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -118,11 +163,6 @@
 </div>
 <footer class=" footer">
     <div class=" container-fluid">
-        <ul class=" nav">
-            <li class=" nav-item">
-                <a class=" nav-link" href="#"> About Us </a>
-            </li>
-        </ul>
         <div class=" copyright">
             &copy; 2022 made by Cortex.
         </div>

@@ -35,9 +35,6 @@ namespace Igrannonica.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
         private readonly MySqlContext _context;
-
-        private string mongoConnString = "mongodb://Cortex:hPkyrLiG@147.91.204.115:10109/Cortex"; // mongodb://Cortex:hPkyrLiG@localhost:10109/?authSource=admin 1
-
         
 
 
@@ -49,40 +46,12 @@ namespace Igrannonica.Controllers
 
             _hostEnvironment = hostEnvironment;
 
-            /*if(_env.IsProduction()) mongoConnString = _configuration.GetConnectionString("MongoProdConnection");
-            else mongoConnString = _configuration.GetConnectionString("MongoDevConnection");
-
-            Console.WriteLine(mongoConnString);*/
         }
 
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
         {
-            /*var message = new MimeMessage();
-            var bodyBuilder = new BodyBuilder();
-
-            // from
-            message.From.Add(new MailboxAddress("Cortex", "cortexigrannonica@hotmail.com"));
-            // to
-            message.To.Add(new MailboxAddress(request.firstname, request.email));
-
-            message.Subject = "Mail verification";
-            bodyBuilder.TextBody = "Thank for registering, please fill the following numbers into the registration form at the website";
-            message.Body = bodyBuilder.ToMessageBody();
-
-            using (var client = new SmtpClient())
-            {
-                // Note: don't set a timeout unless you REALLY know what you are doing.
-                //client.Timeout = 1000 * 20;
-
-                client.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
-                client.Authenticate("cortexigrannonica@hotmail.com", "Cortexigrannonic;1");
-                client.Send(message);
-            }
-
-
-            Console.WriteLine("email sent");*/
             User user = _context.User.Where(u => u.username == request.username).FirstOrDefault();
             if(user != null)
             {
@@ -94,6 +63,29 @@ namespace Igrannonica.Controllers
                 return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:MailTaken").Value });
             }
 
+            Random randomNumbers = new();
+            int randomNumber = randomNumbers.Next(1000, 9999);
+            MimeMessage message = new();
+            BodyBuilder bodyBuilder = new();
+
+            // from
+            message.From.Add(new MailboxAddress("Cortex", "cortexigrannonica@hotmail.com"));
+            // to
+            message.To.Add(new MailboxAddress(request.firstname, request.email));
+
+            message.Subject = "Mail verification";
+            bodyBuilder.TextBody = "Thanks for registering, please fill the following numbers into the registration form at the website " + randomNumber;
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+
+                client.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
+                client.Authenticate("cortexigrannonica@hotmail.com", "Cortexigrannonic;1");
+                client.Send(message);
+            }
+
+
             CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
 
             this.user.id = request.id;
@@ -103,6 +95,8 @@ namespace Igrannonica.Controllers
             this.user.passwordHash = passwordHash;
             this.user.passwordSalt = passwordSalt;
             this.user.username = request.username;
+            this.user.verifiedMail = false;
+            this.user.verifyNumber = randomNumber;
 
             _context.User.Add(this.user);
             await _context.SaveChangesAsync();
@@ -111,6 +105,25 @@ namespace Igrannonica.Controllers
 
             return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
+
+        [HttpGet("verifyMail")]
+        public async Task<IActionResult> VerifyMail(int verifyNumber, string email)
+        {
+            User user = _context.User.Where(u => u.email == email).FirstOrDefault();
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
+            if (user.verifyNumber != verifyNumber)
+                return BadRequest(new { responseMessage = "Error: Wrong number!" });
+            if (user.verifiedMail == true)
+                return BadRequest(new { reponseMessage = "Error: Mail already verified!" });
+
+            user.verifiedMail = true;
+
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok(new { responseMessage = "Succesfull registration!" });
+        }
+
 
         [HttpPost("EditUserName"), Authorize]
         public async Task<ActionResult<User>> EditUserName(UpdateUserNameDTO request)
@@ -149,6 +162,83 @@ namespace Igrannonica.Controllers
             return Ok(new { responseMessage = _configuration.GetSection("ResponseMessages:Success").Value });
         }
 
+        [HttpGet("sendtemppasswordmail/{email}")]
+        public async Task<IActionResult> SendResetPasswordMail(string email)
+        {
+            User user = await _context.User.Where(u => u.email == email).FirstOrDefaultAsync();
+
+            if(user==null)
+            {
+                return NotFound("There is no user with this email.");
+            }
+
+            var builder = new StringBuilder(8);
+            Random randomNumbers = new();
+            char offset = 'a';
+            int lettersOffset = 26;
+            for(var i=0;i<4;i++)
+            {
+                var @char = (char)randomNumbers.Next(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+            int randomNumber = randomNumbers.Next(1000, 9999);
+            builder.Append(randomNumber);
+            offset = 'A';
+            lettersOffset = 26;
+            for (var i = 0; i < 2; i++)
+            {
+                var @char = (char)randomNumbers.Next(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+            MimeMessage message = new();
+            BodyBuilder bodyBuilder = new();
+
+            // from
+            message.From.Add(new MailboxAddress("Cortex", "cortexigrannonica@hotmail.com"));
+            // to
+            message.To.Add(new MailboxAddress("Reset Password", email));
+
+            message.Subject = "Password reset";
+            bodyBuilder.TextBody = "To reset your password, login with this temporary password and then change it. The temporary password is valid for the next hour. " + builder.ToString();
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+
+                client.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
+                client.Authenticate("cortexigrannonica@hotmail.com", "Cortexigrannonic;1");
+                client.Send(message);
+            }
+
+            user.tempPassword = builder.ToString();
+
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+            return Ok( new { responseMessage = "Success!", user.username});
+        }
+
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword(UpdateUserPasswordDTO update)
+        {
+
+            User user = await _context.User.Where(u => u.tempPassword == update.oldPassword).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return BadRequest(new { responseMessage = "Wrong password" });
+            }
+
+            CreatePasswordHash(update.newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.passwordHash = passwordHash;
+            user.passwordSalt = passwordSalt;
+
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { responseMessage = "Success!" });
+        }
+
         [HttpGet("GetNameSurnameEmail"), Authorize]
         public ActionResult<object> GetNameSurnameEmail()
         {
@@ -183,6 +273,10 @@ namespace Igrannonica.Controllers
             if (!VerifyPasswordHash(loginDTO.password, user.passwordHash, user.passwordSalt))
             {
                 return BadRequest(new { responseMessage = _configuration.GetSection("ResponseMessages:WrongPassword").Value });
+            }
+            if(user.verifiedMail == false)
+            {
+                return BadRequest(new { responseMessage = "Error: You have to verify your mail!" });
             }
             token.token = CreateToken(user);
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token.token);

@@ -17,6 +17,12 @@ export class RegistrationLayoutComponent implements OnInit {
 
   public disableButton: boolean = false;
   public registerForm: FormGroup;
+  public registerCodeForm: FormGroup;
+  public emailVerificationForm: FormGroup;
+  public registerCodeIndicator: boolean =false;
+  public emailVerificationIndicator: boolean=false;
+  
+  public emailCodeVerification: string;
 
   constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private registerService: RegistrationService, private cookie: CookieService, private router: Router) {
     this.registerForm = formBuilder.group({
@@ -27,13 +33,65 @@ export class RegistrationLayoutComponent implements OnInit {
       password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
       confirmPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     })
+    this.registerCodeForm = formBuilder.group({
+      code: ""
+    })
+    this.emailVerificationForm = formBuilder.group({})
   }
 
   ngOnInit(): void {
+  
   }
 
   public get m() {
     return this.registerForm.controls;
+  }
+
+  emailCode(form:FormGroup){
+    if(form.value.code){
+      this.registerService.verifyMail(form.value.code,this.emailCodeVerification).subscribe(token=>{
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        this.registerCodeIndicator=false;
+        this.emailVerificationIndicator=true;
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if (StringToken == "Error: Username not found!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username not found</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+        else if (StringToken == "Error: Wrong number!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong code</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+        else if (StringToken == "Error: Mail already verified!") {
+          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Mail already verified!</b>.', '', {
+            disableTimeOut: false,
+            closeButton: true,
+            enableHtml: true,
+            toastClass: "alert alert-info alert-with-icon",
+            positionClass: 'toast-top-center'
+          });
+        }
+
+      }) 
+      
+    }
+  }
+
+  toLogin(){
+    this.router.navigate(["login"]);
   }
 
   registration(form: FormGroup) {
@@ -44,8 +102,8 @@ export class RegistrationLayoutComponent implements OnInit {
           this.disableButton = false;
           let JSONtoken: string = JSON.stringify(token);
           let StringToken = JSON.parse(JSONtoken).token;
-          if (form.value.password == form.value.confirmPassword){
-          this.router.navigate(['/login']);
+          this.emailCodeVerification = form.value.email;
+          if (form.value.password == form.value.confirmPassword) {
             this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Congratulations, your account has been successfully created </b>.', '', {
               disableTimeOut: false,
               closeButton: true,
@@ -63,6 +121,8 @@ export class RegistrationLayoutComponent implements OnInit {
               positionClass: 'toast-top-center'
             });
           }
+          this.registerCodeIndicator=true;
+          this.emailVerificationIndicator=false;
         }, err => {
           this.disableButton = false;
           let JSONtoken: string = JSON.stringify(err.error);

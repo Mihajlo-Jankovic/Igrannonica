@@ -35,4 +35,7 @@ export class Configuration
     public fillMissingValuesAuthorized = this.port + "/api/Csv/fillMissingValuesAuthorized";
     public changeOutliersUnauthorized = this.port + "/api/Csv/changeOutliersUnauthorized";
     public changeOutliersAuthorized = this.port + "/api/Csv/changeOutliersAuthorized";
+    public tempPassword = this.port + "/api/User/sendtemppasswordmail/";
+    public verifyMail = this.port + "/api/User/verifyMail";
+    public resetPassword = this.port + "/api/User/resetpassword";
 }
