@@ -7,7 +7,8 @@
     color: #c6c6c9;
     font-weight: bold;
 }
-.dropdown {
+
+.dropdownLanguage {
     font-size: 14px;
     background: transparent;
     border: 1px solid #7d3c8b;
@@ -22,9 +23,10 @@
     min-width: none;
 }
 
-.dropdown:focus {
+.dropdownLanguage:focus {
     border-color: #7d3c8b;
 }
+
 .option {
     line-height: 1;
     border: 0;
@@ -37,7 +39,6 @@
     color: white;
     background: #27293d;
 }
-
 
 .login:hover {
     border-color: white;
