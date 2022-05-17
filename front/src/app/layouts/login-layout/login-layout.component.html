@@ -15,7 +15,23 @@
             <div class="container">
                 <div class=" col-lg-4 col-md-6 ml-auto mr-auto">
 
-                    <form *ngIf="!forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator"
+                    <div class="warning-wrapper" [hidden]="!validateEmailWarning">
+                        <div class="cm-modal">
+                            <div class="cm-modal-body">
+                                <div class="warning-body" style="padding: 0.5%;overflow: auto;">
+                                    <div class="warning-content">
+                                        <h2>You have to verify your mail!</h2>
+                                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="validateEmail()">Verify Email</button>
+                                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="backToLogin()">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cm-modal-background"></div>
+                    </div>
+                
+
+                    <form *ngIf="!forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator && !validateEmailIndicator"
                         class="form" novalidate [formGroup]="loginForm" (ngSubmit)="login(loginForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
@@ -74,7 +90,7 @@
                     </form>
 
 
-                    <form *ngIf="forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator"
+                    <form *ngIf="forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator && !validateEmailIndicator"
                         class="form" novalidate [formGroup]="searchEmailForm">
                         <div class=" card card-login">
                             <div class=" card-header">
@@ -101,7 +117,7 @@
                         </div>
                     </form>
 
-                    <form *ngIf="temporaryPasswordIndicator && !newPasswordIndicator" class="form" novalidate
+                    <form *ngIf="temporaryPasswordIndicator && !newPasswordIndicator && !validateEmailIndicator" class="form" novalidate
                         [formGroup]="tempPasswordForm" >
                         <div class=" card card-login">
                             <div class=" card-header">
@@ -162,6 +178,39 @@
                                 <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="changePassword(changePasswordForm)">Continue</button>
                                 <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">Cancel</button>
 
+                            </div>
+                        </div>
+                    </form>
+
+                    <form *ngIf="validateEmailIndicator" class="form" novalidate [formGroup]="validateEmailForm"
+                    (ngSubmit)="emailCode(validateEmailForm)">
+                        <div class=" card card-login">
+                            <div class=" card-header">
+                                <h1 class=" card-title">Mail Verification</h1>
+                            </div>
+                            <div class=" card-body">
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Email" name="email" formControlName="email"
+                                        class="form-control">
+                                </div>
+                                <div class="input-group">
+                                    <div class=" input-group-prepend">
+                                        <div class=" input-group-text">
+                                            <i class=" tim-icons icon-single-02"></i>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Code" name="code" formControlName="code"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class=" card-footer">
+                                <button type="submit" 
+                                    class="btn btn-primary btn-lg btn-block mr-1">Verify</button>
                             </div>
                         </div>
                     </form>

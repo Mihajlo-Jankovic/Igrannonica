@@ -46,5 +46,8 @@ export class LoginService {
     
     )
   }
+  verifyMail(code:number,email:string){
+    return this.http.get<any>(this.configuration.verifyMail + "?verifyNumber="+ code + "&" + "email=" + email);
+  }
 
 }
