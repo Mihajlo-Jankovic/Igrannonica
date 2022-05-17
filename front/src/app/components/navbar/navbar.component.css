@@ -7,6 +7,37 @@
     color: #c6c6c9;
     font-weight: bold;
 }
+.dropdown {
+    font-size: 14px;
+    background: transparent;
+    border: 1px solid #7d3c8b;
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+    margin-top: 8px;
+    height: 42px;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    min-width: none;
+}
+
+.dropdown:focus {
+    border-color: #7d3c8b;
+}
+.option {
+    line-height: 1;
+    border: 0;
+    padding: 0;
+    border-radius: 6px;
+    width: 120%;
+    position: relative;
+    z-index: 10;
+    font-size: 1em;
+    color: white;
+    background: #27293d;
+}
+
 
 .login:hover {
     border-color: white;

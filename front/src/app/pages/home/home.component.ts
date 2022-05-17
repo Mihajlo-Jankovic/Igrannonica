@@ -20,6 +20,8 @@ export class HomeComponent implements OnInit {
         this.cookieCheck = this.cookie.get('token');
     }
     
+    
+
     ngOnInit() {
         if(sessionStorage.getItem('lastPage') && sessionStorage.getItem('lastPage') != 'home') {
             console.log(sessionStorage.getItem('lastPage'));

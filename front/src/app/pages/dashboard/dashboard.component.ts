@@ -361,6 +361,8 @@ export class DashboardComponent implements OnInit {
       }
     };
 
+   
+
     this.chart_labels = [];
 
     this.canvas = document.getElementById("chartBig1");

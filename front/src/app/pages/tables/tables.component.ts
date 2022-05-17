@@ -1107,7 +1107,12 @@ export class TablesComponent {
         if (element == id) this.selectedRows.splice(index, 1)
       });
     }
-    console.log(this.selectedRows)
+    
+    // if(this.selectedRows.length == 0){
+    //   this.deleteIndicator=false;
+    // }
+    // else this.deleteIndicator=true;
+    // console.log(this.selectedRows)
   }
 
   onSelectedEnc(event : any)
@@ -1154,7 +1159,8 @@ export class TablesComponent {
 
   async deleteRows()
   {
-      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(err =>
+
+      await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res =>
         {
           this.clearStorage();
           this.reset();

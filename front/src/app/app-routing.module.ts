@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { BrowserModule } from "@angular/platform-browser";
 import { Routes, RouterModule } from "@angular/router";
-
+import { TranslateModule } from '@ngx-translate/core';  
 import { Error404 } from "./layouts/error-404-page/error-404.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
@@ -42,6 +42,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     BrowserModule,
+    TranslateModule,
     RouterModule.forRoot(routes, { useHash: true })
   ],
   exports: [RouterModule]

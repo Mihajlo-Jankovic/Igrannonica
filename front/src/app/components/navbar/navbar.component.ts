@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from "ngx-cookie-service";
 import { LoginService } from "src/app/services/login.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-navbar",
@@ -39,14 +40,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
     sessionStorage.clear();
     this.router.navigate(["upload"]);
   }
+
+  translateLanguageTo(lang: string) {
+    this.translate.use(lang);
+  }
+
   constructor(
     location: Location,
     private element: ElementRef,
     private router: Router,
     private modalService: NgbModal,
     private loginService: LoginService,
-    private cookie : CookieService
+    private cookie : CookieService,
+    public translate : TranslateService
   ) {
+
+    translate.addLangs(['en', 'sr']);
+    translate.setDefaultLang('en');
+
     this.location = location;
     this.sidebarVisible = false;
 

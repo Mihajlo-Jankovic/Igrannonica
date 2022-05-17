@@ -84,11 +84,16 @@
                         </li>
                     </ul>
                 </li>
+                <select class='dropdownLanguage' #selLang (change)="translateLanguageTo(selLang.value)">
+                    <option *ngFor="let language of translate.getLangs()" [value]="language">{{ language }}</option>
+                </select>
+                <!-- <h1>{{ "TITLE" | translate}}</h1> -->
+
                 <li class=" nav-item  navbar-collapse" *ngIf="!cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <ul class=" navbar-nav ml-auto">
                         <li class=" nav-link">
                             <a class="login" routerLink="/login" routerLinkActive="active" ngbDropdownItem>
-                                LOG IN
+                                {{'Login' | translate}}
                             </a>
                         </li>
                         <li class=" nav-link">

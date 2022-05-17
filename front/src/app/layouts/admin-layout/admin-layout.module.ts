@@ -4,7 +4,7 @@ import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
-
+import { TranslateModule } from '@ngx-translate/core';  
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
 import { TablesComponent } from "../../pages/tables/tables.component";
@@ -20,6 +20,7 @@ import { HomeComponent } from "src/app/pages/home/home.component";
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
     HttpClientModule,
+    TranslateModule,
     NgbModule,
     NgApexchartsModule,
     NgMultiSelectDropDownModule.forRoot()
