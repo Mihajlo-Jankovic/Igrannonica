@@ -5,6 +5,7 @@ import { CookieService } from "ngx-cookie-service";
 import { Configuration } from "src/app/configuration";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
+import Chart from 'chart.js';
 
 import {
   ChartComponent,
@@ -176,6 +177,13 @@ export class TablesComponent {
   encoding: boolean = false;
   dataPreprocessing: boolean = false;
 
+  plotButton: string = "Pie Chart"
+  public canvas: any;
+  public ctx;
+  pieChart: any;
+  differentValues = true;
+  showPieChart: boolean = false;
+
   //*
   notChecked: boolean = false;
   encodingList = ["label", "one-hot", "binary", "frequency"];
@@ -227,6 +235,85 @@ export class TablesComponent {
     if (this.cookieCheck) {
       this.refreshToken();
     }
+    this.chartConfig();
+  }
+
+  chartConfig() {
+    setTimeout(() => { 
+      this.canvas = document.getElementById("pie-chart");
+      this.ctx = this.canvas.getContext("2d");
+
+    const pieOptions = {
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+
+      tooltips: {
+        backgroundColor: '#f5f5f5',
+        titleFontColor: '#333',
+        bodyFontColor: '#666',
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest"
+      },
+      responsive: true
+    }
+
+    const config = {
+      type: 'pie',
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: []
+        }]
+      },
+      options: pieOptions
+    };
+
+    this.pieChart = new Chart(this.ctx, config);
+    }, 50);
+  }
+
+  plotCheck() {
+    if(this.plotButton == 'Pie Chart'){
+      this.plotButton = 'Box Plot'
+      this.updatePieChart();
+    }
+    else {
+      this.plotButton = 'Pie Chart';
+      this.differentValues = true;
+      this.showPieChart = false;
+    }
+  }
+
+  updatePieChart() {
+    var index = this.statistic['colList'].indexOf(this.selectedColName, 0);
+    var uniqueList = this.statistic['jsonList'][index]['uniqueList'];
+
+    if(Object.keys(uniqueList).length < 100) {
+      this.differentValues = true;
+      this.showPieChart = true;
+      this.pieChart.data.labels = Object.keys(uniqueList);
+      this.pieChart.data.datasets[0].data = Object.values(uniqueList);
+      this.pieChart.data.datasets[0].backgroundColor = [];
+      for(let i = 0; i < Object.values(uniqueList).length; i++) {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+
+        this.pieChart.data.datasets[0].backgroundColor[i] = "rgb(" + r + "," + g + "," + b + ")";
+      }
+      this.pieChart.update();
+    }
+    else {
+      this.differentValues = false;
+      this.showPieChart = false;
+    }
+    
   }
 
   getFileName() {
@@ -834,7 +921,7 @@ export class TablesComponent {
         }
       ],
       chart: {
-        height: 280,
+        height: 350,
         type: "boxPlot",
         foreColor: '#ced4da',
 
