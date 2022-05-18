@@ -21,7 +21,7 @@ export class ExperimentsComponent implements OnInit {
   loggedUser : boolean;
   pageNum: any = 1;
   numOfPages: any = 0;
-  numPerPage: any = 4;
+  numPerPage: any = 6;
   listOfExperimentsAuthorized: any = [];
   listOfExperimentsUnauthorized: any = [];
   selectedPrivacyType: string = "public";
@@ -283,12 +283,10 @@ export class ExperimentsComponent implements OnInit {
   deleteCheck(item) {
     this.deleteWarning = true;
     this.toDelete = item;
-    console.log(item);
   }
 
   deleteExperiments(id : any)
   {
-    console.log(this.toDelete);
     this.userService.deleteExperiment(id).subscribe(res => {
       if(res['id']) {
         this.notify.showNotification("Experiment deleted successfully.");
@@ -315,6 +313,8 @@ export class ExperimentsComponent implements OnInit {
         item = res;
       });
     }
+
+    sessionStorage.clear();
 
     var metricsList = [];
     var metrics = item.models[0].parameters.metrics;
@@ -400,19 +400,19 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.setItem('description', item.description);
     sessionStorage.setItem('experimentName', item.name);
 
-    sessionStorage.removeItem('problemType');
-    sessionStorage.removeItem('optimizer');
-    sessionStorage.removeItem('regularization');
-    sessionStorage.removeItem('lossFunction');
-    sessionStorage.removeItem('range');
-    sessionStorage.removeItem('activationFunction');
-    sessionStorage.removeItem('activationFunction');
-    sessionStorage.removeItem('regularizationRate');
-    sessionStorage.removeItem('epochs');
-    sessionStorage.removeItem('neuronNum');
-    sessionStorage.removeItem('chartData');
-    sessionStorage.removeItem('numLayers');
-    sessionStorage.removeItem('neuronsList');
+    // sessionStorage.removeItem('problemType');
+    // sessionStorage.removeItem('optimizer');
+    // sessionStorage.removeItem('regularization');
+    // sessionStorage.removeItem('lossFunction');
+    // sessionStorage.removeItem('range');
+    // sessionStorage.removeItem('activationFunction');
+    // sessionStorage.removeItem('activationFunction');
+    // sessionStorage.removeItem('regularizationRate');
+    // sessionStorage.removeItem('epochs');
+    // sessionStorage.removeItem('neuronNum');
+    // sessionStorage.removeItem('chartData');
+    // sessionStorage.removeItem('numLayers');
+    // sessionStorage.removeItem('neuronsList');
 
     this.router.navigate(['datapreview']);
 

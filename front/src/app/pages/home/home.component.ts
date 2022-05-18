@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit {
             sessionStorage.setItem('lastPage', 'home');
         }
         else  if(sessionStorage.getItem('lastPage') && sessionStorage.getItem('lastPage') != 'home') {
-            console.log(sessionStorage.getItem('lastPage'));
             this.router.navigate([sessionStorage.getItem('lastPage')]);
         }
         else {

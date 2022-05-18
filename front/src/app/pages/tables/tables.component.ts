@@ -759,7 +759,6 @@ export class TablesComponent {
     for (let i = 0; i < this.statistic['jsonList'].length; i++) {
       this.statisticData = this.statistic['jsonList'][i];
       if (this.statistic['colList'][i] == col) {
-        //console.log(this.statisticData);
         if(this.statisticData['isNumeric'] == 1) {
           
           this.mixArray = [];
@@ -943,7 +942,6 @@ export class TablesComponent {
   }
 
   boxPlotFun() {
-    //console.log(this.mixArray[0], this.mixArray[1], this.mixArray[2], this.mixArray[3], this.mixArray[4]);
     this.chartOptions = {
       series: [
         {
@@ -1157,7 +1155,6 @@ export class TablesComponent {
       }
     }
 
-    //*
     if(this.listCheckedI.length == 0)
       this.notChecked = true;
     else
@@ -1165,8 +1162,6 @@ export class TablesComponent {
 
     sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
     sessionStorage.setItem('columnData', JSON.stringify(this.colDataList));
-    //console.log(this.colDataList);
-    //*
   }
 
   updateEncoding() {
@@ -1208,7 +1203,6 @@ export class TablesComponent {
     }
 
     this.pret = ind;
-    //console.log(this.pret);
     this.selectedOutput = value;
 
     this.outputStorage();
@@ -1268,11 +1262,6 @@ export class TablesComponent {
       });
     }
     
-    // if(this.selectedRows.length == 0){
-    //   this.deleteIndicator=false;
-    // }
-    // else this.deleteIndicator=true;
-    // console.log(this.selectedRows)
   }
 
   onSelectedEnc(event : any)
@@ -1505,7 +1494,6 @@ export class TablesComponent {
     else
       this.numCol1 = false;
 
-    //console.log(this.selectedMissingValCol);
   }
 
   isSelectedMissingValuesCol(item: any) {
@@ -1543,7 +1531,6 @@ export class TablesComponent {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
     this.enteredToFillMissingValCol = "";
-    //console.log(this.selectedToFillMissingValCol);
   }
 
   selectedIDOutliers(id : number) {
@@ -1560,7 +1547,6 @@ export class TablesComponent {
     else
       this.selectedOutliersRows.push(id);
 
-    //console.log(this.selectedOutliersRows);
   }
   
   deleteOutliers() {
@@ -1714,21 +1700,18 @@ export class TablesComponent {
   onSelectedToChangeOutliers(event: any) {
     const value = event.target.value;
     this.selectedOutliersCol = value;
-    //console.log(value);
   }
 
   onSelectedValueOutliers(event: any) {
     const value = event.target.value;
     this.selectedToReplaceOutliers = value;
     this.enteredToReplaceOutliersCol = "";
-    //console.log(this.selectedToReplaceOutliers);
   }
 
   onInputToFillOutliers(event: any) {
     const value = event.target.value;
     this.enteredToReplaceOutliersCol = value;
     this.selectedToReplaceOutliers = 'none';
-    //console.log(this.enteredToReplaceOutliersCol);
   }
 
   selectedTypeMessage()

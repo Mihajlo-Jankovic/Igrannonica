@@ -83,6 +83,7 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
     else:
         model.add(tf.keras.layers.Dense(neurons[0], activation=activation[0], input_dim=inputs))
     # Hidden layers
+    
     for i in range (1, len(neurons)):
         # Provera da li je izabran regularizer
         if(regularizer != 'None'):
@@ -90,11 +91,12 @@ def build_model(layers, neurons, activation, regularizer, regRate, optimizerType
         else:
             model.add(tf.keras.layers.Dense(neurons[i], activation=activation[i]))
     # Output layer
+    #model.add(tf.keras.layers.GlobalAveragePooling2D())
     if(problemType == 'Regression'):
         model.add(tf.keras.layers.Dense(1, activation='linear'))
     else:
         if(outputs == 2):
-            model.add(tf.keras.layers.Dense(outputs, activation='sigmoid'))
+            model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
         else:
             model.add(tf.keras.layers.Dense(outputs, activation='softmax'))
     # Odabir optimizera i podesavanje learning rate-a
@@ -134,7 +136,6 @@ def encode(df, encodingList):
                 # One-hot encoding
                 elif(encodingType == 'one-hot'):
                     df = pd.get_dummies(df, columns=[col], prefix = [col])
-                    print(df.head)
 
                 # Binary encoding
                 elif(encodingType == 'binary'):
@@ -193,34 +194,40 @@ def output_unique_values(df,output):
 
 def startTraining(connid, fileName, inputList, output, encodingList, ratio1, ratio2, numLayers, layerList, activationFunctions, regularization, regularizationRate, optimizer, learningRate, problemType, lossFunction, metrics, numEpochs):
     PATH = 'http://127.0.0.1:10108/downloadFile/'
-    df = openCSV(PATH + fileName)
-    X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingList, ratio1)
-    outputUniqueValues = output_unique_values(df,output)
-    m = build_model(numLayers, layerList, activationFunctions, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
-    model = m.fit(x=X_train, y=y_train, validation_split=ratio2, epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])
-    score = m.evaluate(X_test, y_test)
-    print(score)
-    
+    headers = {'content-type': 'application/json'}
     data = {}
     data['connID'] = connid
     data['epoch'] = numEpochs
     data['ended'] = 2
     i = 0
 
-    data['trainingData'] = {"loss" : score[i]}
-    i = i + 1
 
-    for metric in metrics:
-        data['trainingData'][metric] = score[i]
+    df = openCSV(PATH + fileName)
+    X_train, X_test, y_train, y_test = prepare_data(df, inputList, [output], encodingList, ratio1)
+    outputUniqueValues = output_unique_values(df,output)
+    m = build_model(numLayers, layerList, activationFunctions, regularization, regularizationRate, optimizer, learningRate, problemType, len(X_train.columns), outputUniqueValues, lossFunction, metrics)
+    m.summary()
+    
+    try:
+        model = m.fit(x=X_train, y=y_train, validation_split=ratio2, epochs=numEpochs, callbacks=[CustomCallback(connid, numEpochs)])
+        score = m.evaluate(X_test, y_test)
+    
+        data['trainingData'] = {"loss" : score[i]}
         i = i + 1
 
-    headers = {'content-type': 'application/json'}
-    r = requests.post(ENDPOINT_PATH, headers=headers, data=json.dumps(data), verify=False)
+        for metric in metrics:
+            data['trainingData'][metric] = score[i]
+            i = i + 1
+        r = requests.post(ENDPOINT_PATH, headers=headers, data=json.dumps(data), verify=False)
+        return {"message" : "Training started successfully."}
+    except: 
+        data['trainingData'] = {}
+        data['ended'] = 3
+        print(data)
+        r = requests.post(ENDPOINT_PATH, headers=headers, data=json.dumps(data), verify=False)
+        return {"message" : "Training failed."}
     
-    return score
-
 
 # t1 = threading.Thread(target=testiranje)
 
 # t1.start()
-
