@@ -1661,15 +1661,14 @@ export class TablesComponent {
   confirmToReplaceOutliers() {
     
     let filename = this.cookie.get('filename');
-    // if(!this.isNumber(this.enteredToReplaceOutliersCol))
-    // {
-    //   this.notify.showNotification("You are trying to replace with non numeric value");
-    // }
-    // else 
     if(this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
       this.notify.showNotification("Please choose value to replace outliers.");
     }
-    else{
+    else if(!this.isNumber(this.enteredToReplaceOutliersCol) && this.enteredToReplaceOutliersCol != "")
+    {
+      this.notify.showNotification("You are trying to replace with non numeric value");
+    }
+    else {
       if(this.selectedToReplaceOutliers == "mean")
         this.selectedToReplaceOutliers = "avg";
       else if(this.selectedToReplaceOutliers == "median")
