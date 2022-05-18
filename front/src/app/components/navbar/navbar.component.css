@@ -1,11 +1,13 @@
 .login {
+    width: 150px;
     margin-top: 10px;
     background: transparent;
     border: 3px solid #7d3c8b;
     border-radius: 5px;
-    padding: 0.5rem 2rem 0.5rem 2rem;
+    padding: 0.5rem 0.5rem;
     color: #c6c6c9;
     font-weight: bold;
+    text-align: center;
 }
 
 .dropdownLanguage {

@@ -26,6 +26,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   public isCollapsed = true;
 
+  en: boolean = true;
+  sr: boolean = false;
+
   closeResult: string;
 
   navTo(url : string){
@@ -43,6 +46,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   translateLanguageTo(lang: string) {
     this.translate.use(lang);
+    
+    if(this.en == true) {
+      this.en = false;
+      this.sr = true;
+    }
+    else {
+      this.en = true;
+      this.sr = false;
+    }
   }
 
   constructor(

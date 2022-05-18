@@ -62,10 +62,22 @@
                     </ul>
                 </li>
                 -->
+                <li class=" nav-item navbar-collapse" [ngbCollapse]="isCollapsed" id="navigation">
+                    <a class=" nav-link" href="javascript:void(0)" *ngIf="en" #selLang1 [value]="translate.getLangs()[1]">
+                        <div class=" photo" (click)="translateLanguageTo(selLang1.value)">
+                            <img alt="Profile Photo" src="assets/img/eng111.png" />
+                        </div>
+                    </a>
+                    <a class=" nav-link" href="javascript:void(0)" *ngIf="sr" #selLang2 [value]="translate.getLangs()[0]">
+                        <div class=" photo" (click)="translateLanguageTo(selLang2.value)">
+                            <img alt="Profile Photo" src="assets/img/srb111.png" />
+                        </div>
+                    </a>
+                </li>
                 <li class=" nav-item navbar-collapse" ngbDropdown *ngIf="cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <a class=" nav-link" data-toggle="dropdown" href="javascript:void(0)" ngbDropdownToggle>
                         <div class=" photo">
-                            <img alt="Profile Photo" src="assets/img/anime3.png" />
+                            <img alt="Profile Photo" src="assets/img/profile.jpg" />
                         </div>
                         <b class=" caret d-none d-lg-block d-xl-block"> </b>
                     </a>
@@ -83,9 +95,11 @@
                         </li>
                     </ul>
                 </li>
+                <!--
                 <select class='dropdownLanguage' #selLang (change)="translateLanguageTo(selLang.value)">
                     <option *ngFor="let language of translate.getLangs()" [value]="language">{{ language }}</option>
                 </select>
+                -->
                 <!-- <h1>{{ "TITLE" | translate}}</h1> -->
 
                 <li class=" nav-item  navbar-collapse" *ngIf="!cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
