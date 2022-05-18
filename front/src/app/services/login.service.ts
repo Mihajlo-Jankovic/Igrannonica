@@ -26,8 +26,8 @@ export class LoginService {
   }
 
   isAuthenticated(): boolean {
-    if (this.cookieService.check('token')) {
-      var token = this.cookieService.get('token');
+    if (this.cookieService.check('cortexToken')) {
+      var token = this.cookieService.get('cortexToken');
       return !jwtHelper.isTokenExpired(token);
     }
 

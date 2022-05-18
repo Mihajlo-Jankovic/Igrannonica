@@ -62,7 +62,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.sidebarVisible = false;
 
     this.session = this.get();
-    this.cookieCheck = this.cookie.get('token');
+    this.cookieCheck = this.cookie.get('cortexToken');
 
   }
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
@@ -80,7 +80,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.loggedUser = this.loginService.isAuthenticated();
     if(this.loggedUser)
     {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
 
     window.addEventListener("resize", this.updateColor);

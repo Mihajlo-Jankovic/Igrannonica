@@ -18,7 +18,7 @@ export class FilesService {
   filesAuthorized(visibility: string, pageNum: number, numPerPage: number, numOfPages: number ){
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + this.token
@@ -30,7 +30,7 @@ export class FilesService {
   filesUnauthorized(visibility: string, pageNum: number, numPerPage: number, numOfPages: number){
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + this.token

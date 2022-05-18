@@ -92,8 +92,8 @@ export class ExperimentsComponent implements OnInit {
   experimentListUnauthorized : any = []
 
   constructor(private notify: NotificationsService, private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
-      if(this.cookie.get('token')) {
-        this.cookieCheck = this.cookie.get('token');
+      if(this.cookie.get('cortexToken')) {
+        this.cookieCheck = this.cookie.get('cortexToken');
         this.selectedPrivacyType = 'myexperiments'
       }
   }
@@ -104,12 +104,12 @@ export class ExperimentsComponent implements OnInit {
   }
 
   refreshToken(){
-    this.token = this.cookie.get('token');
+    this.token = this.cookie.get('cortexToken');
     
     this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        this.cookie.set("token", StringToken);
+        this.cookie.set("cortexToken", StringToken);
     }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).token;
@@ -243,7 +243,7 @@ export class ExperimentsComponent implements OnInit {
       item.visibility = false;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
-        this.token = this.cookie.get('token');
+        this.token = this.cookie.get('cortexToken');
       }
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
@@ -264,7 +264,7 @@ export class ExperimentsComponent implements OnInit {
       item.visibility = true;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
-        this.token = this.cookie.get('token');
+        this.token = this.cookie.get('cortexToken');
       }
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token

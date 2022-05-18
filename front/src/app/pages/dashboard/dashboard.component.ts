@@ -119,7 +119,7 @@ export class DashboardComponent implements OnInit {
   cookieCheck: any;
 
   constructor(private router: Router,private toastr: ToastrService,private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { 
-    this.cookieCheck = this.cookieService.get('token');
+    this.cookieCheck = this.cookieService.get('cortexToken');
   }
 
   configuration = new Configuration();
@@ -425,12 +425,12 @@ export class DashboardComponent implements OnInit {
   }
   
   refreshToken(){
-    this.token = this.cookieService.get('token');
+    this.token = this.cookieService.get('cortexToken');
     
     this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        this.cookieService.set("token", StringToken);
+        this.cookieService.set("cortexToken", StringToken);
     }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).token;
@@ -733,7 +733,7 @@ export class DashboardComponent implements OnInit {
     let token: string;
 
     if (this.loggedUser) {
-      token = this.cookieService.get('token');
+      token = this.cookieService.get('cortexToken');
     }
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + token

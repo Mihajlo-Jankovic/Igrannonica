@@ -16,8 +16,8 @@ export class UserService {
   
   getAllUserExperiments(visibility, pageNum, numPerPage, numOfPages)
   {
-    if (this.cookie.check('token')) {
-      var token = this.cookie.get('token');
+    if (this.cookie.check('cortexToken')) {
+      var token = this.cookie.get('cortexToken');
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + token
       });
@@ -34,8 +34,8 @@ export class UserService {
 
   deleteExperiment(id)
   {
-    if (this.cookie.check('token')) {
-      var token = this.cookie.get('token');
+    if (this.cookie.check('cortexToken')) {
+      var token = this.cookie.get('cortexToken');
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + token
       });

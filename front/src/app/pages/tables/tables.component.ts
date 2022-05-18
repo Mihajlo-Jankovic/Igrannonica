@@ -15,6 +15,7 @@ import {
   ApexStroke,
   ApexTooltip
 } from "ng-apexcharts";
+import { NotificationsService } from "src/app/services/notifications.service";
 
 declare function myFunc(): any;
 
@@ -213,9 +214,9 @@ export class TablesComponent {
   numCol2: boolean;
   //*
 
-  constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router) {
+  constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
     sessionStorage.removeItem('statistics');
-    this.cookieCheck = this.cookie.get('token');
+    this.cookieCheck = this.cookie.get('cortexToken');
     this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
     this.boxPlotFun();
 
@@ -233,12 +234,12 @@ export class TablesComponent {
   }
 
   refreshToken(){
-    this.token = this.cookie.get('token');
+    this.token = this.cookie.get('cortexToken');
     
     this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        this.cookie.set("token", StringToken);
+        this.cookie.set("cortexToken", StringToken);
     }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).token;
@@ -1179,24 +1180,12 @@ export class TablesComponent {
           this.resetStatistic();
           this.showStatistics(this.selectedColName);
           this.selectedRows = [];
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Delete successfull</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.notify.showNotification("Delete successfull");
         }, err => {
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).responseMessage;
             if (StringToken == "Error encoundered while deleting a row from the dataset.") {
-              this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while deleting a row from the dataset</b>.', '', {
-                disableTimeOut: false,
-                closeButton: true,
-                enableHtml: true,
-                toastClass: "alert alert-info alert-with-icon",
-                positionClass: 'toast-top-center'
-              });
+              this.notify.showNotification("Error encoundered while deleting a row from the dataset");
             }
           });
   }
@@ -1213,13 +1202,7 @@ export class TablesComponent {
 
     if(this.isNumericFun(columnName) && !this.isNumber(value))
     {
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>You are trying to insert non numeric value into numeric column</b>.', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
+      this.notify.showNotification("You are trying to insert non numeric value into numeric column");
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
     }
@@ -1231,25 +1214,13 @@ export class TablesComponent {
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
       this.resetStatistic();
       this.showStatistics(this.selectedColName);
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
+      this.notify.showNotification("Edit successfull");
 
     }, err => {
       let JSONtoken: string = JSON.stringify(err.error);
       let StringToken = JSON.parse(JSONtoken).responseMessage;
       if (StringToken == "Error encoundered while deleting a row from the dataset.") {
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while editing cell content</b>.', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
+        this.notify.showNotification("Error encoundered while editing cell content");
       }
     })
   }
@@ -1478,14 +1449,12 @@ export class TablesComponent {
 
   confirmToFillMissingValues() {
     let filename = this.cookie.get('filename');
-    if(this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please choose value to fill missing values.</b>', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
+    if(this.isNumericFun(this.selectedToFillMissingValCol) && !this.isNumber(this.enteredToFillMissingValCol))
+    {
+      this.notify.showNotification("You are trying to replace with non numeric value");
+    }
+    else if(this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
+      this.notify.showNotification("Please choose value to fill missing values.");
     }
     else {
       if(this.selectedToFillMissingValCol == "mean")
@@ -1493,20 +1462,16 @@ export class TablesComponent {
       else if(this.selectedToFillMissingValCol == "median")
         this.selectedToFillMissingValCol = "med";
 
-      if (this.cookie.get('token')) {
+      if (this.cookie.get('cortexToken')) {
         this.tableService.fillMissingValuesAuthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
             console.log(response);
 
             console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol)
             this.resetMissingValues();
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            //this.reset();
+            //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
+            this.notify.showNotification("Edit successfull");
         })
       }
       else {
@@ -1516,13 +1481,9 @@ export class TablesComponent {
               
               console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol)  
               this.resetMissingValues();  
-              this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+             //this.reset();
+             //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
+              this.notify.showNotification("Edit successfull");
           })
         }
     }
@@ -1549,14 +1510,12 @@ export class TablesComponent {
   confirmToReplaceOutliers() {
     
     let filename = this.cookie.get('filename');
-    if(this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please choose value to replace outliers.</b>', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
+    if(!this.isNumber(this.enteredToReplaceOutliersCol))
+    {
+      this.notify.showNotification("You are trying to replace with non numeric value");
+    }
+    else if(this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
+      this.notify.showNotification("Please choose value to replace outliers.");
     }
     else {
       if(this.selectedToReplaceOutliers == "mean")
@@ -1564,20 +1523,14 @@ export class TablesComponent {
       else if(this.selectedToReplaceOutliers == "median")
         this.selectedToReplaceOutliers = "med";
 
-      if (this.cookie.get('token')) {
+      if (this.cookie.get('cortexToken')) {
         this.tableService.changeOutliersAuthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
           (response) => {
             console.log(response);
 
             console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
             this.resetOutliers();
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.notify.showNotification("Edit successfull");
         })
       }
       else {
@@ -1587,13 +1540,7 @@ export class TablesComponent {
             
             console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
             this.resetOutliers();
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Edit successfull</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.notify.showNotification("Edit successfull");
           })
         }
     }

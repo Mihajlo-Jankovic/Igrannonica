@@ -38,7 +38,7 @@ export class TableService {
   {
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + this.token
@@ -57,7 +57,7 @@ export class TableService {
   {
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + this.token

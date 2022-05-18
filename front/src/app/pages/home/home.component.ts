@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
     configuration = new Configuration();
 
     constructor(private router: Router, private cookie : CookieService, private http: HttpClient) {
-        this.cookieCheck = this.cookie.get('token');
+        this.cookieCheck = this.cookie.get('cortexToken');
     }
     
     
@@ -37,12 +37,12 @@ export class HomeComponent implements OnInit {
     }
 
     refreshToken(){
-        this.token = this.cookie.get('token');
+        this.token = this.cookie.get('cortexToken');
         
         this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
             let JSONtoken: string = JSON.stringify(token);
             let StringToken = JSON.parse(JSONtoken).token;
-            this.cookie.set("token", StringToken);
+            this.cookie.set("cortexToken", StringToken);
         }, err=>{
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).token;

@@ -45,8 +45,8 @@ export class UploadComponent implements OnInit {
 
   constructor(private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
     // this.username = this.getUsername();
-    if(this.cookie.get('token')) {
-      this.cookieCheck = this.cookie.get('token');
+    if(this.cookie.get('cortexToken')) {
+      this.cookieCheck = this.cookie.get('cortexToken');
       this.selectedPrivacyType = 'mydatasets'
     }
   }
@@ -62,12 +62,12 @@ export class UploadComponent implements OnInit {
   }
 
   refreshToken(){
-    this.token = this.cookie.get('token');
+    this.token = this.cookie.get('cortexToken');
     
     this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
-        this.cookie.set("token", StringToken);
+        this.cookie.set("cortexToken", StringToken);
     }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).token;
@@ -178,8 +178,8 @@ export class UploadComponent implements OnInit {
 
       this.save(file.name);
 
-      if (this.cookie.check('token')) {
-        this.token = this.cookie.get('token');
+      if (this.cookie.check('cortexToken')) {
+        this.token = this.cookie.get('cortexToken');
         let headers = new HttpHeaders({
           'Authorization': 'bearer ' + this.token
         });
@@ -234,8 +234,8 @@ export class UploadComponent implements OnInit {
   }
 
   download(event, item) {
-    if (this.cookie.check('token')) {
-      this.token = this.cookie.get('token');
+    if (this.cookie.check('cortexToken')) {
+      this.token = this.cookie.get('cortexToken');
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
       });
@@ -302,7 +302,7 @@ export class UploadComponent implements OnInit {
   delete(item) {
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + this.token
@@ -327,7 +327,7 @@ export class UploadComponent implements OnInit {
       item.isPublic = false;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
-        this.token = this.cookie.get('token');
+        this.token = this.cookie.get('cortexToken');
       }
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
@@ -359,7 +359,7 @@ export class UploadComponent implements OnInit {
       item.isPublic = true;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
-        this.token = this.cookie.get('token');
+        this.token = this.cookie.get('cortexToken');
       }
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
