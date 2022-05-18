@@ -527,8 +527,64 @@ namespace Igrannonica.Controllers
             return numOfPages;
         }
 
-        [HttpPost("getExperimentAuthorized"), Authorize]
-        public async Task<ActionResult<List<Experiment>>> GetExperimentAuthorized(PagingDTO dto)
+        // [HttpPost("getExperimentAuthorized"), Authorize]
+        // public async Task<ActionResult<List<Experiment>>> GetExperimentAuthorized(PagingDTO dto)
+
+        [HttpPost("useExperimentAuthorized"), Authorize]
+        public async Task<IActionResult> UseExperimentAuthorized(Experiment experiment)
+        {
+            var username = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == username).FirstOrDefault();
+
+            if (user == null)
+                return NotFound(new { responseMessage = "Error: Username not found!" });
+
+            var objectId = new ObjectId();
+
+            var success = ObjectId.TryParse(experiment._id, out objectId);
+            if (success)
+                Console.WriteLine("dobro je");
+            else
+                Console.WriteLine("lose je");
+            var client = new MongoClient(getMongoDBConnString());
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+            var newExperiments = await collection.FindAsync(e => e._id.Equals(objectId));
+            var newExperiment = await newExperiments.FirstAsync();
+            newExperiment._id = ObjectId.GenerateNewId().ToJson();
+            newExperiment._id = newExperiment._id.Substring(10, 24);
+            newExperiment.userId = user.id;
+            await collection.InsertOneAsync(newExperiment);
+
+            return Ok(newExperiment);
+        }
+
+        [HttpPost("useExperimentUnauthorized")]
+        public async Task<IActionResult> UseExperimentUnauthorized(Experiment experiment)
+        {
+
+            var objectId = new ObjectId();
+
+            var success = ObjectId.TryParse(experiment._id, out objectId);
+            if (success)
+                Console.WriteLine("dobro je");
+            else
+                Console.WriteLine("lose je");
+            var client = new MongoClient(getMongoDBConnString());
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+            var newExperiments = await collection.FindAsync(e => e._id.Equals(objectId));
+            var newExperiment = await newExperiments.FirstAsync();
+            newExperiment._id = ObjectId.GenerateNewId().ToJson();
+            newExperiment._id = newExperiment._id.Substring(10, 24);
+            newExperiment.userId = null;
+            await collection.InsertOneAsync(newExperiment);
+
+            return Ok(newExperiment);
+        }
+
+        [HttpGet("getUserExperiments"), Authorize]
+        public async Task<ActionResult<List<Experiment>>> GetUserExperiments()
         {
             var usernameOriginal = _userService.GetUsername();
             User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
