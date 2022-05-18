@@ -300,6 +300,12 @@ export class UploadComponent implements OnInit {
   }
 
   delete(item) {
+    if(this.cookie.get('filename') == item.randomFileName)
+    {
+      this.cookie.delete('filename');
+      this.cookie.delete('realName');
+      this.router.navigate['upload'];
+    }
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
       this.token = this.cookie.get('cortexToken');
