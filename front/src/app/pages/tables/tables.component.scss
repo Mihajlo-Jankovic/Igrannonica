@@ -682,6 +682,12 @@ body.warning-modal-open {
     }
 }
 
+.mini-header {
+    color: white !important;
+    float: left;
+    padding-top: 0.5rem;
+}
+
 @media(max-width: 785px) {
     .headerLeft {
         width: 100%;
@@ -723,7 +729,7 @@ body.warning-modal-open {
 }
 
 .card-height {
-    height: 410px;
+    height: 480px;
 }
 
 .height-change {
@@ -738,7 +744,7 @@ body.warning-modal-open {
 }
 
 .stat {
-    height: 332px;
+    height: 405px;
 }
 
 

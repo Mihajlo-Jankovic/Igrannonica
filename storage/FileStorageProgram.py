@@ -5,6 +5,7 @@ import statistics
 import scipy.stats as stats
 import csv
 import urllib
+from collections import Counter
 
 
 def numberOfPages(df,rowNum):
@@ -39,8 +40,9 @@ def numeric_column_statistics(df,col):
 
     numOfNulls = (int)(df[col].isnull().sum())
     unique = df[col].nunique()
+    uniqueList = Counter(df[col])
 
-    return (rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique)
+    return (rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique, uniqueList)
 
 def not_numeric_column_statistics(df,col):
     rowsNum = df.shape[0]
@@ -48,8 +50,9 @@ def not_numeric_column_statistics(df,col):
     mostFrequent = df[col].mode()[0]
     frequency = (int)(df[col].value_counts()[0])
     numOfNulls = (int)(df[col].isnull().sum())
+    uniqueList = Counter(df[col])
 
-    return(rowsNum, unique, mostFrequent, frequency, numOfNulls)
+    return(rowsNum, unique, mostFrequent, frequency, numOfNulls, uniqueList)
     
 
 # Izracunavanje statistika za odredjenu kolonu iz tabele
@@ -60,12 +63,12 @@ def statistics(df,colIndex):
 
     for col in df:
         if(df[col].dtypes == object):
-            rowsNum, unique, mostFrequent, frequency, numOfNulls = not_numeric_column_statistics(df,col)
+            rowsNum, unique, mostFrequent, frequency, numOfNulls, uniqueList = not_numeric_column_statistics(df,col)
             jsonList.append({"rowsNum": rowsNum, "unique": unique, "mostFrequent": mostFrequent, 
-                            "isNumeric": 0, "frequency": frequency, "numOfNulls": numOfNulls})
+                            "isNumeric": 0, "frequency": frequency, "numOfNulls": numOfNulls, "uniqueList" : uniqueList})
 
         else:
-            rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique = numeric_column_statistics(df,col)
+            rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique, uniqueList = numeric_column_statistics(df,col)
             corrMatrix = df.corr() # Korelaciona matrica
             numOfOutliers = 0
 
@@ -92,7 +95,7 @@ def statistics(df,colIndex):
             
             jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med, 'numOfOutliers': numOfOutliers,
                             "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, "isNumeric": 1,
-                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls, "uniques" : unique,
+                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls, "uniques" : unique, "uniqueList" : uniqueList,
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
             
         colList.append(col)
@@ -115,7 +118,7 @@ def missing_values(df, colName, fillMethod, specificVal):
 
 
     else:
-        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique = numeric_column_statistics(df,colName)
+        rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique, uniqueList = numeric_column_statistics(df,colName)
 
         if(fillMethod == "none"):
             df[colName].fillna(specificVal, inplace=True)
@@ -158,7 +161,7 @@ def z_score(df,colName):
     return z_scores
 
 def outliers(df,colName,fillMethod,specificVal):
-    rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique = numeric_column_statistics(df,colName)
+    rowsNum, min, max, avg, med, firstQ, thirdQ, stdev, iqr, numOfNulls, unique, uniqueList = numeric_column_statistics(df,colName)
 
     #threshold = 3
     #z_scores = z_score(df,colName)

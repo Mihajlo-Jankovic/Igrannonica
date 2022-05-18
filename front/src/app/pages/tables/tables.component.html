@@ -154,18 +154,24 @@
             <div class=" card card-chart card-height">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
-                        <h3 class=" card-category" style="color: white; float: left;">Boxplot</h3>
-                        <h3 class=" card-category" style="color: white; float: right;">{{'Choose column to plot' | translate}}</h3>
+                        <h3 class=" card-category mini-header">Choose column to plot</h3>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="plotCheck()">{{plotButton}}</button>
                     </div>
-                    <select class='dropdown' (change)='onSelectedCol($event)' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
+                    <select class='dropdown' (change)='onSelectedCol($event);' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
                     <!--   <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
                     -->
                     <option class="option" *ngFor="let item of statistic['colList']; let i = index" value={{item}}>{{item}}</option>
                     </select>
                 </div>
-                <div class=" card-body">
+                <div class=" card-body" [hidden]="plotButton != 'Pie Chart'">
                     <div id="chart" *ngIf="selectedColDiv && numCol2">
                         <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions" [title]="chartOptions.title" [stroke]="chartOptions.stroke"></apx-chart>
+                    </div>
+                </div>
+                <div class=" card-body" [hidden]="plotButton == 'Pie Chart'">
+                    <div class="chart-area" style="height:350px;">
+                        <canvas id="pie-chart" [hidden]="!showPieChart"></canvas>
+                        <h3 [hidden]="differentValues" style="text-align: center; margin-top: 3rem;"> Too many different values. </h3>
                     </div>
                 </div>
             </div>
@@ -192,6 +198,9 @@
                                     <tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div [hidden]="hideM" *ngIf="!numCol2">
+                        <h3 style="text-align: center; margin-top: 10rem;"> Selected column is not numerical. </h3>
                     </div>
                     <div class="corr table-responsive stat" id="corr" [hidden]="!hideM">
                         <table class="table" id="largeMatrix">
