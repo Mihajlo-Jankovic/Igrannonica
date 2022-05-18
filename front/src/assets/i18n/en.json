@@ -179,6 +179,9 @@
 
     "Profile" : "Profile",
     "Log out" : "Log out",
-    "made by Cortex." : "made by Cortex."
+    "made by Cortex." : "made by Cortex.",
+    "Choose encoding for selected input columns" : "Choose encoding for selected input columns",
+    "Choose encoding for selected output column" : "Choose encoding for selected output column",
+    "Training : validation : test" : "Training : validation : test"
 
 }

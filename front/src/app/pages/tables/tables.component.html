@@ -154,7 +154,7 @@
             <div class=" card card-chart card-height">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
-                        <h3 class=" card-category mini-header">Choose column to plot</h3>
+                        <h3 class=" card-category mini-header">{{'Choose column to plot' | translate}}</h3>
                         <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="plotCheck()">{{plotButton}}</button>
                     </div>
                     <select class='dropdown' (change)='onSelectedCol($event);' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
@@ -270,7 +270,7 @@
                             <h4 style="padding: 1rem;">{{'Please choose input.' | translate}}</h4>
                         </div>
                         <div [hidden]="notChecked" class="encoding">
-                            <h4 class=" card-title">Choose encoding for selected input columns</h4>
+                            <h4 class=" card-title">{{'Choose encoding for selected input columns' | translate }}</h4>
                             <div class="encRow" *ngFor="let item of colDataList; let i = index">
                                 <div style="clear: both;" *ngIf="item['isSelected'] && !item['output']">
                                     <div class="dropdown1Text">
@@ -287,7 +287,7 @@
                             </div>
                         </div>
                         <div [hidden]="notChecked" class="encoding encoding2">
-                            <h4 class=" card-title">Choose encoding for selected output column</h4>
+                            <h4 class=" card-title">{{'Choose encoding for selected output column' | translate}}</h4>
                             <div class="encRow" *ngFor="let item of colDataList; let i = index">
                                 <div style="clear: both;" *ngIf="item['isSelected'] && item['output']">
                                     <div class="dropdown1Text">
