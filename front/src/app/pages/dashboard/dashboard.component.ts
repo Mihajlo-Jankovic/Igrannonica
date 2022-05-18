@@ -736,7 +736,6 @@ export class DashboardComponent implements OnInit {
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + token
     });
-    
     let options = { headers: headers };
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
     let output = sessionStorage.getItem('output');

@@ -8,8 +8,8 @@ export class Configuration
 
     public login : string = this.port + "/api/User/login";
     public register : string = this.port + "/api/User/register";
-    public tableData : string = this.port + "/api/PythonComm/getTableData";
-    public statistics : string = this.port + "/api/PythonComm/getStatistics";
+    public tableData : string = this.port + "/api/PythonComm/getTableDataUnauthorized";
+    public statistics : string = this.port + "/api/PythonComm/getStatisticsUnauthorized";
     public deleteTableRow : string = this.port + "/api/Csv/deletefilerow";
     public editTableCell : string = this.port + "/api/Csv/updatefilerow";
     public authorizedFiles : string = this.port + "/api/Csv/getCSVAuthorized";
@@ -38,4 +38,8 @@ export class Configuration
     public tempPassword = this.port + "/api/User/sendtemppasswordmail/";
     public verifyMail = this.port + "/api/User/verifyMail";
     public resetPassword = this.port + "/api/User/resetpassword";
+    public useFileAuthorized = this.port + "/api/FileUpload/usefileauthorized";
+    public useFileUnauthorized = this.port + "/api/FileUpload/usefileunauthorized";
+    public useExperimentAuthorized = this.port + "/api/User/useExperimentAuthorized";
+    public useExperimentUnauthorized = this.port + "/api/User/useExperimentUnauthorized";
 }

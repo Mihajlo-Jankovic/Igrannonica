@@ -527,8 +527,45 @@ namespace Igrannonica.Controllers
             return numOfPages;
         }
 
-        // [HttpPost("getExperimentAuthorized"), Authorize]
-        // public async Task<ActionResult<List<Experiment>>> GetExperimentAuthorized(PagingDTO dto)
+        [HttpPost("getExperimentAuthorized"), Authorize]
+        public async Task<ActionResult<List<Experiment>>> GetExperimentAuthorized(PagingDTO dto)
+        {
+            var usernameOriginal = _userService.GetUsername();
+            User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
+
+            if (user == null)
+                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
+
+            var client = new MongoClient(getMongoDBConnString());
+            var database = client.GetDatabase("igrannonica");
+            var collection = database.GetCollection<Experiment>("experiment");
+
+            List<Experiment> experiments = new List<Experiment>();
+
+            if (dto.Visibility == "public")
+            {
+                if (dto.NumOfPages == 0)
+                {
+                    var numOfFiles = collection.Count(e => e.visibility == true);
+                    dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
+                }
+
+                experiments = collection.Find(e => e.visibility == true).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+            }
+
+            else
+            {
+                if (dto.NumOfPages == 0)
+                {
+                    var numOfFiles = collection.Count(e => e.userId == user.id);
+                    dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
+                }
+
+                experiments = collection.Find(e => e.userId == user.id).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+            }
+
+            return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
+        }
 
         [HttpPost("useExperimentAuthorized"), Authorize]
         public async Task<IActionResult> UseExperimentAuthorized(Experiment experiment)
@@ -554,6 +591,7 @@ namespace Igrannonica.Controllers
             newExperiment._id = ObjectId.GenerateNewId().ToJson();
             newExperiment._id = newExperiment._id.Substring(10, 24);
             newExperiment.userId = user.id;
+            newExperiment.username = user.username;
             await collection.InsertOneAsync(newExperiment);
 
             return Ok(newExperiment);
@@ -583,45 +621,6 @@ namespace Igrannonica.Controllers
             return Ok(newExperiment);
         }
 
-        [HttpGet("getUserExperiments"), Authorize]
-        public async Task<ActionResult<List<Experiment>>> GetUserExperiments()
-        {
-            var usernameOriginal = _userService.GetUsername();
-            User user = _context.User.Where(u => u.username == usernameOriginal).FirstOrDefault();
-
-            if (user == null)
-                return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
-
-            var client = new MongoClient(getMongoDBConnString());
-            var database = client.GetDatabase("igrannonica");
-            var collection = database.GetCollection<Experiment>("experiment");
-
-            List<Experiment> experiments = new List<Experiment>();
-
-            if (dto.Visibility == "public")
-            {
-                if (dto.NumOfPages == 0)
-                {
-                    var numOfFiles = collection.Count(e => e.visibility == true);
-                    dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
-                }
-
-                experiments = collection.Find(e => e.visibility == true).Skip((dto.PageNum-1)*dto.NumPerPage).Limit(dto.NumPerPage).ToList();
-            }
-
-            else
-            {
-                if (dto.NumOfPages == 0)
-                {
-                    var numOfFiles = collection.Count(e => e.userId == user.id);
-                    dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
-                }
-
-                experiments = collection.Find(e => e.userId == user.id).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
-            }
-
-            return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
-        }
 
         [HttpPost("getExperimentUnauthorized")]
         public async Task<ActionResult<List<Experiment>>> GetExperimentUnauthorized(PagingDTO dto)

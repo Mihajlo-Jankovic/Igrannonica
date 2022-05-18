@@ -165,7 +165,7 @@ export class LoginLayoutComponent implements OnInit {
           toastClass: "alert alert-info alert-with-icon",
           positionClass: 'toast-top-center'
         });
-        this.router.navigate(["upload"]);
+        this.router.navigate([sessionStorage.getItem('lastPage')]);
 
       }, err => {
 

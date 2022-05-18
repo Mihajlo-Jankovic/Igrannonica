@@ -39,10 +39,12 @@ namespace Igrannonica.Controllers
             _context = context;
         }
 
-        [HttpPost("usefileauthorized"),]
+        [HttpPost("usefileauthorized"),Authorize]
         public async Task<IActionResult> UseFileAuthorized(UsageDTO usageDTO)
         {
-            
+            string userName = _userService.GetUsername();
+
+            User? user = _context.User.Where(u => u.username == userName).FirstOrDefault();
 
             var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             HttpClient client = new HttpClient();
@@ -60,24 +62,57 @@ namespace Igrannonica.Controllers
             var httpResponse = await client.PostAsync(endpoint, payload);
             var response = await httpResponse.Content.ReadAsStringAsync();
 
-            if (usageDTO.ConnectToUser == 1)
+            if (user == null) { 
+                return BadRequest(new { responseMessage = "No username with that name" });
+                }
+            Models.File file = new Models.File
             {
-                User? user = _context.User.Where(u => u.username == usageDTO.username).FirstOrDefault();
-                if (user == null)
-                    return BadRequest(new { responseMessage = "No username with that name" });
-                Models.File file = new Models.File
-                {
-                    RandomFileName = NewRandomFileName,
-                    DateCreated = DateTime.Now,
-                    FileName = usageDTO.FileName,
-                    UserForeignKey = user.id,
-                    IsPublic = false
+                RandomFileName = NewRandomFileName,
+                DateCreated = DateTime.Now,
+                FileName = usageDTO.FileName,
+                UserForeignKey = user.id,
+                IsPublic = false
                 };
 
-                await _context.File.AddAsync(file);
-                await _context.SaveChangesAsync();
-            }
-            return Ok(new { randomFileName = NewRandomFileName });
+            await _context.File.AddAsync(file);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { randomFileName = NewRandomFileName, fileName =  file.FileName });
+        }
+
+        [HttpPost("usefileunauthorized")]
+        public async Task<IActionResult> UseFileUnauthorized(UsageDTO usageDTO)
+        {
+            var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+            + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+            + _configuration.GetSection("Endpoints:CopyFile").Value);
+
+            var newPostJson = JsonConvert.SerializeObject(new
+            {
+                usageDTO.OldRandomFileName,
+                NewRandomFileName
+            });
+
+            var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
+            var httpResponse = await client.PostAsync(endpoint, payload);
+            var response = await httpResponse.Content.ReadAsStringAsync();
+
+            Models.File file = new Models.File
+            {
+                RandomFileName = NewRandomFileName,
+                DateCreated = DateTime.Now,
+                FileName = usageDTO.FileName,
+                UserForeignKey = null,
+                IsPublic = false
+            };
+
+            await _context.File.AddAsync(file);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { randomFileName = NewRandomFileName, fileName = file.FileName });
         }
 
         /// <summary>

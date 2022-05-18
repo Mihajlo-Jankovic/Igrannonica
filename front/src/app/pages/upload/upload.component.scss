@@ -413,6 +413,15 @@ body.warning-modal-open {
     overflow: hidden;
 }
 
+.use-this {
+    color: #aa4edf !important;
+    cursor: pointer !important;
+    font-weight: 300;
+    &:hover {
+        color: #e14eca !important;
+    }
+}
+
 @media(max-width: 1329px) {
     .file {
         width: 33.3%;

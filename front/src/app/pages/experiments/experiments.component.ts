@@ -301,6 +301,20 @@ export class ExperimentsComponent implements OnInit {
 
   useExperiments(item)
   {
+    if(this.loggedUser) {
+      let headers = new HttpHeaders({
+        'Authorization': 'bearer ' + this.cookieCheck
+      });
+      let options = { headers: headers };
+      this.http.post<any>(this.configuration.useExperimentAuthorized, item, options).subscribe(res => {
+        item = res;
+      });
+    }
+    else {
+      this.http.post<any>(this.configuration.useExperimentUnauthorized, item).subscribe(res => {
+        item = res;
+      });
+    }
 
     var metricsList = [];
     var metrics = item.models[0].parameters.metrics;
@@ -387,7 +401,6 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.setItem('experimentName', item.name);
 
     sessionStorage.removeItem('problemType');
-    sessionStorage.removeItem('encoding');
     sessionStorage.removeItem('optimizer');
     sessionStorage.removeItem('regularization');
     sessionStorage.removeItem('lossFunction');
@@ -401,7 +414,7 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.removeItem('numLayers');
     sessionStorage.removeItem('neuronsList');
 
-    this.router.navigate(['training']);
+    this.router.navigate(['datapreview']);
 
   }
 

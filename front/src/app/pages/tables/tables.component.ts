@@ -291,6 +291,10 @@ export class TablesComponent {
   }
 
   updatePieChart() {
+    if(this.canvas == null) {
+      this.chartConfig();
+    }
+
     var index = this.statistic['colList'].indexOf(this.selectedColName, 0);
     var uniqueList = this.statistic['jsonList'][index]['uniqueList'];
 

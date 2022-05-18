@@ -103,7 +103,7 @@
                                     <p>{{'Created:' | translate}} {{item.dateCreated}}</p>
                                     <p>{{'Uploaded by:' | translate}} {{item.username}}</p>
                                     <div style="height:30px; background: transparent;">
-                                        <a href="datapreview" class=" pull-left" (click)="useThis($event,item)">{{'USE THIS' | translate}}</a>
+                                        <a class=" pull-left use-this" (click)="useThis($event,item)">{{'USE THIS' | translate}}</a>
                                         <div class=" download">
                                             <a class=" pull-right" (click)="download($event,item)">{{'DOWNLOAD' | translate}}</a>
                                         </div>
@@ -123,7 +123,7 @@
                                     <p>{{'Created:' | translate}} {{item.dateCreated}}</p>
                                     <p>{{'Uploaded by:' | translate}} {{item.username}}</p>
                                     <div style="height:30px; background: transparent;">
-                                        <a href="datapreview" class=" pull-left" (click)="useThisUn($event,item)">{{'USE THIS' | translate}}</a>
+                                        <a class=" pull-left use-this" (click)="useThisUn($event,item)">{{'USE THIS' | translate}}</a>
                                         <div class=" download">
                                             <a class=" pull-right" (click)="downloadUn($event,item)">{{'DOWNLOAD' | translate}}</a>
                                         </div>

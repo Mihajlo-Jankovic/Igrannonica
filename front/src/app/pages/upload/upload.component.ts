@@ -284,14 +284,25 @@ export class UploadComponent implements OnInit {
   }
 
   useThis(event, item) {
-    this.cookie.set("filename", item.randomFileName);
-    this.cookie.set("realName", item.fileName);
-    sessionStorage.clear();
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + this.token
+    });
+    let options = { headers: headers };
+    this.http.post<any>(this.configuration.useFileAuthorized, {"FileName" : item.fileName, "OldRandomFileName" : item.randomFileName}, options).subscribe((response: any) => {
+      sessionStorage.clear();
+      this.cookie.set("filename", response.randomFileName);
+      this.cookie.set("realName", response.fileName);
+      this.router.navigate(['datapreview']);
+    })
   }
+  
   useThisUn(event, item) {
-    this.cookie.set("filename", item.randomFileName);
-    this.cookie.set("realName", item.fileName);
-    sessionStorage.clear();
+    this.http.post<any>(this.configuration.useFileUnauthorized, {"FileName" : item.fileName, "OldRandomFileName" : item.randomFileName}).subscribe((response: any) => {
+      sessionStorage.clear();
+      this.cookie.set("filename", response.randomFileName);
+      this.cookie.set("realName", response.fileName);
+      this.router.navigate(['datapreview']);
+    })
   }
 
   deleteCheck(item) {
