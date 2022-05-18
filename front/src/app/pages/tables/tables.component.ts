@@ -350,12 +350,53 @@ export class TablesComponent {
 
   showTable(type: string, rows: number, page: number, filter: boolean, outlierColumn: string) {
     if (sessionStorage.getItem('csv') != null) {
-      let dataCSV: any = {};
-      dataCSV = JSON.parse(sessionStorage.getItem('csv'));
-      this.data = dataCSV;
-      this.maxPage = sessionStorage.getItem('numOfPages');
-      this.numericValues = JSON.parse(sessionStorage.getItem('numericValues'));
-      this.loadTable(filter);
+      if(sessionStorage.getItem('selectedType') && sessionStorage.getItem('selectedType') != type)
+      {
+        this.selectedType = sessionStorage.getItem('selectedType');
+          
+        let filename = this.cookie.get('filename');
+        this.tableService.getAll(filename, this.selectedType, rows, page, sessionStorage.getItem('selectedOutlierColumn')).subscribe(
+          (response) => {
+            this.csv = response;
+            let dataCSV: any = {};
+            dataCSV = this.csv['csv'];
+            this.data = dataCSV;
+
+            sessionStorage.setItem('csv', JSON.stringify(this.data));
+
+            this.maxPage = this.csv['numOfPages'];
+            sessionStorage.setItem('numOfPages', this.maxPage);
+
+            //ucitavanje numericValues
+            let numerValuesCSV: any = {};
+            numerValuesCSV = this.csv['numericValues'];
+            this.numericValues = numerValuesCSV;
+
+            sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
+            this.selectedOutlierColumn = sessionStorage.getItem('selectedOutlierColumn');
+            this.loadTable(filter);
+          }, err => {
+            let JSONtoken: string = JSON.stringify(err.error);
+            let StringToken = JSON.parse(JSONtoken).responseMessage;
+            if (StringToken == "Error encountered while reading dataset content.") {
+              this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while reading dataset content</b>.', '', {
+                disableTimeOut: false,
+                closeButton: true,
+                enableHtml: true,
+                toastClass: "alert alert-info alert-with-icon",
+                positionClass: 'toast-top-center'
+              });
+            }
+          })
+      }
+      else{
+        let dataCSV: any = {};
+        dataCSV = JSON.parse(sessionStorage.getItem('csv'));
+        this.data = dataCSV;
+        this.maxPage = sessionStorage.getItem('numOfPages');
+        this.numericValues = JSON.parse(sessionStorage.getItem('numericValues'));
+        this.loadTable(filter);
+      }
     }
     else {
       let filename = this.cookie.get('filename');
@@ -580,10 +621,14 @@ export class TablesComponent {
     this.page = 1;
     const value = event.target.value;
     this.selectedType = value;
+    sessionStorage.setItem('selectedType', this.selectedType);
     this.clearStorage();
     this.reset();
     if(this.selectedType == 'outlier')  
+    {
       this.selectedOutlierColumn = this.numericValues['col'][0];
+      sessionStorage.setItem('selectedOutlierColumn', this.selectedOutlierColumn);
+    }
     this.showTable(this.selectedType, this.selectedRow, this.page, filter, this.selectedOutlierColumn);
   }
 
@@ -600,6 +645,7 @@ export class TablesComponent {
     this.page = 1;
     const value = event.target.value;
     this.selectedOutlierColumn = value;
+    sessionStorage.setItem('selectedOutlierColumn', this.selectedOutlierColumn);
     this.clearStorage();
     this.reset();
     this.showTable(this.selectedType, this.selectedRow, this.page, filter, this.selectedOutlierColumn);
@@ -1563,6 +1609,11 @@ export class TablesComponent {
             //this.reset();
             //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
             this.notify.showNotification("Edit successfull");
+            setTimeout(() => { 
+              this.clearStorage();
+              this.reset();
+              this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
+            }, 350);
         })
       }
       else {
@@ -1575,6 +1626,11 @@ export class TablesComponent {
              //this.reset();
              //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
               this.notify.showNotification("Edit successfull");
+              setTimeout(() => { 
+                this.clearStorage();
+                this.reset();
+                this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
+              }, 350);
           })
         }
     }
@@ -1601,14 +1657,15 @@ export class TablesComponent {
   confirmToReplaceOutliers() {
     
     let filename = this.cookie.get('filename');
-    if(!this.isNumber(this.enteredToReplaceOutliersCol))
-    {
-      this.notify.showNotification("You are trying to replace with non numeric value");
-    }
-    else if(this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
+    // if(!this.isNumber(this.enteredToReplaceOutliersCol))
+    // {
+    //   this.notify.showNotification("You are trying to replace with non numeric value");
+    // }
+    // else 
+    if(this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
       this.notify.showNotification("Please choose value to replace outliers.");
     }
-    else {
+    else{
       if(this.selectedToReplaceOutliers == "mean")
         this.selectedToReplaceOutliers = "avg";
       else if(this.selectedToReplaceOutliers == "median")
@@ -1622,6 +1679,11 @@ export class TablesComponent {
             console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
             this.resetOutliers();
             this.notify.showNotification("Edit successfull");
+            setTimeout(() => { 
+              this.clearStorage();
+              this.reset();
+              this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
+            }, 350);
         })
       }
       else {
@@ -1632,6 +1694,11 @@ export class TablesComponent {
             console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
             this.resetOutliers();
             this.notify.showNotification("Edit successfull");
+            setTimeout(() => { 
+              this.clearStorage();
+              this.reset();
+              this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
+            }, 350);
           })
         }
     }
