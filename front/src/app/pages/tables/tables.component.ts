@@ -873,6 +873,12 @@ export class TablesComponent {
     }
     
     this.selectedMissingValCol = this.arrMissingValues[0];
+
+    if(this.isNumericFun(this.selectedMissingValCol))
+      this.numCol1 = true;
+    else
+      this.numCol1 = false;
+      
     this.selectedToFillMissingValCol = this.fillMissingValuesListNonNum[0];
     this.selectedOutliersCol = this.arrAllOutliers[0];
     this.selectedToReplaceOutliers = this.fillMissingValuesListNonNum[0];
@@ -1427,8 +1433,8 @@ export class TablesComponent {
       matrix.classList.remove('col-lg-12');
       matrix.classList.remove('largeCorr');
       this.matrixButton = "Full Matrix";
-      matrixCard.setAttribute("style", "height: 410px;");
-      corr.setAttribute("style", "height: 332px;");
+      matrixCard.setAttribute("style", "height: 480px;");
+      corr.setAttribute("style", "height: 405px;");
     }
   }
 

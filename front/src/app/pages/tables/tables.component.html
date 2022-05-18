@@ -171,7 +171,7 @@
                 <div class=" card-body" [hidden]="plotButton == 'Pie Chart'">
                     <div class="chart-area" style="height:350px;">
                         <canvas id="pie-chart" [hidden]="!showPieChart"></canvas>
-                        <h3 [hidden]="differentValues" style="text-align: center; margin-top: 3rem;"> Too many different values. </h3>
+                        <h3 [hidden]="differentValues" style="text-align: center; margin-top: 7rem;"> Too many different values. </h3>
                     </div>
                 </div>
             </div>
@@ -227,7 +227,7 @@
                 <label for="tab-4">X</label>
                 <section>
                     <div class="tab-content">
-                        <h3 style="margin : 0px; padding: 0px;">{{"Preprocessing data - choose a tab to open" | translate}}</h3>
+                        <h3 style="margin : 0px; padding: 0px; font-weight: 100; color:white;">{{"Preprocessing data - choose a tab to open" | translate}}</h3>
                     </div>
                 </section>
 
@@ -270,8 +270,26 @@
                             <h4 style="padding: 1rem;">{{'Please choose input.' | translate}}</h4>
                         </div>
                         <div [hidden]="notChecked" class="encoding">
+                            <h4 class=" card-title">Choose encoding for selected input columns</h4>
                             <div class="encRow" *ngFor="let item of colDataList; let i = index">
-                                <div style="clear: both;" *ngIf="item['isSelected']">
+                                <div style="clear: both;" *ngIf="item['isSelected'] && !item['output']">
+                                    <div class="dropdown1Text">
+                                        <p class="encText">{{item['colName']}}</p>
+                                    </div>
+                                    <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
+                                            <option class='option' value="none|{{item['colName']}}" [selected]="item['encList'][0]" *ngIf="item['isNum'] && !item['output']">None</option>
+                                            <option class='option' value="label|{{item['colName']}}" [selected]="item['encList'][1]">Label</option>
+                                            <option class='option' value="one-hot|{{item['colName']}}" [selected]="item['encList'][2]" *ngIf="!item['output']">One-Hot</option>
+                                            <option class='option' value="binary|{{item['colName']}}" [selected]="item['encList'][3]">Binary</option>
+                                            <option class='option' value="frequency|{{item['colName']}}" [selected]="item['encList'][4]" *ngIf="!item['output']">Frequency</option>
+                                        </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div [hidden]="notChecked" class="encoding encoding2">
+                            <h4 class=" card-title">Choose encoding for selected output column</h4>
+                            <div class="encRow" *ngFor="let item of colDataList; let i = index">
+                                <div style="clear: both;" *ngIf="item['isSelected'] && item['output']">
                                     <div class="dropdown1Text">
                                         <p class="encText">{{item['colName']}}</p>
                                     </div>
