@@ -34,6 +34,8 @@ def upload_file():
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return {'message' : "Upload Successfull!", 'randomFileName' : filename}
+    else:
+        return {'message' : "File type is not allowed."}
 
 @app.route('/downloadFile/<filename>', methods=['GET'])
 def download_file(filename):
@@ -145,7 +147,7 @@ def change_outliers():
         
     else:
         return {"message" : "Error encoundered while editing cell content."}
-        
+
 @app.route('/copyfile', methods=['POST'])
 def copy_file():
     content_type = request.headers.get('Content-Type')

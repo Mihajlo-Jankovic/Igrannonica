@@ -51,6 +51,7 @@ def not_numeric_column_statistics(df,col):
     frequency = (int)(df[col].value_counts()[0])
     numOfNulls = (int)(df[col].isnull().sum())
     uniqueList = Counter(df[col])
+    print(uniqueList)
 
     return(rowsNum, unique, mostFrequent, frequency, numOfNulls, uniqueList)
     
@@ -95,7 +96,7 @@ def statistics(df,colIndex):
             
             jsonList.append({"rowsNum": rowsNum, "min": min, "max": max, "avg": avg, "med": med, 'numOfOutliers': numOfOutliers,
                             "firstQ": firstQ, "thirdQ": thirdQ, "stdev": stdev, "iqr": iqr, "isNumeric": 1,
-                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls, "uniques" : unique, "uniqueList" : uniqueList,
+                            "outliers": outliers, "corrMatrix": {col: corrArr}, "numOfNulls": numOfNulls, "unique" : unique, "uniqueList" : uniqueList,
                             "fullCorrMatrix": {"columns": colArr, "values": valArr}})
             
         colList.append(col)

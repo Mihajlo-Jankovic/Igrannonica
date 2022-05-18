@@ -1177,7 +1177,7 @@ export class TablesComponent {
     for(let i = 0; i < this.statistic['colList'].length; i++) {
       if(this.statistic['colList'][i] == this.selectedOutput) {
         sessionStorage.setItem('outputValues', this.statistic['jsonList'][i]['rowsNum']);
-        sessionStorage.setItem('outputUniques', this.statistic['jsonList'][i]['uniques']);
+        sessionStorage.setItem('outputUniques', this.statistic['jsonList'][i]['unique']);
         if(this.statistic['jsonList'][i]['isNumeric'] == 1) {
           sessionStorage.setItem('outputNumeric', 'true');
         }

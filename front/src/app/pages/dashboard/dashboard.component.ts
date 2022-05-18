@@ -565,12 +565,11 @@ export class DashboardComponent implements OnInit {
   checkProblemType() {
     if(sessionStorage.getItem('problemType')){
       this.problemType = sessionStorage.getItem('problemType');
-      console.log("ima u sesiji");
-      console.log(this.problemType);
     }
     else {
       if(sessionStorage.getItem('outputNumeric') == 'false') {
         this.problemType = "Classification";
+        console.log("nije numericka");
       }
       else {
         if (Number(sessionStorage.getItem('outputUniques')) <= Number(sessionStorage.getItem('outputValues')) / 5) {
@@ -944,7 +943,6 @@ export class DashboardComponent implements OnInit {
       this.data = this.chartData[this.selectedMetric];
       this.val_data = this.chartData['val_'+this.selectedMetric];
 
-      console.log(this.chartData);
       this.updateOptions();
     }
   }
@@ -1012,7 +1010,6 @@ export class DashboardComponent implements OnInit {
     else if(target == "activationFunction")
     {
       this.activationFunction = value;
-      console.log(this.activationFunction);
       for(let i=0; i < this.activationFunctionList.length; i++){
         if(this.activationFunction != 'custom') {
           this.activationFunctionList[i] = this.activationFunction;
