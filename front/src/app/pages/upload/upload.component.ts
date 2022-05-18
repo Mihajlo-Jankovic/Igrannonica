@@ -165,61 +165,66 @@ export class UploadComponent implements OnInit {
   async uploadFile(files: any) {
     if (files.length === 0)
       return;
-    
+
     sessionStorage.clear();
-      
+
     let file = <File>files[0];
     var fileSize = file.size;
     if (fileSize / 1048576 > 5000)
       alert("Maximum file size is 500MB");
     else {
-      const formData = new FormData();
-      formData.append('file', file, file.name);
+      var fileExt = file.name.split('.').pop();
+      if (fileExt == 'csv') {
+        const formData = new FormData();
+        formData.append('file', file, file.name);
 
-      this.save(file.name);
+        this.save(file.name);
 
-      if (this.cookie.check('cortexToken')) {
-        this.token = this.cookie.get('cortexToken');
-        let headers = new HttpHeaders({
-          'Authorization': 'bearer ' + this.token
-        });
-        let options = { headers: headers };
+        if (this.cookie.check('cortexToken')) {
+          this.token = this.cookie.get('cortexToken');
+          let headers = new HttpHeaders({
+            'Authorization': 'bearer ' + this.token
+          });
+          let options = { headers: headers };
 
-        await this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
-          let JSONname: string = JSON.stringify(name);
-          let StringName = JSON.parse(JSONname).randomFileName;
-          this.cookie.set("filename", StringName);
-          this.cookie.set('realName', file.name);
-          this.router.navigate(['datapreview']);
-          this.uploadNotificationSuccess();
-        },err=>{
-          let JSONtoken: string = JSON.stringify(err.error);
-          let StringToken = JSON.parse(JSONtoken).responseMessage;
-          if (StringToken == "Error: Bad file type in the request") {
-            this.uploadNotificationBadFileType();
-          }
-          else this.error();
-        })
+          await this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
+            let JSONname: string = JSON.stringify(name);
+            let StringName = JSON.parse(JSONname).randomFileName;
+            this.cookie.set("filename", StringName);
+            this.cookie.set('realName', file.name);
+            this.router.navigate(['datapreview']);
+            this.uploadNotificationSuccess();
+          }, err => {
+            let JSONtoken: string = JSON.stringify(err.error);
+            let StringToken = JSON.parse(JSONtoken).responseMessage;
+            if (StringToken == "Error: Bad file type in the request") {
+              this.uploadNotificationBadFileType();
+            }
+            else this.error();
+          })
+        }
+        else {
+          await this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name => {
+            let JSONname: string = JSON.stringify(name);
+            let StringName = JSON.parse(JSONname).randomFileName;
+            this.cookie.set("filename", StringName);
+            this.cookie.set('realName', file.name);
+            this.router.navigate(['datapreview']);
+            this.uploadNotificationSuccess();
+          }, err => {
+            let JSONtoken: string = JSON.stringify(err.error);
+            let StringToken = JSON.parse(JSONtoken).responseMessage;
+            if (StringToken == "Error: Bad file type in the request") {
+              this.uploadNotificationBadFileType();
+            }
+            else this.error();
+          })
+        }
       }
-      else{
-        await this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name=>{
-          let JSONname: string = JSON.stringify(name);
-          let StringName = JSON.parse(JSONname).randomFileName;
-          this.cookie.set("filename", StringName);
-          this.cookie.set('realName', file.name);
-          this.router.navigate(['datapreview']);
-          this.uploadNotificationSuccess();
-        },err=>{
-          let JSONtoken: string = JSON.stringify(err.error);
-          let StringToken = JSON.parse(JSONtoken).responseMessage;
-          if (StringToken == "Error: Bad file type in the request") {
-            this.uploadNotificationBadFileType();
-          }
-          else this.error();
-        })
-      }
+      else
+        this.notify.showNotification("Wrong file type!");
     }
-    
+
   }
 
   filesAuthorized() {
