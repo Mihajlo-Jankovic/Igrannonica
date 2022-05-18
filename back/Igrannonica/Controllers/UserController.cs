@@ -23,6 +23,7 @@ using MailKit;
 using MimeKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Newtonsoft.Json;
 
 namespace Igrannonica.Controllers
 {
@@ -583,16 +584,54 @@ namespace Igrannonica.Controllers
                 Console.WriteLine("dobro je");
             else
                 Console.WriteLine("lose je");
-            var client = new MongoClient(getMongoDBConnString());
-            var database = client.GetDatabase("igrannonica");
+            var mongoClient = new MongoClient(getMongoDBConnString());
+            var database = mongoClient.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
             var newExperiments = await collection.FindAsync(e => e._id.Equals(objectId));
             var newExperiment = await newExperiments.FirstAsync();
+            if(newExperiment.username.Equals(username))
+            {
+                return Ok(experiment);
+            }
             newExperiment._id = ObjectId.GenerateNewId().ToJson();
             newExperiment._id = newExperiment._id.Substring(10, 24);
             newExperiment.userId = user.id;
             newExperiment.username = user.username;
+            newExperiment.visibility = false;
+            newExperiment.date = DateTime.Now.ToString();
+
+            var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+            + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+            + _configuration.GetSection("Endpoints:CopyFile").Value);
+
+            var newPostJson = JsonConvert.SerializeObject(new
+            {
+                newExperiment.fileName,
+                NewRandomFileName
+            });
+
+            var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
+            var httpResponse = await client.PostAsync(endpoint, payload);
+            var response = await httpResponse.Content.ReadAsStringAsync();
+
+            Models.File file = new Models.File
+            {
+                RandomFileName = NewRandomFileName,
+                DateCreated = DateTime.Now,
+                FileName = newExperiment.realName,
+                UserForeignKey = null,
+                IsPublic = false
+            };
+            newExperiment.fileName = NewRandomFileName;
+
+
+            await _context.File.AddAsync(file);
+            await _context.SaveChangesAsync();
             await collection.InsertOneAsync(newExperiment);
+
 
             return Ok(newExperiment);
         }
@@ -608,14 +647,47 @@ namespace Igrannonica.Controllers
                 Console.WriteLine("dobro je");
             else
                 Console.WriteLine("lose je");
-            var client = new MongoClient(getMongoDBConnString());
-            var database = client.GetDatabase("igrannonica");
+            var mongoClient = new MongoClient(getMongoDBConnString());
+            var database = mongoClient.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
             var newExperiments = await collection.FindAsync(e => e._id.Equals(objectId));
             var newExperiment = await newExperiments.FirstAsync();
             newExperiment._id = ObjectId.GenerateNewId().ToJson();
             newExperiment._id = newExperiment._id.Substring(10, 24);
             newExperiment.userId = null;
+            newExperiment.visibility = false;
+            newExperiment.date = DateTime.Now.ToString();
+
+            var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+            var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
+            + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
+            + _configuration.GetSection("Endpoints:CopyFile").Value);
+
+            var newPostJson = JsonConvert.SerializeObject(new
+            {
+                newExperiment.fileName,
+                NewRandomFileName
+            });
+
+            var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
+            var httpResponse = await client.PostAsync(endpoint, payload);
+            var response = await httpResponse.Content.ReadAsStringAsync();
+
+            Models.File file = new Models.File
+            {
+                RandomFileName = NewRandomFileName,
+                DateCreated = DateTime.Now,
+                FileName = newExperiment.realName,
+                UserForeignKey = null,
+                IsPublic = false
+            };
+            newExperiment.fileName = NewRandomFileName;
+
+
+            await _context.File.AddAsync(file);
+            await _context.SaveChangesAsync();
             await collection.InsertOneAsync(newExperiment);
 
             return Ok(newExperiment);

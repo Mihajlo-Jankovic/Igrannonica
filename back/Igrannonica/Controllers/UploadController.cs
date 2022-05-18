@@ -46,6 +46,18 @@ namespace Igrannonica.Controllers
 
             User? user = _context.User.Where(u => u.username == userName).FirstOrDefault();
 
+            if (user == null)
+            {
+                return BadRequest(new { responseMessage = "No username with that name" });
+            }
+
+            Models.File? oldFile = _context.File.Where(f => f.RandomFileName == usageDTO.OldRandomFileName).FirstOrDefault();
+
+            if (oldFile != null && oldFile.UserForeignKey == user.id)
+            {
+                return Ok(new {randomFileName = usageDTO.OldRandomFileName, fileName = usageDTO.FileName});
+            }
+
             var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
@@ -62,9 +74,6 @@ namespace Igrannonica.Controllers
             var httpResponse = await client.PostAsync(endpoint, payload);
             var response = await httpResponse.Content.ReadAsStringAsync();
 
-            if (user == null) { 
-                return BadRequest(new { responseMessage = "No username with that name" });
-                }
             Models.File file = new Models.File
             {
                 RandomFileName = NewRandomFileName,
@@ -157,6 +166,15 @@ namespace Igrannonica.Controllers
             var task = UploadFile(request, RandomFileName);
             if (task.Result == _configuration.GetSection("ResponseMessages:BadFileType").Value || task.Result == _configuration.GetSection("ResponseMessages:NoFile").Value)
                 return BadRequest(task.Result);
+
+            Models.File file = new Models.File();
+            file.RandomFileName = RandomFileName;
+            file.DateCreated = DateTime.Now;
+            file.FileName = task.Result;
+            file.UserForeignKey = null;
+            file.IsPublic = false;
+            await _context.File.AddAsync(file);
+            await _context.SaveChangesAsync();
             return Ok(new { randomFileName = RandomFileName });
 
         }

@@ -7,6 +7,10 @@ namespace Igrannonica.Models
         public MySqlContext(DbContextOptions<MySqlContext> options) : base(options)
         { }
 
+        public MySqlContext()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<File>()
