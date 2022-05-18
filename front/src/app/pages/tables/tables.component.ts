@@ -1427,8 +1427,8 @@ export class TablesComponent {
       matrix.classList.remove('col-lg-12');
       matrix.classList.remove('largeCorr');
       this.matrixButton = "Full Matrix";
-      matrixCard.setAttribute("style", "height: 410px;");
-      corr.setAttribute("style", "height: 332px;");
+      matrixCard.setAttribute("style", "height: 480px;");
+      corr.setAttribute("style", "height: 405px;");
     }
   }
 

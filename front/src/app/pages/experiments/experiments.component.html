@@ -76,7 +76,7 @@
                                     <div class=" row">
                                         <div class="titleHeader">
                                             <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">{{'Experiment:' | translate}} {{item.name}}</h4>
-                                            <div class="settings" [hidden]="checkForDelete(item.username)">
+                                            <div class="privacySlider" [hidden]="checkForDelete(item.username)">
                                                 <label class="switch" ngbTooltip="{{'Change experiments privacy by toggling this' | translate}}">
                                                     <input type="checkbox" *ngIf="item.visibility" (change)="onCheckboxChange($event,item)" checked>
                                                     <input type="checkbox" *ngIf="!item.visibility" (change)="onCheckboxChange($event,item)">

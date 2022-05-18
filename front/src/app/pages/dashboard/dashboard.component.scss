@@ -441,9 +441,9 @@ body.cm-modal-open {
     height: 60px;
 }
 
-@media(max-width: 1760px) {
+@media(max-width: 1775px) {
     .layer {
-        width: 25%
+        width: 14.285%;
     }
 }
 
@@ -602,9 +602,9 @@ canvas {
     }
 }
 
-@media(max-width: 1070px) {
+@media(max-width: 1595px) {
     .layer {
-        width: 33.33%
+        width: 16.666%
     }
 }
 
@@ -631,9 +631,9 @@ canvas {
     }
 }
 
-@media(max-width: 620px) {
+@media(max-width: 1415px) {
     .layer {
-        width: 50%
+        width: 20%
     }
 }
 
@@ -664,7 +664,37 @@ canvas {
     }
 }
 
-@media(max-width: 430px) {
+@media(max-width: 1236px) {
+    .layer {
+        width: 25%;
+    }
+}
+
+@media(max-width: 1057px) {
+    .layer {
+        width: 33.33%;
+    }
+}
+
+@media(max-width: 991px) {
+    .layer {
+        width: 25%;
+    }
+}
+
+@media(max-width: 991px) {
+    .layer {
+        width: 33.33%;
+    }
+}
+
+@media(max-width: 614px) {
+    .layer {
+        width: 50%;
+    }
+}
+
+@media(max-width: 435px) {
     .layer {
         width: 100%;
     }
