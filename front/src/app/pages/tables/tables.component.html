@@ -4,10 +4,10 @@
             <div class="warning-modal-body">
                 <div class="warning-body" style="padding: 0.5%;overflow: auto;">
                     <div class="warning-content">
-                        <h3>Are you sure you want to delete selected rows?</h3>
-                        <h4 style="margin-bottom: 30px;">This change is permanent.</h4>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteRows(); deleteWarning=false">Delete</button>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteWarning=false">Cancel</button>
+                        <h3>{{'Are you sure you want to delete selected rows?' | translate}}</h3>
+                        <h4 style="margin-bottom: 30px;">{{'This change is permanent.' | translate}}</h4>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteRows(); deleteWarning=false">{{'Delete' | translate}}</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteWarning=false">{{'Cancel' | translate}}</button>
                     </div>
                 </div>
             </div>
@@ -20,7 +20,7 @@
             <div class=" card card-height" id="stat">
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
-                        <h3 class=" card-category" style="color: white; float:left;">Column Statistics</h3>
+                        <h3 class=" card-category" style="color: white; float:left;">{{'Column Statistics' | translate}}</h3>
                         <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandStats()" style="margin-bottom: 0px;">{{statsButton}}</button>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
                 <div class=" card-header">
                     <div style="width:100%; height:auto;">
                         <h3 class=" card-category" style="color: white; float: left;">Boxplot</h3>
-                        <h3 class=" card-category" style="color: white; float: right;">Choose column to plot</h3>
+                        <h3 class=" card-category" style="color: white; float: right;">{{'Choose column to plot' | translate}}</h3>
                     </div>
                     <select class='dropdown' (change)='onSelectedCol($event)' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
                     <!--   <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
@@ -173,7 +173,7 @@
         <div class="matrix col-lg-4" *ngIf="showStatisticDiv" [hidden]="hideMatrix">
             <div class="card card-height" id="matrixCard">
                 <div class=" card-header">
-                    <h3 class=" card-category" style="color: white;float: left;">Correlation Matrix</h3>
+                    <h3 class=" card-category" style="color: white;float: left;">{{'Correlation Matrix' | translate}}</h3>
                     <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="expandMatrix(); previewMatrix();">{{matrixButton}}</button>
                 </div>
                 <div class=" card-body">
@@ -218,16 +218,16 @@
                 <label for="tab-4">X</label>
                 <section>
                     <div class="tab-content">
-                        <h3 style="margin : 0px; padding: 0px;">Preprocessing data - choose a tab to open</h3>
+                        <h3 style="margin : 0px; padding: 0px;">{{"Preprocessing data - choose a tab to open" | translate}}</h3>
                     </div>
                 </section>
 
                 <input type="radio" name="tab" id="tab-1">
-                <label for="tab-1">Input & Output Selection</label>
+                <label for="tab-1">{{"Input & Output Selection" | translate}}</label>
                 <section>
                     <div class="tab-content">
                         <div class="divInput">
-                            <h4>Input</h4>
+                            <h4>{{'Input' | translate}}</h4>
                             <div *ngFor="let item of statistic['colList']; let i = index">
                                 <div class="Ioption">
                                     <div class="checkDIV">
@@ -239,7 +239,7 @@
                             </div>
                         </div>
                         <div class="divOutput">
-                            <h4>Output</h4>
+                            <h4>{{'Output' | translate}}</h4>
                             <div *ngFor="let item of statistic['colList']; let i = index">
                                 <div class="Ooption">
                                     <div class="radioDIV">
@@ -254,11 +254,11 @@
                 </section>
 
                 <input type="radio" name="tab" id="tab-2">
-                <label for="tab-2">Encoding</label>
+                <label for="tab-2">{{'Encoding' | translate}}</label>
                 <section>
                     <div class="tab-content">
                         <div [hidden]="!notChecked">
-                            <h4 style="padding: 1rem;">Please choose input.</h4>
+                            <h4 style="padding: 1rem;">{{'Please choose input.' | translate}}</h4>
                         </div>
                         <div [hidden]="notChecked" class="encoding">
                             <div class="encRow" *ngFor="let item of colDataList; let i = index">
@@ -280,22 +280,22 @@
                 </section>
 
                 <input type="radio" name="tab" id="tab-3">
-                <label for="tab-3">Missing values & Outliers</label>
+                <label for="tab-3">{{'Missing values & Outliers' | translate}}</label>
                 <section>
                     <div class="tab-content">
                         <div class="divMissingValuesCont" [hidden]="existsMissingValues()" style="height: auto;">
-                            <h4 class=" card-title msHeader">There are no missing values in this dataset.</h4>
+                            <h4 class=" card-title msHeader">{{'There are no missing values in this dataset.' | translate}}</h4>
                         </div>
                         <div class="divMissingValuesCont" [hidden]="!existsMissingValues()">
-                            <h4 class=" card-title msHeader">Missing values</h4>
+                            <h4 class=" card-title msHeader">{{'Missing values' | translate}}</h4>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Select column</h6>
+                                <h6>{{'Select column' | translate}}</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
                                         <option class='option' *ngFor="let item of arrMissingValues; let i = index" value="{{item}}">{{item}}</option>
                                     </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Select value</h6>
+                                <h6>{{'Select value' | translate}}</h6>
                                 <select [hidden]="!numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
                                         <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
                                     </select>
@@ -304,46 +304,46 @@
                                     </select>
                             </div>
                             <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
-                                <p class="orDiv">OR</p>
+                                <p class="orDiv">{{'OR' | translate}}</p>
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Enter value</h6>
+                                <h6>{{'Enter value' | translate}}</h6>
                                 <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToFillMissingValCol" (change)="onInputToFillMissingValCol($event)">
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">CONFIRM</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">{{'CONFIRM' | translate}}</button>
                             </div>
                         </div>
                         <div class="divMissingValuesCont" [hidden]="existsOutliers()" style="height:auto">
-                            <h4 class=" card-title msHeader">There are no outliers in this dataset.</h4>
+                            <h4 class=" card-title msHeader">{{'There are no outliers in this dataset.' | translate}}</h4>
                         </div>
                         <div class="divMissingValuesCont" [hidden]="!existsOutliers()">
-                            <h4 class=" card-title msHeader">Outliers</h4>
+                            <h4 class=" card-title msHeader">{{'Outliers' | translate}}</h4>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Select column</h6>
+                                <h6>{{'Select column' | translate}}</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
                                         <option class='option' *ngFor="let item of arrAllOutliers; let i = index" value="{{item}}">{{item}}</option>
                                     </select>
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Select value</h6>
+                                <h6>{{'Select value' | translate}}</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedToReplaceOutliers" (change)="onSelectedValueOutliers($event)">
                                         <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
                                     </select>
                             </div>
                             <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
-                                <p class="orDiv">OR</p>
+                                <p class="orDiv">{{'OR' | translate}}</p>
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <h6>Enter value</h6>
+                                <h6>{{'Enter value' | translate}}</h6>
                                 <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToReplaceOutliersCol" (change)="onInputToFillOutliers($event)">
                             </div>
                             <div class="dropdownContainerMissingVal">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers();">CONFIRM</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers();">{{'CONFIRM' | translate}}</button>
                             </div>
                         </div>
                         <div style="border-top: 1px solid #7d3c8b; width: 100%; height:30px; float:left;">
-                            <h6 style="text-align: center; padding-top: 0.5rem;">All unhandled rows with missing values will be deleted when training is started. </h6>
+                            <h6 style="text-align: center; padding-top: 0.5rem;">{{'All unhandled rows with missing values will be deleted when training is started.' | translate}} </h6>
                         </div>
                     </div>
                 </section>
@@ -352,20 +352,20 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class=" card-header" style="padding:0px;">
-                    <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">Uploaded data</h3>
+                    <h3 class=" card-title" style="padding-left: 1rem; padding-top: 1rem;">{{'Uploaded data' | translate}}</h3>
                     <div class="headerLeft" style="padding-top: 8px;">
                         <div class="dropdownContainer">
-                            <h6>Filter rows</h6>
-                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event, true)' placeholder="Data Type" ngbTooltip="Data type">
-                                <option class='option' value="all">All</option>
-                                <option class='option' value="null">Null</option>
-                                <option class='option' value="not null">Not Null</option>
-                                <option class='option' value="outlier">Outliers</option>
+                            <h6>{{'Filter rows' | translate}}</h6>
+                            <select class='dropdown' [(ngModel)]="selectedType" (change)='onSelectedType($event, true)' placeholder="Data Type" ngbTooltip="{{'Data type' | translate}}">
+                                <option class='option' value="all">{{'All' | translate}}</option>
+                                <option class='option' value="null">{{'Null' | translate}}</option>
+                                <option class='option' value="not null">{{'Not Null' | translate}}</option>
+                                <option class='option' value="outlier">{{'Outliers' | translate}}</option>
                             </select>
                         </div>
                         <div class="dropdownContainer dpr">
-                            <h6>Rows per page</h6>
-                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event, true)' placeholder="Rows" ngbTooltip="Number of rows per page">
+                            <h6>{{'Rows per page' | translate}}</h6>
+                            <select class='dropdown' [(ngModel)]="selectedRow" (change)='onSelectedRow($event, true)' placeholder="Rows" ngbTooltip="{{'Number of rows per page' | translate}}">
                                 <option class='option' value="10">10</option>
                                 <option class='option' value="20">20</option>
                                 <option class='option' value="50">50</option>
@@ -373,15 +373,15 @@
                             </select>
                         </div>
                         <div class="dropdownContainer dpr" [hidden]="selectedType != 'outlier'">
-                            <h6>Choose column to view outliers</h6>
-                            <select class="dropdown" [(ngModel)]="selectedOutlierColumn" ngbTooltip="Showing data with outliers for selected column" (change)="onSelectedOutlierColumn($event, true)">
+                            <h6>{{'Choose column to view outliers' | translate}}</h6>
+                            <select class="dropdown" [(ngModel)]="selectedOutlierColumn" ngbTooltip="{{'Showing data with outliers for selected column' | translate}}" (change)="onSelectedOutlierColumn($event, true)">
                                 <option class="option" *ngFor="let item of numericValues['col']; let i = index" >{{item}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="headerRight">
                         <div class="trash" [hidden]="!maxPage">
-                            <button class=" btn btn-link" placement="left" ngbTooltip="Delete selected rows" container="body" (click)="deleteCheck()">
+                            <button class=" btn btn-link" placement="left" ngbTooltip="{{'Delete selected rows' | translate}}" container="body" (click)="deleteCheck()">
                                 <i class="tim-icons icon-trash-simple" style="font-size: 2em;"> </i>
                             </button>
                         </div>
@@ -460,7 +460,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 continue" routerLink="/training" routerLinkActive="active">Continue</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 continue" routerLink="/training" routerLinkActive="active">{{'Continue' | translate}}</button>
                 </div>
             </div>
         </div>

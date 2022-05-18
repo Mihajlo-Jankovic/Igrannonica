@@ -4,10 +4,10 @@
             <div class="warning-modal-body">
                 <div class="warning-body" style="padding: 0.5%;overflow: auto;">
                     <div class="warning-content">
-                        <h3>Are you sure you want to delete this experiment?</h3>
-                        <h4 style="margin: 0 0 30px 0;">This change is permanent.</h4>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteExperiments(toDelete); deleteWarning=false;">Delete</button>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteWarning=false;">Cancel</button>
+                        <h3>{{'Are you sure you want to delete this experiment?' | translate}}</h3>
+                        <h4 style="margin: 0 0 30px 0;">{{'This change is permanent.' | translate}}</h4>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteExperiments(toDelete); deleteWarning=false;">{{'Delete' | translate}}</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="deleteWarning=false;">{{'Cancel' | translate}}</button>
                     </div>
                 </div>
             </div>
@@ -19,13 +19,13 @@
         <div class=" col-md-12">
             <div class=" card">
                 <div class="card-header">
-                    <h3 class="card-title" style="float:left; margin-top:5px;"> Choose an existing experiment</h3>
+                    <h3 class="card-title" style="float:left; margin-top:5px;"> {{'Choose an existing experiment' | translate}}</h3>
                     <div class="header-filter">
                         <div class="filter-left" style="margin-bottom: 10px;">
-                            <h6 *ngIf="cookieCheck">Filter experiments</h6>
-                            <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="Experiment Privacy" ngbTooltip="Experiment Privacy" style="float:left;">
-                                <option class='option' value="public">Public</option>
-                                <option class='option' value="myexperiments">My experiment</option>
+                            <h6 *ngIf="cookieCheck">{{'Filter experiments' | translate}}</h6>
+                            <select *ngIf="cookieCheck" class='dropdown' [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="{{'Experiment Privacy' | translate}}" ngbTooltip="{{'Experiment Privacy' | translate}}" style="float:left;">
+                                <option class='option' value="public">{{'Public' | translate}}</option>
+                                <option class='option' value="myexperiments">{{'My experiment' | translate}}</option>
                             </select>
                         </div>
                         <div class="filter-right">
@@ -61,13 +61,13 @@
                 </div>
                 <div class="card-body filelist" style="padding-right: 0;">
                     <div style="margin: auto" *ngIf="noExperiments && selectedPrivacyType == 'public' && cookieCheck">
-                        <h2 style="text-align:center">No public experiments available.</h2>
+                        <h2 style="text-align:center">{{'No public experiments available.' | translate}}</h2>
                     </div>
                     <div style="margin: auto" *ngIf="noExperiments && !cookieCheck">
-                        <h2 style="text-align:center">No public experiments available.</h2>
+                        <h2 style="text-align:center">{{'No public experiments available.' | translate}}</h2>
                     </div>
                     <div style="margin: auto" *ngIf="noExperiments && selectedPrivacyType == 'myexperiments'">
-                        <h2 style="text-align:center">You haven't saved any experiments yet.</h2>
+                        <h2 style="text-align:center">{{"You haven't saved any experiments yet" | translate}}.</h2>
                     </div>
                     <div class="authorized" *ngIf="cookieCheck">
                         <div *ngFor="let item of experimentListAuthorized">
@@ -75,25 +75,25 @@
                                 <div class="fileContent">
                                     <div class=" row">
                                         <div class="titleHeader">
-                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">Experiment: {{item.name}}</h4>
+                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">{{'Experiment:' | translate}} {{item.name}}</h4>
                                             <div class="settings" [hidden]="checkForDelete(item.username)">
-                                                <label class="switch" ngbTooltip="Change experiment's privacy by toggling this">
+                                                <label class="switch" ngbTooltip="{{'Change experiments privacy by toggling this' | translate}}">
                                                     <input type="checkbox" *ngIf="item.visibility" (change)="onCheckboxChange($event,item)" checked>
                                                     <input type="checkbox" *ngIf="!item.visibility" (change)="onCheckboxChange($event,item)">
                                                     <span class="slider round"></span>
                                                 </label>
                                             </div>
                                         </div>
-                                        <div class="fileName">Desription:</div>
+                                        <div class="fileName">{{'Desription:' | translate}}</div>
                                         <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
-                                        <div class="fileName">Date : {{item.date}}</div>
-                                        <div class="fileName" style="height:auto;">Dataset : {{item.realName}}</div>
-                                        <div class="fileName" style="height:auto;">Owner : {{item.username}}</div>
+                                        <div class="fileName">{{'Date :' | translate}} {{item.date}}</div>
+                                        <div class="fileName" style="height:auto;">{{'Dataset :' | translate}} {{item.realName}}</div>
+                                        <div class="fileName" style="height:auto;">{{'Owner :' | translate}} {{item.username}}</div>
                                         <div style="width:100%; height:auto;">
-                                            <div class="fileName" style="width:210px; float: left; margin-right: 0px;">Problem type : {{item.models[0]['parameters']['problemType']}}</div>
+                                            <div class="fileName" style="width:210px; float: left; margin-right: 0px;">{{'Problem type :' | translate}} {{item.models[0]['parameters']['problemType']}}</div>
                                             <div class="settings">
-                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">Use this</button>
-                                                <button class=" btn btn-link trash " placement="left" ngbTooltip="Delete file" container="body" (click)="deleteCheck(item['_id'])" style="float:right;" [hidden]="checkForDelete(item.username)">
+                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">{{'Use this' | translate}}</button>
+                                                <button class=" btn btn-link trash " placement="left" ngbTooltip="{{'Delete file' | translate}}" container="body" (click)="deleteCheck(item['_id'])" style="float:right;" [hidden]="checkForDelete(item.username)">
                                                     <i class="tim-icons icon-trash-simple"> </i>
                                                 </button>
                                             </div>
@@ -109,17 +109,17 @@
                                 <div class="fileContent">
                                     <div class=" row">
                                         <div class="titleHeader">
-                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">Experiment: {{item.name}}</h4>
+                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: 70%; float: left;">{{'Experiment:' | translate}} {{item.name}}</h4>
                                         </div>
-                                        <div class="fileName">Desription:</div>
+                                        <div class="fileName">{{'Desription:' | translate}}</div>
                                         <textarea disabled name="description" rows="3" class="textarea">{{item.description}}</textarea>
-                                        <div class="fileName">Date : {{item.date}}</div>
-                                        <div class="fileName" style="height:auto;">Dataset : {{item.realName}}</div>
-                                        <div class="fileName" style="height:auto;">Owner : {{item.username}}</div>
+                                        <div class="fileName">{{'Date :' | translae}} {{item.date}}</div>
+                                        <div class="fileName" style="height:auto;">{{'Dataset :' | translate}} {{item.realName}}</div>
+                                        <div class="fileName" style="height:auto;">{{'Owner :' | translate}} {{item.username}}</div>
                                         <div style="width:100%; height:auto;">
-                                            <div class="fileName" style="width:210px; float: left; margin-right: 0px;">Problem type : {{item.models[0]['parameters']['problemType']}}</div>
+                                            <div class="fileName" style="width:210px; float: left; margin-right: 0px;">{{'Problem type :' | translate}} {{item.models[0]['parameters']['problemType']}}</div>
                                             <div class="settings">
-                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">Use this</button>
+                                                <button class="btn btn-primary btn-lg btn-block mb-3" style="width:20%; float:left; margin-right:1rem; width:80px; height:20px;" (click)="useExperiments(item)">{{'Use this' | translate}}</button>
                                             </div>
                                         </div>
                                     </div>

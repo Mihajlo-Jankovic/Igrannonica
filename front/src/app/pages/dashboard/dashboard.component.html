@@ -13,10 +13,10 @@
             <div class="cm-modal-body">
                 <div class="warning-body" style="padding: 0.5%;overflow: auto;">
                     <div class="warning-content">
-                        <h2>You're not logged in!</h2>
+                        <h2>{{"You're not logged in!" | translate }}</h2>
                         <h4 style="margin-bottom: 30px;">Log in to save your experiment!</h4>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="login()">LOG IN</button>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="loginWarning = false">IGNORE</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="login()">{{'LOG IN' | translate}}</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="loginWarning = false">{{'IGNORE' | translate}}</button>
                     </div>
                 </div>
             </div>
@@ -29,10 +29,10 @@
             <div class="cm-modal-body">
                 <div class="warning-body" style="padding: 0.5%;overflow: auto;">
                     <div class="warning-content">
-                        <h2>Are you sure you want to discard this model?</h2>
-                        <h4 style="margin-bottom: 30px;">This change is permanent.</h4>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="discardModel(modelToDiscard)">Discard</button>
-                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="modelToDiscard=-1; deleteWarning=false;">Cancel</button>
+                        <h2>{{'Are you sure you want to discard this model?' | translate}}</h2>
+                        <h4 style="margin-bottom: 30px;">{{'This change is permanent.' | translate}}</h4>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="discardModel(modelToDiscard)">{{'Discard' | translate}}</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="modelToDiscard=-1; deleteWarning=false;">{{'Cancel' | translate}}</button>
                     </div>
                 </div>
             </div>
@@ -44,20 +44,20 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class=" card-title" style="position: relative; float: left;">Configure hyperparameters</h3>
-                    <button class="btn btn-primary btn-lg btn-block mb-3" style="width:10%; float:right; padding:0px; width:150px; height:42px;" (click)="clearEverything()">CLEAR EVERYTHING</button>
+                    <h3 class=" card-title" style="position: relative; float: left;">{{'Configure hyperparameters' | translate}}</h3>
+                    <button class="btn btn-primary btn-lg btn-block mb-3" style="width:10%; float:right; padding:0px; width:150px; height:42px;" (click)="clearEverything()">{{'CLEAR EVERYTHING' | translate}}</button>
                 </div>
                 <div class="card-body" style="padding-left: 0; padding-right: 0;">
                     <div class="hyperparameter">
-                        <h6>Problem type</h6>
-                        <select class='dropdown' name="problemType" [(ngModel)]="problemType" ngbTooltip="Problem type" (change)='onSelected($event)'>
-                            <option class='option' value="Regression">Regression</option>
-                            <option class='option' value="Classification">Classification</option>
+                        <h6>{{'Problem type' | translate}}</h6>
+                        <select class='dropdown' name="problemType" [(ngModel)]="problemType" ngbTooltip="{{'Problem type' | translate}}" (change)='onSelected($event)'>
+                            <option class='option' value="Regression">{{'Regression' | translate}}</option>
+                            <option class='option' value="Classification">{{'Classification' | translate}}</option>
                         </select>
                     </div>
                     <div class="hyperparameter">
-                        <h6>Activation function for all layers</h6>
-                        <select class='dropdown' name="activationFunction" [(ngModel)]="activationFunction" ngbTooltip="Activation function" (change)="onSelected($event)">
+                        <h6>{{'Activation function for all layers' | translate}}</h6>
+                        <select class='dropdown' name="activationFunction" [(ngModel)]="activationFunction" ngbTooltip="{{'Activation function' | translate}}" (change)="onSelected($event)">
                             <option class='option' value="sigmoid">Sigmoid</option>
                             <option class='option' value="tanh">Tanh</option>
                             <option class='option' value="relu">Relu</option>
@@ -66,8 +66,8 @@
                         </select>
                     </div>
                     <div class="hyperparameter" [hidden]="true">
-                        <h6>Encoding type</h6>
-                        <select class='dropdown' name="encodingType" [(ngModel)]="encodingType" (change)="onSelected($event)" ngbTooltip="Encoding type">
+                        <h6>{{'Encoding type' | translate}}</h6>
+                        <select class='dropdown' name="encodingType" [(ngModel)]="encodingType" (change)="onSelected($event)" ngbTooltip="{{'Encoding type' | translate}}">
                             <option class='option' value="label">Label</option>
                             <option class='option' value="one-hot">One-Hot</option>
                             <option class='option' value="binary">Binary</option>
@@ -75,8 +75,8 @@
                         </select>
                     </div>
                     <div class="hyperparameter">
-                        <h6>Optimizer</h6>
-                        <select class='dropdown' name="optimizer" [(ngModel)]="optimizer" ngbTooltip="Optimizer" (change)="onSelected($event)">
+                        <h6>{{'Optimizer' | translate}}</h6>
+                        <select class='dropdown' name="optimizer" [(ngModel)]="optimizer" ngbTooltip="{{'Optimizer' | translate}}" (change)="onSelected($event)">
                             <option class='option' value="Adam">Adam</option>
                             <option class='option' value="SGD">SGD</option>
                             <option class='option' value="RMSprop">RMSprop</option>
@@ -88,8 +88,8 @@
                         </select>
                     </div>
                     <div class="hyperparameter">
-                        <h6>Learning rate</h6>
-                        <select class='dropdown' name="learningRate" [(ngModel)]="learningRate" ngbTooltip="Learning rate" (change)="onSelected($event)">
+                        <h6>{{'Learning rate' | translate}}</h6>
+                        <select class='dropdown' name="learningRate" [(ngModel)]="learningRate" ngbTooltip="{{'Learning rate' | translate}}" (change)="onSelected($event)">
                             <option class='option' value="0.0001">0.0001</option>
                             <option class='option' value="0.001">0.001</option>
                             <option class='option' value="0.01">0.01</option>
@@ -102,7 +102,7 @@
                         </select>
                     </div>
                     <div class="hyperparameter">
-                        <h6>Loss function</h6>
+                        <h6>{{'Loss function' | translate}}</h6>
                         <label style="display: none;" *ngIf="problemType == 'Regression'; then thenBlock1 else elseBlock1"></label>
                         <ng-template #thenBlock1>
                             <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="Loss function" (change)="onSelected($event)">
@@ -130,15 +130,15 @@
                         </section>
                     </div>
                     <div class="hyperparameter">
-                        <h6>Number of Epochs</h6>
-                        <input class="dropdown" name="epochs" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="Number of Epochs" (change)="onSelected($event)">
+                        <h6>{{'Number of Epochs' | translate}}</h6>
+                        <input class="dropdown" name="epochs" type="text" value="{{epochs}}" [(ngModel)]="epochs" ngbTooltip="{{'Number of Epochs' | translate}}" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameter">
-                        <h6>Number of neurons per layer</h6>
-                        <input class="dropdown" name="neuronNum" type="text" value="{{neuronNum}}" [(ngModel)]="neuronNum" ngbTooltip="Number of neurons per layer" (change)="onSelected($event)">
+                        <h6>{{'Number of neurons per layer' | translate}}</h6>
+                        <input class="dropdown" name="neuronNum" type="text" value="{{neuronNum}}" [(ngModel)]="neuronNum" ngbTooltip="{{'Number of neurons per layer' | translate}}" (change)="onSelected($event)">
                     </div>
                     <div class="hyperparameter">
-                        <h6>Regularization</h6>
+                        <h6>{{'Regularization' | translate}}</h6>
                         <select class='dropdown' name="regularization" [(ngModel)]="regularization" ngbTooltip="Regularization" (change)="onSelected($event)">
                             <option class='option' value="None">None</option>
                             <option class='option' value="L1">L1</option>
@@ -146,8 +146,8 @@
                         </select>
                     </div>
                     <div class="hyperparameter" [hidden]="regularization=='None'">
-                        <h6>Regularization rate</h6>
-                        <select class='dropdown' name="regularizationRate" [(ngModel)]="regularizationRate" ngbTooltip="Regularization rate" (change)="onSelected($event)">
+                        <h6>{{'Regularization rate' | translate}}</h6>
+                        <select class='dropdown' name="regularizationRate" [(ngModel)]="regularizationRate" ngbTooltip="{{'Regularization rate' | translate}}" (change)="onSelected($event)">
                             <option class='option' value="0">0</option>
                             <option class='option' value="0.001">0.001</option>
                             <option class='option' value="0.01">0.01</option>
@@ -160,7 +160,7 @@
                         </select>
                     </div>
                     <div class="hyperparameterMetrics">
-                        <h6>Metrics for model comparison</h6>
+                        <h6>{{'Metrics for model comparison' | translate}}</h6>
                         <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" [disabled]="firstTraining" (onSelect)="onItemSelect($event)"
                             (onSelectAll)="onSelectAll($event)" (onDeSelect)="onItemDeSelect($event)">
                         </ng-multiselect-dropdown>
@@ -175,13 +175,13 @@
             <div class="card">
                 <div class="card-header layerButtons">
                     <div style="width : auto; position: relative; float: left;">
-                        <h3 class="card-title">Configure layers</h3>
+                        <h3 class="card-title">{{'Configure layers' | translate}}</h3>
                     </div>
                     <div class=" btn-group" style="position: relative; float: left; margin-left: 12px;">
-                        <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseLayers(layersLabel-1)" ngbTooltip="Decrease number of layers">
+                        <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseLayers(layersLabel-1)" ngbTooltip="{{'Decrease number of layers' | translate}}">
                             <i class=" tim-icons icon-simple-delete"></i>
                         </button>
-                        <button class=" btn btn-danger btn-sm plus" (click)="increaseLayers()" ngbTooltip="Increase number of layers">
+                        <button class=" btn btn-danger btn-sm plus" (click)="increaseLayers()" ngbTooltip="{{'Increase number of layers' | translate}}">
                             <i class=" tim-icons icon-simple-add"></i>
                         </button>
                     </div>
@@ -195,23 +195,23 @@
                     <div class="layerContainer">
                         <div class="layer" *ngFor="let layer of layerList" div>
                             <div class="layerContent">
-                                <h3 style="margin-bottom: 5px;">Layer {{layer.id}}</h3>
+                                <h3 style="margin-bottom: 5px;">{{'Layer' | translate}} {{layer.id}}</h3>
                                 <div class="buttons">
                                     <div class=" btn-group">
-                                        <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseNeurons(layer.id-1, neuronsList[layer.id-1])" ngbTooltip="Decrease number of neurons">
+                                        <button class=" btn btn-danger btn-simple btn-sm minus" (click)="decreaseNeurons(layer.id-1, neuronsList[layer.id-1])" ngbTooltip="{{'Decrease number of neurons' | translate}}">
                                             <i class=" tim-icons icon-simple-delete"></i>
                                         </button>
-                                        <button class=" btn btn-danger btn-sm plus" (click)="increaseNeurons(layer.id-1)" ngbTooltip="Increase number of neurons">
+                                        <button class=" btn btn-danger btn-sm plus" (click)="increaseNeurons(layer.id-1)" ngbTooltip="{{'Increase number of neurons' | translate}}">
                                             <i class=" tim-icons icon-simple-add"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="neurons">
-                                    <h3 style="width: auto; margin:0; padding:0; float: left;">Neurons</h3>
-                                    <input type="text" class="textInput" [(ngModel)]="neuronsList[layer.id-1]" ngbTooltip="Type in number of neurons">
+                                    <h3 style="width: auto; margin:0; padding:0; float: left;">{{'Neurons' | translate}}</h3>
+                                    <input type="text" class="textInput" [(ngModel)]="neuronsList[layer.id-1]" ngbTooltip="{{'Type in number of neurons' | translate}}">
                                 </div>
-                                <h6 style="text-align: center; margin: 0; margin-top: 0.5rem">Activation function:</h6>
-                                <select class='dropdown' name="afList" [(ngModel)]="activationFunctionList[layer.id-1]" (change)="onSelected($event)" ngbTooltip="Activation function">
+                                <h6 style="text-align: center; margin: 0; margin-top: 0.5rem">{{'Activation function:' | translate}}</h6>
+                                <select class='dropdown' name="afList" [(ngModel)]="activationFunctionList[layer.id-1]" (change)="onSelected($event)" ngbTooltip="{{'Activation function' | translate}}">
                                     <option class='option' value="sigmoid">Sigmoid</option>
                                     <option class='option' value="tanh">Tanh</option>
                                     <option class='option' value="relu">Relu</option>
@@ -228,7 +228,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining(); scrollTo(target);" [disabled]="training">START TRAINING</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining(); scrollTo(target);" [disabled]="training">{{'START TRAINING' | translate}}</button>
                 </div>
             </div>
         </div>
@@ -237,14 +237,14 @@
         <div class="col-12">
             <div class="card" style="margin-top:20px; z-index: 1; border-radius: 0 0.2857rem 0.2857rem 0.2857rem;">
                 <div style="position:absolute" #target>
-                    <button class="tab-button raised-tab-button" id="tab-btn1" (click)="changeTab(0); scrollTo(target);">Live Training</button>
-                    <button class="tab-button" id="tab-btn1" (click)="changeTab(1); scrollTo(target2);" [disabled]="trained == false">Results</button>
-                    <button class="tab-button" id="tab-btn1" (click)="changeTab(2); scrollTo(target);" [disabled]="trained == false">Evaluation</button>
+                    <button class="tab-button raised-tab-button" id="tab-btn1" (click)="changeTab(0); scrollTo(target);">{{'Live Training' | translate}}</button>
+                    <button class="tab-button" id="tab-btn1" (click)="changeTab(1); scrollTo(target2);" [disabled]="trained == false">{{'Results' | translate}}</button>
+                    <button class="tab-button" id="tab-btn1" (click)="changeTab(2); scrollTo(target);" [disabled]="trained == false">{{'Evaluation' | translate}}</button>
                 </div>
                 <div class="card-body">
                     <div class="tab1" [hidden]="!liveButton">
                         <div [hidden]="!firstTraining">
-                            <h3 class="card-title" style="width:auto;">Model {{modelsTrained}}</h3>
+                            <h3 class="card-title" style="width:auto;">{{'Model' | translate}} {{modelsTrained}}</h3>
                             <div style="width:auto; height:auto; float:right;">
                                 <div class="button-group" data-toggle="buttons" *ngIf="buttons.length > 0">
                                     <button class="btn btn-danger btn-sm metric-button" *ngFor="let button of buttons" [ngbTooltip]="showTooltip(button)" (click)="changeData(button)" placement="left" style="float: right;">{{button}}</button>
@@ -256,18 +256,18 @@
                         </div>
                         <div [hidden]="firstTraining">
                             <h2 style="text-align:center; margin-top:20px;">
-                                Start training new model.
+                                {{'Start training new model.' | translate}}
                             </h2>
                         </div>
                     </div>
                     <div class="tab2" [hidden]="!resultsButton" #target2>
                         <div class="tab-header" style="padding: 0px; width:100%; height: auto">
                             <div class="headerLeft">
-                                <h3 class="card-title" style="padding:0; margin: 0px;">Trained Models-Epoch: {{selectedEpoch+1}} </h3>
+                                <h3 class="card-title" style="padding:0; margin: 0px;">{{'Trained Models-Epoch:' | translate}} {{selectedEpoch+1}} </h3>
                             </div>
                             <div class="headerRight">
                                 <div class="page-buttons">
-                                    <h6>Swich between epochs</h6>
+                                    <h6>{{'Swich between epochs' | translate}}</h6>
                                     <button class=" btn btn-link page" (click)="firstPage()">
                                         <i class="tim-icons icon-double-left arrow"></i>
                                     </button>
@@ -305,7 +305,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 30px;"></th>
-                                        <th>MODEL</th>
+                                        <th>{{'MODEL' | translate}}</th>
                                         <th *ngFor="let item of modelsHeader; let i = index">{{item}}</th>
                                     </tr>
                                 </thead>
@@ -322,10 +322,10 @@
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class=" card-title" style="margin-top: 1rem;">Compare training results</h3>
+                        <h3 class=" card-title" style="margin-top: 1rem;">{{'Compare training results' | translate}}</h3>
                         <div class="filter-left">
-                            <h6>Choose metric to plot</h6>
-                            <select class='dropdown' (change)="chartThisMetric(metricDropdown)" [(ngModel)]="metricDropdown" ngbTooltip="Choose metric to plot" style="float:left;">
+                            <h6>{{'Choose metric to plot' | translate}}</h6>
+                            <select class='dropdown' (change)="chartThisMetric(metricDropdown)" [(ngModel)]="metricDropdown" ngbTooltip="{{'Choose metric to plot' | translate}}" style="float:left;">
                                 <ng-container *ngFor="let item of modelsHeader; let i = index">
                                     <option class='option' value="{{item}}">{{item}}</option>
                                 </ng-container>
@@ -334,10 +334,10 @@
                         <div class=" chart-area"><canvas id="metric-chart"> </canvas></div>
                     </div>
                     <div class="tab3" [hidden]="!evaluationButton">
-                        <h3 class="card-title">Model Evaluation</h3>
+                        <h3 class="card-title">{{'Model Evaluation' | translate}}</h3>
                         <div class="filter-left">
-                            <h6>Choose metric to plot</h6>
-                            <select class='dropdown' (change)="chartEvaluation(evaluationMetric)" [(ngModel)]="evaluationMetric" ngbTooltip="Choose metric to plot" style="float:left;">
+                            <h6>{{'Choose metric to plot' | translate}}</h6>
+                            <select class='dropdown' (change)="chartEvaluation(evaluationMetric)" [(ngModel)]="evaluationMetric" ngbTooltip="{{'Choose metric to plot' | translate}}" style="float:left;">
                                 <ng-container *ngFor="let item of evaluationMetrics; let i = index">
                                     <option class='option' value="{{item}}">{{item}}</option>
                                 </ng-container>
@@ -354,19 +354,19 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class=" card-title saveTitle">Save your experiment</h3>
+                    <h3 class=" card-title saveTitle">{{'Save your experiment' | translate}}</h3>
                 </div>
                 <div class="card-body">
                     <div class="expContainer eciLeft">
-                        <h6>Experiment name</h6>
-                        <input type="text" class="experimentName" ngbTooltip="Write experiment name" [(ngModel)]="experimentName">
+                        <h6>{{'Experiment name' | translate}}</h6>
+                        <input type="text" class="experimentName" ngbTooltip="{{'Write experiment name' | translate}}" [(ngModel)]="experimentName">
                     </div>
                     <div class="expContainer eciRight">
-                        <h6>Experiment description</h6>
-                        <input type="text" class="experimentName" ngbTooltip="Enter description of your experiment" [(ngModel)]="description">
+                        <h6>{{'Experiment description' | translate}}</h6>
+                        <input type="text" class="experimentName" ngbTooltip="{{'Enter description of your experiment' | translate}}" [(ngModel)]="description">
                     </div>
                     <div class="expContainer" style="float: right; padding-top:22px;">
-                        <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveCheck()" [disabled]="experimentName=='' || training">SAVE EXPERIMENT</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 save" type="submit" (click)="saveCheck()" [disabled]="experimentName=='' || training">{{'SAVE EXPERIMENT' | translate}}</button>
                     </div>
                 </div>
             </div>

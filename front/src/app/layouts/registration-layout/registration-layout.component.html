@@ -111,7 +111,7 @@
                     <form *ngIf="registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate [formGroup]="registerCodeForm" (ngSubmit)="emailCode(registerCodeForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Mail Verification</h1>
+                                <h1 class=" card-title">{{'Mail Verification' | translate}})</h1>
                             </div>
                             <div class=" card-body">
                                 <div class=" pull-left">
@@ -125,11 +125,11 @@
                                             <i class=" tim-icons icon-single-02"></i>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="Code" name="code" formControlName="code" class="form-control">
+                                    <input type="text" placeholder="{{'Code' | translate}}" name="code" formControlName="code" class="form-control">
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mr-1">Verify</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mr-1">{{'Verify' | translate}}</button>
                             </div>
                         </div>
                     </form>
@@ -137,11 +137,11 @@
                     <form *ngIf="!registerCodeIndicator && emailVerificationIndicator" class="form" novalidate [formGroup]="emailVerificationForm" (ngSubmit)="registration(emailVerificationForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Thank you for verification</h1>
+                                <h1 class=" card-title">{{'Thank you for verification' | translate}}</h1>
                             </div>
                             <div class=" card-body">
                                 <div class="text-center">
-                                    <a class="text-primary" routerLink="/login" routerLinkActive="active">Login</a>
+                                    <a class="text-primary" routerLink="/login" routerLinkActive="active">{{'Login' | translate}}</a>
                                 </div>
                             </div>
                             <div class=" card-footer">
@@ -158,7 +158,7 @@
 <footer class=" footer">
     <div class=" container-fluid">
         <div class=" copyright">
-            &copy; 2022 made by Cortex.
+            &copy; {{'2022 made by Cortex.' | translate}}
         </div>
     </div>
 </footer>

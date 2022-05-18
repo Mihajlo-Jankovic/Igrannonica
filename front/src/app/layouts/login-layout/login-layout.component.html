@@ -3,9 +3,9 @@
         <div class="warning-modal-body">
             <div class="warning-body" style="padding: 0.5%;overflow: auto;">
                 <div class="warning-content">
-                    <h2>You have to verify your mail!</h2>
-                    <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="validateEmail()">Verify Email</button>
-                    <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="backToLogin()">Cancel</button>
+                    <h2>{{'You have to verify your mail!' | translate}}</h2>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="validateEmail()">{{'Verify Email' | translate}}</button>
+                    <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="backToLogin()">{{'Cancel' | translate}}</button>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                                 </div>
                                 <div class=" pull-right">
                                     <h6>
-                                        <a class="text-primary" routerLink="/login" routerLinkActive="active" (click)="forgotPassword()"> Forgot password? </a>
+                                        <a class="text-primary" routerLink="/login" routerLinkActive="active" (click)="forgotPassword()"> {{'Forgot password?' | translate}} </a>
                                     </h6>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@
                     <form *ngIf="forgotPasswordIndicator && !temporaryPasswordIndicator && !newPasswordIndicator && !validateEmailIndicator" class="form" novalidate [formGroup]="searchEmailForm">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Find Your Account</h1>
+                                <h1 class=" card-title">{{'Find Your Account' | translate}}</h1>
                             </div>
                             <div class=" card-body">
                                 <div class="input-group">
@@ -98,12 +98,12 @@
                                             <i class=" tim-icons icon-single-02"></i>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="Email" name="email" formControlName="email" class="form-control">
+                                    <input type="text" placeholder="{{'Email' | translate}}" name="email" formControlName="email" class="form-control">
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="tempPassword(searchEmailForm)">Search</button>
-                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">Cancel</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="tempPassword(searchEmailForm)">{{'Search' | translate}}</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">{{'Cancel' | translate}}</button>
 
                             </div>
                         </div>
@@ -112,11 +112,11 @@
                     <form *ngIf="temporaryPasswordIndicator && !newPasswordIndicator && !validateEmailIndicator" class="form" novalidate [formGroup]="tempPasswordForm">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Enter Temporary Password</h1>
+                                <h1 class=" card-title">{{'Enter Temporary Password' | translate}}</h1>
                             </div>
                             <div class=" pull-left">
                                 <p>
-                                    Please check your e-mail address for a text message with your temporary password
+                                    {{'Please check your e-mail address for a text message with your temporary password' | translate}}
                                 </p>
                             </div>
                             <div class=" card-body">
@@ -126,12 +126,12 @@
                                             <i class=" tim-icons icon-single-02"></i>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="Enter password" name="temporaryPassword" formControlName="temporaryPassword" class="form-control">
+                                    <input type="text" placeholder="{{'Enter password' | translate}}" name="temporaryPassword" formControlName="temporaryPassword" class="form-control">
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="saveTempPassword(tempPasswordForm)">Continue</button>
-                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">Cancel</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="saveTempPassword(tempPasswordForm)">{{'Continue' | translate}}</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">{{'Cancel' | translate}}</button>
 
                             </div>
                         </div>
@@ -141,11 +141,11 @@
                     <form *ngIf="newPasswordIndicator" class="form" novalidate [formGroup]="changePasswordForm">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Choose a New Password</h1>
+                                <h1 class=" card-title">{{'Choose a New Password' | translate}}</h1>
                             </div>
                             <div class=" pull-left">
                                 <p>
-                                    Create a new password that is minimum 8 and maximum 20 characters long, contain at least one uppercase letter, one lowercase letter and one number.
+                                    {{'Create a new password that is minimum 8 and maximum 20 characters long, contain at least one uppercase letter, one lowercase letter and one number.' | translate}}
                                 </p>
                             </div>
                             <div class=" card-body">
@@ -156,13 +156,13 @@
                                             <i class=" tim-icons icon-lock-circle"></i>
                                         </div>
                                     </div>
-                                    <input type="password" placeholder="Enter new password" name="newPassword" formControlName="newPassword" class="form-control">
+                                    <input type="password" placeholder="{{'Enter new password' | translate}}" name="newPassword" formControlName="newPassword" class="form-control">
                                 </div>
 
                             </div>
                             <div class=" card-footer">
-                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="changePassword(changePasswordForm)">Continue</button>
-                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">Cancel</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="changePassword(changePasswordForm)">{{'Continue' | translate}}</button>
+                                <button type="button" class="btn btn-primary btn-lg btn-block mb-3" (click)="backToLogin()">{{'Cancel' | translate}}</button>
 
                             </div>
                         </div>
@@ -171,7 +171,7 @@
                     <form *ngIf="validateEmailIndicator" class="form" novalidate [formGroup]="validateEmailForm" (ngSubmit)="emailCode(validateEmailForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">Mail Verification</h1>
+                                <h1 class=" card-title">{{'Mail Verification' | translate}}</h1>
                             </div>
                             <div class=" card-body">
                                 <div class="input-group">
@@ -180,7 +180,7 @@
                                             <i class=" tim-icons icon-single-02"></i>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="Email" name="email" formControlName="email" class="form-control">
+                                    <input type="text" placeholder="{{'Email' | translate}}" name="email" formControlName="email" class="form-control">
                                 </div>
                                 <div class="input-group">
                                     <div class=" input-group-prepend">
@@ -188,11 +188,11 @@
                                             <i class=" tim-icons icon-single-02"></i>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="Code" name="code" formControlName="code" class="form-control">
+                                    <input type="text" placeholder="{{'Code' | translate}}" name="code" formControlName="code" class="form-control">
                                 </div>
                             </div>
                             <div class=" card-footer">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mr-1">Verify</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mr-1">{{'Verify' | translate}}</button>
                             </div>
                         </div>
                     </form>
@@ -205,7 +205,7 @@
 <footer class=" footer">
     <div class=" container-fluid">
         <div class=" copyright">
-            &copy; 2022 made by Cortex.
+            &copy; {{'2022 made by Cortex.' | translate}}
         </div>
     </div>
 </footer>
