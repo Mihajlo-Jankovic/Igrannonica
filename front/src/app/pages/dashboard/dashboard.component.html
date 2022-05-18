@@ -113,12 +113,20 @@
                         </ng-template>
                         <ng-template #elseBlock1>
                             <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="Loss function" (change)="onSelected($event)">
-                                <option class='option' value="binary_crossentropy">Binary Cross-Entropy</option>
-                                <option class='option' value="hinge">Hinge Loss</option>
-                                <option class='option' value="squared_hinge">Squared Hinge Loss</option>
-                                <option class='option' value="categorical_crossentropy">Categorical Cross-Entropy</option>
-                                <option class='option' value="sparse_categorical_crossentropy">Sparse Categorical Cross-Entropy</option>
-                                <option class='option' value="kullback_leibler_divergence">Kullback Leibler Divergence</option>
+                                <label style="display: none;" *ngIf="numUniques() == 2; then thenBlock2 else elseBlock2"></label>
+                                <ng-template #thenBlock2>
+                                    <option class='option' value="binary_crossentropy">Binary Cross-Entropy</option>
+                                    <option class='option' value="hinge">Hinge Loss</option>
+                                    <option class='option' value="squared_hinge">Squared Hinge Loss</option>
+                                    <option class='option' value="categorical_crossentropy">Categorical Cross-Entropy</option>
+                                    <option class='option' value="kullback_leibler_divergence">Kullback Leibler Divergence</option>
+                                </ng-template>
+                                <ng-template #elseBlock2>
+                                    <option class='option' value="hinge">Hinge Loss</option>
+                                    <option class='option' value="squared_hinge">Squared Hinge Loss</option>
+                                    <option class='option' value="sparse_categorical_crossentropy">Sparse Categorical Cross-Entropy</option>
+                                    <option class='option' value="kullback_leibler_divergence">Kullback Leibler Divergence</option>
+                                </ng-template>
                             </select>
                         </ng-template>
                     </div>

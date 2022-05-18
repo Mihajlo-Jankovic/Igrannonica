@@ -561,6 +561,9 @@ export class DashboardComponent implements OnInit {
     }
   }
   
+  numUniques() {
+    return Number(sessionStorage.getItem('outputUniques'))
+  }
 
   checkProblemType() {
     if(sessionStorage.getItem('problemType')){
@@ -569,7 +572,6 @@ export class DashboardComponent implements OnInit {
     else {
       if(sessionStorage.getItem('outputNumeric') == 'false') {
         this.problemType = "Classification";
-        console.log("nije numericka");
       }
       else {
         if (Number(sessionStorage.getItem('outputUniques')) <= Number(sessionStorage.getItem('outputValues')) / 5) {
@@ -595,14 +597,24 @@ export class DashboardComponent implements OnInit {
     }
     else {
       this.lossFunction = "binary_crossentropy";
-      this.dropdownList = [
-        {item_id: "binary_accuracy", item_text: 'Binary Accuracy'},
-        {item_id: "categorical_accuracy", item_text: 'Categorical Accuracy'},
-        {item_id: "sparse_categorical_accuracy", item_text: 'Sparse Categorical Accuracy'},
-        {item_id: "top_k_accuracy", item_text: 'Top K Accuracy'},
-        {item_id: "sparse_top_k_categorical_accuracy", item_text: 'Sparse Top K Categorical Accuracy'},
-        {item_id: "accuracy", item_text: 'Accuracy'}
-      ];
+
+      if(Number(sessionStorage.getItem('outputUniques')) == 2) {
+        this.dropdownList = [
+          {item_id: "binary_accuracy", item_text: 'Binary Accuracy'},
+          {item_id: "categorical_accuracy", item_text: 'Categorical Accuracy'},
+          {item_id: "accuracy", item_text: 'Accuracy'}
+        ];
+      }
+      else {
+        this.dropdownList = [
+          {item_id: "sparse_categorical_accuracy", item_text: 'Sparse Categorical Accuracy'},
+          {item_id: "top_k_accuracy", item_text: 'Top K Accuracy'},
+          {item_id: "sparse_top_k_categorical_accuracy", item_text: 'Sparse Top K Categorical Accuracy'},
+          {item_id: "accuracy", item_text: 'Accuracy'}
+        ];
+      }
+
+      
       this.selectedItems = this.dropdownList;
       this.metrics = this.selectedItems;
     }
@@ -681,7 +693,7 @@ export class DashboardComponent implements OnInit {
     this.encodingList.push(encodingTypeTemp);
 
     this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunctions' : this.activationFunctionList, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
-    //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
+    
     this.http.post(this.configuration.startTesting, this.parameters).subscribe(
       (response) => {
         this.training = false;
@@ -1332,10 +1344,13 @@ export class DashboardComponent implements OnInit {
         this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
         
       }
-      else {
+      else if(data['ended'] == 2)  {
         this.modelsList[this.modelsTrained-1].evaluationData = data['trainingData'];
         sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
         this.chartEvaluation("loss");
+      }
+      else if(data['ended'] == 3) {
+        this.notify.showNotification("Training failed, try changing problem type, loss function and metrics");
       }
     });
   }
