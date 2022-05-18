@@ -468,13 +468,14 @@ export class TablesComponent {
       numValueIndexArray.push(this.numericValues['index'][i]);
       this.numericValuesArray.push(numValueIndexArray);
     }
-
-    this.selectedColName = this.headingLines[0][0];
-    this.selectedCol = this.numericValuesArray[0][1];
-    this.selectedColDiv = true;
+    if(!filter) {
+      this.selectedColName = this.headingLines[0][0];
+      this.selectedCol = this.numericValuesArray[0][1];
+      this.selectedColDiv = true;
+    }
     this.numCol2 = this.isNumericFun(this.selectedColName);
 
-    if (this.numericValues['col'].length > 0 && !filter) {
+    if (!filter) {
       this.showStatisticDiv = true;
       this.showStatistics(this.selectedColName);
     }
@@ -671,7 +672,6 @@ export class TablesComponent {
       this.tableService.getStatistics(filename, 0).subscribe(
         (response) => {
           this.statistic = response;
-          console.log(this.statistic);
           sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
           this.loadStatistics(col);
           this.setMissingValuesandOutliers();
@@ -905,6 +905,7 @@ export class TablesComponent {
 
   public onSelectedCol(event: any) {
     const value = event.target.value;
+    this.selectedColName = value;
     /*
     var splitted = value.split("|", 2);
     this.selectedColName = splitted[0];
@@ -913,12 +914,17 @@ export class TablesComponent {
     this.resetStatistic();
     this.showStatistics(this.selectedCol);
     */
-    if(this.isNumericFun(value))
+    if(this.isNumericFun(value)) {
       this.numCol2 = true;
-    else
+      this.plotButton = 'Box Plot'
+      this.plotCheck();
+    }
+    else {
       this.numCol2 = false;
+      this.plotButton = "Pie Chart";
+      this.plotCheck();
+    }
 
-    this.selectedColName = value;
     sessionStorage.removeItem('statistics');
     this.resetStatistic();
     this.showStatistics(value);
@@ -1401,10 +1407,8 @@ export class TablesComponent {
     var matrix = document.getElementsByClassName('matrix')[0];
     var matrixCard = document.getElementById('matrixCard');
     var corr = document.getElementById('corr');
-    console.log(matrixCard);
 
     let height = this.fullCorrColNamesArray.length * 80 + 180;
-    console.log(height);
     
     if (this.matrixButton == "Full Matrix") {
       this.hideBoxplot = true;
@@ -1483,7 +1487,6 @@ export class TablesComponent {
     }
     height += 70;
     tabs.setAttribute('style', 'height: ' + height + 'px;');
-    console.log(height);
   }
   
 
@@ -1541,7 +1544,6 @@ export class TablesComponent {
     let exists: boolean = false;
     for(let i = 0; i < this.selectedOutliersRows.length; i++) {
       if(this.selectedOutliersRows[i] == id) {
-        console.log("Postoji");
         exists = true;
         break;
       }
@@ -1602,9 +1604,7 @@ export class TablesComponent {
       if (this.cookie.get('cortexToken')) {
         this.tableService.fillMissingValuesAuthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
-            console.log(response);
-
-            console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol)
+            
             this.resetMissingValues();
             //this.reset();
             //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
@@ -1619,9 +1619,7 @@ export class TablesComponent {
       else {
         this.tableService.fillMissingValuesUnauthorized(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol).subscribe(
           (response) => {
-              console.log(response);
               
-              console.log(this.selectedMissingValCol, filename, this.selectedToFillMissingValCol, this.enteredToFillMissingValCol)  
               this.resetMissingValues();  
              //this.reset();
              //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
@@ -1674,9 +1672,7 @@ export class TablesComponent {
       if (this.cookie.get('cortexToken')) {
         this.tableService.changeOutliersAuthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
           (response) => {
-            console.log(response);
-
-            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
+            
             this.resetOutliers();
             this.notify.showNotification("Edit successfull");
             setTimeout(() => { 
@@ -1689,9 +1685,7 @@ export class TablesComponent {
       else {
         this.tableService.changeOutliersUnauthorized(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol).subscribe(
           (response) => {
-            console.log(response);
             
-            console.log(this.selectedOutliersCol, filename, this.selectedToReplaceOutliers, this.enteredToReplaceOutliersCol);
             this.resetOutliers();
             this.notify.showNotification("Edit successfull");
             setTimeout(() => { 

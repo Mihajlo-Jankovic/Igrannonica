@@ -160,7 +160,7 @@
                     <select class='dropdown' (change)='onSelectedCol($event);' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
                     <!--   <option class="option" *ngFor="let item of numericValuesArray; let i = index" value={{item[0]}}|{{item[1]}}>{{item[0]}}</option>
                     -->
-                    <option class="option" *ngFor="let item of statistic['colList']; let i = index" value={{item}}>{{item}}</option>
+                        <option class="option" *ngFor="let item of statistic['colList']; let i = index" value={{item}}>{{item}}</option>
                     </select>
                 </div>
                 <div class=" card-body" [hidden]="plotButton != 'Pie Chart'">
