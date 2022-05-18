@@ -72,13 +72,13 @@
                     <ul class=" dropdown-navbar" ngbDropdownMenu>
                         <li class=" nav-link">
                             <a class=" nav-item" routerLink="/profile" routerLinkActive="active" ngbDropdownItem style="color: #bcb8b7;">
-                                Profile
+                                {{'Profile' | translate}}
                             </a>
                         </li>
                         <li class=" dropdown-divider"></li>
                         <li class=" nav-link">
                             <a class=" nav-item" (click)="onLogout()" href="#" ngbDropdownItem style="color: #bcb8b7;">
-                                Log out
+                                {{'Log out' | translate}}
                             </a>
                         </li>
                     </ul>
@@ -97,7 +97,7 @@
                         </li>
                         <li class=" nav-link">
                             <a class="login" routerLink="/register" routerLinkActive="active" ngbDropdownItem>
-                                REGISTER
+                                {{'Register' | translate}}
                             </a>
                         </li>
                     </ul>

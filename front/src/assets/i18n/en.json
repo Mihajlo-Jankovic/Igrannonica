@@ -175,7 +175,10 @@
     "Write experiment name" : "Write experiment name",
     "Experiment description" : "Experiment description",
     "Enter description of your experiment" : "Enter description of your experiment",
-    "SAVE EXPERIMENT" : "SAVE EXPERIMENT"
+    "SAVE EXPERIMENT" : "SAVE EXPERIMENT",
 
+    "Profile" : "Profile",
+    "Log out" : "Log out",
+    "made by Cortex." : "made by Cortex."
 
 }
