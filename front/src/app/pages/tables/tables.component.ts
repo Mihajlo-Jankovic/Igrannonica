@@ -873,6 +873,12 @@ export class TablesComponent {
     }
     
     this.selectedMissingValCol = this.arrMissingValues[0];
+
+    if(this.isNumericFun(this.selectedMissingValCol))
+      this.numCol1 = true;
+    else
+      this.numCol1 = false;
+      
     this.selectedToFillMissingValCol = this.fillMissingValuesListNonNum[0];
     this.selectedOutliersCol = this.arrAllOutliers[0];
     this.selectedToReplaceOutliers = this.fillMissingValuesListNonNum[0];
