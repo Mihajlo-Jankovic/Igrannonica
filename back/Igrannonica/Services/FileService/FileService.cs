@@ -46,6 +46,8 @@ namespace Igrannonica.Services.FileService
                             var endpoint = new Uri("http://127.0.0.1:10108/deleteFile/" + file.RandomFileName);
 
                             var response = await client.GetAsync(endpoint);
+                            _context.File.Remove(file);
+                            await _context.SaveChangesAsync();
                         }
                     }
                 }
