@@ -570,11 +570,9 @@ export class DashboardComponent implements OnInit {
   checkProblemType() {
     if(sessionStorage.getItem('problemType')){
       this.problemType = sessionStorage.getItem('problemType');
-      console.log("U sesiji je : " + this.problemType);
     }
     else {
       if(sessionStorage.getItem('outputNumeric') == 'false') {
-        console.log("Jeste numericka");
         this.problemType = "Classification";
         if(this.numUniques() == 2) {
           this.lossFunction = "binary_crossentropy";
@@ -586,11 +584,9 @@ export class DashboardComponent implements OnInit {
       else {
         if (this.numUniques() <= Number(sessionStorage.getItem('outputValues')) / 20 && this.numUniques() != 0) {
           this.problemType = "Classification";
-          console.log("Jeste numericka : "+ this.numUniques());
         }
         else {
           this.problemType = "Regression";
-          console.log("Jeste numericka : "+ this.numUniques());
         }
       }
     }
