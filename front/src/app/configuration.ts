@@ -10,8 +10,8 @@ export class Configuration
     public register : string = this.port + "/api/User/register";
     public tableData : string = this.port + "/api/PythonComm/getTableDataUnauthorized";
     public statistics : string = this.port + "/api/PythonComm/getStatisticsUnauthorized";
-    public deleteTableRow : string = this.port + "/api/Csv/deletefilerow";
-    public editTableCell : string = this.port + "/api/Csv/updatefilerow";
+    public deleteTableRow : string = this.port + "/api/Csv/deletefilerowunauthorized";
+    public editTableCell : string = this.port + "/api/Csv/updatefilerowunauthorized";
     public authorizedFiles : string = this.port + "/api/Csv/getCSVAuthorized";
     public unauthorizedFiles : string = this.port + "/api/Csv/getCSVUnauthorized";
     public getNameSurnameEmail : string = this.port + "/api/User/GetNameSurnameEmail";
