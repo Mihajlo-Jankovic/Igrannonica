@@ -7,6 +7,7 @@ import { RegistrationService } from 'src/app/services/registration.service';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { NotificationsService } from 'src/app/services/notifications.service';
 
 @Component({
   selector: 'app-auth-layout',
@@ -23,8 +24,9 @@ export class RegistrationLayoutComponent implements OnInit {
   public emailVerificationIndicator: boolean=false;
   
   public emailCodeVerification: string;
+  public poruka: string;
 
-  constructor(private toastr: ToastrService, private formBuilder: FormBuilder, private registerService: RegistrationService, private cookie: CookieService, private router: Router) {
+  constructor(private notify: NotificationsService,private toastr: ToastrService, private formBuilder: FormBuilder, private registerService: RegistrationService, private cookie: CookieService, private router: Router) {
     this.registerForm = formBuilder.group({
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
@@ -58,31 +60,18 @@ export class RegistrationLayoutComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if (StringToken == "Error: Username not found!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username not found</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Username not found";
+          this.notify.showNotification(this.poruka);
+          
         }
         else if (StringToken == "Error: Wrong number!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong code</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Wrong code";
+          this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Mail already verified!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Mail already verified!</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Mail already verified!";
+          this.notify.showNotification(this.poruka);
+          
         }
 
       }) 
@@ -104,57 +93,33 @@ export class RegistrationLayoutComponent implements OnInit {
           let StringToken = JSON.parse(JSONtoken).token;
           this.emailCodeVerification = form.value.email;
           if (form.value.password == form.value.confirmPassword) {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Congratulations, your account has been successfully created </b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.poruka = "Congratulations, your account has been successfully created";
+            this.notify.showNotification(this.poruka);
+            
             this.registerCodeIndicator=true;
             this.emailVerificationIndicator=false;
           }
           else{
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Password mismatched!</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.poruka = "Password mismatched!";
+            this.notify.showNotification(this.poruka);
           }
         }, err => {
           this.disableButton = false;
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error: Email is taken!") {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Email is already taken</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.poruka = "Email is already taken";
+            this.notify.showNotification(this.poruka);
           }
           else if (StringToken == "Error: Username already exists!") {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username already exists</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.poruka = "Username already exists";
+            this.notify.showNotification(this.poruka);
           }
         })
     }
     else {
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Please enter all fields</b>.', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
+      this.poruka = "Please enter all fields";
+      this.notify.showNotification(this.poruka);
     }
   }
 }

@@ -91,6 +91,8 @@ export class ExperimentsComponent implements OnInit {
   experimentListAuthorized : any = []
   experimentListUnauthorized : any = []
 
+  public poruka : string;
+
   constructor(private notify: NotificationsService, private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
       if(this.cookie.get('cortexToken')) {
         this.cookieCheck = this.cookie.get('cortexToken');

@@ -31,6 +31,8 @@ export class LoginLayoutComponent implements OnInit {
   public tempUsername: any;
   public tempPass: any;
 
+  public poruka: string;
+
   public validateEmailWarning: boolean = false;
 
   configuration = new Configuration();
@@ -114,32 +116,17 @@ export class LoginLayoutComponent implements OnInit {
       },err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if (StringToken == "Error: Username not found!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Username not found</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+        if (StringToken == "Error: Username not found!") { 
+          this.poruka = "Username not found";
+          this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Wrong number!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong code</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Wrong code";
+          this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Mail already verified!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Mail already verified!</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Mail already verified!";
+          this.notify.showNotification(this.poruka);
         }
 
       }) 
@@ -158,13 +145,8 @@ export class LoginLayoutComponent implements OnInit {
         this.save(form.value.username, form.value.password);
         this.cookie.set("cortexToken", StringToken);
         this.cookie.set("username", form.value.username);
-        this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Successful login</b>.', '', {
-          disableTimeOut: false,
-          closeButton: true,
-          enableHtml: true,
-          toastClass: "alert alert-info alert-with-icon",
-          positionClass: 'toast-top-center'
-        });
+        this.poruka = "Successful login";
+        this.notify.showNotification(this.poruka);
         this.router.navigate([sessionStorage.getItem('lastPage')]);
 
       }, err => {
@@ -173,31 +155,16 @@ export class LoginLayoutComponent implements OnInit {
         let StringToken = JSON.parse(JSONtoken).responseMessage;
 
         if (StringToken == "Error: Wrong password!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong password</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Wrong password";
+          this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Username not found!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Wrong username</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Wrong username";
+          this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: You have to verify your mail!") {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error: You have to verify your mail!</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "You have to verify your mail!";
+          this.notify.showNotification(this.poruka);
           this.validateEmailWarning = true;
         }
       })
@@ -224,13 +191,8 @@ export class LoginLayoutComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if (StringToken == "There is no user with this email.")
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>There is no user with this email.</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+        this.poruka = "There is no user with this email";
+        this.notify.showNotification(this.poruka);
       })
     }
   }
@@ -240,26 +202,16 @@ export class LoginLayoutComponent implements OnInit {
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;
         if (form.value.newPassword) {
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Succesfully changed</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Succesfully changed";
+          this.notify.showNotification(this.poruka);
         }
         this.backToLogin();
       },err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if(StringToken == "Wrong password"){
-          this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Temporary password is wrong</b>.', '', {
-            disableTimeOut: false,
-            closeButton: true,
-            enableHtml: true,
-            toastClass: "alert alert-info alert-with-icon",
-            positionClass: 'toast-top-center'
-          });
+          this.poruka = "Temporary password is wrong";
+          this.notify.showNotification(this.poruka);
         }
       })
     

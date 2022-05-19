@@ -169,6 +169,8 @@ export class TablesComponent {
   hideBoxplot: boolean = false;
   hideMatrix: boolean = false;
 
+  public poruka: string;
+
   statsButton: string = "Full Statistics";
   matrixButton: string = "Full Matrix";
 
@@ -379,13 +381,8 @@ export class TablesComponent {
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).responseMessage;
             if (StringToken == "Error encountered while reading dataset content.") {
-              this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while reading dataset content</b>.', '', {
-                disableTimeOut: false,
-                closeButton: true,
-                enableHtml: true,
-                toastClass: "alert alert-info alert-with-icon",
-                positionClass: 'toast-top-center'
-              });
+              this.poruka = "Error encoundered while reading dataset content";
+              this.notify.showNotification(this.poruka);
             }
           })
       }
@@ -423,13 +420,8 @@ export class TablesComponent {
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while reading dataset content.") {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while reading dataset content</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.poruka = "Error encoundered while reading dataset content";
+            this.notify.showNotification(this.poruka);
           }
         })
     }
@@ -680,13 +672,8 @@ export class TablesComponent {
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while calculating statistics.") {
-            this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error encoundered while calculating statistics</b>.', '', {
-              disableTimeOut: false,
-              closeButton: true,
-              enableHtml: true,
-              toastClass: "alert alert-info alert-with-icon",
-              positionClass: 'toast-top-center'
-            });
+            this.poruka = "Error encoundered while calculating statistics";
+            this.notify.showNotification(this.poruka);
           }
         })
     }

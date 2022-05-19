@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
     token: string;
     cookieCheck: any;
     configuration = new Configuration();
+    public poruka : string;
 
     constructor(private router: Router, private cookie : CookieService, private http: HttpClient) {
         this.cookieCheck = this.cookie.get('cortexToken');

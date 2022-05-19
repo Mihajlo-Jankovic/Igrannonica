@@ -115,6 +115,8 @@ export class DashboardComponent implements OnInit {
   public resultsButton = false;
   public evaluationButton = false;
 
+  public poruka: string;
+
   token: string;
   cookieCheck: any;
 
@@ -649,13 +651,8 @@ export class DashboardComponent implements OnInit {
 
   startTraining() {
     if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
-      this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Input or output not selected</b>.', '', {
-        disableTimeOut: false,
-        closeButton: true,
-        enableHtml: true,
-        toastClass: "alert alert-info alert-with-icon",
-        positionClass: 'toast-top-center'
-      });
+      this.poruka = "Input or output not selected";
+      this.notify.showNotification(this.poruka);
       return;
     }
     this.training = true;
@@ -1356,12 +1353,7 @@ export class DashboardComponent implements OnInit {
   }
 
   error() {
-    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>Error</b>.', '', {
-      disableTimeOut: false,
-      closeButton: true,
-      enableHtml: true,
-      toastClass: "alert alert-info alert-with-icon",
-      positionClass: 'toast-top-center'
-    });
+    this.poruka = "Error";
+    this.notify.showNotification(this.poruka);
   }
 }
