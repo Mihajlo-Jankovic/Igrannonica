@@ -29,7 +29,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/datapreview",
     titleEn: "Data Preview",
-    titleSr: "Pregled podataka",
+    titleSr:"Pregled podataka",
     icon: "tim-icons icon-bullet-list-67",
     class: ""
   },
