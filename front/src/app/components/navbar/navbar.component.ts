@@ -46,6 +46,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   translateLanguageTo(lang: string) {
     this.translate.use(lang);
+
+    sessionStorage.setItem('lang',lang);
     
     if(this.en == true) {
       this.en = false;

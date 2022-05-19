@@ -4,7 +4,8 @@ import { Location } from "@angular/common";
 
 declare interface RouteInfo {
   path: string;
-  title: string;
+  titleEn: string;
+  titleSr: string;
   icon: string;
   class: string;
 }
@@ -13,34 +14,41 @@ declare interface RouteInfo {
 export const ROUTES: RouteInfo[] = [
   {
     path: "/home",
-    title: "Home",
+    titleEn: "Home",
+    titleSr: "Pocetna",
     icon: "fa fa-home",
     class: ""
   },
   {
     path: "/upload",
-    title: "Upload",
+    titleEn: "Upload",
+    titleSr: "Ucitavanje fajla",
     icon: "tim-icons icon-upload",
     class: ""
   },
   {
     path: "/datapreview",
-    title: "Data Preview",
+    titleEn: "Data Preview",
+    titleSr: "Pregled podataka",
     icon: "tim-icons icon-bullet-list-67",
     class: ""
   },
   {
     path: "/training",
-    title: "Model Training",
+    titleEn: "Model Training",
+    titleSr: "Obuka modela",
     icon: "tim-icons icon-chart-pie-36",
     class: ""
   },
   {
     path: "/experiments",
-    title: "Experiments",
+    titleEn: "Experiments",
+    titleSr: "Eksperimenti",
     icon: "tim-icons icon-single-copy-04",
     class: ""
-  }
+  },
+
+  
 ];
 @Component({
   selector: "app-sidebar",
@@ -51,11 +59,24 @@ export class SidebarComponent implements OnInit {
   menuItems: any[];
   experimentName : string = "Unnamed experiment";
 
-  constructor(private cookie : CookieService) {}
+  public lang: string;
+  public home: string;
+
+  public ind: boolean = false;
+
+
+  constructor(private cookie : CookieService) {
+    this.lang = sessionStorage.getItem('lang');
+    
+  }
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
     this.refreshExperimentName();
+
+    if(this.lang == 'sr')
+      this.ind = true;
+      console.log(this.ind);
   }
 
   refreshExperimentName() {
