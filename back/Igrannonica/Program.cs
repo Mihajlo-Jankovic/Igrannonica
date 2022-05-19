@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Igrannonica.Services.UserService;
 using Igrannonica.Services.FileService;
+using Microsoft.AspNetCore.SignalR;
+using Igrannonica.Hubs;
 
-var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -44,7 +46,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var connectionString = builder.Configuration.GetConnectionString("DevConnection");
+string connectionString;
+
+if (builder.Environment.IsProduction())
+{
+    connectionString = builder.Configuration.GetConnectionString("ProdConnection");
+}
+
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("DevConnection");
+}
+
+Console.WriteLine(connectionString);
 
 builder.Services.AddDbContext<MySqlContext>(options =>
 {
@@ -53,25 +67,29 @@ builder.Services.AddDbContext<MySqlContext>(options =>
 
 
 //Enable CORS
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: myAllowSpecificOrigins,
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-        });
+    options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+    {
+        builder.WithOrigins("http://147.91.204.115:10105", "http://softeng.pmf.kg.ac.rs:10105", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    });
 });
 
 builder.Services.Configure<FormOptions>(o =>
 {
-   o.ValueLengthLimit = int.MaxValue;
-   o.MultipartBodyLengthLimit = int.MaxValue;
-   o.MemoryBufferThreshold = int.MaxValue;
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<MySqlContext>();
+    dataContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -84,20 +102,21 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
-app.UseCors(myAllowSpecificOrigins);
-app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-    RequestPath = new PathString("/Resources")
-});
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-FileService fileService = new FileService();
+var optionBuilder = new DbContextOptionsBuilder<MySqlContext>();
+optionBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+var context = new MySqlContext(optionBuilder.Options);
+
+FileService fileService = new FileService(new MySqlContext(optionBuilder.Options), builder.Environment.IsProduction());
+
 Thread t1 = new Thread(new ThreadStart(fileService.DeleteAllExpiredFiles));
 t1.Start();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

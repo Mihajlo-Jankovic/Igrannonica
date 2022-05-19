@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  url : 'http://147.91.204.115:10106'
+  url : 'https://localhost:7219'
 };
 
 /*

@@ -1,6 +1,9 @@
 <nav class=" navbar navbar-expand-lg navbar-absolute navbar-transparent">
+    <!--style="position:fixed; top:0;padding:0px;"-->
     <div class=" container-fluid">
+        <!--style="background: #191923; padding: 10px 45px 10px 30px;"-->
         <div class=" navbar-wrapper">
+            <!--style="background: #191923;"-->
             <div class=" navbar-toggle d-inline">
                 <button class=" navbar-toggler" type="button" (click)="sidebarToggle()">
                     <span class=" navbar-toggler-bar bar1"> </span>
@@ -8,7 +11,7 @@
                     <span class=" navbar-toggler-bar bar3"> </span>
                 </button>
             </div>
-            <a class=" navbar-brand" href="javascript:void(0)"> {{ getTitle() }} </a>
+            <div class="img"></div>
         </div>
         <button aria-label="Toggle navigation" class=" navbar-toggler" (click)="collapse()" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample" id="navigation" type="button">
             <span class=" navbar-toggler-bar navbar-kebab"> </span>
@@ -59,33 +62,56 @@
                     </ul>
                 </li>
                 -->
+                <li class=" nav-item navbar-collapse" [ngbCollapse]="isCollapsed" id="navigation">
+                    <a class=" nav-link" href="javascript:void(0)" *ngIf="en" #selLang1 [value]="translate.getLangs()[1]">
+                        <div class=" photo" (click)="translateLanguageTo(selLang1.value)">
+                            <img alt="Profile Photo" src="assets/img/eng111.png" />
+                        </div>
+                    </a>
+                    <a class=" nav-link" href="javascript:void(0)" *ngIf="sr" #selLang2 [value]="translate.getLangs()[0]">
+                        <div class=" photo" (click)="translateLanguageTo(selLang2.value)">
+                            <img alt="Profile Photo" src="assets/img/srb111.png" />
+                        </div>
+                    </a>
+                </li>
                 <li class=" nav-item navbar-collapse" ngbDropdown *ngIf="cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <a class=" nav-link" data-toggle="dropdown" href="javascript:void(0)" ngbDropdownToggle>
                         <div class=" photo">
-                            <img alt="Profile Photo" src="assets/img/anime3.png" />
+                            <img alt="Profile Photo" src="assets/img/profile.jpg" />
                         </div>
                         <b class=" caret d-none d-lg-block d-xl-block"> </b>
-                        <p class=" d-lg-none">Log out</p>
                     </a>
                     <ul class=" dropdown-navbar" ngbDropdownMenu>
                         <li class=" nav-link">
-                            <a class=" nav-item" href="/user" ngbDropdownItem style="color: #bcb8b7;">
-                                Profile
+                            <a class=" nav-item" routerLink="/profile" routerLinkActive="active" ngbDropdownItem style="color: #bcb8b7;">
+                                {{'Profile' | translate}}
                             </a>
                         </li>
                         <li class=" dropdown-divider"></li>
                         <li class=" nav-link">
                             <a class=" nav-item" (click)="onLogout()" href="#" ngbDropdownItem style="color: #bcb8b7;">
-                                Log out
+                                {{'Log out' | translate}}
                             </a>
                         </li>
                     </ul>
                 </li>
+                <!--
+                <select class='dropdownLanguage' #selLang (change)="translateLanguageTo(selLang.value)">
+                    <option *ngFor="let language of translate.getLangs()" [value]="language">{{ language }}</option>
+                </select>
+                -->
+                <!-- <h1>{{ "TITLE" | translate}}</h1> -->
+
                 <li class=" nav-item  navbar-collapse" *ngIf="!cookieCheck" [ngbCollapse]="isCollapsed" id="navigation">
                     <ul class=" navbar-nav ml-auto">
                         <li class=" nav-link">
-                            <a class="login" href="/login" ngbDropdownItem>
-                                LOG IN
+                            <a class="login" routerLink="/login" routerLinkActive="active" ngbDropdownItem>
+                                {{'Login' | translate}}
+                            </a>
+                        </li>
+                        <li class=" nav-link">
+                            <a class="login" routerLink="/register" routerLinkActive="active" ngbDropdownItem>
+                                {{'Register' | translate}}
                             </a>
                         </li>
                     </ul>

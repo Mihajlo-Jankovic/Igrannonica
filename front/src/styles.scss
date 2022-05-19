@@ -1,5 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
+.disabled {
+    .dropdown-btn {
+        background: #13141e !important;
+    }
+}
+
 .multiselect-dropdown .dropdown-btn {
     display: inline-block !important;
     width: 100% !important;

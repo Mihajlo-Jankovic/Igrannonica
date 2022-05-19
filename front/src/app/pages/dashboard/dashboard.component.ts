@@ -9,6 +9,10 @@ import { Configuration } from "src/app/configuration";
 import { LoginService } from "src/app/services/login.service";
 import { ToastrService } from "ngx-toastr";
 import { NotificationsService } from "src/app/services/notifications.service";
+import * as signalR from '@microsoft/signalr'
+import { SignalRService } from "src/app/services/signal-r.service";
+import { trainedModel } from "src/app/models/trainedModel.model";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-dashboard",
@@ -31,6 +35,7 @@ export class DashboardComponent implements OnInit {
 
   public problemType: string = "Regression";
   public encodingType: string = "label";
+  public encodingList = [];
   public activationFunction: string = "sigmoid";
   public optimizer: string = "Adam";
   public learningRate: number = 0.0001;
@@ -38,11 +43,15 @@ export class DashboardComponent implements OnInit {
   public regularizationRate: number = 0;
   public lossFunction: string;
   public metrics: any = [];
-  public epochs: number = 10;
-  public range: number = 50;
+  public epochs: number = 100;
+  public neuronNum: number = 16;
+  public range1: number = 75;
+  public range2: number = 90;
   public experimentName: string = "";
+  public description : string = "";
 
-  public modelHistory: any;
+  public selectedMetric: string = "loss";
+
   public trained: boolean = false;
   public training: boolean = false;
 
@@ -53,270 +62,252 @@ export class DashboardComponent implements OnInit {
   neuron = new neuron(1);
 
   layerList = [];
-  neuronsList = [1,1,1,1,1,1];
-  neuronsMatrix = [[],[],[],[],[],[],[],[]];
+  activationFunctionList = [this.activationFunction];
+  neuronsList = [this.neuronNum];
 
   public fileName: string = this.cookieService.get('filename');
+  public loggedUser: boolean;
 
   dropdownList = [];
   selectedItems = [];
   dropdownSettings:IDropdownSettings = {};
 
-  constructor(private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { }
+  private hubConnection: signalR.HubConnection;
+  public connectionId : string;
+  public liveData: {};
+  public chartData = {};
+
+  public parameters: {};
+  public modelsList: any = [];
+  public modelsTrained: number = 0;
+  public modelsHeader: any = [];
+  public selectedEpoch: number = 0;
+  public maxEpochs: number = 0;
+
+  public gradientChartOptionsConfigurationWithTooltipRed: any;
+  public metricChartOptions: any;
+  public metricChartConfig: any;
+  public metricsCanvas: any;
+  public metricsCtx;
+  public metricLabels = [];
+  public metricsChart;
+  public selectedChartMetric: string = "none";
+
+  public evaluationCtx: any;
+  public evaluationCanvas: any;
+  public evaluationChart : any;
+  public evaluationMetric: string = "loss";
+  public evaluationMetrics = ["loss"];
+
+  public metricDropdown: string = "loss";
+
+  public openMetricsChart: boolean = false;
+  public firstTraining: boolean = false;
+
+  public loginWarning: boolean = false;
+  public deleteWarning: boolean = false;
+
+  public modelToDiscard: number = -1;
+
+  public evaluationData : {};
+
+  public liveButton = true;
+  public resultsButton = false;
+  public evaluationButton = false;
+
+  public poruka: string;
+
+  token: string;
+  cookieCheck: any;
+
+  constructor(private router: Router,private toastr: ToastrService,private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { 
+    this.cookieCheck = this.cookieService.get('cortexToken');
+  }
 
   configuration = new Configuration();
-
-  get() {
-    return sessionStorage.getItem('username');
-  }
-
-  onLogout() {
-    this.cookieService.deleteAll();
-  }
-
-  increaseLayers(){
-    if(this.layersLabel < 6) {
-      this.layersLabel++;
-      this.layer = new layer(this.layersLabel);
-      this.layerList.push(this.layer);
-    }
-  }
-
-  decreaseLayers(index){
-    if(this.layersLabel > 1) {
-      this.layersLabel--;
-      this.layerList.splice(index);
-      this.neuronsList[index] = 1;
-      this.neuronsMatrix[index].splice(1);
-    }
-  }
-
-  increaseNeurons(index){
-    if(this.neuronsList[index] < 8) {
-      this.neuronsList[index]++;
-      this.neuron = new neuron(this.neuronsList[index]);
-      this.neuronsMatrix[index].push(this.neuron);
-    }
-  }
-
-  decreaseNeurons(index, i){
-    if(this.neuronsList[index] > 1){
-      this.neuronsList[index]--;
-      this.neuronsMatrix[index].splice(i-1);
-    }
-  }
   
+  changeTab(id: number){
+    let btn1 = document.getElementsByClassName("tab-button")[0];
+    let btn2 = document.getElementsByClassName("tab-button")[1];
+    let btn3 = document.getElementsByClassName("tab-button")[2];
 
-  checkProblemType() {
-    if(this.problemType == "Regression"){
-      this.lossFunction = "mean_squared_error";
-      this.dropdownList = [
-        {item_id: "mse", item_text: 'Mean Squared Error'},
-        {item_id: "msle", item_text: 'Mean Squared Logarithmic Error'},
-        {item_id: "mae", item_text: 'Mean Absolute Error'},
-        {item_id: "mape", item_text: 'Mean Absolute Percentage Error'},
-        {item_id: "logcosh", item_text: 'Log Cosh Error'}
-      ];
-      this.selectedItems = this.dropdownList;
-      this.metrics = this.selectedItems;
-    }
-    else {
-      this.lossFunction = "binary_crossentropy";
-      this.dropdownList = [
-        {item_id: "binary_accuracy", item_text: 'Binary Accuracy'},
-        {item_id: "categorical_accuracy", item_text: 'Categorical Accuracy'},
-        {item_id: "sparse_categorical_accuracy", item_text: 'Sparse Categorical Accuracy'},
-        {item_id: "top_k_accuracy", item_text: 'Top K Accuracy'},
-        {item_id: "sparse_top_k_categorical_accuracy", item_text: 'Sparse Top K Categorical Accuracy'},
-        {item_id: "accuracy", item_text: 'Accuracy'}
-      ];
-      this.selectedItems = this.dropdownList;
-      this.metrics = this.selectedItems;
-    }
-    sessionStorage.setItem('problemType', this.problemType);
-  }
-
-  multiselect(){
-    this.dropdownSettings = {
-      singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 6,
-      allowSearchFilter: false
-    };
-  }
-
-  startTraining() {
-    if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
-      window.alert("Input or output not selected");
-      return;
-    }
-    this.training = true;
-    let fileName = this.cookieService.get('filename');
-    let inputList = JSON.parse(sessionStorage.getItem('inputList'));
-    let output = sessionStorage.getItem('output');
-    let layerList = [];
-    for (let i = 0; i < this.layersLabel; i++){
-      layerList[i] = this.neuronsList[i];
-    }
-    let metrics = [];
-    for (let i = 0; i < this.selectedItems.length; i++) {
-      metrics[i] = this.selectedItems[i].item_id;
-    }
-    //console.log({"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs});
-    this.http.post(this.configuration.startTesting,{"fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingType' : this.encodingType, 'ratio' : 1 - (1 * (this.range/100)), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunction' : this.activationFunction, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs}).subscribe(
-      (response) => {
-        this.trained = true;
-        this.training = false;
-        this.modelHistory = response;
-        this.buttons = Object.keys(this.modelHistory);
-        this.buttons.splice(this.buttons.length/2);
-        this.data = this.modelHistory['loss'];
-        this.val_data = this.modelHistory['val_loss'];
-        this.chart_labels = [];
-        for (let i = 0; i < this.data.length; i++) {
-          this.chart_labels[i] = i + 1;
-        }
-        this.updateOptions();
+    if(id == 0) {
+      this.liveButton = true;
+      this.resultsButton = false;
+      this.evaluationButton = false;
+      btn1.classList.add("raised-tab-button");
+      if(btn2.classList.contains("raised-tab-button")) {
+        btn2.classList.remove("raised-tab-button");
       }
-    );
+      if(btn3.classList.contains("raised-tab-button")) {
+        btn3.classList.remove("raised-tab-button");
+      }
+    }
+    else if(id == 1) {
+      this.liveButton = false;
+      this.resultsButton = true;
+      this.evaluationButton = false;
+      if(btn1.classList.contains("raised-tab-button")) {
+        btn1.classList.remove("raised-tab-button");
+      }
+      btn2.classList.add("raised-tab-button");
+      if(btn3.classList.contains("raised-tab-button")) {
+        btn3.classList.remove("raised-tab-button");
+      }
+    }
+    else if(id == 2) {
+      this.liveButton = false;
+      this.resultsButton = false;
+      this.evaluationButton = true;
+      if(btn1.classList.contains("raised-tab-button")) {
+        btn1.classList.remove("raised-tab-button");
+      }
+      if(btn2.classList.contains("raised-tab-button")) {
+        btn2.classList.remove("raised-tab-button");
+      }
+      btn3.classList.add("raised-tab-button");
+    }
   }
 
-  saveExperiment() {
-    let loggedUser: boolean;
-    let token: string;
+  scrollTo(el: HTMLElement) {
+    setTimeout(() => { 
+      el.scrollIntoView();
+    }, 30);
+  }
 
-    loggedUser = this.loginService.isAuthenticated();
-    if (loggedUser) {
-      token = this.cookieService.get('token');
-    }
-    let headers = new HttpHeaders({
-      'Authorization': 'bearer ' + token
-    });
+  login(){
+    this.router.navigate(['login']);
+  }
+
+  clearEverything() {
+    this.problemType = "Regression";
+    sessionStorage.removeItem('problemType');
+    this.encodingType = "label";
+    sessionStorage.removeItem('encodingType');
+    this.activationFunction = "sigmoid";
+    sessionStorage.removeItem('activationFunction');
+    this.optimizer = "Adam";
+    sessionStorage.removeItem('optimizer');
+    this.learningRate = 0.0001;
+    sessionStorage.removeItem('learningRate');
+    this.regularization = "None";
+    sessionStorage.removeItem('regularization');
+    this.regularizationRate = 0;
+    sessionStorage.removeItem('regularizationRate');
+    this.metrics = [];
+    sessionStorage.removeItem('metrics');
+    this.epochs = 100;
+    sessionStorage.removeItem('epochs');
+    this.neuronNum = 16;
+    sessionStorage.removeItem('neuronNum');
+    this.range1 = 75;
+    sessionStorage.removeItem('range1');
+    this.range2 = 90;
+    sessionStorage.removeItem('range2');
+    this.checkProblemType();
+
+    this.selectedMetric = "loss";
+    this.trained = false;
+    this.training = false;
+    this.neuronNum = 16;
+
+    this.layerList = [];
+    this.neuronsList = [this.neuronNum];
+    this.layer.id = 1;
+    this.layerList.push(this.layer);
+    sessionStorage.removeItem('numLayers');
+    sessionStorage.removeItem('neuronsList');
+
+    this.layersLabel = 1;
+
+    this.liveData = {};
+    this.chartData = {};
+    this.buttons = [];
+    this.chart_labels = [];
+    this.label = "";
+    sessionStorage.removeItem('label');
+    sessionStorage.removeItem('chartData');
+    sessionStorage.removeItem('buttons');
+    sessionStorage.removeItem('chart_labels');
     
-    let options = { headers: headers };
+    this.parameters = {};
+    this.modelsList = [];
+    sessionStorage.removeItem('modelsList');
+    this.modelsTrained = 0;
+    sessionStorage.removeItem('modelsTrained');
+    this.modelsHeader = [];
+    sessionStorage.removeItem('modelsHeader');
+    this.selectedEpoch = 0;
+    this.maxEpochs = 0;
+    sessionStorage.removeItem('maxEpoch');
 
-    let fileName = this.cookieService.get('filename');
-    let inputList = JSON.parse(sessionStorage.getItem('inputList'));
-    let output = sessionStorage.getItem('output');
-    let layerList = [];
-    for (let i = 0; i < this.layersLabel; i++){
-      layerList[i] = this.neuronsList[i];
-    }
-    let metrics = [];
-    for (let i = 0; i < this.selectedItems.length; i++) {
-      metrics[i] = this.selectedItems[i].item_id;
-    }
-    let today = new Date();
-    let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
-    let experiment = {
-      'userId' : 0,
-      'name' : this.experimentName,
-      'date' : date,
-      'fileName' : fileName, 
-      'inputList' : inputList, 
-      'output' : output, 
-      'encodingType' : this.encodingType, 
-      'ratio' : 1 - (1 * (this.range/100)), 
-      'numLayers' : this.layersLabel, 
-      'layerList' : layerList, 
-      'activationFunction' : this.activationFunction, 
-      'regularization' : this.regularization, 
-      'regularizationRate' : this.regularizationRate, 
-      'optimizer' : this.optimizer, 
-      'learningRate' : this.learningRate, 
-      'problemType' : this.problemType, 
-      'lossFunction' : this.lossFunction, 
-      'metrics' : metrics, 
-      'numEpochs' : +this.epochs,
-      'results' : JSON.stringify(this.modelHistory)
-    }
-    /*
-          SLANJE ZAHTEVA
-    */
-    this.http.post(this.configuration.saveExperiment, experiment, options).subscribe(
-      (response) => {
-        this.notify.showNotification("Experiment saved to your profile successfully!");
-      }
-    );
-  }
+    this.metricLabels = [];
+    this.selectedChartMetric = "none";
 
-  changeData(name){
-    this.data = this.modelHistory[name];
-    this.val_data = this.modelHistory['val_' + name];
-    this.label = name;
-    this.val_label = 'val_' + name;
-    this.updateOptions();
-  }
+    this.openMetricsChart = false;
+    this.firstTraining = false;
+  
+    this.loginWarning = false;
 
-  onItemSelect(item: any) {
-    console.log(item);
-  }
-  onSelectAll(items: any) {
-    console.log(items);
-  }
-
-  checkStorage()
-  {
-    if(sessionStorage.getItem('problemType'))
-    {
-      this.problemType = sessionStorage.getItem('problemType');
-    }
-    if(sessionStorage.getItem('encoding'))
-    {
-      this.encodingType = sessionStorage.getItem('encoding');
-    }
-    if(sessionStorage.getItem('optimizer'))
-    {
-      this.optimizer = sessionStorage.getItem('optimizer');
-    }
-    if(sessionStorage.getItem('regularization'))
-    {
-      this.regularization = sessionStorage.getItem('regularization');
-    }
-    if(sessionStorage.getItem('lossFunction'))
-    {
-      this.lossFunction = sessionStorage.getItem('lossFunction');
-    }
-    if(sessionStorage.getItem('range'))
-    {
-      this.range = Number(sessionStorage.getItem('range'));
-    }
-    if(sessionStorage.getItem('activationFunction'))
-    {
-      this.activationFunction = sessionStorage.getItem('activationFunction');
-    }
-    if(sessionStorage.getItem('learningRate'))
-    {
-      this.learningRate = Number(sessionStorage.getItem('learningRate'));
-    }
-    if(sessionStorage.getItem('regularizationRate'))
-    {
-      this.regularizationRate = Number(sessionStorage.getItem('regularizationRate'));
-    }
-    if(sessionStorage.getItem('epochs'))
-    {
-      this.epochs = Number(sessionStorage.getItem('epochs'));
-    }
+    this.evaluationMetric= "loss";
+    this.evaluationMetrics = ["loss"];
+    sessionStorage.removeItem('evaluationMetrics');
   }
 
   ngOnInit() {
+    if(sessionStorage.getItem('lastPage') == 'experiments'){
+      sessionStorage.setItem('lastPage', 'training');
+      location.reload();
+    }
 
-    this.checkStorage();
+    sessionStorage.setItem('lastPage', 'training');
+    if (this.cookieCheck) {
+      this.refreshToken();
+    }
+
+    this.loggedUser = this.loginService.isAuthenticated();
+    this.configureGraph();
+    this.makeEvaluationChart();
+    
+    this.startConnection();
+    this.addTrainingDataListener();
 
     this.multiselect();
     this.checkProblemType();
-    this.layer.id = 1;
-    this.layerList.push(this.layer);
-    
-    for (let i = 0; i < this.neuronsMatrix.length; i++) {
-      this.neuron = new neuron(1);
-      this.neuronsMatrix[i].push(neuron);
-    }
 
-    var gradientChartOptionsConfigurationWithTooltipRed: any = {
+    this.chartData = {};
+
+    if(sessionStorage.getItem('numLayers'))
+    {
+      var numLayer = Number(sessionStorage.getItem('numLayers'));
+      for(let i=0;i<numLayer;i++){
+        this.layersLabel = i + 1;
+        this.layer = new layer(this.layersLabel);
+        this.layerList.push(this.layer);
+        this.neuronsList[i] = this.neuronNum;
+        this.activationFunctionList.push(this.activationFunction);
+      }
+
+      if(sessionStorage.getItem('neuronsList'))
+      {
+        var list = []; 
+        list = JSON.parse(sessionStorage.getItem('neuronsList'));
+
+        for(let i=0;i<numLayer;i++){
+          this.neuronsList[i] = list[i];
+          this.neuron = new neuron(this.neuronsList[i]);
+        }
+      }
+
+    }
+    else {
+      this.layer.id = 1;
+      this.neuronsList[0] = this.neuronNum;
+      this.layerList.push(this.layer);
+    }
+    
+
+    this.gradientChartOptionsConfigurationWithTooltipRed = {
       maintainAspectRatio: false,
       legend: {
         display: true
@@ -344,6 +335,11 @@ export class DashboardComponent implements OnInit {
           ticks: {
             padding: 20,
             fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Values",
+            fontColor : "#ffffff"
           }
         }],
 
@@ -357,6 +353,11 @@ export class DashboardComponent implements OnInit {
           ticks: {
             padding: 20,
             fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Epochs",
+            fontColor : "#ffffff"
           }
         }]
       }
@@ -416,9 +417,562 @@ export class DashboardComponent implements OnInit {
           data: this.val_data,
         }]
       },
-      options: gradientChartOptionsConfigurationWithTooltipRed
+      options: this.gradientChartOptionsConfigurationWithTooltipRed
     };
     this.myChartData = new Chart(this.ctx, config);
+
+    this.checkStorage();
+  }
+  
+  refreshToken(){
+    this.token = this.cookieService.get('cortexToken');
+    
+    this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        this.cookieService.set("cortexToken", StringToken);
+    }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if(StringToken == "Error: Token not valid"){
+            this.cookieService.deleteAll();
+            sessionStorage.clear();
+            this.router.navigate(["home"]);
+        }
+    });
+  }
+
+  configureGraph() {
+    this.metricChartOptions = {
+      maintainAspectRatio: false,
+      legend: {
+        display: true
+      },
+
+      tooltips: {
+        backgroundColor: '#f5f5f5',
+        titleFontColor: '#333',
+        bodyFontColor: '#666',
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest"
+      },
+      responsive: true,
+      scales: {
+        yAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(29,140,248,0.0)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Values",
+            fontColor : "#ffffff"
+          }
+        }],
+
+        xAxes: [{
+          barPercentage: 1.6,
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(233,32,16,0.1)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Epochs",
+            fontColor : "#ffffff"
+          }
+        }]
+      }
+    };
+
+    this.metricsCanvas = document.getElementById("metric-chart");
+    this.metricsCtx = this.metricsCanvas.getContext("2d");
+
+    this.metricChartConfig = {
+      type : "line",
+      data : {},
+      options: this.metricChartOptions
+    };
+    
+    this.metricsChart = new Chart(this.metricsCtx, this.metricChartConfig);
+  }
+
+  get() {
+    return sessionStorage.getItem('username');
+  }
+
+  onLogout() {
+    this.cookieService.deleteAll();
+  }
+
+  increaseLayers(){
+    if(this.layersLabel) {
+      this.layersLabel++;
+      this.neuronsList.push(this.neuronNum);
+      this.layer = new layer(this.layersLabel);
+      this.layerList.push(this.layer);
+      if(this.activationFunction == 'custom') {
+        this.activationFunctionList.push('sigmoid');
+      }
+      else {
+        this.activationFunctionList.push(this.activationFunction);
+      }
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
+      sessionStorage.setItem('numLayers', (this.layerList.length).toString())
+      sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
+    }
+  }
+
+  decreaseLayers(index){
+    if(this.layersLabel > 1) {
+      this.layersLabel--;
+      this.layerList.splice(index);
+      this.neuronsList.splice(index);
+      this.activationFunctionList.splice(index);
+      this.neuronsList[index] = this.neuronNum;
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
+      sessionStorage.setItem('numLayers', (this.layerList.length).toString())
+      sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
+    }
+  }
+
+  increaseNeurons(index){
+    this.neuronsList[index]++;
+    this.neuron = new neuron(this.neuronsList[index]);
+    sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
+  }
+
+  decreaseNeurons(index, i){
+    if(this.neuronsList[index] > 1){
+      this.neuronsList[index]--;
+      sessionStorage.setItem('neuronsList', JSON.stringify(this.neuronsList));
+    }
+  }
+  
+  numUniques() {
+    return Number(sessionStorage.getItem('outputUniques'))
+  }
+
+  checkProblemType() {
+    if(sessionStorage.getItem('problemType')){
+      this.problemType = sessionStorage.getItem('problemType');
+      console.log("U sesiji je : " + this.problemType);
+    }
+    else {
+      if(sessionStorage.getItem('outputNumeric') == 'false') {
+        console.log("Jeste numericka");
+        this.problemType = "Classification";
+        if(this.numUniques() == 2) {
+          this.lossFunction = "binary_crossentropy";
+        }
+        else {
+          this.lossFunction = "sparse_categorical_crossentropy";
+        }
+      }
+      else {
+        if (this.numUniques() <= Number(sessionStorage.getItem('outputValues')) / 20 && this.numUniques() != 0) {
+          this.problemType = "Classification";
+          console.log("Jeste numericka : "+ this.numUniques());
+        }
+        else {
+          this.problemType = "Regression";
+          console.log("Jeste numericka : "+ this.numUniques());
+        }
+      }
+    }
+
+    if(this.problemType == "Regression"){
+      this.lossFunction = "mean_squared_error";
+      this.dropdownList = [
+        {item_id: "mse", item_text: 'Mean Squared Error'},
+        {item_id: "msle", item_text: 'Mean Squared Logarithmic Error'},
+        {item_id: "mae", item_text: 'Mean Absolute Error'},
+        {item_id: "mape", item_text: 'Mean Absolute Percentage Error'},
+        {item_id: "logcosh", item_text: 'Log Cosh Error'}
+      ];
+      this.selectedItems = this.dropdownList;
+      this.metrics = this.selectedItems;
+    }
+    else {
+      this.lossFunction = "binary_crossentropy";
+
+      if(Number(sessionStorage.getItem('outputUniques')) == 2) {
+        this.dropdownList = [
+          {item_id: "binary_accuracy", item_text: 'Binary Accuracy'},
+          {item_id: "categorical_accuracy", item_text: 'Categorical Accuracy'},
+          {item_id: "accuracy", item_text: 'Accuracy'}
+        ];
+      }
+      else {
+        this.dropdownList = [
+          {item_id: "sparse_categorical_accuracy", item_text: 'Sparse Categorical Accuracy'},
+          {item_id: "top_k_accuracy", item_text: 'Top K Accuracy'},
+          {item_id: "sparse_top_k_categorical_accuracy", item_text: 'Sparse Top K Categorical Accuracy'},
+          {item_id: "accuracy", item_text: 'Accuracy'}
+        ];
+      }
+
+      
+      this.selectedItems = this.dropdownList;
+      this.metrics = this.selectedItems;
+    }
+    sessionStorage.setItem('problemType', this.problemType);
+  }
+
+  multiselect(){
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'item_id',
+      textField: 'item_text',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 6,
+      allowSearchFilter: false
+    };
+  }
+
+  checkBeforeTraining() {
+    if(!this.loggedUser) {
+      if(!this.firstTraining) {
+        this.loginWarning = true;
+      }
+      else {
+        this.startTraining();
+      }
+    }
+    else {
+      this.startTraining();
+    }
+  }
+
+  startTraining() {
+    if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
+      this.poruka = "Input or output not selected";
+      // this.poruka = "Ulazni/izlazni podaci nisu selektovani"
+      this.notify.showNotification(this.poruka);
+      return;
+    }
+    this.training = true;
+    this.loginWarning = false;
+    this.chartData = {};
+    let fileName = this.cookieService.get('filename');
+    let connID = this.cookieService.get('connID');
+    let inputList = JSON.parse(sessionStorage.getItem('inputList'));
+    let output = sessionStorage.getItem('output');
+    let layerList = [];
+    for (let i = 0; i < this.layersLabel; i++){
+      layerList[i] = this.neuronsList[i];
+    }
+    let metrics = [];
+    this.evaluationMetrics = ["loss"];
+    for (let i = 0; i < this.selectedItems.length; i++) {
+      sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems))
+      metrics[i] = this.selectedItems[i].item_id;
+      this.evaluationMetrics.push(metrics[i]);
+    }
+    sessionStorage.setItem('evaluationMetrics', JSON.stringify(this.evaluationMetrics));
+    
+    this.changeTab(0);
+
+    this.encodingList = [];
+    let colNameTemp = []; let encodingTypeTemp = [];
+    let encodingListTemp = JSON.parse(sessionStorage.getItem('columnData'));
+    for(let i = 0; i < encodingListTemp.length; i++) {
+      if(encodingListTemp[i]['isSelected']) {
+        colNameTemp.push(encodingListTemp[i]['colName']);
+        encodingTypeTemp.push(encodingListTemp[i]['encoding']);
+      }
+    }
+    this.encodingList.push(colNameTemp);
+    this.encodingList.push(encodingTypeTemp);
+
+    this.parameters = {"connID" : connID, "fileName" : fileName, 'inputList' : inputList, 'output' : output, 'encodingList' : this.encodingList, 'ratio1' : 1 * ((100 - this.range2)/100), 'ratio2' : 1 * ((this.range2 - this.range1)/100), 'numLayers' : this.layersLabel, 'layerList' : layerList, 'activationFunctions' : this.activationFunctionList, 'regularization' : this.regularization, 'regularizationRate' : this.regularizationRate, 'optimizer' : this.optimizer, 'learningRate' : this.learningRate, 'problemType' : this.problemType, 'lossFunction' : this.lossFunction, 'metrics' : metrics, 'numEpochs' : this.epochs};
+    
+    this.http.post(this.configuration.startTesting, this.parameters).subscribe(
+      (response) => {
+        this.training = false;
+        let JSONtoken: string = JSON.stringify(response);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(this.epochs > this.maxEpochs) {
+          this.maxEpochs = this.epochs;
+          for (let i = 0; i < this.maxEpochs; i++){
+            this.metricLabels[i] = i+1;
+          }
+          sessionStorage.setItem('maxEpoch', (this.maxEpochs).toString());
+          sessionStorage.setItem('metricsLabel', JSON.stringify(this.metricLabels));
+        }
+
+        this.modelsHeader = ["loss", "val_loss"];
+        for (let i = 0; i < this.selectedItems.length; i++) {
+          this.modelsHeader.push(this.selectedItems[i]['item_id']);
+          this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
+        }
+        this.poruka = "Starting training..."
+        //  this.poruka = "Startovanje obuke..."
+        this.notify.showNotification(this.poruka);
+
+        
+        sessionStorage.setItem('modelsHeader', JSON.stringify(this.modelsHeader));
+      }, err=> {
+        this.training = false;
+        if(this.problemType == "Regression") {
+          this.poruka = "Training failed, try again later."
+          //this.poruka = "Obuka nije uspela, pokušajte kasnije"
+          this.notify.showNotification(this.poruka);
+        }
+        else {
+          this.poruka = "Training failed, try chaning loss function or metrics."
+          //this.poruka = "Obuka nije uspela, pokušajte da promenite funkciju gubitka ili metriku"
+          this.notify.showNotification("Training failed, try chaning loss function or metrics.")
+        }
+      }
+    );
+  }
+
+  saveCheck() {
+    if(this.loggedUser) {
+      this.saveExperiment();
+    }
+    else {
+      this.loginWarning = true;
+    }
+  }
+
+  saveExperiment() {
+    let token: string;
+
+    if (this.loggedUser) {
+      token = this.cookieService.get('cortexToken');
+    }
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + token
+    });
+    let options = { headers: headers };
+    let inputList = JSON.parse(sessionStorage.getItem('inputList'));
+    let output = sessionStorage.getItem('output');
+    let fileName = this.cookieService.get('filename');
+    let realName = this.cookieService.get('realName'); 
+    let layerList = [];
+    for (let i = 0; i < this.layersLabel; i++){
+      layerList[i] = this.neuronsList[i];
+    }
+    let metrics = [];
+    for (let i = 0; i < this.selectedItems.length; i++) {
+      metrics[i] = this.selectedItems[i].item_id;
+    }
+    let today = new Date();
+    let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
+
+    this.encodingList = [];
+    let colNameTemp = []; let encodingTypeTemp = [];
+    let encodingListTemp = JSON.parse(sessionStorage.getItem('columnData'));
+    for(let i = 0; i < encodingListTemp.length; i++) {
+      if(encodingListTemp[i]['isSelected']) {
+        colNameTemp.push(encodingListTemp[i]['colName']);
+        encodingTypeTemp.push(encodingListTemp[i]['encoding']);
+      }
+    }
+    this.encodingList.push(colNameTemp);
+    this.encodingList.push(encodingTypeTemp);
+
+    let experiment = {
+      'userId' : 0,
+      'username' : this.cookieService.get('username'),
+      'name' : this.experimentName,
+      'date' : date,
+      'fileName' : fileName, 
+      'realName' : realName,
+      'description' : this.description,
+      'visibility' : false,
+      'overwrite' : true,
+      'models' : this.modelsList,
+      'inputList' : inputList, 
+      'output' : output, 
+      //'encodingType' : this.encodingType,
+      'encodingList' : this.encodingList,
+      'ratio1' : 1 * ((100 - this.range2)/100), 
+      'ratio2' : 1 * ((this.range2 - this.range1)/100),
+      'numLayers' : this.layersLabel, 
+      'layerList' : layerList, 
+      'activationFunctions' : this.activationFunctionList, 
+      'regularization' : this.regularization, 
+      'regularizationRate' : this.regularizationRate, 
+      'optimizer' : this.optimizer, 
+      'learningRate' : this.learningRate, 
+      'problemType' : this.problemType, 
+      'lossFunction' : this.lossFunction, 
+      'metrics' : metrics, 
+      'numEpochs' : +this.epochs,
+      'results' : JSON.stringify(this.chartData)
+    }
+    /*
+          SLANJE ZAHTEVA
+    */
+    this.http.post(this.configuration.saveExperiment, experiment, options).subscribe(
+      (response) => {
+        sessionStorage.setItem('experimentName', this.experimentName);
+        sessionStorage.setItem('description', this.description);
+        this.router.navigate(['training']);
+        this.poruka = "Experiment saved successfully!"
+        //this.poruka = "Eksperiment je uspešno sačuvan"
+        this.notify.showNotification("Experiment saved successfully!");
+      }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken == "Error: Username not found!"){
+          this.error();
+        }
+
+      }
+    );
+  }
+
+  changeData(name){
+    this.selectedMetric = name;
+    this.data = this.chartData[name];
+    this.val_data = this.chartData['val_' + name];
+    this.label = name;
+    this.val_label = 'val_' + name;
+    this.updateOptions();
+  }
+
+  onItemSelect(event) {
+    sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems));
+  }
+  onSelectAll(event) {
+    sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems));
+  }
+
+  onItemDeSelect(event){
+    sessionStorage.setItem('metrics', JSON.stringify(this.selectedItems));
+  }
+
+  checkStorage()
+  {
+    if(sessionStorage.getItem('metrics'))
+    {
+      this.selectedItems = JSON.parse(sessionStorage.getItem('metrics'));
+      this.metrics = this.selectedItems;
+    }
+    if(sessionStorage.getItem('problemType'))
+    {
+      this.problemType = sessionStorage.getItem('problemType');
+    }
+    if(sessionStorage.getItem('encoding'))
+    {
+      this.encodingType = sessionStorage.getItem('encoding');
+    }
+    if(sessionStorage.getItem('optimizer'))
+    {
+      this.optimizer = sessionStorage.getItem('optimizer');
+    }
+    if(sessionStorage.getItem('regularization'))
+    {
+      this.regularization = sessionStorage.getItem('regularization');
+    }
+    if(sessionStorage.getItem('lossFunction'))
+    {
+      this.lossFunction = sessionStorage.getItem('lossFunction');
+    }
+    if(sessionStorage.getItem('range1'))
+    {
+      this.range1 = Number(sessionStorage.getItem('range1'));
+    }
+    if(sessionStorage.getItem('range2'))
+    {
+      this.range2 = Number(sessionStorage.getItem('range2'));
+    }
+    if(sessionStorage.getItem('activationFunction'))
+    {
+      this.activationFunction = sessionStorage.getItem('activationFunction');
+    }
+    if(sessionStorage.getItem('learningRate'))
+    {
+      this.learningRate = Number(sessionStorage.getItem('learningRate'));
+    }
+    if(sessionStorage.getItem('regularizationRate'))
+    {
+      this.regularizationRate = Number(sessionStorage.getItem('regularizationRate'));
+    }
+    if(sessionStorage.getItem('epochs'))
+    {
+      this.epochs = Number(sessionStorage.getItem('epochs'));
+    }
+    if(sessionStorage.getItem('neuronNum'))
+    {
+      this.neuronNum = Number(sessionStorage.getItem('neuronNum'));
+    }
+    if(sessionStorage.getItem('modelsTrained'))
+    {
+      this.modelsTrained = Number(sessionStorage.getItem('modelsTrained'));
+    }
+    if(sessionStorage.getItem('modelsHeader'))
+    {
+      this.modelsHeader = [];
+      this.modelsHeader = JSON.parse(sessionStorage.getItem('modelsHeader'));
+    }
+    if(sessionStorage.getItem('modelsList'))
+    {
+      this.modelsList = [];
+      this.modelsList = JSON.parse(sessionStorage.getItem('modelsList'));
+      if(this.modelsList.length > 0) {
+        this.openMetricsChart = true;
+        this.trained = true;
+        this.chartEvaluation("loss");
+      }
+    }
+    if(sessionStorage.getItem('maxEpoch'))
+    {
+      this.maxEpochs = Number(sessionStorage.getItem('maxEpoch'));
+    }
+    if(sessionStorage.getItem('metricsLabel'))
+    {
+      this.metricLabels = JSON.parse(sessionStorage.getItem('metricsLabel'));
+      this.chartThisMetric(this.modelsHeader[0]);
+    }
+    if(sessionStorage.getItem('experimentName'))
+    {
+      this.experimentName = sessionStorage.getItem('experimentName');
+    }
+    if(sessionStorage.getItem('description'))
+    {
+      this.description = sessionStorage.getItem('description');
+    }
+    if(sessionStorage.getItem('evaluationMetrics'))
+    {
+      this.evaluationMetrics = JSON.parse(sessionStorage.getItem('evaluationMetrics'));
+    }
+    if(sessionStorage.getItem('afList')) 
+    {
+      this.activationFunctionList = JSON.parse(sessionStorage.getItem('afList'));
+    }
+    if(sessionStorage.getItem('chartData'))
+    {
+      this.firstTraining = true;
+      this.chartData = JSON.parse(sessionStorage.getItem('chartData'));
+      this.buttons = JSON.parse(sessionStorage.getItem('buttons'));
+      this.chart_labels = JSON.parse(sessionStorage.getItem('chart_labels'));
+      this.label = sessionStorage.getItem("label");
+      
+      this.data = this.chartData[this.selectedMetric];
+      this.val_data = this.chartData['val_'+this.selectedMetric];
+
+      this.updateOptions();
+    }
   }
 
   public updateOptions() {
@@ -454,8 +1008,13 @@ export class DashboardComponent implements OnInit {
   onSelected(event : any)
   {
     const target = event.target.name;
-    console.log(target)
     const value = event.target.value;
+    if(target == "problemType")
+    {
+      this.problemType = value;
+      sessionStorage.setItem('problemType', this.problemType);
+      this.checkProblemType();
+    }
     if(target == "encodingType")
     {
       this.encodingType = value;
@@ -476,15 +1035,21 @@ export class DashboardComponent implements OnInit {
       this.lossFunction = value;
       sessionStorage.setItem('lossFunction', this.lossFunction);
     }
-    else if(target == "range")
-    {
-      this.range = value;
-      sessionStorage.setItem('range', (this.range).toString());
-    }
     else if(target == "activationFunction")
     {
       this.activationFunction = value;
+      for(let i=0; i < this.activationFunctionList.length; i++){
+        if(this.activationFunction != 'custom') {
+          this.activationFunctionList[i] = this.activationFunction;
+        }
+      }
       sessionStorage.setItem('activationFunction', this.activationFunction);
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
+    }
+    else if(target == "afList"){
+      this.activationFunction = 'custom';
+      sessionStorage.setItem('activationFunction', this.activationFunction);
+      sessionStorage.setItem('afList', JSON.stringify(this.activationFunctionList));
     }
     else if(target == "learningRate")
     {
@@ -501,5 +1066,318 @@ export class DashboardComponent implements OnInit {
       this.epochs = value;
       sessionStorage.setItem('epochs', (this.epochs).toString());
     }
+    else if(target == "neuronNum")
+    {
+      this.neuronNum = value;
+      sessionStorage.setItem('neuronNum', (this.neuronNum).toString());
+    }
+    else if(target == "range1")
+    {
+      if(this.range1 >= this.range2) {
+        this.range1 = this.range2 - 1;
+      }
+      sessionStorage.setItem('range1', (this.range1).toString());
+    }
+    else if(target == "range2")
+    {
+      if(this.range2 <= this.range1) {
+        this.range2 = this.range1 + 1;
+      }
+      sessionStorage.setItem('range2', (this.range2).toString());
+    }
+  }
+
+  rangeChange(event : any) {
+    var ratioText = document.getElementById("range-text");
+
+    if(this.range1 >= this.range2) {
+      this.range2 = this.range1 + 10;
+    }
+  }
+
+  nextPage(step){
+    if(this.selectedEpoch < this.maxEpochs) {
+      this.selectedEpoch+= step;
+    }
+  }
+
+  previousPage(step){
+    if(this.selectedEpoch > 0){
+      this.selectedEpoch-= step;
+    }
+  }
+
+  firstPage(){
+    this.selectedEpoch = 0;
+  }
+
+  lastPage(){
+    this.selectedEpoch = this.maxEpochs-1;
+  }
+
+  chartThisMetric(metric : string){
+    this.openMetricsChart = true;
+    this.selectedChartMetric = metric;
+
+    this.metricsChart.data.labels = this.metricLabels;
+    this.metricsChart.data.datasets = [];
+
+    for (let i = 0; i < this.modelsList.length; i++) {
+      
+      var r = Math.floor(Math.random() * 255);
+      var g = Math.floor(Math.random() * 255);
+      var b = Math.floor(Math.random() * 255);
+
+      this.metricsChart.data.datasets.push({
+        label: "model " + this.modelsList[i].id,
+        fill: false,
+        borderColor: "rgb(" + r + "," + g + "," + b + ")",
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        pointBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointBorderColor: 'rgba(255,255,255,0)',
+        pointHoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointBorderWidth: 20,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 15,
+        pointRadius: 4,
+        data: this.modelsList[i].data[metric],
+      });
+    }
+
+    this.metricsChart.options.scales.yAxes[0].scaleLabel.labelString = metric;
+    this.metricsChart.update();
+    //this.uradinesto(metric);
+  }
+
+  makeEvaluationChart() {
+    this.evaluationCanvas = document.getElementById("evaluation-chart");
+    this.evaluationCtx = this.evaluationCanvas.getContext("2d");
+
+    var evaluationOptions: any = {
+      maintainAspectRatio: false,
+      legend: {
+        display: true
+      },
+
+      tooltips: {
+        backgroundColor: '#f5f5f5',
+        titleFontColor: '#333',
+        bodyFontColor: '#666',
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest"
+      },
+      responsive: true,
+      scales: {
+        yAxes: [{
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(29,140,248,0.1)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            suggestedMin: 0,
+            padding: 20,
+            fontColor: "#ffffff"
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Values",
+            fontColor : "#ffffff"
+          }
+        }],
+
+        xAxes: [{
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(29,140,248,0.1)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#ffffff"
+          }
+        }]
+      }
+    };
+
+    var evaluationConfig = {
+      type : "bar",
+      data : {
+        labels: ["Models"],
+        datasets: []
+      },
+      options: evaluationOptions
+    };
+
+    this.evaluationChart = new Chart(this.evaluationCtx, evaluationConfig)
+
+  }
+
+  chartEvaluation(metric: string) {
+    
+    var barData = []
+
+    let x = this.modelsList[0].evaluationData;
+
+    for(let i = 0; i < this.modelsList.length; i++) {
+      barData.push(this.modelsList[i].evaluationData[metric]);
+    }
+    
+    this.evaluationChart.data.datasets = [];
+
+    for (let i = 0; i < barData.length; i++) {
+      var r = Math.floor(Math.random() * 255);
+      var g = Math.floor(Math.random() * 255);
+      var b = Math.floor(Math.random() * 255);
+
+      this.evaluationChart.data.datasets.push({
+        label: "Model " + (i + 1),
+        fill: true,
+        backgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        hoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        borderColor: "rgb(" + r + "," + g + "," + b + ")",
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        data: [barData[i]],
+      });
+    }
+
+    this.evaluationChart.options.scales.yAxes[0].scaleLabel.labelString = metric;
+    this.evaluationChart.update();
+  }
+
+  discardCheck(id: number){
+    this.deleteWarning = true;
+    this.modelToDiscard = id;
+  }
+
+  discardModel(id: number) {
+    this.deleteWarning = false;
+    this.modelsList.pop(id);
+    if(this.modelsTrained == 1) {
+      this.trained = false;
+      this.changeTab(0);
+
+    }
+    if(this.modelsTrained == id+1) {
+      this.modelsTrained--;
+      sessionStorage.removeItem("chartData");
+      sessionStorage.removeItem("buttons");
+      sessionStorage.removeItem("chart_labels");
+      sessionStorage.removeItem("label");
+      this.firstTraining = false;
+    }
+    else {
+      for(let i = id+1; i < this.modelsList.length; i++) {
+        this.modelsList[i].id--;
+      }
+      this.modelsTrained--;
+    }
+    sessionStorage.setItem("modelsList", JSON.stringify(this.modelsList));
+    sessionStorage.setItem('modelsTrained', (this.modelsTrained).toString());
+
+    this.chartThisMetric("loss");
+    this.chartEvaluation("loss");
+    this.updateOptions();
+  }
+
+  //SOKETI
+
+  public startConnection = () => {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+                            .withUrl(this.configuration.port + "/chatHub")
+                            .build();
+    this.hubConnection
+      .start()
+      .then(() => console.log('Connection started'))
+      .then(() => this.getConnectionId())
+      .catch(err => console.log('Error while starting connection: ' + err))
+  }
+
+  public addTransferDataListener = () => {
+    this.hubConnection.on('ReceiveConnID', (data) => {
+    });
+  }
+
+  public getConnectionId = () => {
+    this.hubConnection.invoke('getconnectionid').then(
+      (data) => {
+          this.connectionId = data;
+          this.cookieService.set("connID", this.connectionId);
+        }
+    ); 
+  }
+
+  public addTrainingDataListener = () => {
+    this.hubConnection.on('trainingdata', (data) => {
+      if(data['ended'] == 0) {
+        if(this.training == false) {
+          this.modelsTrained++;
+          sessionStorage.setItem('modelsTrained', (this.modelsTrained).toString());
+        }
+
+        this.training = true;
+        this.firstTraining = true;
+        this.liveData = data;
+        this.chartData = this.liveData['trainingData'];
+        this.buttons = Object.keys(this.chartData);
+        this.buttons.splice(this.buttons.length/2);
+        this.data = this.chartData[this.selectedMetric];
+        this.val_data = this.chartData['val_'+this.selectedMetric];
+        this.chart_labels = [];
+        for (let i = 0; i < this.data.length; i++) {
+          this.chart_labels[i] = i + 1;
+        }
+        this.updateOptions();
+      }
+      else if(data['ended'] == 1){
+        sessionStorage.setItem("chartData", JSON.stringify(this.chartData));
+        sessionStorage.setItem("buttons", JSON.stringify(this.buttons));
+        sessionStorage.setItem("chart_labels", JSON.stringify(this.chart_labels));
+        sessionStorage.setItem("label", this.label);
+
+        this.training = false;
+        this.trained = true;
+
+        var newModel = new trainedModel(this.modelsTrained, this.parameters);
+        this.modelsList.push(newModel);
+        this.modelsList[this.modelsTrained-1].data = this.chartData;
+
+        if(this.selectedChartMetric == "none"){
+          this.chartThisMetric(this.modelsHeader[0]);
+        }
+        else {
+          this.chartThisMetric(this.selectedChartMetric);
+        }
+
+        sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
+        
+        this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
+        // this.notify.showNotification("Obuka modela " + this.modelsTrained + " je završena.");
+        
+      }
+      else if(data['ended'] == 2)  {
+        this.modelsList[this.modelsTrained-1].evaluationData = data['trainingData'];
+        sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
+        this.chartEvaluation("loss");
+      }
+      else if(data['ended'] == 3) {
+        this.poruka = "Training failed, try changing problem type, loss function and metrics";
+       // this.poruka = "Obuka nije uspela, pokušajte da promenite tip problema, funkciju gubitka ili metrike";
+        this.notify.showNotification(this.poruka);
+      }
+    });
+  }
+
+  error() {
+    this.poruka = "Error";
+   // this.poruka = "Greška"
+    this.notify.showNotification(this.poruka);
   }
 }

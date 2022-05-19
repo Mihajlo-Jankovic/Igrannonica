@@ -8,6 +8,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import files from 'src/files.json';
 import { Router } from '@angular/router';
+import { NotificationsService } from 'src/app/services/notifications.service';
 
 @Component({
   selector: 'app-upload',
@@ -21,31 +22,38 @@ export class UploadComponent implements OnInit {
   token: string;
   listOfFilesAuthorized: any = [];
   listOfFilesUnauthorized: any = [];
-  selectedPrivacyType: string = "all";
+  selectedPrivacyType: string = "public";
   session: any;
   cookieCheck:any;
   publicFiles: any = [];
   publicFilesUnauthorized: any = [];
-  privateFiles: any = [];
   allFiles: any = [];
-
+  myFiles: any = [];
+  
   configuration = new Configuration();
 
-  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string}[];
-  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string}[];
+  pageNum: any = 1;
+  numOfPages: any = 0;
+  numPerPage: any = 8;
 
-  constructor(private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
-   // this.username = this.getUsername();
-  
-    this.cookieCheck = this.cookie.get('token');
-    this.refreshToken();
+  noFiles: boolean = true;
+  deleteWarning: boolean = false;
+  toDelete: any;
+
+  public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string, dateCreated:Date}[];
+  public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
+
+  constructor(private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
+    // this.username = this.getUsername();
+    if(this.cookie.get('cortexToken')) {
+      this.cookieCheck = this.cookie.get('cortexToken');
+      this.selectedPrivacyType = 'mydatasets'
+    }
   }
 
   getUsername() {
     return this.cookie.get('username');
-    
   }
-
 
   onLogout() {
     this.cookie.deleteAll();
@@ -54,33 +62,46 @@ export class UploadComponent implements OnInit {
   }
 
   refreshToken(){
-    this.loggedUser = this.loginService.isAuthenticated();
-    if (this.loggedUser) {
-      this.token = this.cookie.get('token');
-    }
-    let headers = new HttpHeaders({
-      'Authorization': 'bearer ' + this.token
+    this.token = this.cookie.get('cortexToken');
+    
+    this.http.get<any>(this.configuration.refreshToken + this.token ).subscribe(token => {
+        let JSONtoken: string = JSON.stringify(token);
+        let StringToken = JSON.parse(JSONtoken).token;
+        this.cookie.set("cortexToken", StringToken);
+    }, err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).token;
+        if(StringToken == "Error: Token not valid"){
+          this.cookie.deleteAll();
+          sessionStorage.clear();
+          this.router.navigate(["home"]);
+        }
     });
-    let options = { headers: headers };
-    this.http.get<any>('https://localhost:7219/api/User/refreshToken/' + this.token ,options).subscribe(token => {
-      let JSONtoken: string = JSON.stringify(token);
-      let StringToken = JSON.parse(JSONtoken).token;
-
-      if (StringToken == "Token not valid"){
-        this.onLogout();
-      }
-      else{
-        this.cookie.set("token", StringToken);
-      }
-    });
-  
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    sessionStorage.setItem('lastPage', 'upload');
+    this.showDatasets(this.selectedPrivacyType, this.pageNum);
+  }
+  
+  showDatasets(privacyType: string, page: number) {
     this.loggedUser = this.loginService.isAuthenticated();
+    this.numOfPages = 0;
     if (this.cookieCheck) {
-      this.listOfFilesAuthorized = this.filesService.filesAuthorized().subscribe(data => {
-        this.FilesList = data;
+      this.refreshToken();
+      this.listOfFilesAuthorized = this.filesService.filesAuthorized(privacyType, page, this.numPerPage, this.numOfPages).subscribe(data => {
+        this.FilesList = data['files'];
+        this.numOfPages = data['numOfPages'];
+        
+        if(this.FilesList.length != 0) {
+          this.noFiles = false;
+        }
+        else {
+          this.noFiles = true;
+        }
+
+        this.allFiles = [];
+        this.myFiles = [];
 
         for (let i = 0; i < this.FilesList.length; i++) {
           if (this.FilesList[i]['username'] == this.getUsername()) {
@@ -91,18 +112,32 @@ export class UploadComponent implements OnInit {
           }
         } 
 
-
         for (let i = 0; i < this.FilesList.length; i++) {
-          this.allFiles.push(this.FilesList[i]);
-          if (this.FilesList[i]['isPublic'])
-            this.publicFiles.push(this.FilesList[i]);
-          else this.privateFiles.push(this.FilesList[i]);
+          if(this.FilesList[i]['isPublic'] == true)  {
+            this.allFiles.push(this.FilesList[i]);
+          }
+          if(this.FilesList[i]['username']== this.getUsername()) {
+            this.myFiles.push(this.FilesList[i]);
+          }
         }
-      })
+        if(this.selectedPrivacyType == "public")
+          this.FilesList = this.allFiles;
+        else if(this.selectedPrivacyType == "mydatasets")
+          this.FilesList = this.myFiles;
+      })  
     }
     else {
-      this.listOfFilesUnauthorized = this.filesService.filesUnauthorized().subscribe(data => {
-        this.FilesListUnauthorized = data;
+      this.listOfFilesUnauthorized = this.filesService.filesUnauthorized("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(data => {
+        this.FilesListUnauthorized = data['files'];
+        this.numOfPages = data['numOfPages'];
+
+        if(this.FilesListUnauthorized.length != 0) {
+          this.noFiles = false;
+        }
+        else {
+          this.noFiles = true;
+        }
+
         for (let i = 0; i < this.FilesListUnauthorized.length; i++) {
           if (this.FilesListUnauthorized[i]['isPublic'])
             this.publicFilesUnauthorized.push(this.FilesListUnauthorized[i]);
@@ -114,14 +149,8 @@ export class UploadComponent implements OnInit {
   public onSelectedType(event: any) {
     const value = event.target.value;
     this.selectedPrivacyType = value;
-    if (this.selectedPrivacyType == "true") {
-      this.FilesList = this.publicFiles;
-    }
-    else if (this.selectedPrivacyType == 'false') {
-      this.FilesList = this.privateFiles;
-    }
-    else if (this.selectedPrivacyType == "all")
-      this.FilesList = this.allFiles;
+    this.pageNum = 1;
+    this.showDatasets(this.selectedPrivacyType, this.pageNum);
   }
 
   save(fileName: string) {
@@ -133,81 +162,85 @@ export class UploadComponent implements OnInit {
     return sessionStorage.getItem('fileName');
   }
 
-  clearStorage()
-  {
-    sessionStorage.removeItem('csv');
-    sessionStorage.removeItem('numOfPages');
-    sessionStorage.removeItem('numericValues');
-    sessionStorage.removeItem('statistics');
-    sessionStorage.removeItem('inputList');
-    sessionStorage.removeItem('output');
-    sessionStorage.removeItem('problemType');
-    sessionStorage.removeItem('encoding');
-    sessionStorage.removeItem('optimizer');
-    sessionStorage.removeItem('regularization');
-    sessionStorage.removeItem('lossFunction');
-    sessionStorage.removeItem('range');
-    sessionStorage.removeItem('activationFunction');
-    sessionStorage.removeItem('learningRate');
-    sessionStorage.removeItem('regularizationRate');
-    sessionStorage.removeItem('epochs');
-  }
-
-  public uploadFile(files: any) {
+  async uploadFile(files: any) {
     if (files.length === 0)
       return;
-    
-    this.clearStorage();
-      
+
+    sessionStorage.clear();
+
     let file = <File>files[0];
     var fileSize = file.size;
     if (fileSize / 1048576 > 5000)
       alert("Maximum file size is 500MB");
     else {
-      const formData = new FormData();
-      formData.append('file', file, file.name);
+      var fileExt = file.name.split('.').pop();
+      if (fileExt == 'csv') {
+        const formData = new FormData();
+        formData.append('file', file, file.name);
 
-      this.save(file.name);
+        this.save(file.name);
 
-      if (this.cookie.check('token')) {
-        this.token = this.cookie.get('token');
-        let headers = new HttpHeaders({
-          'Authorization': 'bearer ' + this.token
-        });
-        let options = { headers: headers };
+        if (this.cookie.check('cortexToken')) {
+          this.token = this.cookie.get('cortexToken');
+          let headers = new HttpHeaders({
+            'Authorization': 'bearer ' + this.token
+          });
+          let options = { headers: headers };
 
-        this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
-          let JSONname: string = JSON.stringify(name);
-          let StringName = JSON.parse(JSONname).randomFileName;
-          this.cookie.set("filename", StringName);
-        })
+          await this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
+            let JSONname: string = JSON.stringify(name);
+            let StringName = JSON.parse(JSONname).randomFileName;
+            this.cookie.set("filename", StringName);
+            this.cookie.set('realName', file.name);
+            this.router.navigate(['datapreview']);
+            this.uploadNotificationSuccess();
+          }, err => {
+            let JSONtoken: string = JSON.stringify(err.error);
+            let StringToken = JSON.parse(JSONtoken).responseMessage;
+            if (StringToken == "Error: Bad file type in the request") {
+              this.uploadNotificationBadFileType();
+            }
+            else this.error();
+          })
+        }
+        else {
+          await this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name => {
+            let JSONname: string = JSON.stringify(name);
+            let StringName = JSON.parse(JSONname).randomFileName;
+            this.cookie.set("filename", StringName);
+            this.cookie.set('realName', file.name);
+            this.router.navigate(['datapreview']);
+            this.uploadNotificationSuccess();
+          }, err => {
+            let JSONtoken: string = JSON.stringify(err.error);
+            let StringToken = JSON.parse(JSONtoken).responseMessage;
+            if (StringToken == "Error: Bad file type in the request") {
+              this.uploadNotificationBadFileType();
+            }
+            else this.error();
+          })
+        }
       }
-      else{
-        this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name=>{
-          let JSONname: string = JSON.stringify(name);
-          let StringName = JSON.parse(JSONname).randomFileName;
-          this.cookie.set("filename", StringName);
-        })
-      }
+      else
+        this.notify.showNotification("Wrong file type!");
     }
-    this.uploadNotification();
-    this.router.navigate(['tables']);
+
   }
 
   filesAuthorized() {
-    this.filesService.filesAuthorized().subscribe(token => {
+    this.filesService.filesAuthorized(this.selectedPrivacyType, this.pageNum, this.numPerPage, this.numOfPages).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
     })
   }
   filesUnauthorized() {
-    this.filesService.filesUnauthorized().subscribe(token => {
+    this.filesService.filesUnauthorized("public", this.pageNum, this.numPerPage, this.numOfPages).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
     })
   }
 
   download(event, item) {
-    if (this.cookie.check('token')) {
-      this.token = this.cookie.get('token');
+    if (this.cookie.check('cortexToken')) {
+      this.token = this.cookie.get('cortexToken');
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
       });
@@ -223,6 +256,12 @@ export class UploadComponent implements OnInit {
         }
         document.body.appendChild(downloadLink);
         downloadLink.click();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+        let StringToken = JSON.parse(JSONtoken).responseMessage;
+        if(StringToken=="Error: No file found with that name!"){
+          this.error();
+        }
       })
     }
   }
@@ -240,22 +279,52 @@ export class UploadComponent implements OnInit {
       }
       document.body.appendChild(downloadLink);
       downloadLink.click();
+    },err=>{
+      let JSONtoken: string = JSON.stringify(err.error);
+      let StringToken = JSON.parse(JSONtoken).responseMessage;
+      if(StringToken=="Error: No file found with that name!"){
+        this.error();
+      }
     })
   }
 
   useThis(event, item) {
-    this.cookie.set("filename", item.randomFileName);
-    this.clearStorage();
+    let headers = new HttpHeaders({
+      'Authorization': 'bearer ' + this.token
+    });
+    let options = { headers: headers };
+    this.http.post<any>(this.configuration.useFileAuthorized, {"FileName" : item.fileName, "OldRandomFileName" : item.randomFileName}, options).subscribe((response: any) => {
+      sessionStorage.clear();
+      this.cookie.set("filename", response.randomFileName);
+      this.cookie.set("realName", response.fileName);
+      this.router.navigate(['datapreview']);
+    })
   }
+  
   useThisUn(event, item) {
-    this.cookie.set("filename", item.randomFileName);
-    this.clearStorage();
+    this.http.post<any>(this.configuration.useFileUnauthorized, {"FileName" : item.fileName, "OldRandomFileName" : item.randomFileName}).subscribe((response: any) => {
+      sessionStorage.clear();
+      this.cookie.set("filename", response.randomFileName);
+      this.cookie.set("realName", response.fileName);
+      this.router.navigate(['datapreview']);
+    })
   }
 
-  delete(event, item) {
+  deleteCheck(item) {
+    this.deleteWarning = true;
+    this.toDelete = item;
+  }
+
+  delete(item) {
+    if(this.cookie.get('filename') == item.randomFileName)
+    {
+      this.cookie.delete('filename');
+      this.cookie.delete('realName');
+      this.router.navigate['upload'];
+    }
     this.loggedUser = this.loginService.isAuthenticated();
     if (this.loggedUser) {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
     let headers = new HttpHeaders({
       'Authorization': 'bearer ' + this.token
@@ -263,16 +332,24 @@ export class UploadComponent implements OnInit {
     let options = { headers: headers };
     this.http.get<any>(this.configuration.downloadFileUnauthorized + item.randomFileName, options).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
+      this.notify.showNotification("Dataset deleted successfully.")
       location.reload();
+    },err=>{
+      let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error encoundered while deleting dataset.") {
+            this.notify.showNotification(StringToken);
+          }
     })
   }
-
+  
   onCheckboxChange(event: any,item) {
+    
     if(!event.target.checked){
       item.isPublic = false;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
-        this.token = this.cookie.get('token');
+        this.token = this.cookie.get('cortexToken');
       }
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
@@ -284,15 +361,27 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
-        location.reload();
+        setTimeout(() => { 
+          this.showDatasets("public", this.pageNum); 
+        }, 350);
+        //location.reload();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Username not found!" || StringToken=="Error: The file you are trying to change doesn't belong to you!") {
+            this.error();
+          }
       })
-      location.reload();
+      /*
+      if(this.selectedPrivacyType == "public")
+        location.reload();
+      */
     }
-    else if(event.target.checked){
+    if(event.target.checked){
       item.isPublic = true;
       this.loggedUser = this.loginService.isAuthenticated();
       if (this.loggedUser) {
-        this.token = this.cookie.get('token');
+        this.token = this.cookie.get('cortexToken');
       }
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + this.token
@@ -304,20 +393,57 @@ export class UploadComponent implements OnInit {
         "isVisible" : item.isPublic
       }, options).subscribe(token => {
         let JSONtoken: string = JSON.stringify(token);
-        location.reload();
+        //location.reload();
+      },err=>{
+        let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Username not found!" || StringToken=="Error: The file you are trying to change doesn't belong to you!") {
+            this.error();
+          }
       })
-      location.reload();
     }
+    /*
+    if(this.selectedPrivacyType == "public")
+        location.reload();
+    */
   }
 
 
-  uploadNotification() {
-    this.toastr.info('<span class="tim-icons icon-bell-55" [data-notify]="icon"></span> <b>File uploaded successfully</b>.', '', {
-      disableTimeOut: false,
-      closeButton: true,
-      enableHtml: true,
-      toastClass: "alert alert-info alert-with-icon",
-      positionClass: 'toast-top-center'
-    });
+  uploadNotificationSuccess() {
+    this.notify.showNotification("Dataset uploaded successfully.");
+  }
+
+  nextPage(i: number) {
+    if(this.pageNum + i <= this.numOfPages){
+      this.pageNum += i;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  previousPage(i : number) {
+    if(this.pageNum - i >= 1){
+      this.pageNum -= i;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  firstPage(){
+    if(this.pageNum != 1){
+      this.pageNum = 1;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+
+  lastPage(){
+    if(this.pageNum != this.numOfPages){
+      this.pageNum = this.numOfPages;
+      this.showDatasets(this.selectedPrivacyType, this.pageNum);
+    }
+  }
+  uploadNotificationBadFileType() {
+    this.notify.showNotification("Bad file type.");
+  }
+  error() {
+    this.notify.showNotification("Error.");
   }
 }

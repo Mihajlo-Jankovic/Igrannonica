@@ -1,3 +1,7 @@
+.row {
+    margin-right: 0px;
+}
+
 .container {
     height: auto;
     max-width: none;
@@ -82,17 +86,17 @@ i:hover {
 h6 {
     text-align: left;
 }
+
 h5 {
-  display: block;
-  text-align: left;
-  font-size: .90em;
-  margin-top: 1.67em;
-  margin-bottom: 1.67em;
-  margin-left: 0;
-  margin-right: 0;
-  font-weight: bold;
-  line-height: 1.0;
-   
+    display: block;
+    text-align: left;
+    font-size: .90em;
+    margin-top: 1.67em;
+    margin-bottom: 1.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+    line-height: 1.0;
 }
 
 .titleDiv {
@@ -129,6 +133,20 @@ h5 {
     cursor: pointer;
 }
 
+.author {
+    h5 {
+        text-align: center;
+    }
+}
+
+.user-btn {
+    width: 150px;
+    margin: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin: 0px 10px 0px 10px;
+}
+
 @media(max-width: 1350px) {
     .hyperparameter {
         width: 33.3%;
@@ -138,5 +156,11 @@ h5 {
 @media(max-width: 1110px) {
     .hyperparameter {
         width: 50%;
+    }
+}
+
+@media(max-width: 600px) {
+    .hyperparameter {
+        width: 100%;
     }
 }

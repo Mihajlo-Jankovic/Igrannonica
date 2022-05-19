@@ -15,26 +15,39 @@ export class LoginService {
   constructor(private http: HttpClient, private cookieService: CookieService) { }
 
   configuration = new Configuration();
-  
-  login(username : any, password : any)
-  {
+
+  login(username: any, password: any) {
     return this.http.post<string>(this.configuration.login,
-    {
-      "username": username,
-      "password": password
-    }
+      {
+        "username": username,
+        "password": password
+      }
     )
   }
 
-  isAuthenticated() : boolean
-  {
-    if(this.cookieService.check('token'))
-    {
-      var token = this.cookieService.get('token');
+  isAuthenticated(): boolean {
+    if (this.cookieService.check('cortexToken')) {
+      var token = this.cookieService.get('cortexToken');
       return !jwtHelper.isTokenExpired(token);
     }
 
     return false;
+  }
+  resetPassword(email: string) {
+    return this.http.get<any>(this.configuration.tempPassword + email);
+  }
+
+  edit(currentPassword: any, newPassword:any){
+    return this.http.post<string>(this.configuration.resetPassword,
+    {
+      "oldPassword": currentPassword,
+      "newPassword": newPassword
+    }
+    
+    )
+  }
+  verifyMail(code:number,email:string){
+    return this.http.get<any>(this.configuration.verifyMail + "?verifyNumber="+ code + "&" + "email=" + email);
   }
 
 }

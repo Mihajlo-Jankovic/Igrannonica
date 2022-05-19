@@ -11,6 +11,7 @@ namespace Igrannonica.Models
         public string RandomFileName { get; set; }
 
         public string FileName { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public bool IsPublic { get; set; }
         public int? SessionID { get; set; }

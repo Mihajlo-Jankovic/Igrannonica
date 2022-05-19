@@ -4,7 +4,7 @@ import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
-
+import { TranslateModule } from '@ngx-translate/core';  
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
 import { TablesComponent } from "../../pages/tables/tables.component";
@@ -12,6 +12,7 @@ import { TablesComponent } from "../../pages/tables/tables.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UploadComponent } from "../../pages/upload/upload.component";
 import { NgApexchartsModule } from "ng-apexcharts";
+import { HomeComponent } from "src/app/pages/home/home.component";
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
     HttpClientModule,
+    TranslateModule,
     NgbModule,
     NgApexchartsModule,
     NgMultiSelectDropDownModule.forRoot()
@@ -26,7 +28,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
   declarations: [
     DashboardComponent,
     TablesComponent,
-    UploadComponent
+    UploadComponent,
+    HomeComponent
   ]
 })
 export class AdminLayoutModule {}

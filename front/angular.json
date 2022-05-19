@@ -33,7 +33,9 @@
                             "src/assets/scss/black-dashboard.scss",
                             "src/assets/css/nucleo-icons.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "./node_modules/chart.js/dist/Chart.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
@@ -88,7 +90,6 @@
                         "main": "src/test.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "src/tsconfig.spec.json",
-                        "karmaConfig": "src/karma.conf.js",
                         "styles": [
                             "src/styles.scss"
                         ],

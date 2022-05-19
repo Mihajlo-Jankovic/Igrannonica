@@ -14,23 +14,28 @@ export class UserService {
 
   configuration = new Configuration();
   
-  getAllUserExperiments()
+  getAllUserExperiments(visibility, pageNum, numPerPage, numOfPages)
   {
-    if (this.cookie.check('token')) {
-      var token = this.cookie.get('token');
+    if (this.cookie.check('cortexToken')) {
+      var token = this.cookie.get('cortexToken');
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + token
       });
       let options = { headers: headers };
 
-      return this.http.get<string>(this.configuration.userExperiments, options);
+      return this.http.post<string>(this.configuration.userExperiments, {"visibility" : visibility, "pageNum" : pageNum, "numPerPage" : numPerPage, "numOfPages" : numOfPages},  options);
     }
+  }
+
+  getPublicExperiments(visibility, pageNum, numPerPage, numOfPages)
+  {
+      return this.http.post<string>(this.configuration.publicExperiments, {"visibility" : visibility, "pageNum" : pageNum, "numPerPage" : numPerPage, "numOfPages" : numOfPages});
   }
 
   deleteExperiment(id)
   {
-    if (this.cookie.check('token')) {
-      var token = this.cookie.get('token');
+    if (this.cookie.check('cortexToken')) {
+      var token = this.cookie.get('cortexToken');
       let headers = new HttpHeaders({
         'Authorization': 'bearer ' + token
       });

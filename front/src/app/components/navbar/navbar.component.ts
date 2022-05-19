@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from "ngx-cookie-service";
 import { LoginService } from "src/app/services/login.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-navbar",
@@ -25,7 +26,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   public isCollapsed = true;
 
+  en: boolean = true;
+  sr: boolean = false;
+
   closeResult: string;
+
+  navTo(url : string){
+
+  }
 
   get(){
     return sessionStorage.getItem('username');
@@ -35,19 +43,40 @@ export class NavbarComponent implements OnInit, OnDestroy {
     sessionStorage.clear();
     this.router.navigate(["upload"]);
   }
+
+  translateLanguageTo(lang: string) {
+    this.translate.use(lang);
+
+    sessionStorage.setItem('lang',lang);
+    
+    if(this.en == true) {
+      this.en = false;
+      this.sr = true;
+    }
+    else {
+      this.en = true;
+      this.sr = false;
+    }
+  }
+
   constructor(
     location: Location,
     private element: ElementRef,
     private router: Router,
     private modalService: NgbModal,
     private loginService: LoginService,
-    private cookie : CookieService
+    private cookie : CookieService,
+    public translate : TranslateService
   ) {
+
+    translate.addLangs(['en', 'sr']);
+    translate.setDefaultLang('en');
+
     this.location = location;
     this.sidebarVisible = false;
 
     this.session = this.get();
-    this.cookieCheck = this.cookie.get('token');
+    this.cookieCheck = this.cookie.get('cortexToken');
 
   }
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
@@ -65,7 +94,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.loggedUser = this.loginService.isAuthenticated();
     if(this.loggedUser)
     {
-      this.token = this.cookie.get('token');
+      this.token = this.cookie.get('cortexToken');
     }
 
     window.addEventListener("resize", this.updateColor);

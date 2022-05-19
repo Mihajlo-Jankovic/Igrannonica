@@ -2,7 +2,8 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { BrowserModule } from "@angular/platform-browser";
 import { Routes, RouterModule } from "@angular/router";
-
+import { TranslateModule } from '@ngx-translate/core';  
+import { Error404 } from "./layouts/error-404-page/error-404.component";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
 import { RegistrationLayoutComponent } from "./layouts/registration-layout/registration-layout.component";
@@ -10,7 +11,7 @@ import { RegistrationLayoutComponent } from "./layouts/registration-layout/regis
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "upload",
+    redirectTo: "home",
     pathMatch: "full"
   },
   {
@@ -24,28 +25,16 @@ const routes: Routes = [
     ]
   },
   {
-    path: "",
-    component: LoginLayoutComponent,
-    children: [
-      {
-        path: "",
-        loadChildren: () => import ("./layouts/login-layout/login-layout.module").then(m => m.LoginLayoutModule)
-      }
-    ]
+    path: "login",
+    component: LoginLayoutComponent
   },
   {
-    path: "",
-    component: RegistrationLayoutComponent,
-    children: [
-      {
-        path: "",
-        loadChildren: () => import ("./layouts/registration-layout/registration-layout.module").then(m => m.RegistrationLayoutModule)
-      }
-    ]
+    path: "register",
+    component: RegistrationLayoutComponent
   },
   {
     path: "**",
-    redirectTo: "upload"
+    component: Error404 
   }
 ];
 
@@ -53,7 +42,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     BrowserModule,
-    RouterModule.forRoot(routes)
+    TranslateModule,
+    RouterModule.forRoot(routes, { useHash: true })
   ],
   exports: [RouterModule]
 })

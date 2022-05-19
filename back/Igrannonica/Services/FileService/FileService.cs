@@ -1,27 +1,70 @@
-﻿namespace Igrannonica.Services.FileService
+﻿using Igrannonica.DataTransferObjects;
+using Igrannonica.Models;
+using MongoDB.Driver;
+
+namespace Igrannonica.Services.FileService
 {
     public class FileService
     {
-        public void DeleteAllExpiredFiles()
-        {
-            var folderName = Path.Combine("Resources", "CSVFilesUnauthorized");
-            var path = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            string[] files = Directory.GetFiles(path);
+        private readonly MySqlContext _context;
+        private readonly bool isProduction;
 
-            foreach(string file in files)
+        public FileService(MySqlContext context, bool isProduction)
+        {
+            _context = context;
+            this.isProduction = isProduction;
+        }
+/*
+        public async Task InvokeAsync(HttpContext context)
+        {
+
+            Thread t1 = new Thread(new ThreadStart(DeleteAllExpiredFiles));
+            t1.Start();
+            await _next(context);
+        }*/
+
+
+        public async void DeleteAllExpiredFiles()
+        {
+            List<Models.File> files = _context.File.Where(f => f.IsPublic == false).ToList();
+
+
+            while (true)
             {
-                FileInfo fi = new FileInfo(file);
-                if(fi.Extension == ".csv")
+                foreach (Models.File file in files)
                 {
-                    if(fi.LastAccessTime < DateTime.Now.AddHours(-2))
+                    if(file.UserForeignKey == null)
                     {
-                        fi.Delete();
+                        var mongoClient = new MongoClient(getMongoDBConnString());
+                        var database = mongoClient.GetDatabase("igrannonica");
+                        var collection = database.GetCollection<ExperimentDTO>("experiment");
+                        var tmp = await collection.FindAsync(e => e.userId == file.UserForeignKey);
+                        var temp = await tmp.FirstOrDefaultAsync();
+                        if(temp == null && file.DateCreated.AddDays(2) < DateTime.Now)
+                        {
+                            HttpClient client = new HttpClient();
+                            var endpoint = new Uri("http://127.0.0.1:10108/deleteFile/" + file.RandomFileName);
+
+                            var response = await client.GetAsync(endpoint);
+                            _context.File.Remove(file);
+                            await _context.SaveChangesAsync();
+                        }
                     }
                 }
-                while(true)
-                {
-                    Thread.Sleep(7200000);
-                }
+                Thread.Sleep(24 * 2 * 60 * 60 * 1000);
+            }
+
+        }
+       private string getMongoDBConnString()
+        {
+            if (!isProduction)
+            {
+                return "mongodb://localhost:27017";
+            }
+
+            else
+            {
+                return "mongodb://localhost:10109";
             }
         }
     }

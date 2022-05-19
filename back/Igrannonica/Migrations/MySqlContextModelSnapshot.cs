@@ -16,7 +16,7 @@ namespace Igrannonica.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Igrannonica.Models.File", b =>
@@ -24,6 +24,9 @@ namespace Igrannonica.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -81,9 +84,18 @@ namespace Igrannonica.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("tempPassword")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("username")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("verifiedMail")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("verifyNumber")
+                        .HasColumnType("int");
 
                     b.HasKey("id");
 
