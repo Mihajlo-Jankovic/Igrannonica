@@ -76,7 +76,6 @@ export class SidebarComponent implements OnInit {
 
     if(this.lang == 'sr')
       this.ind = true;
-      console.log(this.ind);
   }
 
   refreshExperimentName() {

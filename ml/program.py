@@ -12,7 +12,7 @@ from keras.regularizers import L1, L2
 from sklearn.preprocessing import LabelEncoder
 from tensorflow import keras
 
-ENDPOINT_PATH = 'https://localhost:7219/api/PythonComm/testLive' #http://147.91.204.115:10106/api/PythonComm/testLive
+ENDPOINT_PATH = 'https://localhost:7219/api/PythonComm/testLive' #https://localhost:7219/api/PythonComm/testLive http://147.91.204.115:10106/api/PythonComm/testLive
 
 path = 'csv\movies.csv'
 class CustomCallback(keras.callbacks.Callback):

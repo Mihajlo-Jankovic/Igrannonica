@@ -12,7 +12,7 @@ using Igrannonica.Services.FileService;
 using Microsoft.AspNetCore.SignalR;
 using Igrannonica.Hubs;
 
-var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -102,7 +102,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
-app.UseCors(myAllowSpecificOrigins);
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
