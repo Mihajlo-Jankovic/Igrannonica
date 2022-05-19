@@ -977,12 +977,12 @@ export class TablesComponent {
           offsetY: 0,
           tools: {
             download: true,
-            selection: true,
-            zoom: true,
+            selection: false,
+            zoom: false,
             zoomin: false,
             zoomout: false,
-            pan: true,
-            reset: true,
+            pan: false,
+            reset: false,
             customIcons: []
           },
           export: {
