@@ -61,15 +61,18 @@ export class RegistrationLayoutComponent implements OnInit {
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if (StringToken == "Error: Username not found!") {
           this.poruka = "Username not found";
+           // this.poruka = "Korisničko ime ne postoji"
           this.notify.showNotification(this.poruka);
           
         }
         else if (StringToken == "Error: Wrong number!") {
           this.poruka = "Wrong code";
+          // this.poruka = "Pogrešan kod"
           this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Mail already verified!") {
           this.poruka = "Mail already verified!";
+           // this.poruka = "Email je već verifikovan"
           this.notify.showNotification(this.poruka);
           
         }
@@ -94,6 +97,7 @@ export class RegistrationLayoutComponent implements OnInit {
           this.emailCodeVerification = form.value.email;
           if (form.value.password == form.value.confirmPassword) {
             this.poruka = "Congratulations, your account has been successfully created";
+             // this.poruka = "Vaš nalog je uspešno kreiran"
             this.notify.showNotification(this.poruka);
             
             this.registerCodeIndicator=true;
@@ -101,6 +105,7 @@ export class RegistrationLayoutComponent implements OnInit {
           }
           else{
             this.poruka = "Password mismatched!";
+             // this.poruka = "Lozinke se ne poklapaju"
             this.notify.showNotification(this.poruka);
           }
         }, err => {
@@ -109,16 +114,19 @@ export class RegistrationLayoutComponent implements OnInit {
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error: Email is taken!") {
             this.poruka = "Email is already taken";
+             // this.poruka = "Email već postoji"
             this.notify.showNotification(this.poruka);
           }
           else if (StringToken == "Error: Username already exists!") {
             this.poruka = "Username already exists";
+             // this.poruka = "Korisničko ime već postoji"
             this.notify.showNotification(this.poruka);
           }
         })
     }
     else {
       this.poruka = "Please enter all fields";
+       // this.poruka = "Popunite sva polja"
       this.notify.showNotification(this.poruka);
     }
   }

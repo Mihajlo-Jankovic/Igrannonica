@@ -17,49 +17,51 @@ import { NotificationsService } from "src/app/services/notifications.service";
 export class UserComponent implements OnInit {
 
   data = {
-    'name' : "",
-    'fileName' : "",
-    'inputList' : [],
-    'output' : "",
-    'problemType' : "",
-    'encodingType' : "",
-    'optimizer' : "",
-    'regularization' : "",
-    'lossFunction' : "",
-    'ratio' : 0,
-    'activationFunction' : "",
-    'learningRate' : 0,
-    'regularizationRate' : 0,
-    'epochs' : 0,
-    'numLayers' : 0,
-    'layerList' : [],
-    'metrics' : []
+    'name': "",
+    'fileName': "",
+    'inputList': [],
+    'output': "",
+    'problemType': "",
+    'encodingType': "",
+    'optimizer': "",
+    'regularization': "",
+    'lossFunction': "",
+    'ratio': 0,
+    'activationFunction': "",
+    'learningRate': 0,
+    'regularizationRate': 0,
+    'epochs': 0,
+    'numLayers': 0,
+    'layerList': [],
+    'metrics': []
   }
 
   public editForm: FormGroup;
   public editPasswordForm: FormGroup;
 
-  experiments : any = []
+  experiments: any = []
 
   username: string;
-  indicatorInfo : boolean=false;
-  indicatorPassword : boolean=false;
-  userInfo : any;
+  indicatorInfo: boolean = false;
+  indicatorPassword: boolean = false;
+  userInfo: any;
+
+  public poruka: string;
 
   getUsername() {
     return sessionStorage.getItem('username');
   }
 
-  constructor(private notify: NotificationsService, private toastr: ToastrService,private userInfoService: UserInfoService,private editService: EditService,private editPasswordService: EditPasswordService, private formBuilder : FormBuilder, private userService : UserService) {
-    this.editForm = formBuilder.group({ 
+  constructor(private notify: NotificationsService, private toastr: ToastrService, private userInfoService: UserInfoService, private editService: EditService, private editPasswordService: EditPasswordService, private formBuilder: FormBuilder, private userService: UserService) {
+    this.editForm = formBuilder.group({
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
       confirmPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     });
     this.editPasswordForm = formBuilder.group({
-      currentPassword:['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
-      newPassword:['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
+      currentPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
+      newPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
       confirmNewPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     });
   }
@@ -70,7 +72,7 @@ export class UserComponent implements OnInit {
   }
 
   getInfo() {
-    this.userInfo = this.userInfoService.info().subscribe(data=> {
+    this.userInfo = this.userInfoService.info().subscribe(data => {
       this.userInfo = data;
     })
   }
@@ -82,40 +84,46 @@ export class UserComponent implements OnInit {
     return this.editPasswordForm.controls;
   }
 
-  editInfo(){
-    if(this.indicatorInfo==true)
-      this.indicatorInfo=false;
+  editInfo() {
+    if (this.indicatorInfo == true)
+      this.indicatorInfo = false;
     else {
-      this.indicatorInfo=true;
+      this.indicatorInfo = true;
       this.indicatorPassword = false;
     }
   }
-  changePassword(){
-    if(this.indicatorPassword==true)
-      this.indicatorPassword=false;
+  changePassword() {
+    if (this.indicatorPassword == true)
+      this.indicatorPassword = false;
     else {
-      this.indicatorPassword=true;
+      this.indicatorPassword = true;
       this.indicatorInfo = false;
     }
   }
 
-  
-  edit (form: FormGroup) {
+
+  edit(form: FormGroup) {
     if (form.value.firstname && form.value.lastname && form.value.password && form.value.confirmPassword) {
-      if(form.value.password != form.value.confirmPassword){
-        this.notify.showNotification("Password mismatched!");
+      if (form.value.password != form.value.confirmPassword) {
+        this.poruka = "Password mismatched!";
+        //this.poruka= "Lozinke se ne poklapaju"
+        this.notify.showNotification(this.poruka);
       }
-      else{
-      this.editService.edit(form.value.firstname, form.value.lastname,form.value.password).subscribe(async token => {
-        let JSONtoken: string = JSON.stringify(token);
-        this.notify.showNotification("Succesfully changed!");
-        await new Promise(f=>setTimeout(f,50));
-        this.getInfo();
-      },err=>{
-        let JSONtoken: string = JSON.stringify(err.error);
-        let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if(StringToken == "Error: Wrong password!"){
-          this.notify.showNotification("Wrong password!");
+      else {
+        this.editService.edit(form.value.firstname, form.value.lastname, form.value.password).subscribe(async token => {
+          let JSONtoken: string = JSON.stringify(token);
+          this.poruka = "Succesfully changed!";
+          //this.poruka = "Usešno promenjeno";
+          this.notify.showNotification(this.poruka);
+          await new Promise(f => setTimeout(f, 50));
+          this.getInfo();
+        }, err => {
+          let JSONtoken: string = JSON.stringify(err.error);
+          let StringToken = JSON.parse(JSONtoken).responseMessage;
+          if (StringToken == "Error: Wrong password!") {
+            this.poruka = "Wrong password!";
+            //this.poruka = "Pogrešna lozinka";
+            this.notify.showNotification(this.poruka);
           }
         })
       }
@@ -124,31 +132,37 @@ export class UserComponent implements OnInit {
 
   editPassword(form: FormGroup) {
     if (form.value.currentPassword && form.value.newPassword && form.value.confirmNewPassword) {
-      if(form.value.newPassword != form.value.confirmNewPassword){
-        this.notify.showNotification("Password mismatched!");
+      if (form.value.newPassword != form.value.confirmNewPassword) {
+        this.poruka = "Password mismatched!";
+        //this.poruka= "Lozinke se ne poklapaju"
+        this.notify.showNotification(this.poruka);
       }
-      else{
+      else {
         this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(async token => {
           let JSONtoken: string = JSON.stringify(token);
-          this.notify.showNotification("Succesfully changed!");
-          await new Promise(f=>setTimeout(f,50));
+          this.poruka = "Succesfully changed!";
+          //this.poruka = "Usešno promenjeno";
+          this.notify.showNotification(this.poruka);
+          await new Promise(f => setTimeout(f, 50));
           this.getInfo();
-        },err=>{
+        }, err => {
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
-          if(StringToken == "Error: Wrong password!"){
-            this.notify.showNotification("Wrong password!");
+          if (StringToken == "Error: Wrong password!") {
+            this.poruka = "Wrong password!";
+            //this.poruka = "Pogrešna lozinka";
+            this.notify.showNotification(this.poruka);
           }
         })
       }
     }
   }
-  
+
   // niz: any= [1];
   // clcDiv: any = [false];
 
   // openDiv(index1:number) {
-    
+
   //   if(this.clcDiv[index1] == false) {
   //     this.clcDiv[index1] = true;
   //   }

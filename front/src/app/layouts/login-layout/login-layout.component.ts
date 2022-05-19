@@ -118,14 +118,18 @@ export class LoginLayoutComponent implements OnInit {
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if (StringToken == "Error: Username not found!") { 
           this.poruka = "Username not found";
+
+          // this.poruka = "Korisničko ime ne postoji"
           this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Wrong number!") {
           this.poruka = "Wrong code";
+          // this.poruka = "Pogrešan kod"
           this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Mail already verified!") {
           this.poruka = "Mail already verified!";
+          // this.poruka = "Email je već verifikovan"
           this.notify.showNotification(this.poruka);
         }
 
@@ -146,6 +150,7 @@ export class LoginLayoutComponent implements OnInit {
         this.cookie.set("cortexToken", StringToken);
         this.cookie.set("username", form.value.username);
         this.poruka = "Successful login";
+        // this.poruka = "Uspešno ste se prijavili"
         this.notify.showNotification(this.poruka);
         this.router.navigate([sessionStorage.getItem('lastPage')]);
 
@@ -156,21 +161,26 @@ export class LoginLayoutComponent implements OnInit {
 
         if (StringToken == "Error: Wrong password!") {
           this.poruka = "Wrong password";
+          // this.poruka = "Pogrešna lozinka"
           this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: Username not found!") {
           this.poruka = "Wrong username";
+          // this.poruka = "Pogrešno korisničko ime"
           this.notify.showNotification(this.poruka);
         }
         else if (StringToken == "Error: You have to verify your mail!") {
           this.poruka = "You have to verify your mail!";
+          // this.poruka = "Morate verifikovati email"
           this.notify.showNotification(this.poruka);
           this.validateEmailWarning = true;
         }
       })
     }
     else {
-      this.notify.showNotification("Please fill all fields.!");
+      this.poruka = "Please fill all fields.";
+       // this.poruka = "Popunite sva polja"
+      this.notify.showNotification(this.poruka);
     }
   }
 
@@ -192,6 +202,7 @@ export class LoginLayoutComponent implements OnInit {
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if (StringToken == "There is no user with this email.")
         this.poruka = "There is no user with this email";
+         // this.poruka = "Ne postoji korisnik sa unetim email-om"
         this.notify.showNotification(this.poruka);
       })
     }
@@ -203,6 +214,7 @@ export class LoginLayoutComponent implements OnInit {
         let StringToken = JSON.parse(JSONtoken).token;
         if (form.value.newPassword) {
           this.poruka = "Succesfully changed";
+           // this.poruka = "Lozinka je uspešno promenjena"
           this.notify.showNotification(this.poruka);
         }
         this.backToLogin();
@@ -211,6 +223,7 @@ export class LoginLayoutComponent implements OnInit {
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if(StringToken == "Wrong password"){
           this.poruka = "Temporary password is wrong";
+           // this.poruka = "Pogrešna privremena lozinka"
           this.notify.showNotification(this.poruka);
         }
       })

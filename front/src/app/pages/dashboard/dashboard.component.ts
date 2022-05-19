@@ -652,6 +652,7 @@ export class DashboardComponent implements OnInit {
   startTraining() {
     if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
       this.poruka = "Input or output not selected";
+      // this.poruka = "Ulazni/izlazni podaci nisu selektovani"
       this.notify.showNotification(this.poruka);
       return;
     }
@@ -710,16 +711,22 @@ export class DashboardComponent implements OnInit {
           this.modelsHeader.push(this.selectedItems[i]['item_id']);
           this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
         }
-        this.notify.showNotification("Starting training...");
+        this.poruka = "Starting training..."
+        //  this.poruka = "Startovanje obuke..."
+        this.notify.showNotification(this.poruka);
 
         
         sessionStorage.setItem('modelsHeader', JSON.stringify(this.modelsHeader));
       }, err=> {
         this.training = false;
         if(this.problemType == "Regression") {
-          this.notify.showNotification("Training failed, try again later.");
+          this.poruka = "Training failed, try again later."
+          //this.poruka = "Obuka nije uspela, pokušajte kasnije"
+          this.notify.showNotification(this.poruka);
         }
         else {
+          this.poruka = "Training failed, try chaning loss function or metrics."
+          //this.poruka = "Obuka nije uspela, pokušajte da promenite funkciju gubitka ili metriku"
           this.notify.showNotification("Training failed, try chaning loss function or metrics.")
         }
       }
@@ -810,6 +817,8 @@ export class DashboardComponent implements OnInit {
         sessionStorage.setItem('experimentName', this.experimentName);
         sessionStorage.setItem('description', this.description);
         this.router.navigate(['training']);
+        this.poruka = "Experiment saved successfully!"
+        //this.poruka = "Eksperiment je uspešno sačuvan"
         this.notify.showNotification("Experiment saved successfully!");
       }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
@@ -1338,7 +1347,9 @@ export class DashboardComponent implements OnInit {
         }
 
         sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
+        
         this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
+        // this.notify.showNotification("Obuka modela " + this.modelsTrained + " je završena.");
         
       }
       else if(data['ended'] == 2)  {
@@ -1347,13 +1358,16 @@ export class DashboardComponent implements OnInit {
         this.chartEvaluation("loss");
       }
       else if(data['ended'] == 3) {
-        this.notify.showNotification("Training failed, try changing problem type, loss function and metrics");
+        this.poruka = "Training failed, try changing problem type, loss function and metrics";
+       // this.poruka = "Obuka nije uspela, pokušajte da promenite tip problema, funkciju gubitka ili metrike";
+        this.notify.showNotification(this.poruka);
       }
     });
   }
 
   error() {
     this.poruka = "Error";
+   // this.poruka = "Greška"
     this.notify.showNotification(this.poruka);
   }
 }

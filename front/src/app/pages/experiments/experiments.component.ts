@@ -291,6 +291,8 @@ export class ExperimentsComponent implements OnInit {
   {
     this.userService.deleteExperiment(id).subscribe(res => {
       if(res['id']) {
+        this.poruka = "Experiment deleted successfully.";
+        // this.poruka = "Eksperiment je uspešno obrisan"
         this.notify.showNotification("Experiment deleted successfully.");
       }
       this.experimentListAuthorized = [];
