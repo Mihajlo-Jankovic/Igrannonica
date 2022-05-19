@@ -7,7 +7,7 @@
     <ul class="nav"  *ngIf="!ind">
         <!--[hidden]="!notSelected(menuItem.title)"-->
         <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
-            <a [routerLink]="[menuItem.path]" [hidden]="(hide() && menuItem.titleEn != 'Home') || (menuItem.titleEn == 'Home' && cookie.get('home') == 'true') || ((menuItem.titleEn == 'Data Preview' || menuItem.titleEn == 'Model Training') && !cookie.get('filename'))">
+            <a [routerLink]="[menuItem.path]" [hidden]="(hide() && menuItem.title != 'Home') || (menuItem.title == 'Home' && cookie.get('home') == 'true') || ((menuItem.title == 'Data Preview' || menuItem.title == 'Model Training') && !cookie.get('filename')) || ((menuItem.title == 'Upload' || menuItem.title == 'Experiments') && !cookie.get('home'))">
                 <i class="{{ menuItem.icon }}"></i>
                 <p>{{ menuItem.titleEn }}</p>
             </a>
@@ -17,7 +17,7 @@
     <ul class="nav"  *ngIf="ind">
         <!--[hidden]="!notSelected(menuItem.title)"-->
         <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
-            <a [routerLink]="[menuItem.path]" [hidden]="(hide() && menuItem.titleSr != 'Pocetna') || (menuItem.titleSr == 'Pocetna' && cookie.get('pocetna') == 'true') || ((menuItem.titleSr == 'Pregled podataka' || menuItem.titleSr == 'Obuka modela') && !cookie.get('filename'))">
+            <a [routerLink]="[menuItem.path]" [hidden]="(hide() && menuItem.titleSr != 'Pocetna') || (menuItem.titleSr == 'Pocetna' && cookie.get('pocetna') == 'true') || ((menuItem.titleSr == 'Pregled podataka' || menuItem.titleSr == 'Obuka modela') && !cookie.get('filename')) || ((menuItem.title == 'Ucitavanje fajla' || menuItem.title == 'Eksperimenti') && !cookie.get('pocetna'))">
                 <i class="{{ menuItem.icon }}"></i>
                 <p>{{ menuItem.titleSr }}</p>
             </a>

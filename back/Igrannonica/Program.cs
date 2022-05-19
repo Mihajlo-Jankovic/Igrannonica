@@ -108,9 +108,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//FileService fileService = new FileService();
-//Thread t1 = new Thread(new ThreadStart(fileService.DeleteAllExpiredFiles));
-//t1.Start();
+var optionBuilder = new DbContextOptionsBuilder<MySqlContext>();
+optionBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+var context = new MySqlContext(optionBuilder.Options);
+
+FileService fileService = new FileService(new MySqlContext(optionBuilder.Options), builder.Environment.IsProduction());
+
+Thread t1 = new Thread(new ThreadStart(fileService.DeleteAllExpiredFiles));
+t1.Start();
 
 app.MapHub<ChatHub>("/chatHub");
 

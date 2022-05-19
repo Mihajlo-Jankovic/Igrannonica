@@ -92,14 +92,14 @@ i {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
-    background-color: #F5F5F5;
+    background-color: #212332;
 }
 
 .corr::-webkit-scrollbar {
     width: 12px;
     height: 12px;
     border-radius: 10px;
-    background-color: #F5F5F5;
+    background-color: #212332;
 }
 
 .corr::-webkit-scrollbar-thumb {
@@ -113,14 +113,14 @@ i {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
-    background-color: #F5F5F5;
+    background-color: #212332;
 }
 
 #table::-webkit-scrollbar {
     width: 12px;
     height: 12px;
     border-radius: 10px;
-    background-color: #F5F5F5;
+    background-color: #212332;
 }
 
 #table::-webkit-scrollbar-thumb {
@@ -130,11 +130,13 @@ i {
     background-color: #7d3c8b;
 }
 
-
-/*
 #table::-webkit-scrollbar-corner {
-    background-color: #27293d;
-}*/
+    background-color: #212332;
+}
+
+.corr::-webkit-scrollbar-corner {
+    background-color: #212332;
+}
 
 $checked-color: #7d3c8b;
 $unchecked-color: #1e1e2e;
@@ -801,11 +803,13 @@ body.warning-modal-open {
 }
 
 .encoding {
-    width: 55%;
+    width: 50%;
     height: auto;
     padding: 2px;
     overflow: auto;
-    margin: auto;
+    //margin: auto;
+    float: left;
+    padding-bottom: 1rem;
 }
 
 .encRow {
@@ -835,8 +839,8 @@ body.warning-modal-open {
 
 .dropdown1Text {
     background: transparent;
-    border: 1px solid #7d3c8b;
-    border-radius: 6px;
+    //border: 1px solid #7d3c8b;
+    //border-radius: 6px;
     overflow: hidden;
     color: white;
     margin-right: 20px;
@@ -845,7 +849,6 @@ body.warning-modal-open {
     width: 55%;
     position: relative;
     bottom: 0;
-    cursor: pointer;
     float: left;
 }
 
@@ -856,11 +859,20 @@ body.warning-modal-open {
 
 @media(max-width: 1139px) {
     .encoding {
-        width: 70%;
+        margin: auto;
     }
 }
 
-@media(max-width: 780px) {
+@media(max-width: 722px) {
+    .encoding {
+        width: 70%;
+        float: none;
+    }
+    .encoding2 {
+        margin-top: 5px;
+        border-top: 2px solid #7d3c8b;
+        padding-top: 10px;
+    }
     .dropdown1Text {
         overflow: none;
         height: auto;
@@ -875,7 +887,7 @@ body.warning-modal-open {
     }
 }
 
-@media(max-width: 478px) {
+@media(max-width: 497px) {
     .dropdown1Text {
         overflow: none;
         height: auto;

@@ -83,7 +83,7 @@
     "DOWNLOAD" : "PREUZMI",
     "Are you sure you want to delete selected rows?" : "Da li ste sigurni da želite da obrišete izabrane redove?",
     "Column Statistics" : "Statistika kolona",
-    "Choose column to plot" : "Izaberite kolonu za iscrtavanje",
+    "Choose column to plot" : "Izbor kolone za iscrtavanje",
     "Correlation Matrix" : "Matrica korelacije",
     "Preprocessing data - choose a tab to open" : "Priprema podataka - odaberite karticu za otvaranje",
     "Input & Output Selection" : "Izbor ulaznih i izlaznih podataka",
@@ -176,5 +176,8 @@
     "SAVE EXPERIMENT" : "SAČUVAJ EKSPERIMENT",
     "Profile" : "Profil",
     "Log out" : "Odjavi se",
-    "made by Cortex." : "made by Cortex."
+    "made by Cortex." : "made by Cortex.",
+    "Choose encoding for selected input columns" : "Izaberite način kodiranja za odabrane ulazne kolone",
+    "Choose encoding for selected output column" : "Izaberite način kodiranja za odabranu izlaznu kolone",
+    "Training : validation : test" : "Trening : validacija : test"
 }

@@ -51,7 +51,6 @@ def not_numeric_column_statistics(df,col):
     frequency = (int)(df[col].value_counts()[0])
     numOfNulls = (int)(df[col].isnull().sum())
     uniqueList = Counter(df[col])
-    print(uniqueList)
 
     return(rowsNum, unique, mostFrequent, frequency, numOfNulls, uniqueList)
     

@@ -23,8 +23,10 @@ export class HomeComponent implements OnInit {
     
 
     ngOnInit() {
-        if(sessionStorage.getItem('lastPage') && sessionStorage.getItem('lastPage') != 'home') {
-            console.log(sessionStorage.getItem('lastPage'));
+        if(sessionStorage.getItem('lastPage') == 'profile' && !this.cookie.get('home')){
+            sessionStorage.setItem('lastPage', 'home');
+        }
+        else  if(sessionStorage.getItem('lastPage') && sessionStorage.getItem('lastPage') != 'home') {
             this.router.navigate([sessionStorage.getItem('lastPage')]);
         }
         else {
