@@ -65,7 +65,7 @@
     "This change is permanent." : "Izmena je trajna.",
     "Delete" : "Obriši",
     "Upload a new dataset" : "Učitaj novi skup podataka",
-    "Click or drag your file here to upload" : "Izaberite ili prevucite datoteku da biste je otpremili",
+    "Click or drag your csv file here to upload" : "Izaberite ili prevucite csv datoteku da biste je otpremili",
     "Drag n Drop your dataset here" : "Prevucite i otpustite svoj skup podataka ovde",
     "Choose an existing dataset" : "Izaberite već postojeći skup podataka", 
     "Filter datasets" : "Filtriranje skupova podataka",

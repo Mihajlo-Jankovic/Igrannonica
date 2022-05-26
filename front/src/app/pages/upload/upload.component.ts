@@ -171,7 +171,7 @@ export class UploadComponent implements OnInit {
     let file = <File>files[0];
     var fileSize = file.size;
     if (fileSize / 1048576 > 5000)
-      alert("Maximum file size is 500MB");
+      this.notify.showNotification("Maximum file size is 500MB");
     else {
       var fileExt = file.name.split('.').pop();
       if (fileExt == 'csv') {
@@ -222,7 +222,7 @@ export class UploadComponent implements OnInit {
         }
       }
       else
-        this.notify.showNotification("Wrong file type!");
+        this.notify.showNotification("Wrong file type!Available format is csv.");
     }
 
   }
