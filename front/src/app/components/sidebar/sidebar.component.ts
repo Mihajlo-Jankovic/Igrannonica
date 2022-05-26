@@ -65,7 +65,7 @@ export class SidebarComponent implements OnInit {
   public ind: boolean = false;
 
 
-  constructor(private cookie : CookieService) {
+  constructor(public cookie : CookieService) {
     this.lang = sessionStorage.getItem('lang');
     
   }
