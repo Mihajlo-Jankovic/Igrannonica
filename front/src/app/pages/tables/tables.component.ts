@@ -1730,4 +1730,13 @@ export class TablesComponent {
       return "Empty dataset."
   }
 
+  isDisabledOutput(item: string) 
+  {
+    for(let i = 0; i < this.listCheckedI.length; i++) {
+      if(this.listCheckedI[i] == item) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

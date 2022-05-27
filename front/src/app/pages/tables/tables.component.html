@@ -256,7 +256,8 @@
                                         <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]" [checked]="radios1[i]">
                                         <label for="{{ 'radio' + i }}" class="radio-button" style="margin: 0px;"></label>
                                     </div>
-                                    <p>{{item}}</p>
+                                    <p *ngIf="isDisabledOutput(item)" style="text-decoration: line-through;" ngbTooltip="{{'This column is already selected as an input' | translate}}" placement="left">{{item}}</p>
+                                    <p *ngIf="!isDisabledOutput(item)">{{item}}</p>
                                 </div>
                             </div>
                         </div>

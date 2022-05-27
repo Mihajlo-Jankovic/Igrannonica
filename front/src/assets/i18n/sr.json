@@ -89,6 +89,7 @@
     "Input & Output Selection" : "Izbor ulaznih i izlaznih podataka",
     "Input" : "Ulazni podaci",
     "Output" : "Izlazni podaci",
+    "This column is already selected as an input": "Ova kolona je već izabrana kao ulazna veličina",
     "Encoding" : "Kodiranje",
     "Please choose input." : "Izaberite ulazne podatke",
     "Missing values & Outliers" : "Nedostajuće vrednosti i odstupanja",
