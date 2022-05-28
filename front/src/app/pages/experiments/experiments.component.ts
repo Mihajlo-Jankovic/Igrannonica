@@ -382,7 +382,12 @@ export class ExperimentsComponent implements OnInit {
           headers.push(key);
       })
 
+    let evalHeaders = ["loss"]
+    for(let i = 0; i< metrics.length;i++)
+      evalHeaders.push(metrics[i]);
+
     sessionStorage.setItem('modelsHeader', JSON.stringify(headers));
+    sessionStorage.setItem('evaluationMetrics', JSON.stringify(evalHeaders))
     sessionStorage.setItem('modelsTrained', (item.models.length).toString());
 
     let maxEpoch = item.models[0].parameters['numEpochs'];
