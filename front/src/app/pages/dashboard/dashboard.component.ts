@@ -983,19 +983,31 @@ export class DashboardComponent implements OnInit {
   showTooltip(name)
   {
     if(name == "mse")
-    this.ngbTooltip = "Mean Squared Error";
+      this.ngbTooltip = "Mean Squared Error";
     else if(name == "mae")
-    this.ngbTooltip = "Mean Absolute Error";
+      this.ngbTooltip = "Mean Absolute Error";
     else if(name == "mape")
-    this.ngbTooltip = "Mean Absolute Percentage Error";
+      this.ngbTooltip = "Mean Absolute Percentage Error";
     else if(name == "loss")
-    this.ngbTooltip = "Loss Function";
+      this.ngbTooltip = "Loss Function";
     else if(name == "cosine")
-    this.ngbTooltip = "Cosine Proximity";
+      this.ngbTooltip = "Cosine Proximity";
     else if(name == "logcosh")
-    this.ngbTooltip = "Log Cosh Error";
+      this.ngbTooltip = "Log Cosh Error";
     else if(name == "msle")
-    this.ngbTooltip = "Mean Squared Logarithmic Error";
+      this.ngbTooltip = "Mean Squared Logarithmic Error";
+    else if(name == "categorical_accuracy")
+      this.ngbTooltip = "Categorical Accuracy";
+    else if(name == "sparse_categorical_accuracy")
+      this.ngbTooltip = "Sparse Categorical Accuracy";
+    else if(name == "top_k_accuracy")
+      this.ngbTooltip = "Top K Accuracy";
+    else if(name == "sparse_top_k_categorical_accuracy")
+      this.ngbTooltip = "sparse Top K Categorical Accuracy";
+    else if(name == "accuracy")
+      this.ngbTooltip = "Accuracy";
+    else if(name == "binary_accuracy")
+      this.ngbTooltip = "Binary Accuracy";
 
     return this.ngbTooltip;
     
