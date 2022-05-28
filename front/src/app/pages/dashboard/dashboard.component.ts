@@ -258,11 +258,6 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(sessionStorage.getItem('lastPage') == 'experiments'){
-      sessionStorage.setItem('lastPage', 'training');
-      location.reload();
-    }
-
     sessionStorage.setItem('lastPage', 'training');
     if (this.cookieCheck) {
       this.refreshToken();

@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Location } from "@angular/common";
+import { HomeComponent } from "src/app/pages/home/home.component";
+import { ExpNameService } from "src/app/services/expName.service";
 
 declare interface RouteInfo {
   path: string;
@@ -65,24 +67,21 @@ export class SidebarComponent implements OnInit {
   public ind: boolean = false;
 
 
-  constructor(public cookie : CookieService) {
+  constructor(public cookie : CookieService, private expName : ExpNameService) {
     this.lang = sessionStorage.getItem('lang');
-    
   }
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
-    this.refreshExperimentName();
-
+    if(sessionStorage.getItem('experimentName'))
+      this.experimentName = sessionStorage.getItem('experimentName');
+    this.expName.aClickedEvent.subscribe((data:string) => {
+      this.experimentName = data;
+    });
     if(this.lang == 'sr')
       this.ind = true;
   }
 
-  refreshExperimentName() {
-    if(sessionStorage.getItem('experimentName')) {
-      this.experimentName = sessionStorage.getItem('experimentName');
-    }
-  }
 
   isMobileMenu() {
     if (window.innerWidth > 991) {
