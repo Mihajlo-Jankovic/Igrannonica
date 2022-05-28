@@ -252,6 +252,9 @@ export class DashboardComponent implements OnInit {
     this.evaluationMetric= "loss";
     this.evaluationMetrics = ["loss"];
     sessionStorage.removeItem('evaluationMetrics');
+
+    this.changeTab(0);
+
   }
 
   ngOnInit() {
