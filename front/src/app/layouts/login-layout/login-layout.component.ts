@@ -108,7 +108,6 @@ export class LoginLayoutComponent implements OnInit {
 
   emailCode(form:FormGroup){
     if(form.value.code){
-      console.log(form.value.email);
       this.loginService.verifyMail(form.value.code,form.value.email).subscribe(token=>{
         let JSONtoken: string = JSON.stringify(token);
         let StringToken = JSON.parse(JSONtoken).token;

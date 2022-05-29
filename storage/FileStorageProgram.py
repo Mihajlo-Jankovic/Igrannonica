@@ -124,7 +124,7 @@ def missing_values(df, colName, fillMethod, specificVal):
             df[colName].fillna(specificVal, inplace=True)
 
         elif(fillMethod == "deleteAll"):
-            df[colName].dropna()
+            df.dropna(subset=[colName], inplace=True)
 
         elif(fillMethod == "min"):
             df[colName].fillna(min, inplace=True)

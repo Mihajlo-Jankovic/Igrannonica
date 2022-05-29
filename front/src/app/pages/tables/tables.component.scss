@@ -898,6 +898,12 @@ body.warning-modal-open {
     }
 }
 
+@media(max-width: 375px) {
+    .dropdown1Text {
+        width: 45%;
+    }
+}
+
 .dropdown2Text {
     background: transparent;
     border: 1px solid #7d3c8b;

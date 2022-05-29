@@ -6,6 +6,7 @@ import { Configuration } from 'src/app/configuration';
 import { LoginService } from 'src/app/services/login.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
+import { ExpNameService } from 'src/app/services/expName.service';
 
 @Component({
   selector: 'app-experiments',
@@ -93,7 +94,7 @@ export class ExperimentsComponent implements OnInit {
 
   public poruka : string;
 
-  constructor(private notify: NotificationsService, private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient) {
+  constructor(private notify: NotificationsService, private userService : UserService, private cookie : CookieService, private router :  Router, private loginService : LoginService, private http: HttpClient, private expName : ExpNameService) {
       if(this.cookie.get('cortexToken')) {
         this.cookieCheck = this.cookie.get('cortexToken');
         this.selectedPrivacyType = 'myexperiments'
@@ -382,7 +383,12 @@ export class ExperimentsComponent implements OnInit {
           headers.push(key);
       })
 
+    let evalHeaders = ["loss"]
+    for(let i = 0; i< metrics.length;i++)
+      evalHeaders.push(metrics[i]);
+
     sessionStorage.setItem('modelsHeader', JSON.stringify(headers));
+    sessionStorage.setItem('evaluationMetrics', JSON.stringify(evalHeaders))
     sessionStorage.setItem('modelsTrained', (item.models.length).toString());
 
     let maxEpoch = item.models[0].parameters['numEpochs'];
@@ -403,6 +409,8 @@ export class ExperimentsComponent implements OnInit {
     this.cookie.set('realName', item.realName);
     sessionStorage.setItem('description', item.description);
     sessionStorage.setItem('experimentName', item.name);
+
+    this.expName.refreshExperimentName(item.name);
 
     // sessionStorage.removeItem('problemType');
     // sessionStorage.removeItem('optimizer');

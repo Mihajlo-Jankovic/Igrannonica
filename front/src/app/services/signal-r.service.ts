@@ -25,14 +25,12 @@ export class SignalRService {
   }
   public addTransferDataListener = () => {
     this.hubConnection.on('ReceiveConnID', (data) => {
-      console.log(data);
     });
   }
 
   public getConnectionId = () => {
     this.hubConnection.invoke('getconnectionid').then(
       (data) => {
-          console.log(data);
           this.connectionId = data;
           this.cookie.set("connID", this.connectionId);
         }
@@ -42,7 +40,6 @@ export class SignalRService {
   public addTrainingDataListener = () => {
     this.hubConnection.on('trainingdata', (data) => {
       this.data = data;
-      console.log(data);
     });
   }
 

@@ -470,7 +470,7 @@ export class TablesComponent {
 
     if (!filter) {
       this.showStatisticDiv = true;
-      this.showStatistics(this.selectedColName);
+      this.showStatistics(this.selectedColName, true);
     }
     //*
     this.setInputOutput();
@@ -650,8 +650,8 @@ export class TablesComponent {
     this.rowLines = [];
   }
 
-  showStatistics(col: string) {
-    if (sessionStorage.getItem('statistics')) {
+  showStatistics(col: string, flag1: boolean) {
+    if (sessionStorage.getItem('statistics') && flag1 == false) {
       //this.statisticData = JSON.parse(sessionStorage.getItem('statistics'));
       //this.loadStatistics();
       this.statistic = JSON.parse(sessionStorage.getItem('statistics'));
@@ -918,7 +918,7 @@ export class TablesComponent {
 
     sessionStorage.removeItem('statistics');
     this.resetStatistic();
-    this.showStatistics(value);
+    this.showStatistics(value, false);
   }
 
   resetStatistic() {
@@ -977,12 +977,12 @@ export class TablesComponent {
           offsetY: 0,
           tools: {
             download: true,
-            selection: true,
-            zoom: true,
+            selection: false,
+            zoom: false,
             zoomin: false,
             zoomout: false,
-            pan: true,
-            reset: true,
+            pan: false,
+            reset: false,
             customIcons: []
           },
           export: {
@@ -1299,7 +1299,7 @@ export class TablesComponent {
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
       sessionStorage.removeItem('statistics');
       this.resetStatistic();
-      this.showStatistics(this.selectedColName);
+      this.showStatistics(this.selectedColName, true);
       this.selectedRows = [];
       this.poruka = "Delete successfull";
       //this.poruka = "Red/ovi su uspešno obrisani";
@@ -1339,7 +1339,7 @@ export class TablesComponent {
         this.reset()
         this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
         this.resetStatistic();
-        this.showStatistics(this.selectedColName);
+        this.showStatistics(this.selectedColName, true);
         this.poruka = "Edit successfull";
         // this.poruka = "Izmena je uspela";
         this.notify.showNotification(this.poruka);
@@ -1730,4 +1730,13 @@ export class TablesComponent {
       return "Empty dataset."
   }
 
+  isDisabledOutput(item: string) 
+  {
+    for(let i = 0; i < this.listCheckedI.length; i++) {
+      if(this.listCheckedI[i] == item) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

@@ -24,19 +24,11 @@ export class HomeComponent implements OnInit {
     
 
     ngOnInit() {
-        if(sessionStorage.getItem('lastPage') == 'profile' && !this.cookie.get('home')){
-            sessionStorage.setItem('lastPage', 'home');
+        if (this.cookieCheck) {
+            this.refreshToken();
         }
-        else  if(sessionStorage.getItem('lastPage') && sessionStorage.getItem('lastPage') != 'home') {
-            this.router.navigate([sessionStorage.getItem('lastPage')]);
-        }
-        else {
-            if (this.cookieCheck) {
-                this.refreshToken();
-            }
-            sessionStorage.setItem('lastPage', 'home');
-            this.cookie.delete('home');
-        }
+        sessionStorage.setItem('lastPage', 'home');
+        this.cookie.delete('home');
     }
 
     refreshToken(){
@@ -63,12 +55,10 @@ export class HomeComponent implements OnInit {
     }
 
     newExperiment() {
-        this.cookie.set('home', 'true');
         this.router.navigate(['upload']);
     }
 
     oldExperiment() {
-        this.cookie.set('home', 'true');
         this.router.navigate(['experiments']);
     }
 }

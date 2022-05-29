@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import files from 'src/files.json';
 import { Router } from '@angular/router';
 import { NotificationsService } from 'src/app/services/notifications.service';
+import { ExpNameService } from 'src/app/services/expName.service';
 
 @Component({
   selector: 'app-upload',
@@ -43,7 +44,7 @@ export class UploadComponent implements OnInit {
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string, dateCreated:Date}[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
 
-  constructor(private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService) {
+  constructor(private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService, private expName : ExpNameService) {
     // this.username = this.getUsername();
     if(this.cookie.get('cortexToken')) {
       this.cookieCheck = this.cookie.get('cortexToken');
@@ -171,7 +172,7 @@ export class UploadComponent implements OnInit {
     let file = <File>files[0];
     var fileSize = file.size;
     if (fileSize / 1048576 > 5000)
-      alert("Maximum file size is 500MB");
+      this.notify.showNotification("Maximum file size is 500MB");
     else {
       var fileExt = file.name.split('.').pop();
       if (fileExt == 'csv') {
@@ -194,6 +195,7 @@ export class UploadComponent implements OnInit {
             this.cookie.set('realName', file.name);
             this.router.navigate(['datapreview']);
             this.uploadNotificationSuccess();
+            this.expName.refreshExperimentName("Unnamed experiment");
           }, err => {
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -211,6 +213,7 @@ export class UploadComponent implements OnInit {
             this.cookie.set('realName', file.name);
             this.router.navigate(['datapreview']);
             this.uploadNotificationSuccess();
+            this.expName.refreshExperimentName("Unnamed experiment");
           }, err => {
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -222,7 +225,7 @@ export class UploadComponent implements OnInit {
         }
       }
       else
-        this.notify.showNotification("Wrong file type!");
+        this.notify.showNotification("Wrong file type!Available format is csv.");
     }
 
   }
@@ -297,6 +300,7 @@ export class UploadComponent implements OnInit {
       sessionStorage.clear();
       this.cookie.set("filename", response.randomFileName);
       this.cookie.set("realName", response.fileName);
+      this.expName.refreshExperimentName("Unnamed experiment");
       this.router.navigate(['datapreview']);
     })
   }
@@ -306,6 +310,7 @@ export class UploadComponent implements OnInit {
       sessionStorage.clear();
       this.cookie.set("filename", response.randomFileName);
       this.cookie.set("realName", response.fileName);
+      this.expName.refreshExperimentName("Unnamed experiment");
       this.router.navigate(['datapreview']);
     })
   }
