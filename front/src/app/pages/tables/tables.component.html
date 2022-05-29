@@ -312,62 +312,63 @@
                 <label for="tab-3">{{'Missing values & Outliers' | translate}}</label>
                 <section>
                     <div class="tab-content">
-                        <div class="divMissingValuesCont" [hidden]="existsMissingValues()" style="height: auto;">
-                            <h4 class=" card-title msHeader">{{'There are no missing values in this dataset.' | translate}}</h4>
-                        </div>
-                        <div class="divMissingValuesCont" [hidden]="!existsMissingValues()">
+                        <div class="divMissingValuesCont">
                             <h4 class=" card-title msHeader">{{'Missing values' | translate}}</h4>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="existsMissingValues()">
+                                <h4 class=" card-title msHeader">{{'There are no missing values in this dataset.' | translate}}</h4>
+                            </div>
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
                                 <h6>{{'Select column' | translate}}</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
-                                        <option class='option' *ngFor="let item of arrMissingValues; let i = index" value="{{item}}">{{item}}</option>
-                                    </select>
+                                    <option class='option' *ngFor="let item of arrMissingValues; let i = index" value="{{item}}">{{item}}</option>
+                                </select>
                             </div>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
                                 <h6>{{'Select value' | translate}}</h6>
                                 <select [hidden]="!numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
-                                        <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
-                                    </select>
+                                    <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
+                                </select>
                                 <select [hidden]="numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
-                                        <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
-                                    </select>
+                                    <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
+                                </select>
                             </div>
-                            <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
+                            <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;" [hidden]="!existsMissingValues()">
                                 <p class="orDiv">{{'OR' | translate}}</p>
                             </div>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
                                 <h6>{{'Enter value' | translate}}</h6>
                                 <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToFillMissingValCol" (change)="onInputToFillMissingValCol($event)">
                             </div>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">{{'CONFIRM' | translate}}</button>
                             </div>
                         </div>
-                        <div class="divMissingValuesCont" [hidden]="existsOutliers()" style="height:auto">
-                            <h4 class=" card-title msHeader">{{'There are no outliers in this dataset.' | translate}}</h4>
-                        </div>
-                        <div class="divMissingValuesCont" [hidden]="!existsOutliers()">
+
+                        <div class="divMissingValuesCont">
                             <h4 class=" card-title msHeader">{{'Outliers' | translate}}</h4>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="existsOutliers()">
+                                <h4 class=" card-title msHeader">{{'There are no outliers in this dataset.' | translate}}</h4>
+                            </div>
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
                                 <h6>{{'Select column' | translate}}</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
-                                        <option class='option' *ngFor="let item of arrAllOutliers; let i = index" value="{{item}}">{{item}}</option>
-                                    </select>
+                                    <option class='option' *ngFor="let item of arrAllOutliers; let i = index" value="{{item}}">{{item}}</option>
+                                </select>
                             </div>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
                                 <h6>{{'Select value' | translate}}</h6>
                                 <select class='dropdownMissingVal' [(ngModel)]="selectedToReplaceOutliers" (change)="onSelectedValueOutliers($event)">
-                                        <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
-                                    </select>
+                                    <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
+                                </select>
                             </div>
-                            <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;">
+                            <div class="dropdownContainerMissingVal" style="margin-bottom:0.2rem;" [hidden]="!existsOutliers()">
                                 <p class="orDiv">{{'OR' | translate}}</p>
                             </div>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
                                 <h6>{{'Enter value' | translate}}</h6>
                                 <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToReplaceOutliersCol" (change)="onInputToFillOutliers($event)">
                             </div>
-                            <div class="dropdownContainerMissingVal">
+                            <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
                                 <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers();">{{'CONFIRM' | translate}}</button>
                             </div>
                         </div>
