@@ -122,9 +122,9 @@
                                     <option class='option' value="kullback_leibler_divergence">Kullback Leibler Divergence</option>
                                 </ng-template>
                                 <ng-template #elseBlock2>
+                                    <option class='option' value="sparse_categorical_crossentropy">Sparse Categorical Cross-Entropy</option>
                                     <option class='option' value="hinge">Hinge Loss</option>
                                     <option class='option' value="squared_hinge">Squared Hinge Loss</option>
-                                    <option class='option' value="sparse_categorical_crossentropy">Sparse Categorical Cross-Entropy</option>
                                     <option class='option' value="kullback_leibler_divergence">Kullback Leibler Divergence</option>
                                 </ng-template>
                             </select>
@@ -325,7 +325,7 @@
                                             </button>
                                         </td>
                                         <td style="text-align: center;">{{item.id}}</td>
-                                        <td *ngFor="let value of modelsHeader; let j = index">{{item.data[value][selectedEpoch].toFixed(10)}}</td>
+                                        <td *ngFor="let value of modelsHeader; let j = index">{{item.data[value][selectedEpoch].toFixed(4)}}</td>
                                     </tr>
                                 </tbody>
                             </table>

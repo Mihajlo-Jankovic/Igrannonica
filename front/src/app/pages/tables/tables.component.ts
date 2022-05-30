@@ -292,6 +292,11 @@ export class TablesComponent {
     }
   }
 
+  selectColor(number) {
+    const hue = number * 137.508; // use golden angle approximation
+    return `hsl(${hue},75%,50%)`;
+  }
+
   updatePieChart() {
     if (this.canvas == null) {
       this.chartConfig();
@@ -307,11 +312,12 @@ export class TablesComponent {
       this.pieChart.data.datasets[0].data = Object.values(uniqueList);
       this.pieChart.data.datasets[0].backgroundColor = [];
       for (let i = 0; i < Object.values(uniqueList).length; i++) {
-        var r = Math.floor(Math.random() * 255);
-        var g = Math.floor(Math.random() * 255);
-        var b = Math.floor(Math.random() * 255);
+        // var r = Math.floor(Math.random() * 255);
+        // var g = Math.floor(Math.random() * 255);
+        // var b = Math.floor(Math.random() * 255);
 
-        this.pieChart.data.datasets[0].backgroundColor[i] = "rgb(" + r + "," + g + "," + b + ")";
+        this.pieChart.data.datasets[0].backgroundColor[i] = this.selectColor(i);
+        //"rgb(" + r + "," + g + "," + b + ")";
       }
       this.pieChart.update();
     }
@@ -498,8 +504,8 @@ export class TablesComponent {
       this.selectedOutput = this.headingLines[0][this.headingLines[0].length - 2];
       sessionStorage.setItem('output', this.selectedOutput);
       this.pret = this.headingLines[0].length - 2;
-      this.outputStorage();
       this.setEncoding();
+      this.outputStorage();
     }
     else {
       this.listCheckedI = JSON.parse(sessionStorage.getItem('inputList'));
@@ -1180,6 +1186,7 @@ export class TablesComponent {
   }
 
   selectedOutputFun(event: any) {
+    console.log(event);
     var value = event.target.value;
     var ind: number = -1;
 
@@ -1214,6 +1221,7 @@ export class TablesComponent {
   outputStorage() {
     for (let i = 0; i < this.statistic['colList'].length; i++) {
       if (this.statistic['colList'][i] == this.selectedOutput) {
+        console.log("Nasao");
         sessionStorage.setItem('outputValues', this.statistic['jsonList'][i]['rowsNum']);
         sessionStorage.setItem('outputUniques', this.statistic['jsonList'][i]['unique']);
         if (this.statistic['jsonList'][i]['isNumeric'] == 1) {

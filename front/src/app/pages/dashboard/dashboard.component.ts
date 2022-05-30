@@ -275,6 +275,10 @@ export class DashboardComponent implements OnInit {
 
     this.chartData = {};
 
+    if(!sessionStorage.getItem('outputValues')){
+      this.outputStorage();
+    }
+
     if(sessionStorage.getItem('numLayers'))
     {
       var numLayer = Number(sessionStorage.getItem('numLayers'));
@@ -565,6 +569,24 @@ export class DashboardComponent implements OnInit {
     return Number(sessionStorage.getItem('outputUniques'))
   }
 
+  outputStorage() {
+    var statistic = JSON.parse(sessionStorage.getItem('statistics'));
+    var selectedOutput = sessionStorage.getItem('output');
+
+    for (let i = 0; i < statistic['colList'].length; i++) {
+      if (statistic['colList'][i] == selectedOutput) {
+        sessionStorage.setItem('outputValues', statistic['jsonList'][i]['rowsNum']);
+        sessionStorage.setItem('outputUniques', statistic['jsonList'][i]['unique']);
+        if (statistic['jsonList'][i]['isNumeric'] == 1) {
+          sessionStorage.setItem('outputNumeric', 'true');
+        }
+        else {
+          sessionStorage.setItem('outputNumeric', 'false');
+        }
+      }
+    }
+  }
+
   checkProblemType() {
     if(sessionStorage.getItem('problemType')){
       this.problemType = sessionStorage.getItem('problemType');
@@ -602,9 +624,8 @@ export class DashboardComponent implements OnInit {
       this.metrics = this.selectedItems;
     }
     else {
-      this.lossFunction = "binary_crossentropy";
-
       if(Number(sessionStorage.getItem('outputUniques')) == 2) {
+        this.lossFunction = "binary_crossentropy";
         this.dropdownList = [
           {item_id: "binary_accuracy", item_text: 'Binary Accuracy'},
           {item_id: "categorical_accuracy", item_text: 'Categorical Accuracy'},
@@ -612,6 +633,7 @@ export class DashboardComponent implements OnInit {
         ];
       }
       else {
+        this.lossFunction = "sparse_categorical_crossentropy";
         this.dropdownList = [
           {item_id: "sparse_categorical_accuracy", item_text: 'Sparse Categorical Accuracy'},
           {item_id: "top_k_accuracy", item_text: 'Top K Accuracy'},
@@ -701,14 +723,6 @@ export class DashboardComponent implements OnInit {
         this.training = false;
         let JSONtoken: string = JSON.stringify(response);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
-        if(this.epochs > this.maxEpochs) {
-          this.maxEpochs = this.epochs;
-          for (let i = 0; i < this.maxEpochs; i++){
-            this.metricLabels[i] = i+1;
-          }
-          sessionStorage.setItem('maxEpoch', (this.maxEpochs).toString());
-          sessionStorage.setItem('metricsLabel', JSON.stringify(this.metricLabels));
-        }
 
         this.modelsHeader = ["loss", "val_loss"];
         for (let i = 0; i < this.selectedItems.length; i++) {
@@ -1121,6 +1135,11 @@ export class DashboardComponent implements OnInit {
     this.selectedEpoch = this.maxEpochs-1;
   }
 
+  selectColor(number) {
+    const hue = number * 137.508; // use golden angle approximation
+    return `hsl(${hue},75%,50%)`;
+  }
+
   chartThisMetric(metric : string){
     this.openMetricsChart = true;
     this.selectedChartMetric = metric;
@@ -1133,17 +1152,18 @@ export class DashboardComponent implements OnInit {
       var r = Math.floor(Math.random() * 255);
       var g = Math.floor(Math.random() * 255);
       var b = Math.floor(Math.random() * 255);
+      //"rgb(" + r + "," + g + "," + b + ")",
 
       this.metricsChart.data.datasets.push({
         label: "model " + this.modelsList[i].id,
         fill: false,
-        borderColor: "rgb(" + r + "," + g + "," + b + ")",
+        borderColor: this.selectColor(i),
         borderWidth: 2,
         borderDash: [],
         borderDashOffset: 0.0,
-        pointBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointBackgroundColor: this.selectColor(i),
         pointBorderColor: 'rgba(255,255,255,0)',
-        pointHoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
+        pointHoverBackgroundColor: this.selectColor(i),
         pointBorderWidth: 20,
         pointHoverRadius: 4,
         pointHoverBorderWidth: 15,
@@ -1244,9 +1264,9 @@ export class DashboardComponent implements OnInit {
       this.evaluationChart.data.datasets.push({
         label: "Model " + (i + 1),
         fill: true,
-        backgroundColor: "rgb(" + r + "," + g + "," + b + ")",
-        hoverBackgroundColor: "rgb(" + r + "," + g + "," + b + ")",
-        borderColor: "rgb(" + r + "," + g + "," + b + ")",
+        backgroundColor: this.selectColor(i),
+        hoverBackgroundColor: this.selectColor(i),
+        borderColor: this.selectColor(i),
         borderWidth: 2,
         borderDash: [],
         borderDashOffset: 0.0,
@@ -1343,6 +1363,16 @@ export class DashboardComponent implements OnInit {
         this.updateOptions();
       }
       else if(data['ended'] == 1){
+
+        if(Number(this.epochs) > Number(this.maxEpochs)) {
+          this.maxEpochs = this.epochs;
+          for (let i = 0; i < this.maxEpochs; i++){
+            this.metricLabels[i] = i+1;
+          }
+          sessionStorage.setItem('maxEpoch', (this.maxEpochs).toString());
+          sessionStorage.setItem('metricsLabel', JSON.stringify(this.metricLabels));
+        }
+
         sessionStorage.setItem("chartData", JSON.stringify(this.chartData));
         sessionStorage.setItem("buttons", JSON.stringify(this.buttons));
         sessionStorage.setItem("chart_labels", JSON.stringify(this.chart_labels));

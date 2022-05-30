@@ -64,6 +64,10 @@ export class SidebarComponent implements OnInit {
   public lang: string;
   public home: string;
 
+  public homePath = "/home";
+  public uploadPath = "/upload";
+  public experimentsPath = "/experiments";
+
   public ind: boolean = false;
 
 
