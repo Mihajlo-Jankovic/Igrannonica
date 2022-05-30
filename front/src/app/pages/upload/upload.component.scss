@@ -422,22 +422,37 @@ body.warning-modal-open {
     }
 }
 
-@media(max-width: 1329px) {
+@media(max-width: 1431px) {
     .file {
         width: 33.3%;
     }
 }
 
-@media(max-width: 1079px) {
+@media(max-width: 1155px) {
     .file {
         width: 50%;
     }
 }
 
-@media(max-width: 562px) {
+@media(max-width: 991px) {
+    .file {
+        width: 33.3%;
+    }
+}
+
+@media(max-width: 905px) {
+    .file {
+        width: 50%;
+    }
+}
+
+@media(max-width: 613px) {
     .file {
         width: 100%;
     }
+}
+
+@media(max-width: 562px) {
     .filter-left {
         width: 100%;
     }
