@@ -59,9 +59,18 @@
                         <h6>{{'Activation function for all layers' | translate}}</h6>
                         <select class='dropdown' name="activationFunction" [(ngModel)]="activationFunction" ngbTooltip="{{'Activation function' | translate}}" (change)="onSelected($event)">
                             <option class='option' value="sigmoid">Sigmoid</option>
+                            <option class='option' value="hard_sigmoid">Hard Sigmoid</option>
+                            <option class='option' value="swish">Swish</option>
                             <option class='option' value="tanh">Tanh</option>
                             <option class='option' value="relu">Relu</option>
+                            <option class='option' value="leaky_relu">Leaky Relu</option>
+                            <option class='option' value="elu">ELU</option>
+                            <option class='option' value="selu">SELU</option>
+                            <option class='option' value="gelu">GELU</option>
+                            <option class='option' value="exponential">Exponential</option>
                             <option class='option' value="linear">Linear</option>
+                            <option class='option' value="softplus">Softplus</option>
+                            <option class='option' value="softsign">Softsign</option>
                             <option class='option' value="custom">Custom</option>
                         </select>
                     </div>
@@ -221,9 +230,18 @@
                                 <h6 style="text-align: center; margin: 0; margin-top: 0.5rem">{{'Activation function:' | translate}}</h6>
                                 <select class='dropdown' name="afList" [(ngModel)]="activationFunctionList[layer.id-1]" (change)="onSelected($event)" ngbTooltip="{{'Activation function' | translate}}">
                                     <option class='option' value="sigmoid">Sigmoid</option>
+                                    <option class='option' value="hard_sigmoid">Hard Sigmoid</option>
+                                    <option class='option' value="swish">Swish</option>
                                     <option class='option' value="tanh">Tanh</option>
-                                    <option class='option' value="relu">Relu</option>
+                                    <option class='option' value="relu">ReLU</option>
+                                    <option class='option' value="leaky_relu">Leaky Relu</option>
+                                    <option class='option' value="elu">ELU</option>
+                                    <option class='option' value="selu">SELU</option>
+                                    <option class='option' value="gelu">GELU</option>
+                                    <option class='option' value="exponential">Exponential</option>
                                     <option class='option' value="linear">Linear</option>
+                                    <option class='option' value="softplus">Softplus</option>
+                                    <option class='option' value="softsign">Softsign</option>
                                 </select>
                             </div>
                         </div>
