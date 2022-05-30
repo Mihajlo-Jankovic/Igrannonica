@@ -252,9 +252,10 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card" style="height: 77px;">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining(); scrollTo(target);" [disabled]="training">{{'START TRAINING' | translate}}</button>
+                    <button *ngIf="!training" class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining(); scrollTo(target);" [disabled]="training">{{'START TRAINING' | translate}}</button>
+                    <h3 *ngIf="training" style="text-align:center; margin-top: 0.5rem;">Training in progress...</h3>
                 </div>
             </div>
         </div>
@@ -281,9 +282,9 @@
                             </div>
                         </div>
                         <div [hidden]="firstTraining">
-                            <h2 style="text-align:center; margin-top:20px;">
+                            <h3 style="text-align:center; margin-top:20px;">
                                 {{'Start training new model to track it\'s live performance.' | translate}}
-                            </h2>
+                            </h3>
                         </div>
                     </div>
                     <div class="tab2" [hidden]="!resultsButton" #target2>
