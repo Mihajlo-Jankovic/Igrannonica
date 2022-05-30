@@ -688,6 +688,7 @@ body.warning-modal-open {
     color: white !important;
     float: left;
     padding-top: 0.5rem;
+    margin-top: 15px;
 }
 
 @media(max-width: 785px) {
@@ -1180,5 +1181,43 @@ $cell-color: #27293d;
 @media (max-width: 730px) {
     .divMissingValuesCont {
         width: 100%;
+    }
+}
+
+@media (max-width: 1526px) {
+    .dp-header {
+        .mini-header {
+            margin-top: 10px;
+            width: 120px;
+        }
+    }
+}
+
+@media (max-width: 1210px) {
+    .train {
+        width: 70px;
+        padding-left: 0px;
+    }
+}
+
+@media (max-width: 1044px) {
+    .dp-header {
+        .mini-header {
+            margin-top: 10px;
+            width: 70px;
+        }
+    }
+}
+
+@media (max-width: 991px) {
+    .dp-header {
+        .mini-header {
+            margin-top: 15px;
+            width: auto;
+        }
+        .train {
+            width: 125px;
+            padding: 5px;
+        }
     }
 }

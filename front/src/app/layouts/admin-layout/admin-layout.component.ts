@@ -9,6 +9,9 @@ export class AdminLayoutComponent implements OnInit {
   public sidebarColor: string = "red";
 
   constructor() {}
+
+  ngOnInit() {}
+
   changeSidebarColor(color){
     var sidebar = document.getElementsByClassName('sidebar')[0];
     var mainPanel = document.getElementsByClassName('main-panel')[0];
@@ -31,5 +34,8 @@ export class AdminLayoutComponent implements OnInit {
       body.classList.remove('white-content');
     }
   }
-  ngOnInit() {}
+
+  scrollTo(el: HTMLElement) {
+    el.scrollIntoView();
+  }
 }

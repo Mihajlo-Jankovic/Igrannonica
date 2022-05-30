@@ -6,3 +6,19 @@
 .main-panel {
     border-top: none;
 }
+
+.go-up {
+    height: 70px;
+    width: 70px;
+    background: #7d3c8b;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 50px;
+    right: 45px;
+    text-align: center;
+    button {
+        font-size: 2rem;
+        color: white;
+        bottom: 5px;
+    }
+}

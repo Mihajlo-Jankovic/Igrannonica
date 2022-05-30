@@ -3,9 +3,15 @@
         <app-sidebar></app-sidebar>
     </div>
     <div class="main-panel">
+        <label #target></label>
         <app-navbar></app-navbar>
         <router-outlet></router-outlet>
         <app-footer></app-footer>
+        <div class="go-up">
+            <button class="btn btn-link" (click)="scrollTo(target);">
+                <i class="tim-icons icon-minimal-up"></i>
+            </button>
+        </div>
     </div>
 </div>
 <!--
