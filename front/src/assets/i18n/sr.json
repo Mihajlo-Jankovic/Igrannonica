@@ -180,5 +180,7 @@
     "made by Cortex." : "made by Cortex.",
     "Choose encoding for selected input columns" : "Izaberite način kodiranja za odabrane ulazne kolone",
     "Choose encoding for selected output column" : "Izaberite način kodiranja za odabranu izlaznu kolone",
-    "Training : validation : test" : "Trening : validacija : test"
+    "Training : validation : test" : "Trening : validacija : test",
+    "We have sent an email to :" : "Poslali smo email na :",
+    "Please confirm your email address by entering the code you have received in your inbox." : "Kako biste potvrdili Vašu email adresu, molimo Vas unesite kod koji se nalazi u Vasem sandučetu." 
 }

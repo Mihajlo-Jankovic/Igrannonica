@@ -182,6 +182,8 @@
     "made by Cortex." : "made by Cortex.",
     "Choose encoding for selected input columns" : "Choose encoding for selected input columns",
     "Choose encoding for selected output column" : "Choose encoding for selected output column",
-    "Training : validation : test" : "Training : validation : test"
+    "Training : validation : test" : "Training : validation : test",
+    "We have sent an email to :" : "We have sent an email to :",
+    "Please confirm your email address by entering the code you have received in your inbox." : "Please confirm your email address by entering the code you have received in your inbox."
 
 }

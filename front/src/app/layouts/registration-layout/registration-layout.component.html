@@ -52,7 +52,7 @@
                                     <input type="email" placeholder="{{'Email' | translate}}" name="email" formControlName="email" class="form-control">
                                 </div>
                                 <div *ngIf="m.email.touched && m.email.invalid" class="input-group">
-                                    <div *ngIf="m.email.errors?.required">{{'Please enter email!' | transalte}}</div>
+                                    <div *ngIf="m.email.errors?.required">{{'Please enter email!' | translate}}</div>
                                     <div *ngIf="m.email.errors?.pattern">{{'*Email is not valid' | translate}}</div>
                                 </div>
                                 <div class="input-group">
@@ -111,13 +111,15 @@
                     <form *ngIf="registerCodeIndicator && !emailVerificationIndicator" class="form" novalidate [formGroup]="registerCodeForm" (ngSubmit)="emailCode(registerCodeForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">{{'Mail Verification' | translate}}</h1>
+                                <h1 class="center card-title">{{'Mail Verification' | translate}}</h1>
                             </div>
                             <div class=" card-body">
                                 <div class=" pull-left">
+                                    <h4 class="center">{{'We have sent an email to :' | translate}} </h4>
                                     <h6>
-                                        <p class="text-primary"> {{emailCodeVerification}} </p>
+                                        <p class="center text-primary"> {{emailCodeVerification}} </p>
                                     </h6>
+                                    <h4 class="center">{{'Please confirm your email address by entering the code you have received in your inbox.' | translate }}</h4>
                                 </div>
                                 <div class="input-group">
                                     <div class=" input-group-prepend">
@@ -137,11 +139,11 @@
                     <form *ngIf="!registerCodeIndicator && emailVerificationIndicator" class="form" novalidate [formGroup]="emailVerificationForm" (ngSubmit)="registration(emailVerificationForm)">
                         <div class=" card card-login">
                             <div class=" card-header">
-                                <h1 class=" card-title">{{'Thank you for verification' | translate}}</h1>
+                                <h1 class="center card-title">{{'Thank you for verification' | translate}}</h1>
                             </div>
                             <div class=" card-body">
                                 <div class="text-center">
-                                    <a class="text-primary" routerLink="/login" routerLinkActive="active">{{'Login' | translate}}</a>
+                                    <button type="submit" class="white btn btn-primary btn-lg btn-block mb-3" routerLink="/login" routerLinkActive="active">{{'Login' | translate}}</button>
                                 </div>
                             </div>
                             <div class=" card-footer">
