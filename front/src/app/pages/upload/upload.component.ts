@@ -191,11 +191,12 @@ export class UploadComponent implements OnInit {
           await this.http.post<string>(this.configuration.fileUpload, formData, options).subscribe(name => {
             let JSONname: string = JSON.stringify(name);
             let StringName = JSON.parse(JSONname).randomFileName;
-            this.cookie.set("filename", StringName);
-            this.cookie.set('realName', file.name);
+            sessionStorage.setItem("filename", StringName);
+            sessionStorage.setItem('realName', file.name);
             this.router.navigate(['datapreview']);
             this.uploadNotificationSuccess();
             this.expName.refreshExperimentName("Unnamed experiment");
+            this.expName.filename(file.name);
           }, err => {
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -209,11 +210,12 @@ export class UploadComponent implements OnInit {
           await this.http.post<string>(this.configuration.fileUploadUnauthorized, formData).subscribe(name => {
             let JSONname: string = JSON.stringify(name);
             let StringName = JSON.parse(JSONname).randomFileName;
-            this.cookie.set("filename", StringName);
-            this.cookie.set('realName', file.name);
+            sessionStorage.setItem("filename", StringName);
+            sessionStorage.setItem('realName', file.name);
             this.router.navigate(['datapreview']);
             this.uploadNotificationSuccess();
             this.expName.refreshExperimentName("Unnamed experiment");
+            this.expName.filename(file.name);
           }, err => {
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -298,8 +300,8 @@ export class UploadComponent implements OnInit {
     let options = { headers: headers };
     this.http.post<any>(this.configuration.useFileAuthorized, {"FileName" : item.fileName, "OldRandomFileName" : item.randomFileName}, options).subscribe((response: any) => {
       sessionStorage.clear();
-      this.cookie.set("filename", response.randomFileName);
-      this.cookie.set("realName", response.fileName);
+      sessionStorage.setItem("filename", response.randomFileName);
+      sessionStorage.setItem("realName", response.fileName);
       this.expName.refreshExperimentName("Unnamed experiment");
       this.router.navigate(['datapreview']);
     })
@@ -308,8 +310,8 @@ export class UploadComponent implements OnInit {
   useThisUn(event, item) {
     this.http.post<any>(this.configuration.useFileUnauthorized, {"FileName" : item.fileName, "OldRandomFileName" : item.randomFileName}).subscribe((response: any) => {
       sessionStorage.clear();
-      this.cookie.set("filename", response.randomFileName);
-      this.cookie.set("realName", response.fileName);
+      sessionStorage.setItem("filename", response.randomFileName);
+      sessionStorage.setItem("realName", response.fileName);
       this.expName.refreshExperimentName("Unnamed experiment");
       this.router.navigate(['datapreview']);
     })
@@ -321,7 +323,7 @@ export class UploadComponent implements OnInit {
   }
 
   delete(item) {
-    if(this.cookie.get('filename') == item.randomFileName)
+    if(sessionStorage.getItem('filename') == item.randomFileName)
     {
       this.cookie.delete('filename');
       this.cookie.delete('realName');

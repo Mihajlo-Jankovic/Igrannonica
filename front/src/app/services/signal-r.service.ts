@@ -32,7 +32,7 @@ export class SignalRService {
     this.hubConnection.invoke('getconnectionid').then(
       (data) => {
           this.connectionId = data;
-          this.cookie.set("connID", this.connectionId);
+          sessionStorage.setItem("connID", this.connectionId);
         }
     ); 
   }

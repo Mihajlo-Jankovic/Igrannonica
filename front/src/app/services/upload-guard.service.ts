@@ -10,7 +10,7 @@ export class UploadGuardService implements CanActivate{
 
   constructor(private router: Router, private cookie : CookieService) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    if(!this.cookie.get('filename'))
+    if(!sessionStorage.getItem('filename'))
     {
       this.router.navigate(['upload']);
       return true;

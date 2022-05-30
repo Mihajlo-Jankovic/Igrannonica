@@ -11,9 +11,13 @@ export class ExpNameService{
   constructor(private router: Router, private cookie : CookieService) { }
   
   @Output() aClickedEvent = new EventEmitter<string>();
+  @Output() fileClickedEvent = new EventEmitter<string>();
 
   refreshExperimentName(msg : string) {
       this.aClickedEvent.emit(msg);
   }
 
+  filename(msg : string){
+    this.fileClickedEvent.emit(msg);
+  }
 }

@@ -65,7 +65,7 @@ export class DashboardComponent implements OnInit {
   activationFunctionList = [this.activationFunction];
   neuronsList = [this.neuronNum];
 
-  public fileName: string = this.cookieService.get('filename');
+  public fileName: string = sessionStorage.getItem('filename');
   public loggedUser: boolean;
 
   dropdownList = [];
@@ -685,8 +685,8 @@ export class DashboardComponent implements OnInit {
     this.training = true;
     this.loginWarning = false;
     this.chartData = {};
-    let fileName = this.cookieService.get('filename');
-    let connID = this.cookieService.get('connID');
+    let fileName = sessionStorage.getItem('filename');
+    let connID = sessionStorage.getItem('connID');
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
     let output = sessionStorage.getItem('output');
     let layerList = [];
@@ -772,8 +772,8 @@ export class DashboardComponent implements OnInit {
     let options = { headers: headers };
     let inputList = JSON.parse(sessionStorage.getItem('inputList'));
     let output = sessionStorage.getItem('output');
-    let fileName = this.cookieService.get('filename');
-    let realName = this.cookieService.get('realName'); 
+    let fileName = sessionStorage.getItem('filename');
+    let realName = sessionStorage.getItem('realName'); 
     let layerList = [];
     for (let i = 0; i < this.layersLabel; i++){
       layerList[i] = this.neuronsList[i];
@@ -1335,7 +1335,7 @@ export class DashboardComponent implements OnInit {
     this.hubConnection.invoke('getconnectionid').then(
       (data) => {
           this.connectionId = data;
-          this.cookieService.set("connID", this.connectionId);
+          sessionStorage.setItem("connID", this.connectionId);
         }
     ); 
   }

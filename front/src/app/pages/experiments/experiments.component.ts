@@ -405,8 +405,8 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.setItem('maxEpoch', maxEpoch.toString());
     sessionStorage.setItem('metricsLabel', JSON.stringify(labels));
 
-    this.cookie.set('filename', item.fileName);
-    this.cookie.set('realName', item.realName);
+    sessionStorage.setItem('filename', item.fileName);
+    sessionStorage.setItem('realName', item.realName);
     sessionStorage.setItem('description', item.description);
     sessionStorage.setItem('experimentName', item.name);
 
