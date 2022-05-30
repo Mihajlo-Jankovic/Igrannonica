@@ -358,10 +358,18 @@ button {
     padding-top: 0.5rem;
 }
 
-.warning-btn {
+.warning-btn1 {
     width: 80%;
     height: 48px;
     margin-right: 30px;
+}
+
+.warning-btn2 {
+    width: 80%;
+    height: 48px;
+    margin-right: 30px;
+    background: transparent;
+    border: 3px solid #7d3c8b;
 }
 
 .warning-modal {

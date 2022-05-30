@@ -640,10 +640,18 @@ section {
     padding-top: 0.5rem;
 }
 
-.warning-btn {
+.warning-btn1 {
     width: 80%;
     height: 48px;
     margin: auto;
+}
+
+.warning-btn2 {
+    width: 80%;
+    height: 48px;
+    margin: auto;
+    background: transparent;
+    border: 3px solid #7d3c8b;
 }
 
 .warning-modal {
@@ -1194,13 +1202,6 @@ $cell-color: #27293d;
 }
 
 @media (max-width: 1210px) {
-    .train {
-        width: 70px;
-        padding-left: 0px;
-    }
-}
-
-@media (max-width: 1044px) {
     .dp-header {
         .mini-header {
             margin-top: 10px;
@@ -1209,15 +1210,17 @@ $cell-color: #27293d;
     }
 }
 
+@media (max-width: 1059px) {
+    .train {
+        width: 100px;
+    }
+}
+
 @media (max-width: 991px) {
     .dp-header {
         .mini-header {
             margin-top: 15px;
             width: auto;
-        }
-        .train {
-            width: 125px;
-            padding: 5px;
         }
     }
 }

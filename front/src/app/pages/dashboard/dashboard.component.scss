@@ -400,9 +400,18 @@ $spin-duration: 1s;
     padding-top: 0.5rem;
 }
 
-.warning-btn {
+.warning-btn1 {
     width: 80%;
     margin: auto;
+    height: 48px;
+}
+
+.warning-btn2 {
+    width: 80%;
+    margin: auto;
+    height: 48px;
+    background: transparent;
+    border: 3px solid #7d3c8b;
 }
 
 .cm-modal {
