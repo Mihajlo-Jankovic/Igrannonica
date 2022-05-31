@@ -140,7 +140,8 @@ namespace Igrannonica.Controllers
                     + _configuration.GetSection("Endpoints:DownloadFile").Value + filename);
             var response = await client.GetAsync(endpoint);
             var bytes = await response.Content.ReadAsByteArrayAsync();
-            return File(bytes, "csv/plain", filename);
+            Console.WriteLine(file.FileName);
+            return File(bytes, "csv/plain", file.FileName);
         }
 
         private int paging(string flag, int numPerPage, int userId)

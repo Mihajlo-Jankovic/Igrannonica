@@ -254,8 +254,8 @@ export class UploadComponent implements OnInit {
         binaryData.push(response);
         let downloadLink=document.createElement('a');
         downloadLink.href = window.URL.createObjectURL(new Blob(binaryData,{type:dataType}));
-        if(item.randomFileName){
-          downloadLink.setAttribute('download',item.randomFileName);
+        if(item.fileName){
+          downloadLink.setAttribute('download',item.fileName);
         }
         document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -277,8 +277,8 @@ export class UploadComponent implements OnInit {
       binaryData.push(response);
       let downloadLink = document.createElement('a');
       downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
-      if (item.randomFileName) {
-        downloadLink.setAttribute('download', item.randomFileName);
+      if (item.fileName) {
+        downloadLink.setAttribute('download', item.fileName);
       }
       document.body.appendChild(downloadLink);
       downloadLink.click();
