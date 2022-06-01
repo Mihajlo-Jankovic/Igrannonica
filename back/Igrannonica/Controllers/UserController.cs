@@ -266,8 +266,9 @@ namespace Igrannonica.Controllers
         public async Task<ActionResult<TokenDTO>> Login(LoginDTO loginDTO)
         {
             TokenDTO token = new TokenDTO();
-            User user =  _context.User.Where(u => u.username == loginDTO.username).FirstOrDefault();
-            if (user == null)
+            User user =  _context.User.Where(u => u.username.Equals(loginDTO.username)).FirstOrDefault();
+            Console.WriteLine(user.username + " : " + loginDTO.username);
+            if (user == null || user.username.Equals(loginDTO.username) == false)
             {
                 return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
             }
@@ -609,7 +610,7 @@ namespace Igrannonica.Controllers
 
             var newPostJson = JsonConvert.SerializeObject(new
             {
-                newExperiment.fileName,
+                OldRandomFileName = newExperiment.fileName,
                 NewRandomFileName
             });
 
@@ -622,7 +623,7 @@ namespace Igrannonica.Controllers
                 RandomFileName = NewRandomFileName,
                 DateCreated = DateTime.Now,
                 FileName = newExperiment.realName,
-                UserForeignKey = null,
+                UserForeignKey = user.id,
                 IsPublic = false
             };
             newExperiment.fileName = NewRandomFileName;
@@ -630,7 +631,6 @@ namespace Igrannonica.Controllers
 
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
-            await collection.InsertOneAsync(newExperiment);
 
 
             return Ok(newExperiment);
@@ -667,7 +667,7 @@ namespace Igrannonica.Controllers
 
             var newPostJson = JsonConvert.SerializeObject(new
             {
-                newExperiment.fileName,
+                OldRandomFileName = newExperiment.fileName,
                 NewRandomFileName
             });
 
@@ -688,7 +688,6 @@ namespace Igrannonica.Controllers
 
             await _context.File.AddAsync(file);
             await _context.SaveChangesAsync();
-            await collection.InsertOneAsync(newExperiment);
 
             return Ok(newExperiment);
         }

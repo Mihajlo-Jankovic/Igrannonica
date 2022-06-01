@@ -26,22 +26,26 @@ namespace Igrannonica.Services.FileService
 
         public async void DeleteAllExpiredFiles()
         {
-            List<Models.File> files = _context.File.Where(f => f.IsPublic == false).ToList();
 
 
             while (true)
             {
+                List<Models.File> files = _context.File.Where(f => f.IsPublic == false).ToList();
+                Console.WriteLine("usao u petlju");
                 foreach (Models.File file in files)
                 {
-                    if(file.UserForeignKey == null)
+                    Console.WriteLine(file.RandomFileName);
+                    if (file.UserForeignKey == null)
                     {
+                        Console.WriteLine(file.RandomFileName);
                         var mongoClient = new MongoClient(getMongoDBConnString());
                         var database = mongoClient.GetDatabase("igrannonica");
                         var collection = database.GetCollection<ExperimentDTO>("experiment");
-                        var tmp = await collection.FindAsync(e => e.userId == file.UserForeignKey);
+                        var tmp = await collection.FindAsync(e => e.fileName == file.RandomFileName);
                         var temp = await tmp.FirstOrDefaultAsync();
-                        if(temp == null && file.DateCreated.AddDays(2) < DateTime.Now)
+                        if(temp == null && file.DateCreated.AddSeconds(20) < DateTime.Now)
                         {
+                            Console.WriteLine(file.RandomFileName);
                             HttpClient client = new HttpClient();
                             var endpoint = new Uri("http://127.0.0.1:10108/deleteFile/" + file.RandomFileName);
 
@@ -51,7 +55,8 @@ namespace Igrannonica.Services.FileService
                         }
                     }
                 }
-                Thread.Sleep(24 * 2 * 60 * 60 * 1000);
+                //Thread.Sleep(24 * 2 * 60 * 60 * 1000);
+                Thread.Sleep(1000 * 10);
             }
 
         }
