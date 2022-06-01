@@ -43,7 +43,7 @@ namespace Igrannonica.Services.FileService
                         var collection = database.GetCollection<ExperimentDTO>("experiment");
                         var tmp = await collection.FindAsync(e => e.fileName == file.RandomFileName);
                         var temp = await tmp.FirstOrDefaultAsync();
-                        if(temp == null && file.DateCreated.AddSeconds(20) < DateTime.Now)
+                        if(temp == null && file.DateCreated.AddDays(7) < DateTime.Now)
                         {
                             Console.WriteLine(file.RandomFileName);
                             HttpClient client = new HttpClient();
@@ -55,8 +55,7 @@ namespace Igrannonica.Services.FileService
                         }
                     }
                 }
-                //Thread.Sleep(24 * 2 * 60 * 60 * 1000);
-                Thread.Sleep(1000 * 10);
+                Thread.Sleep(24 * 2 * 60 * 60 * 1000);
             }
 
         }
