@@ -361,7 +361,7 @@ export class TablesComponent {
       if (sessionStorage.getItem('selectedType') && sessionStorage.getItem('selectedType') != type) {
         this.selectedType = sessionStorage.getItem('selectedType');
 
-        let filename = this.cookie.get('filename');
+        let filename = sessionStorage.getItem('filename');
         this.tableService.getAll(filename, this.selectedType, rows, page, sessionStorage.getItem('selectedOutlierColumn')).subscribe(
           (response) => {
             this.csv = response;
@@ -402,7 +402,7 @@ export class TablesComponent {
       }
     }
     else {
-      let filename = this.cookie.get('filename');
+      let filename = sessionStorage.getItem('filename');
       this.tableService.getAll(filename, type, rows, page, outlierColumn).subscribe(
         (response) => {
           this.csv = response;
@@ -665,7 +665,7 @@ export class TablesComponent {
       this.setMissingValuesandOutliers();
     }
     else {
-      let filename = this.cookie.get('filename');
+      let filename = sessionStorage.getItem('filename');
       this.tableService.getStatistics(filename, 0).subscribe(
         (response) => {
           this.statistic = response;
@@ -1301,7 +1301,7 @@ export class TablesComponent {
 
   async deleteRows() {
 
-    await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res => {
+    await this.tableService.deleteRows(sessionStorage.getItem('filename'), this.selectedRows).subscribe(res => {
       this.clearStorage();
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
@@ -1341,7 +1341,7 @@ export class TablesComponent {
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
     }
     else {
-      await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(res => {
+      await this.tableService.editCell(sessionStorage.getItem('filename'), id, columnName, value).subscribe(res => {
         this.clearStorage();
         sessionStorage.removeItem('statistics');
         this.reset()
@@ -1579,7 +1579,7 @@ export class TablesComponent {
   }
 
   confirmToFillMissingValues() {
-    let filename = this.cookie.get('filename');
+    let filename =sessionStorage.getItem('filename');
     if (this.isNumericFun(this.selectedToFillMissingValCol) && !this.isNumber(this.enteredToFillMissingValCol)) {
       this.poruka = "You are trying to replace with non numeric value";
       //this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
@@ -1653,7 +1653,7 @@ export class TablesComponent {
 
   confirmToReplaceOutliers() {
 
-    let filename = this.cookie.get('filename');
+    let filename = sessionStorage.getItem('filename');
     if (this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
       this.poruka = "Please choose value to replace outliers.";
       //this.poruka = "Izaberite vrednost da biste zamenili izuzetke";

@@ -5,15 +5,6 @@
 </div>
 <div class="sidebar-wrapper">
     <ul class="nav">
-        <!-- <ul class="nav" *ngIf="!ind"> -->
-        <!--[hidden]="!notSelected(menuItem.title)"
-        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
-            <a [routerLink]="[menuItem.path]"
-                [hidden]="(hide() && menuItem.titleEn != 'Home') || (menuItem.titleEn == 'Home' && cookie.get('home') == 'true') || ((menuItem.titleEn == 'Data Preview' || menuItem.titleEn == 'Model Training') && !cookie.get('filename')) || ((menuItem.titleEn == 'Upload' || menuItem.titleEn == 'Experiments') && !cookie.get('home'))">
-                <i class="{{ menuItem.icon }}"></i>
-                <p>{{ menuItem.titleEn }}</p>
-            </a>
-        </li> -->
         <li routerLinkActive="active" class="nav-item">
             <a routerLink="/home">
                 <i class="fa fa-home"></i>
@@ -26,13 +17,13 @@
                 <p>Upload</p>
             </a>
         </li>
-        <li routerLinkActive="active" class="nav-item" [hidden]="!cookie.get('filename')">
+        <li routerLinkActive="active" class="nav-item" [hidden]="!filename">
             <a routerLink="/datapreview">
                 <i class="tim-icons icon-bullet-list-67"></i>
                 <p>Data Preview</p>
             </a>
         </li>
-        <li routerLinkActive="active" class="nav-item" [hidden]="!cookie.get('filename')">
+        <li routerLinkActive="active" class="nav-item" [hidden]="!filename">
             <a routerLink="/training">
                 <i class="tim-icons icon-chart-pie-36"></i>
                 <p>Model Training</p>
@@ -45,16 +36,4 @@
             </a>
         </li>
     </ul>
-
-
-    <!-- <ul class="nav" *ngIf="ind">
-        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
-            <a [routerLink]="[menuItem.path]"
-                [hidden]="(hide() && menuItem.titleSr != 'Home') || (menuItem.titleSr == 'Home' && cookie.get('home') == 'true') || ((menuItem.titleSr == 'Data Preview' || menuItem.titleSr == 'Model Training') && !cookie.get('filename')) || ((menuItem.titleSr == 'Upload' || menuItem.titleSr == 'Experiments') && !cookie.get('home'))">
-                <i class="{{ menuItem.icon }}"></i>
-                <p>{{ menuItem.titleSr }}</p>
-            </a>
-        </li>
-    </ul> -->
-
 </div>
