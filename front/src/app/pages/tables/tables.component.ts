@@ -224,6 +224,9 @@ export class TablesComponent {
   numCol2: boolean;
   //*
 
+  buttonMissingValues = "Replace";
+  buttonOutliers = "Replace";
+
   constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
     sessionStorage.removeItem('statistics');
     this.cookieCheck = this.cookie.get('cortexToken');
@@ -238,6 +241,10 @@ export class TablesComponent {
       this.refreshToken();
     }
     this.chartConfig();
+
+    this.clearStorage();
+    this.reset();
+    this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
   }
 
   chartConfig() {
@@ -361,7 +368,7 @@ export class TablesComponent {
       if (sessionStorage.getItem('selectedType') && sessionStorage.getItem('selectedType') != type) {
         this.selectedType = sessionStorage.getItem('selectedType');
 
-        let filename = this.cookie.get('filename');
+        let filename = sessionStorage.getItem('filename');
         this.tableService.getAll(filename, this.selectedType, rows, page, sessionStorage.getItem('selectedOutlierColumn')).subscribe(
           (response) => {
             this.csv = response;
@@ -402,7 +409,7 @@ export class TablesComponent {
       }
     }
     else {
-      let filename = this.cookie.get('filename');
+      let filename = sessionStorage.getItem('filename');
       this.tableService.getAll(filename, type, rows, page, outlierColumn).subscribe(
         (response) => {
           this.csv = response;
@@ -665,7 +672,7 @@ export class TablesComponent {
       this.setMissingValuesandOutliers();
     }
     else {
-      let filename = this.cookie.get('filename');
+      let filename = sessionStorage.getItem('filename');
       this.tableService.getStatistics(filename, 0).subscribe(
         (response) => {
           this.statistic = response;
@@ -1301,7 +1308,7 @@ export class TablesComponent {
 
   async deleteRows() {
 
-    await this.tableService.deleteRows(this.cookie.get('filename'), this.selectedRows).subscribe(res => {
+    await this.tableService.deleteRows(sessionStorage.getItem('filename'), this.selectedRows).subscribe(res => {
       this.clearStorage();
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
@@ -1341,7 +1348,7 @@ export class TablesComponent {
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
     }
     else {
-      await this.tableService.editCell(this.cookie.get('filename'), id, columnName, value).subscribe(res => {
+      await this.tableService.editCell(sessionStorage.getItem('filename'), id, columnName, value).subscribe(res => {
         this.clearStorage();
         sessionStorage.removeItem('statistics');
         this.reset()
@@ -1531,6 +1538,11 @@ export class TablesComponent {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
     this.enteredToFillMissingValCol = "";
+
+    if(value == "deleteAll")
+      this.buttonMissingValues = "Delete All";
+    else
+      this.buttonMissingValues = "Replace";
   }
 
   selectedIDOutliers(id: number) {
@@ -1574,19 +1586,20 @@ export class TablesComponent {
 
   onInputToFillMissingValCol(event: any) {
     const value = event.target.value;
+    this.buttonMissingValues = "Replace";
     this.selectedToFillMissingValCol = 'none';
     this.enteredToFillMissingValCol = value;
   }
 
   confirmToFillMissingValues() {
-    let filename = this.cookie.get('filename');
+    let filename =sessionStorage.getItem('filename');
     if (this.isNumericFun(this.selectedToFillMissingValCol) && !this.isNumber(this.enteredToFillMissingValCol)) {
       this.poruka = "You are trying to replace with non numeric value";
       //this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
       this.notify.showNotification(this.poruka);
     }
     else if (this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
-      this.poruka = "Please choose value to fill missing values.";
+      this.poruka = "Please choose value to replace missing values.";
       //this.poruka = "Izaberite vrednost da biste popunili vrednosti koje nedostaju";
       this.notify.showNotification(this.poruka);
     }
@@ -1653,7 +1666,7 @@ export class TablesComponent {
 
   confirmToReplaceOutliers() {
 
-    let filename = this.cookie.get('filename');
+    let filename = sessionStorage.getItem('filename');
     if (this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
       this.poruka = "Please choose value to replace outliers.";
       //this.poruka = "Izaberite vrednost da biste zamenili izuzetke";
@@ -1719,10 +1732,16 @@ export class TablesComponent {
     const value = event.target.value;
     this.selectedToReplaceOutliers = value;
     this.enteredToReplaceOutliersCol = "";
+
+    if(this.selectedToReplaceOutliers == "deleteAll")
+      this.buttonOutliers = "Delete All";
+    else
+      this.buttonOutliers = "Replace";
   }
 
   onInputToFillOutliers(event: any) {
     const value = event.target.value;
+    this.buttonOutliers = "Replace";
     this.enteredToReplaceOutliersCol = value;
     this.selectedToReplaceOutliers = 'none';
   }

@@ -60,6 +60,7 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   menuItems: any[];
   experimentName : string = "Unnamed experiment";
+  filename : string = "";
 
   public lang: string;
   public home: string;
@@ -79,8 +80,13 @@ export class SidebarComponent implements OnInit {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
     if(sessionStorage.getItem('experimentName'))
       this.experimentName = sessionStorage.getItem('experimentName');
+    if(sessionStorage.getItem('filename'))
+      this.filename = sessionStorage.getItem('filename');
     this.expName.aClickedEvent.subscribe((data:string) => {
       this.experimentName = data;
+    });
+    this.expName.fileClickedEvent.subscribe((data:string) =>{
+      this.filename = data;
     });
     if(this.lang == 'sr')
       this.ind = true;
@@ -119,7 +125,7 @@ export class SidebarComponent implements OnInit {
     }
     else
     {
-      if(this.cookie.get('filename'))
+      if(sessionStorage.getItem('filename'))
         return true;
       else
         return false;
