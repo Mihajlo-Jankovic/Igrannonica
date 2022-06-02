@@ -58,7 +58,7 @@ namespace Igrannonica.Controllers
                 return Ok(new {randomFileName = usageDTO.OldRandomFileName, fileName = usageDTO.FileName});
             }
 
-            var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            var NewRandomFileName = string.Format("{0}", Path.GetRandomFileName().Replace(".", string.Empty));
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
@@ -73,6 +73,7 @@ namespace Igrannonica.Controllers
             var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
             var httpResponse = await client.PostAsync(endpoint, payload);
             var response = await httpResponse.Content.ReadAsStringAsync();
+            NewRandomFileName += ".csv";
 
             Models.File file = new Models.File
             {
@@ -92,7 +93,7 @@ namespace Igrannonica.Controllers
         [HttpPost("usefileunauthorized")]
         public async Task<IActionResult> UseFileUnauthorized(UsageDTO usageDTO)
         {
-            var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            var NewRandomFileName = string.Format("{0}", Path.GetRandomFileName().Replace(".", string.Empty));
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
@@ -108,6 +109,7 @@ namespace Igrannonica.Controllers
             var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
             var httpResponse = await client.PostAsync(endpoint, payload);
             var response = await httpResponse.Content.ReadAsStringAsync();
+            NewRandomFileName += ".csv";
 
             Models.File file = new Models.File
             {
@@ -141,12 +143,13 @@ namespace Igrannonica.Controllers
 
             User? user = _context.User.Where(u => u.username == userName).FirstOrDefault();
             Models.File file = new Models.File();
-            var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            var RandomFileName = string.Format("{0}", Path.GetRandomFileName().Replace(".", string.Empty));
             file.RandomFileName = RandomFileName;
             file.DateCreated = DateTime.Now;
             var task = UploadFile(request, RandomFileName);
             if (task.Result == _configuration.GetSection("ResponseMessages:BadFileType").Value || task.Result == _configuration.GetSection("ResponseMessages:NoFile").Value)
                 return BadRequest(task.Result);
+            RandomFileName += ".csv";
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
             file.IsPublic = false;
@@ -160,12 +163,13 @@ namespace Igrannonica.Controllers
         [HttpPost("unauthorized")]
         public async Task<IActionResult> UploadUnauthorized()
         {
-            var RandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
+            var RandomFileName = string.Format("{0}", Path.GetRandomFileName().Replace(".", string.Empty));
             var request = HttpContext.Request;
             
             var task = UploadFile(request, RandomFileName);
             if (task.Result == _configuration.GetSection("ResponseMessages:BadFileType").Value || task.Result == _configuration.GetSection("ResponseMessages:NoFile").Value)
                 return BadRequest(task.Result);
+            RandomFileName += ".csv";
 
             Models.File file = new Models.File();
             file.RandomFileName = RandomFileName;
@@ -260,14 +264,16 @@ namespace Igrannonica.Controllers
 
                     var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                             contentDisposition.FileName.Value);
-
+                    var extension = contentDisposition.FileName.Value.Split('.')[1];
+                    var newRandomFileName = string.Format("{0}.{1}", randomFileName, extension);
+                    Console.WriteLine(newRandomFileName);
                     var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
                     + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
                     + _configuration.GetSection("Endpoints:UploadFile").Value);
                     StreamContent content = new StreamContent(section.Body);
                     var response = await client.PostAsync(endpoint, new MultipartFormDataContent
                     {
-                        {content, "file", randomFileName },
+                        {content, "file", newRandomFileName },
                     });
 
                     return contentDisposition.FileName.Value;
