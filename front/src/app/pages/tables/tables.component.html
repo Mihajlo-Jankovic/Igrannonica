@@ -279,7 +279,7 @@
                                     <div class="dropdown1Text">
                                         <p class="encText">{{item['colName']}}</p>
                                     </div>
-                                    <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
+                                    <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="{{'Encoding type'|translate}}">
                                             <option class='option' value="none|{{item['colName']}}" [selected]="item['encList'][0]" *ngIf="item['isNum'] && !item['output']">None</option>
                                             <option class='option' value="label|{{item['colName']}}" [selected]="item['encList'][1]">Label</option>
                                             <option class='option' value="one-hot|{{item['colName']}}" [selected]="item['encList'][2]" *ngIf="!item['output']">One-Hot</option>
@@ -296,7 +296,7 @@
                                     <div class="dropdown1Text">
                                         <p class="encText">{{item['colName']}}</p>
                                     </div>
-                                    <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="Encoding type">
+                                    <select class='dropdown1' name="encodingType" (change)="onSelectedEnc($event)" ngbTooltip="{{'Encoding type'|translate}}">
                                             <option class='option' value="none|{{item['colName']}}" [selected]="item['encList'][0]" *ngIf="item['isNum']">None</option>
                                             <option class='option' value="label|{{item['colName']}}" [selected]="item['encList'][1]">Label</option>
                                             <option class='option' value="one-hot|{{item['colName']}}" [selected]="item['encList'][2]" *ngIf="!item['output']">One-Hot</option>
@@ -320,16 +320,16 @@
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
                                 <h6>{{'Select column' | translate}}</h6>
-                                <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)">
+                                <select class='dropdownMissingVal' [(ngModel)]="selectedMissingValCol" (change)="onSelectedMissingValueCol($event)" ngbTooltip="{{'Select column'|translate}}">
                                     <option class='option' *ngFor="let item of arrMissingValues; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
                                 <h6>{{'Select value' | translate}}</h6>
-                                <select [hidden]="!numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
+                                <select [hidden]="!numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)" ngbTooltip="{{'Select value to replace missing values or delete all rows with missing values' | translate}}">
                                     <option class='option' *ngFor="let item of fillMissingValuesListNum let i = index">{{item}}</option>
                                 </select>
-                                <select [hidden]="numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)">
+                                <select [hidden]="numCol1" class='dropdownMissingVal' [(ngModel)]="selectedToFillMissingValCol" (change)="onSelectedToFillMissingValCol($event)" ngbTooltip="{{'Select value to replace missing values or delete all rows with missing values' | translate}}">
                                     <option class='option' *ngFor="let item of fillMissingValuesListNonNum let i = index">{{item}}</option>
                                 </select>
                             </div>
@@ -338,10 +338,10 @@
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
                                 <h6>{{'Enter value' | translate}}</h6>
-                                <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToFillMissingValCol" (change)="onInputToFillMissingValCol($event)">
+                                <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToFillMissingValCol" (click)="onInputToFillMissingValCol($event)" ngbTooltip="{{'Enter value to replace missing values' | translate}}">
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsMissingValues()">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">{{'CONFIRM' | translate}}</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToFillMissingValues()">{{buttonMissingValues}}</button>
                             </div>
                         </div>
 
@@ -352,13 +352,13 @@
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
                                 <h6>{{'Select column' | translate}}</h6>
-                                <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)">
+                                <select class='dropdownMissingVal' [(ngModel)]="selectedOutliersCol" (change)="onSelectedToChangeOutliers($event)" ngbTooltip="{{'Select column'|translate}}">
                                     <option class='option' *ngFor="let item of arrAllOutliers; let i = index" value="{{item}}">{{item}}</option>
                                 </select>
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
                                 <h6>{{'Select value' | translate}}</h6>
-                                <select class='dropdownMissingVal' [(ngModel)]="selectedToReplaceOutliers" (change)="onSelectedValueOutliers($event)">
+                                <select class='dropdownMissingVal' [(ngModel)]="selectedToReplaceOutliers" (change)="onSelectedValueOutliers($event)" ngbTooltip="{{'Select value to replace outliers or delete all rows with outliers'|translate}}">
                                     <option class='option' *ngFor="let item of replaceOutliersList let i = index">{{item}}</option>
                                 </select>
                             </div>
@@ -367,10 +367,10 @@
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
                                 <h6>{{'Enter value' | translate}}</h6>
-                                <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToReplaceOutliersCol" (change)="onInputToFillOutliers($event)">
+                                <input type="text" class="dropdownMissingVal" [(ngModel)]="enteredToReplaceOutliersCol" (click)="onInputToFillOutliers($event)" ngbTooltip="{{'Enter value to replace outliers' | translate}}">
                             </div>
                             <div class="dropdownContainerMissingVal" [hidden]="!existsOutliers()">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers();">{{'CONFIRM' | translate}}</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 confirmButton" (click)="confirmToReplaceOutliers();">{{buttonOutliers}}</button>
                             </div>
                         </div>
                         <div style="border-top: 1px solid #7d3c8b; width: 100%; height:30px; float:left;">

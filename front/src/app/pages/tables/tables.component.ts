@@ -224,6 +224,9 @@ export class TablesComponent {
   numCol2: boolean;
   //*
 
+  buttonMissingValues = "Replace";
+  buttonOutliers = "Replace";
+
   constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
     sessionStorage.removeItem('statistics');
     this.cookieCheck = this.cookie.get('cortexToken');
@@ -1531,6 +1534,11 @@ export class TablesComponent {
     const value = event.target.value;
     this.selectedToFillMissingValCol = value;
     this.enteredToFillMissingValCol = "";
+
+    if(value == "deleteAll")
+      this.buttonMissingValues = "Delete All";
+    else
+      this.buttonMissingValues = "Replace";
   }
 
   selectedIDOutliers(id: number) {
@@ -1574,6 +1582,7 @@ export class TablesComponent {
 
   onInputToFillMissingValCol(event: any) {
     const value = event.target.value;
+    this.buttonMissingValues = "Replace";
     this.selectedToFillMissingValCol = 'none';
     this.enteredToFillMissingValCol = value;
   }
@@ -1586,7 +1595,7 @@ export class TablesComponent {
       this.notify.showNotification(this.poruka);
     }
     else if (this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
-      this.poruka = "Please choose value to fill missing values.";
+      this.poruka = "Please choose value to replace missing values.";
       //this.poruka = "Izaberite vrednost da biste popunili vrednosti koje nedostaju";
       this.notify.showNotification(this.poruka);
     }
@@ -1719,10 +1728,16 @@ export class TablesComponent {
     const value = event.target.value;
     this.selectedToReplaceOutliers = value;
     this.enteredToReplaceOutliersCol = "";
+
+    if(this.selectedToReplaceOutliers == "deleteAll")
+      this.buttonOutliers = "Delete All";
+    else
+      this.buttonOutliers = "Replace";
   }
 
   onInputToFillOutliers(event: any) {
     const value = event.target.value;
+    this.buttonOutliers = "Replace";
     this.enteredToReplaceOutliersCol = value;
     this.selectedToReplaceOutliers = 'none';
   }
