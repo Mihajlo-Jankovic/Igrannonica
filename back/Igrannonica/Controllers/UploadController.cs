@@ -58,7 +58,7 @@ namespace Igrannonica.Controllers
                 return Ok(new {randomFileName = usageDTO.OldRandomFileName, fileName = usageDTO.FileName});
             }
 
-            var NewRandomFileName = string.Format("{0}", Path.GetRandomFileName().Replace(".", string.Empty));
+            var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
@@ -73,7 +73,6 @@ namespace Igrannonica.Controllers
             var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
             var httpResponse = await client.PostAsync(endpoint, payload);
             var response = await httpResponse.Content.ReadAsStringAsync();
-            NewRandomFileName += ".csv";
 
             Models.File file = new Models.File
             {
@@ -93,7 +92,7 @@ namespace Igrannonica.Controllers
         [HttpPost("usefileunauthorized")]
         public async Task<IActionResult> UseFileUnauthorized(UsageDTO usageDTO)
         {
-            var NewRandomFileName = string.Format("{0}", Path.GetRandomFileName().Replace(".", string.Empty));
+            var NewRandomFileName = string.Format("{0}.csv", Path.GetRandomFileName().Replace(".", string.Empty));
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
@@ -109,7 +108,6 @@ namespace Igrannonica.Controllers
             var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
             var httpResponse = await client.PostAsync(endpoint, payload);
             var response = await httpResponse.Content.ReadAsStringAsync();
-            NewRandomFileName += ".csv";
 
             Models.File file = new Models.File
             {
