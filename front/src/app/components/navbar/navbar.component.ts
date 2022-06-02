@@ -6,6 +6,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from "ngx-cookie-service";
 import { LoginService } from "src/app/services/login.service";
 import { TranslateService } from "@ngx-translate/core";
+import { LanguageService } from "src/app/services/language.service";
 
 @Component({
   selector: "app-navbar",
@@ -23,6 +24,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   token : string;
   cookieCheck:any;
   session :any;
+
+  language:any;
 
   public isCollapsed = true;
 
@@ -66,7 +69,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private loginService: LoginService,
     private cookie : CookieService,
-    public translate : TranslateService
+    public translate : TranslateService,
+    private lang : LanguageService
   ) {
 
     translate.addLangs(['en', 'sr']);
@@ -96,6 +100,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     {
       this.token = this.cookie.get('cortexToken');
     }
+
+   // if(sessionStorage.getItem('lang'))
+    this.lang.languageClickedEvent.subscribe((data:string) => {
+    this.language = data;
+    
+  });
+  console.log("ISPIS" + this.language);
 
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
