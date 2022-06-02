@@ -209,7 +209,7 @@ def openCSV(path):
         #header = csv.Sniffer().has_header(f.read().decode('utf-8')) # Proverava da li u fajlu postoji header
 
     if(True): 
-        df = pd.read_csv(path, index_col = False, engine = 'python') 
+        df = pd.read_csv(path, index_col = False, engine = 'python', sep = None) 
 
         #df.columns = [col.lower() for col in df]
         #df.columns = [col.strip('-$%') for col in df]
