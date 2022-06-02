@@ -241,6 +241,10 @@ export class TablesComponent {
       this.refreshToken();
     }
     this.chartConfig();
+
+    this.clearStorage();
+    this.reset();
+    this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
   }
 
   chartConfig() {

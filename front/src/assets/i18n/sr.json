@@ -19,6 +19,7 @@
     "*Email is not valid":"*Email nije validan",
     "Please enter username!":"Molim Vas username!",
     "*Bad format!":"*Loš format!",
+    "*Minimum 5 and maximum 20 characters, uppercase and lowercase letters, numbers and special characters(_.-) allowed":"*Minimum 5 maksimum 20 karaktera, dozvoljena su velika i mala slova, brojevi kao i specijalni karakteri(_ . -)",
     "Please enter password!":"Molim Vas unesite lozinku!",
     "*Minimum 8 and maximum 20 characters, at least one uppercase letter, one lowercase letter and one number":"*Minimum 8 maksimum 20 karaktera, najmanje jedno veliko, jedno malo slovo i jedan broj",
     "Please re-enter your password for confirmation!":"Unesite ponovo lozinku za potvrdu!",

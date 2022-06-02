@@ -35,6 +35,8 @@ export class LoginLayoutComponent implements OnInit {
 
   public validateEmailWarning: boolean = false;
 
+  public showPassword: boolean;
+
   configuration = new Configuration();
 
   constructor(private notify: NotificationsService, private toastr: ToastrService, private formBuilder: FormBuilder,  private loginService: LoginService, private editPasswordService: EditPasswordService, private cookie: CookieService, private router: Router, private http: HttpClient) {

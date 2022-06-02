@@ -63,7 +63,9 @@
                                             <i class=" tim-icons icon-lock-circle"></i>
                                         </div>
                                     </div>
-                                    <input type="password" placeholder="{{'Password' | translate}}" name="password" formControlName="password" class="form-control">
+                                    <input [type]="showPassword ? 'text' : 'password'" placeholder="{{'Password' | translate}}" name="password" formControlName="password" class="form-control">
+                                    <i class="fa fa-eye eye" [hidden]="!showPassword" (click)="showPassword=!showPassword"></i>
+                                    <i class="fa fa-eye-slash eye" [hidden]="showPassword" (click)="showPassword=!showPassword"></i>                                
                                 </div>
                                 <div class="input-group">
 

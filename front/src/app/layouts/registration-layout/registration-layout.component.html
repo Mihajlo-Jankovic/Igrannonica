@@ -65,7 +65,7 @@
                                 </div>
                                 <div *ngIf="m.username.touched && m.username.invalid" class="input-group">
                                     <div class="inputText" *ngIf="m.username.errors?.required">{{'Please enter username!' | translate}}</div>
-                                    <div class="inputText" *ngIf="m.username.errors?.pattern">{{'*Bad format!' | translate}}</div>
+                                    <div class="inputText" *ngIf="m.username.errors?.pattern">{{'*Minimum 5 and maximum 20 characters, uppercase and lowercase letters, numbers and special characters(_ . -) allowed' | translate}}</div>
                                 </div>
                                 <!-- format za korisnicko ime(dozvoljeno je): velika i mala slova, karakteri[(.),(_),(-)], karakteri[(.),(_),(-)] ne smeju 
                                 biti na prvom ili poslednjem mestu i ne smeju se ponavljati uzastopno, broj dozvoljenih karaktera(5, 20) -->
