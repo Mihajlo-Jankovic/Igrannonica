@@ -9,7 +9,7 @@ import io
 import shutil
 
 UPLOAD_FOLDER = os.path.join('Resources','CSVFiles')
-ALLOWED_EXTENSIONS = {'csv'}
+ALLOWED_EXTENSIONS = {'csv', 'json', 'xlsx', 'txt', 'xml'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -31,9 +31,27 @@ def upload_file():
         flash('No selected file')
         return {'message' : "No selected file."}
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return {'message' : "Upload Successfull!", 'randomFileName' : filename}
+        filename = file.filename
+        extension = filename.rsplit('.', 1)[1].lower()
+        name = filename.rsplit('.', 1)[0].lower()
+        csvName = name + '.csv'
+        filepathCsv = os.path.join(app.config['UPLOAD_FOLDER'], csvName)
+        if(extension == 'csv' or extension == 'txt'):
+            filename = secure_filename(file.filename)
+            file.save(filepathCsv)
+            return {'message' : "Upload Successfull!", 'randomFileName' : filename}
+        elif(extension == 'xlsx'):
+            df = pd.read_excel(file)
+            df.to_csv(filepathCsv)
+            return {'message' : "Upload Successfull!", 'randomFileName' : filename}
+        elif(extension == 'json'):
+            df = pd.read_json(file)
+            df.to_csv(filepathCsv)
+            return {'message' : "Upload Successfull!", 'randomFileName' : filename}
+        elif(extension == 'xml'):
+            df = pd.read_xml(file)
+            df.to_csv(filepathCsv)
+            return {'message' : "Upload Successfull!", 'randomFileName' : filename}
     else:
         return {'message' : "File type is not allowed."}
 

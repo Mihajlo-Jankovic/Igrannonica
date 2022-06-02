@@ -175,7 +175,8 @@ export class UploadComponent implements OnInit {
       this.notify.showNotification("Maximum file size is 500MB");
     else {
       var fileExt = file.name.split('.').pop();
-      if (fileExt == 'csv') {
+      let allowedExt = ['csv', 'json', 'xlsx', 'txt', 'xml']
+      if (allowedExt.includes(fileExt)) {
         const formData = new FormData();
         formData.append('file', file, file.name);
 
