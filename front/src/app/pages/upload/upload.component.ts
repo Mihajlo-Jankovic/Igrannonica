@@ -228,7 +228,7 @@ export class UploadComponent implements OnInit {
         }
       }
       else
-        this.notify.showNotification("Wrong file type!Available format is csv.");
+        this.notify.showNotification("Wrong file type!Available formats are csv, json, xlsx, txt, xml.");
     }
 
   }
@@ -304,6 +304,7 @@ export class UploadComponent implements OnInit {
       sessionStorage.setItem("filename", response.randomFileName);
       sessionStorage.setItem("realName", response.fileName);
       this.expName.refreshExperimentName("Unnamed experiment");
+      this.expName.filename(response.randomFileName);
       this.router.navigate(['datapreview']);
     })
   }
@@ -314,6 +315,7 @@ export class UploadComponent implements OnInit {
       sessionStorage.setItem("filename", response.randomFileName);
       sessionStorage.setItem("realName", response.fileName);
       this.expName.refreshExperimentName("Unnamed experiment");
+      this.expName.filename(response.randomFileName);
       this.router.navigate(['datapreview']);
     })
   }

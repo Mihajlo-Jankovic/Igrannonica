@@ -25,7 +25,7 @@
                 </div>
                 <div class="card-body">
                     <div class="file-upload">
-                        <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv" ngbTooltip="{{'Click or drag your csv file here to upload' | translate}}">
+                        <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv, .xlsx, .json, .txt, .xml" ngbTooltip="{{'Click or drag your file here to upload' | translate}}">
                         <div class="card-subtitle">{{'Drag n Drop your dataset here' | translate}}</div>
                     </div>
                 </div>
