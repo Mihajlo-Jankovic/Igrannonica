@@ -9,7 +9,7 @@ import io
 import shutil
 
 UPLOAD_FOLDER = os.path.join('Resources','CSVFiles')
-ALLOWED_EXTENSIONS = {'csv', 'json', 'xlsx', 'txt', 'xml'}
+ALLOWED_EXTENSIONS = {'csv', 'json', 'xlsx', 'txt'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -46,10 +46,6 @@ def upload_file():
             return {'message' : "Upload Successfull!", 'randomFileName' : filename}
         elif(extension == 'json'):
             df = pd.read_json(file)
-            df.to_csv(filepathCsv)
-            return {'message' : "Upload Successfull!", 'randomFileName' : filename}
-        elif(extension == 'xml'):
-            df = pd.read_xml(file)
             df.to_csv(filepathCsv)
             return {'message' : "Upload Successfull!", 'randomFileName' : filename}
     else:

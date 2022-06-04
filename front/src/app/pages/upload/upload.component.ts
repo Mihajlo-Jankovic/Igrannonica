@@ -175,7 +175,7 @@ export class UploadComponent implements OnInit {
       this.notify.showNotification("Maximum file size is 500MB");
     else {
       var fileExt = file.name.split('.').pop();
-      let allowedExt = ['csv', 'json', 'xlsx', 'txt', 'xml']
+      let allowedExt = ['csv', 'json', 'xlsx', 'txt']
       if (allowedExt.includes(fileExt)) {
         const formData = new FormData();
         formData.append('file', file, file.name);
@@ -228,7 +228,7 @@ export class UploadComponent implements OnInit {
         }
       }
       else
-        this.notify.showNotification("Wrong file type!Available formats are csv, json, xlsx, txt, xml.");
+        this.notify.showNotification("Wrong file type!Available formats are csv, json, xlsx, txt.");
     }
 
   }
