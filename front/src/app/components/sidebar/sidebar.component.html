@@ -8,31 +8,31 @@
         <li routerLinkActive="active" class="nav-item">
             <a routerLink="/home">
                 <i class="fa fa-home"></i>
-                <p>Home</p>
+                <p>{{'Home' | translate}}</p>
             </a>
         </li>
         <li routerLinkActive="active" class="nav-item">
             <a routerLink="/upload">
                 <i class="tim-icons icon-upload"></i>
-                <p>Upload</p>
+                <p>{{'Upload' | translate}}</p>
             </a>
         </li>
         <li routerLinkActive="active" class="nav-item" [hidden]="!filename">
             <a routerLink="/datapreview">
                 <i class="tim-icons icon-bullet-list-67"></i>
-                <p>Data Preview</p>
+                <p>{{'Data Preview' | translate}}</p>
             </a>
         </li>
         <li routerLinkActive="active" class="nav-item" [hidden]="!filename">
             <a routerLink="/training">
                 <i class="tim-icons icon-chart-pie-36"></i>
-                <p>Model Training</p>
+                <p>{{"Model Training" | translate}}</p>
             </a>
         </li>
         <li routerLinkActive="active" class="nav-item">
             <a routerLink="/experiments">
                 <i class="tim-icons icon-single-copy-04"></i>
-                <p>Experiments</p>
+                <p>{{'Experiments' | translate}}</p>
             </a>
         </li>
     </ul>

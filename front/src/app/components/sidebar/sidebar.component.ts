@@ -1,8 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Location } from "@angular/common";
 import { HomeComponent } from "src/app/pages/home/home.component";
 import { ExpNameService } from "src/app/services/expName.service";
+import { LanguageService } from "src/app/services/language.service";
+import { waitForAsync } from "@angular/core/testing";
+import { delay } from "rxjs";
+import { EventEmitter, Injectable, Output } from '@angular/core';
 
 declare interface RouteInfo {
   path: string;
@@ -64,18 +68,20 @@ export class SidebarComponent implements OnInit {
 
   public lang: string;
   public home: string;
+  public lang3:string;
+
+  
 
   public homePath = "/home";
   public uploadPath = "/upload";
   public experimentsPath = "/experiments";
 
   public ind: boolean = false;
-
-
-  constructor(public cookie : CookieService, private expName : ExpNameService) {
+  constructor(public cookie : CookieService, private expName : ExpNameService, private lang2 : LanguageService) {
     this.lang = sessionStorage.getItem('lang');
-  }
 
+  }
+  message:string;
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
     if(sessionStorage.getItem('experimentName'))
@@ -90,6 +96,22 @@ export class SidebarComponent implements OnInit {
     });
     if(this.lang == 'sr')
       this.ind = true;
+
+      this.lang2.lanClickedEvent.subscribe((data:string) =>{
+        this.message = data;
+        console.log("side"+this.message);
+        if(this.message == "sr"){
+          if(this.experimentName = "Unnamed experiment"){
+            this.experimentName = "Neimenovani eksperiment";
+          }
+        }
+      });
+    //   this.message = this.lang2.getMessage();
+    // console.log("side "+this.message);
+
+      // this.lang2.languageClickedEvent.subscribe((data:string) => {
+      //      this.lang = data;
+      // });
   }
 
 

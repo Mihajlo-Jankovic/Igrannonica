@@ -79,17 +79,17 @@
                         <div class=" photo">
                             <img alt="Profile Photo" src="assets/img/profile.jpg" />
                         </div>
-                        <b class=" caret d-none d-lg-block d-xl-block"> </b>
+                        <b class=" caret d-none d-lg-block d-xl-block" style="background-color: #27293d;"> </b>
                     </a>
-                    <ul class=" dropdown-navbar" ngbDropdownMenu>
+                    <ul class=" dropdown-navbar" ngbDropdownMenu style="background-color: #27293d;">
                         <li class=" nav-link">
-                            <a class=" nav-item" routerLink="/profile" routerLinkActive="active" ngbDropdownItem style="color: #bcb8b7;">
+                            <a class=" nav-item" routerLink="/profile" routerLinkActive="active" ngbDropdownItem style="color: #ffff;">
                                 {{'Profile' | translate}}
                             </a>
                         </li>
                         <li class=" dropdown-divider"></li>
                         <li class=" nav-link">
-                            <a class=" nav-item" (click)="onLogout()" href="#" ngbDropdownItem style="color: #bcb8b7;">
+                            <a class=" nav-item" (click)="onLogout()" href="#" ngbDropdownItem style="color: #ffff;">
                                 {{'Log out' | translate}}
                             </a>
                         </li>

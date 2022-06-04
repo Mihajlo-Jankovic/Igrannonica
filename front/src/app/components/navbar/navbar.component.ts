@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, OnDestroy } from "@angular/core";
-import { ROUTES } from "../sidebar/sidebar.component";
+import { ROUTES, SidebarComponent } from "../sidebar/sidebar.component";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -7,6 +7,7 @@ import { CookieService } from "ngx-cookie-service";
 import { LoginService } from "src/app/services/login.service";
 import { TranslateService } from "@ngx-translate/core";
 import { LanguageService } from "src/app/services/language.service";
+import { EventEmitter, Injectable, Output } from '@angular/core';
 
 @Component({
   selector: "app-navbar",
@@ -34,8 +35,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   closeResult: string;
 
+  
   navTo(url : string){
+  }
 
+  @Output() languageClickedEvent = new EventEmitter<string>();
+
+  refreshLanguage(msg : string) {
+    this.languageClickedEvent.emit(msg);
   }
 
   get(){
@@ -46,11 +53,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     sessionStorage.clear();
     this.router.navigate(["upload"]);
   }
-
   translateLanguageTo(lang: string) {
     this.translate.use(lang);
 
     sessionStorage.setItem('lang',lang);
+    
     
     if(this.en == true) {
       this.en = false;
@@ -60,8 +67,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.en = true;
       this.sr = false;
     }
+
+    this.lang.refreshLan(lang);
+    this.ngOnInit();
   }
 
+  
   constructor(
     location: Location,
     private element: ElementRef,
@@ -94,19 +105,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
       navbar.classList.add('navbar-transparent');
     }
   };
+
+  message :string;
   ngOnInit() {
+
+    // this.message = sessionStorage.getItem('lang');
+    // this.language.setMessage(this.message);
+
     this.loggedUser = this.loginService.isAuthenticated();
     if(this.loggedUser)
     {
       this.token = this.cookie.get('cortexToken');
     }
 
-   // if(sessionStorage.getItem('lang'))
-    this.lang.languageClickedEvent.subscribe((data:string) => {
-    this.language = data;
-    
-  });
-  console.log("ISPIS" + this.language);
+    console.log("ISPIS"+sessionStorage.getItem('lang'));
 
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
