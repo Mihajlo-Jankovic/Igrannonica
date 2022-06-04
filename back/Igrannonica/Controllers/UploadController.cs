@@ -142,12 +142,12 @@ namespace Igrannonica.Controllers
             User? user = _context.User.Where(u => u.username == userName).FirstOrDefault();
             Models.File file = new Models.File();
             var RandomFileName = string.Format("{0}", Path.GetRandomFileName().Replace(".", string.Empty));
-            file.RandomFileName = RandomFileName;
             file.DateCreated = DateTime.Now;
             var task = UploadFile(request, RandomFileName);
             if (task.Result == _configuration.GetSection("ResponseMessages:BadFileType").Value || task.Result == _configuration.GetSection("ResponseMessages:NoFile").Value)
                 return BadRequest(task.Result);
             RandomFileName += ".csv";
+            file.RandomFileName = RandomFileName;
             file.FileName = task.Result;
             file.UserForeignKey = user.id;
             file.IsPublic = false;
