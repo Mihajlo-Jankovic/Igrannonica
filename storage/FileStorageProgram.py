@@ -235,7 +235,11 @@ def paging(df,rowNum,pageNum):
 # Filtriranje CSV fajlova prema parametrima klijenta
 def filterCSV(path, rowNum, dataType, pageNum, colName):
     df = openCSV(path)
-
+    
+    colList = []
+    for col in df:
+        colList.append(col)
+    
     # Dodavanje novog id reda
     hidden_id = [i for i in range(0,df.shape[0])]
     df['hidden_id'] = hidden_id
@@ -267,7 +271,7 @@ def filterCSV(path, rowNum, dataType, pageNum, colName):
     
     df = paging(df,rowNum,pageNum)
 
-    return [df,numOfPages]
+    return [df,numOfPages,colList]
 
 def numericValues(path):
     colList = []
