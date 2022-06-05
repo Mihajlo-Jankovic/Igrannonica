@@ -67,7 +67,7 @@
     "Delete" : "Obriši",
     "Upload a new dataset" : "Učitaj novi skup podataka",
     "Click or drag your file here to upload" : "Izaberite ili prevucite datoteku da biste je otpremili",
-    "Drag n Drop your dataset here" : "Prevucite i otpustite svoj skup podataka ovde",
+    "Drag n Drop your dataset here. Available formats are csv, xlsx, json and txt." : "Prevucite i otpustite svoj skup podataka ovde.Dostupni formati su csv, xmlx, json i txt.",
     "Choose an existing dataset" : "Izaberite već postojeći skup podataka", 
     "Filter datasets" : "Filtriranje skupova podataka",
     "Data Privacy" : "Privatnost podataka",
@@ -187,5 +187,6 @@
     "Choose encoding for selected output column" : "Izaberite način kodiranja za odabranu izlaznu kolone",
     "Training : validation : test" : "Trening : validacija : test",
     "We have sent an email to :" : "Poslali smo email na :",
-    "Please confirm your email address by entering the code you have received in your inbox." : "Kako biste potvrdili Vašu email adresu, molimo Vas unesite kod koji se nalazi u Vasem sandučetu." 
+    "Please confirm your email address by entering the code you have received in your inbox." : "Kako biste potvrdili Vašu email adresu, molimo Vas unesite kod koji se nalazi u Vasem sandučetu." ,
+    "This file will be downloaded as csv" : "Ovaj fajl će biti preuzet u csv formatu"
 }

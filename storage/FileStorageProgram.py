@@ -105,7 +105,7 @@ def statistics(df,colIndex):
 def missing_values(df, colName, fillMethod, specificVal):
 
     if(df[colName].dtypes == object):
-        rowsNum, unique, mostFrequent, frequency, numOfNulls = not_numeric_column_statistics(df,colName)
+        rowsNum, unique, mostFrequent, frequency, numOfNulls, uniqueList = not_numeric_column_statistics(df,colName)
 
         if(fillMethod == "none"):
             df[colName].fillna(specificVal, inplace=True)

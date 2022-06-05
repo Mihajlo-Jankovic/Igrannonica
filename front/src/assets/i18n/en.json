@@ -68,7 +68,7 @@
     "Delete" : "Delete",
     "Upload a new dataset" : "Upload a new dataset",
     "Click or drag your file here to upload" : "Click or drag your file here to upload",
-    "Drag n Drop your dataset here" : "Drag n Drop your dataset here",
+    "Drag n Drop your dataset here. Available formats are csv, xlsx, json and txt." : "Drag n Drop your dataset here. Available formats are csv, xlsx, json and txt.",
     "Choose an existing dataset" : "Choose an existing dataset", 
     "Filter datasets" : "Filter datasets",
     "Data Privacy" : "Data Privacy",
@@ -184,6 +184,7 @@
     "Choose encoding for selected output column" : "Choose encoding for selected output column",
     "Training : validation : test" : "Training : validation : test",
     "We have sent an email to :" : "We have sent an email to :",
-    "Please confirm your email address by entering the code you have received in your inbox." : "Please confirm your email address by entering the code you have received in your inbox."
+    "Please confirm your email address by entering the code you have received in your inbox." : "Please confirm your email address by entering the code you have received in your inbox.",
+    "This file will be downloaded as csv" : "This file will be downloaded as csv"
 
 }
