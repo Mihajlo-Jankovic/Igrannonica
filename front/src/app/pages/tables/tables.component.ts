@@ -44,6 +44,7 @@ export class TablesComponent {
     'csv': {}, //podaci za ucitavanje tabele
     'numOfPages': 0,
     'numericValues': {}, //numericke kolone
+    'colName': []
   }
 
   data = {
@@ -230,6 +231,8 @@ export class TablesComponent {
 
   public message:string;
 
+  colNameArray: any = [];
+
   constructor(public lang: LanguageService, private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
     sessionStorage.removeItem('statistics');
     this.cookieCheck = this.cookie.get('cortexToken');
@@ -396,6 +399,10 @@ export class TablesComponent {
 
             sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
             this.selectedOutlierColumn = sessionStorage.getItem('selectedOutlierColumn');
+
+            this.colNameArray = this.csv['colList'];
+            sessionStorage.setItem('colNameArray', JSON.stringify(this.colNameArray));
+            
             this.loadTable(filter);
           }, err => {
             let JSONtoken: string = JSON.stringify(err.error);
@@ -434,8 +441,12 @@ export class TablesComponent {
           let numerValuesCSV: any = {};
           numerValuesCSV = this.csv['numericValues'];
           this.numericValues = numerValuesCSV;
-
+          
           sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
+
+          this.colNameArray = this.csv['colList'];
+          sessionStorage.setItem('colNameArray', JSON.stringify(this.colNameArray));
+
           this.loadTable(filter);
         }, err => {
           let JSONtoken: string = JSON.stringify(err.error);
@@ -482,8 +493,10 @@ export class TablesComponent {
       numValueIndexArray.push(this.numericValues['index'][i]);
       this.numericValuesArray.push(numValueIndexArray);
     }
+
+    this.colNameArray = JSON.parse(sessionStorage.getItem('colNameArray'));
     if (!filter) {
-      this.selectedColName = this.headingLines[0][0];
+      this.selectedColName = this.colNameArray[0];
       this.selectedCol = this.numericValuesArray[0][1];
       this.selectedColDiv = true;
     }
@@ -499,26 +512,26 @@ export class TablesComponent {
   }
 
   setInputOutput() {
-
+    //console.log(this.colNameArray);
     if (sessionStorage.getItem("inputList") == null) {
-      for (let i = 0; i < this.headingLines[0].length - 2; i++) {
+      for (let i = 0; i < this.colNameArray.length - 1; i++) {
         this.radios[i] = true; //disabled
         this.checks[i] = false; //disabled
         this.radios1[i] = false; //checked
         this.checks1[i] = true; //checked
-        this.listCheckedI.push(this.headingLines[0][i])
+        this.listCheckedI.push(this.colNameArray[i])
       }
 
-      this.checks[this.headingLines[0].length - 2] = true;
-      this.checks1[this.headingLines[0].length - 2] = false;
-      this.listCheckedI.splice(this.headingLines[0].length - 2, 1);
+      this.checks[this.colNameArray.length - 1] = true;
+      this.checks1[this.colNameArray.length - 1] = false;
+      this.listCheckedI.splice(this.colNameArray.length - 1, 1);
       sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
 
-      this.radios[this.headingLines[0].length - 2] = false;
-      this.radios1[this.headingLines[0].length - 2] = true;
-      this.selectedOutput = this.headingLines[0][this.headingLines[0].length - 2];
+      this.radios[this.colNameArray.length - 1] = false;
+      this.radios1[this.colNameArray.length - 1] = true;
+      this.selectedOutput = this.colNameArray[this.colNameArray.length - 1];
       sessionStorage.setItem('output', this.selectedOutput);
-      this.pret = this.headingLines[0].length - 2;
+      this.pret = this.colNameArray.length - 1;
       this.setEncoding();
       this.outputStorage();
     }
@@ -527,10 +540,10 @@ export class TablesComponent {
       this.selectedOutput = sessionStorage.getItem('output');
 
       let f: number = 0;
-      for (let i = 0; i < this.headingLines[0].length - 1; i++) {
+      for (let i = 0; i < this.colNameArray.length; i++) {
         f = 0;
         for (let j = 0; j < this.listCheckedI.length; j++) {
-          if (this.headingLines[0][i] == this.listCheckedI[j]) {
+          if (this.colNameArray[i] == this.listCheckedI[j]) {
             this.checks1[i] = true;
             this.checks[i] = false;
             this.radios1[i] = false;
@@ -539,7 +552,7 @@ export class TablesComponent {
           }
         }
         if (f == 0) {
-          if (this.headingLines[0][i] == this.selectedOutput) {
+          if (this.colNameArray[i] == this.selectedOutput) {
             this.checks1[i] = false;
             this.checks[i] = true;
             this.radios1[i] = true;
@@ -560,12 +573,12 @@ export class TablesComponent {
   }
   //*
   setEncoding() {
-    for (let i = 0; i < this.headingLines[0].length - 2; i++) {
+    for (let i = 0; i < this.colNameArray.length - 1; i++) {
       let f: any = 0;
       this.restartColData();
 
       for (let j = 0; j < this.numericValues['col'].length; j++) {
-        if (this.numericValues['col'][j] == this.headingLines[0][i]) {
+        if (this.numericValues['col'][j] == this.colNameArray[i]) {
           this.column['encoding'] = "none";
           f = 1;
         }
@@ -575,9 +588,9 @@ export class TablesComponent {
         this.column['encoding'] = this.encodingList[0];
       }
       this.column['id'] = i;
-      this.column['colName'] = this.headingLines[0][i];
+      this.column['colName'] = this.colNameArray[i];
       this.column['isSelected'] = true;
-      this.column['isNum'] = this.isNumericFun(this.headingLines[0][i]);
+      this.column['isNum'] = this.isNumericFun(this.colNameArray[i]);
       this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
       this.column['output'] = false;
       this.colDataList.push(this.column);
@@ -585,10 +598,10 @@ export class TablesComponent {
 
     let f: any = 0;
     this.restartColData();
-    this.column['id'] = this.headingLines[0].length - 2;
-    this.column['colName'] = this.headingLines[0][this.headingLines[0].length - 2];
+    this.column['id'] = this.colNameArray.length - 1;
+    this.column['colName'] = this.colNameArray[this.colNameArray.length - 1];
     this.column['isSelected'] = true;
-    this.column['isNum'] = this.isNumericFun(this.headingLines[0][this.headingLines[0].length - 2]);
+    this.column['isNum'] = this.isNumericFun(this.colNameArray[this.colNameArray.length - 1]);
     /*
     f = 0;
     for(let j = 0; j < this.numericValues['col'].length; j++) {
@@ -1205,8 +1218,8 @@ export class TablesComponent {
     var value = event.target.value;
     var ind: number = -1;
 
-    for (let i = 0; i < this.headingLines[0].length - 1; i++) {
-      if (this.selectedOutput == this.headingLines[0][i])
+    for (let i = 0; i < this.colNameArray.length; i++) {
+      if (this.selectedOutput == this.colNameArray[i])
         ind = i;
     }
 
