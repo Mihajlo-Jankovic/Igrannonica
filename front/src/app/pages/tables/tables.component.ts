@@ -512,7 +512,6 @@ export class TablesComponent {
   }
 
   setInputOutput() {
-    //console.log(this.colNameArray);
     if (sessionStorage.getItem("inputList") == null) {
       for (let i = 0; i < this.colNameArray.length - 1; i++) {
         this.radios[i] = true; //disabled
@@ -1214,7 +1213,6 @@ export class TablesComponent {
   }
 
   selectedOutputFun(event: any) {
-    console.log(event);
     var value = event.target.value;
     var ind: number = -1;
 
@@ -1249,7 +1247,6 @@ export class TablesComponent {
   outputStorage() {
     for (let i = 0; i < this.statistic['colList'].length; i++) {
       if (this.statistic['colList'][i] == this.selectedOutput) {
-        console.log("Nasao");
         sessionStorage.setItem('outputValues', this.statistic['jsonList'][i]['rowsNum']);
         sessionStorage.setItem('outputUniques', this.statistic['jsonList'][i]['unique']);
         if (this.statistic['jsonList'][i]['isNumeric'] == 1) {
@@ -1420,7 +1417,7 @@ export class TablesComponent {
       this.hideMatrix = false;
       this.hideS = false;
       stats.classList.remove('col-lg-12');
-      this.statsButton = "Full Statistics"
+      this.statsButton == "Full Statistics"
 
       document.getElementById("stat").classList.remove("height-change");
     }

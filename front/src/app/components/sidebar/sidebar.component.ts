@@ -105,12 +105,6 @@ export class SidebarComponent implements OnInit {
           }
         }
       });
-    //   this.message = this.lang2.getMessage();
-    // console.log("side "+this.message);
-
-      // this.lang2.languageClickedEvent.subscribe((data:string) => {
-      //      this.lang = data;
-      // });
   }
 
 

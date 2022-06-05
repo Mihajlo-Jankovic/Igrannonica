@@ -432,7 +432,6 @@ export class DashboardComponent implements OnInit {
     this.myChartData = new Chart(this.ctx, config);
 
     this.checkStorage();
-    console.log(this.modelsList);
   }
   
   refreshToken(){
@@ -1338,7 +1337,6 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < model.parameters["numLayers"]; i++){
       string += model.parameters["layerList"][i].toString() + " " + model.parameters["activationFunctions"][i] + "<br>";
     }
-    console.log(string);
     return string;
   }
 

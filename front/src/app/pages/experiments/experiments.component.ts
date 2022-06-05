@@ -403,6 +403,7 @@ export class ExperimentsComponent implements OnInit {
     sessionStorage.setItem('experimentName', item.name);
 
     this.expName.refreshExperimentName(item.name);
+    this.expName.filename(item.fileName);
 
     // sessionStorage.removeItem('problemType');
     // sessionStorage.removeItem('optimizer');

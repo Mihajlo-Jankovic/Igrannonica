@@ -154,10 +154,10 @@
             <div class=" card card-chart card-height">
                 <div class=" card-header" style="padding-top: 0px;">
                     <div class="dp-header" style="width:100%; height:46px;">
-                        <h3 class=" card-category mini-header">{{'Choose column to view it\'s properties' | translate}}</h3>
+                        <h3 class=" card-category mini-header">{{'Choose column to view it\'s statistics' | translate}}</h3>
                         <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="plotCheck()" style="margin-top: 15px;">{{plotButton}}</button>
                     </div>
-                    <select ngbTooltip="Change applies to statistics, chart and corelation matrix" class='dropdown' (change)='onSelectedCol($event);' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
+                    <select ngbTooltip="{{'Change applies to statistics, chart and corelation matrix' | translate }}" class='dropdown' (change)='onSelectedCol($event);' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
                         <option class="option" *ngFor="let item of colNameArray; let i = index" value={{item}}>{{item}}</option>
                     </select>
                 </div>
@@ -165,12 +165,12 @@
                     <div id="chart" *ngIf="selectedColDiv && numCol2">
                         <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions" [title]="chartOptions.title" [stroke]="chartOptions.stroke"></apx-chart>
                     </div>
-                    <h3 [hidden]="numCol2" style="text-align: center; margin-top: 7rem;"> Selected column is not numerical. Boxplot cannot be displayed. </h3>
+                    <h3 [hidden]="numCol2" style="text-align: center; margin-top: 7rem;"> {{'Selected column is not numerical. Boxplot cannot be displayed.' | translate } </h3>
                 </div>
                 <div class=" card-body" [hidden]="plotButton == 'Pie Chart'">
                     <div class="chart-area" style="height:350px;">
                         <canvas id="pie-chart" [hidden]="!showPieChart"></canvas>
-                        <h3 [hidden]="differentValues" style="text-align: center; margin-top: 7rem;"> Too many different values. </h3>
+                        <h3 [hidden]="differentValues" style="text-align: center; margin-top: 7rem;"> {{'Too many different values.' | translate }} </h3>
                     </div>
                 </div>
             </div>
@@ -201,7 +201,7 @@
                         </table>
                     </div>
                     <div [hidden]="hideM" *ngIf="!numCol2">
-                        <h3 style="text-align: center; margin-top: 10rem;"> Selected column is not numerical. </h3>
+                        <h3 style="text-align: center; margin-top: 10rem;"> {{'Selected column is not numerical.' | translate}} </h3>
                     </div>
                     <div class="corr table-responsive stat" id="corr" [hidden]="!hideM">
                         <table class="table" id="largeMatrix">

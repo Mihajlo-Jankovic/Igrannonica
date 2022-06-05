@@ -58,8 +58,7 @@ export class UserComponent implements OnInit {
     this.editForm = formBuilder.group({
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
-      password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
-      confirmPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
+      password: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]]
     });
     this.editPasswordForm = formBuilder.group({
       currentPassword: ['', [Validators.required, Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]],
@@ -111,17 +110,12 @@ export class UserComponent implements OnInit {
 
 
   edit(form: FormGroup) {
-    if (form.value.firstname && form.value.lastname && form.value.password && form.value.confirmPassword) {
-      if (form.value.password != form.value.confirmPassword) {
-        this.poruka = "Password mismatched!";
-        if(this.message == "sr")this.poruka= "Lozinke se ne poklapaju"
-        this.notify.showNotification(this.poruka);
-      }
-      else {
+    if (form.value.firstname && form.value.lastname && form.value.password ) {
+      {
         this.editService.edit(form.value.firstname, form.value.lastname, form.value.password).subscribe(async token => {
           let JSONtoken: string = JSON.stringify(token);
           this.poruka = "Succesfully changed!";
-          if(this.message == "sr")this.poruka = "Usešno promenjeno";
+          if(this.message == "sr")this.poruka = "Uspešno promenjeno";
           this.notify.showNotification(this.poruka);
           await new Promise(f => setTimeout(f, 50));
           this.getInfo();
@@ -165,41 +159,5 @@ export class UserComponent implements OnInit {
       }
     }
   }
-
-  // niz: any= [1];
-  // clcDiv: any = [false];
-
-  // openDiv(index1:number) {
-
-  //   if(this.clcDiv[index1] == false) {
-  //     this.clcDiv[index1] = true;
-  //   }
-  //   else {
-  //     this.clcDiv[index1] = false;
-  //   }
-  // }
-
-  // showExperiments()
-  // {
-  //   this.userService.getAllUserExperiments().subscribe(exp =>{
-  //     for(let i = 0; i< exp.length; i++)
-  //     {
-  //       let expData : any = {};
-  //       expData = exp[i];
-  //       this.data = expData;
-
-  //       this.experiments.push(this.data)
-  //     }
-  //   })
-  // }
-
-  // deleteExperiments(id : any)
-  // {
-  //   this.userService.deleteExperiment(id).subscribe(res => {
-  //     this.experiments = [];
-  //     this.showExperiments();
-  //   })
-  //   location.reload();
-  // }
 
 }

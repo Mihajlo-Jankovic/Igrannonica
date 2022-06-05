@@ -32,7 +32,7 @@
     "Upload":"Upload",
     "Data Preview":"Data Preview",
     "Model Training" : "Model Training",
-    "Experiments" : "Expriments",
+    "Experiments" : "Experiments",
     
     "Mail Verification" : "Mail Verification",
     "Verify" : "Verify",
@@ -185,6 +185,22 @@
     "Training : validation : test" : "Training : validation : test",
     "We have sent an email to :" : "We have sent an email to :",
     "Please confirm your email address by entering the code you have received in your inbox." : "Please confirm your email address by entering the code you have received in your inbox.",
-    "This file will be downloaded as csv" : "This file will be downloaded as csv"
+    "This file will be downloaded as csv" : "This file will be downloaded as csv",
+    "If you already have an experiment with the same name, the experiment will be overwritten" : "If you already have an experiment with the same name, the experiment will be overwritten",
+    "Selected column is not numerical. Boxplot cannot be displayed." : "Selected column is not numerical. Boxplot cannot be displayed.",
+    "Too many different values." : "Too many different values.",
+    "Selected column is not numerical." : "Selected column is not numerical.",
+    "Choose column to view it's statistics" : "Choose column to view it's statistics",
+    "Choose metrics to display in graph bellow" : "Choose metrics to display in graph bellow",
+    "Training in progress..." : "Training in progress...",
+    "Discard this model" : "Discard this model",
+    "Log in to save your experiment!" : "Log in to save your experiment!",
+    "Discard" : "Discard",
+    "Network Summary" : "Network Summary",
+    "Epochs" : "Epochs",
+    "Hover Here" : "Hover Here",
+    "Model parameters" : "Model parameters",
+    "Loss Function" : "Loss Function",
+    "Learning Rate" : "Learning Rate"
 
 }

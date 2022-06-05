@@ -14,7 +14,7 @@
                 <div class="warning-body" style="padding: 0.5%;overflow: auto;">
                     <div class="warning-content">
                         <h2>{{"You're not logged in!" | translate }}</h2>
-                        <h4 style="margin-bottom: 30px;">Log in to save your experiment!</h4>
+                        <h4 style="margin-bottom: 30px;">{{'Log in to save your experiment!' | translate }}</h4>
                         <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="login()">{{'LOG IN' | translate}}</button>
                         <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn" (click)="loginWarning = false">{{'IGNORE' | translate}}</button>
                     </div>
@@ -114,14 +114,14 @@
                         <h6>{{'Loss function' | translate}}</h6>
                         <label style="display: none;" *ngIf="problemType == 'Regression'; then thenBlock1 else elseBlock1"></label>
                         <ng-template #thenBlock1>
-                            <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="Loss function" (change)="onSelected($event)">
+                            <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="{{'Loss function' | translate}}" (change)="onSelected($event)">
                                 <option class='option' value="mean_squared_error">Mean Squared Error</option>
                                 <option class='option' value="mean_squared_logarithmic_error">Mean Squared Logarithmic Error</option>
                                 <option class='option' value="mean_absolute_error">Mean Absolute Error</option>
                             </select>
                         </ng-template>
                         <ng-template #elseBlock1>
-                            <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="Loss function" (change)="onSelected($event)">
+                            <select class='dropdown' name="lossFunction" [(ngModel)]="lossFunction" ngbTooltip="{{'Loss function' | translate}}" (change)="onSelected($event)">
                                 <label style="display: none;" *ngIf="numUniques() == 2; then thenBlock2 else elseBlock2"></label>
                                 <ng-template #thenBlock2>
                                     <option class='option' value="binary_crossentropy">Binary Cross-Entropy</option>
@@ -156,7 +156,7 @@
                     </div>
                     <div class="hyperparameter">
                         <h6>{{'Regularization' | translate}}</h6>
-                        <select class='dropdown' name="regularization" [(ngModel)]="regularization" ngbTooltip="Regularization" (change)="onSelected($event)">
+                        <select class='dropdown' name="regularization" [(ngModel)]="regularization" ngbTooltip="{{'Regularization' | translate}}" (change)="onSelected($event)">
                             <option class='option' value="None">None</option>
                             <option class='option' value="L1">L1</option>
                             <option class='option' value="L2">L2</option>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="hyperparameterMetrics">
                         <h6>{{'Metrics for model comparison' | translate}}</h6>
-                        <ng-multiselect-dropdown ngbTooltip="Choose metrics to display in graph bellow" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" [disabled]="firstTraining || modelsTrained > 0" (onSelect)="onItemSelect($event)"
+                        <ng-multiselect-dropdown ngbTooltip="{{'Choose metrics to display in graph bellow' | translate}}" [placeholder]="'Choose Metrics'" [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems" [disabled]="firstTraining || modelsTrained > 0" (onSelect)="onItemSelect($event)"
                             (onSelectAll)="onSelectAll($event)" (onDeSelect)="onItemDeSelect($event)">
                         </ng-multiselect-dropdown>
                     </div>
@@ -255,7 +255,7 @@
             <div class="card" style="height: 77px;">
                 <div class="card-header">
                     <button *ngIf="!training" class="btn btn-primary btn-lg btn-block mb-3 train" type="submit" (click)="startTraining(); scrollTo(target);" [disabled]="training">{{'START TRAINING' | translate}}</button>
-                    <h3 *ngIf="training" style="text-align:center; margin-top: 0.5rem;">Training in progress...</h3>
+                    <h3 *ngIf="training" style="text-align:center; margin-top: 0.5rem;">{{'Training in progress...' | translate }}</h3>
                 </div>
             </div>
         </div>
@@ -301,7 +301,7 @@
                         </div>
                         <div class=" chart-area"><canvas id="metric-chart"> </canvas></div>
 
-                        <h3 class=" card-title" style="margin-top: 1rem;">Model parameters</h3>
+                        <h3 class=" card-title" style="margin-top: 1rem;">{{'Model parameters' | translate }}</h3>
                         <div class=" table-responsive tableScroll">
                             <table class="table tablesorter parametersTable">
                                 <thead>
@@ -312,35 +312,35 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th>Network Summary</th>
+                                        <th>{{'Network Summary' | translate }}</th>
                                         <td *ngFor="let item of modelsList; let i = index">
                                             <p *ngFor="let layer of getLayers(i)">{{layer[0]}} {{layer[1]}}</p>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Regularization</th>
+                                        <th>{{'Regularization' | translate }}</th>
                                         <td *ngFor="let item of modelsList; let i = index">{{regularizationText(i)}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Loss Function</th>
+                                        <th>{{'Loss Function' | translate}}</th>
                                         <td *ngFor="let item of modelsList; let i = index">{{item.parameters["lossFunction"]}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Optimizer</th>
+                                        <th>{{'Optimizer' | translate }}</th>
                                         <td *ngFor="let item of modelsList; let i = index">{{item.parameters["optimizer"]}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Learning Rate</th>
+                                        <th>{{'Learning Rate' | translate }}</th>
                                         <td *ngFor="let item of modelsList; let i = index">{{item.parameters["learningRate"]}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Epochs</th>
+                                        <th>{{'Epochs' | translate }}</th>
                                         <td *ngFor="let item of modelsList; let i = index">{{item.parameters["numEpochs"]}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Inputs</th>
+                                        <th>{{'Inputs' | translate }}</th>
                                         <td *ngFor="let item of modelsList; let i = index">
-                                            <span class="show">Hover Here
+                                            <span class="show">{{'Hover Here' | translate }}
                                                 <div class="tip">
                                                     <p *ngFor="let input of item.parameters['inputList']" class="inputField"> {{input}} </p>
                                                 </div>
@@ -401,7 +401,7 @@
                                 <tbody>
                                     <tr *ngFor="let item of modelsList; let i = index">
                                         <td style="width: 30px;">
-                                            <button class=" btn btn-link" placement="left" ngbTooltip="Discard this model" container="body" (click)="discardCheck(item.id-1)">
+                                            <button class=" btn btn-link" placement="left" ngbTooltip="{{'Discard this model' | translate}}" container="body" (click)="discardCheck(item.id-1)">
                                                 <i class="tim-icons icon-trash-simple" style="font-size: 2em; color:#7d3c8b"> </i>
                                             </button>
                                         </td>
@@ -434,7 +434,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class=" card-title saveTitle" style="width:auto; float: left;">{{'Save your experiment' | translate}}</h3>
-                    <span class="show"><h3 class="help">?</h3><div class="tip">If you already have an experiment with the same name, the experiment will be overwritten</div></span>
+                    <span class="show"><h3 class="help">?</h3><div class="tip">{{'If you already have an experiment with the same name, the experiment will be overwritten' | translate}}</div></span>
                 </div>
                 <div class="card-body">
                     <div class="expContainer eciLeft">
