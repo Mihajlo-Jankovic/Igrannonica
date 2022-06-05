@@ -239,7 +239,7 @@
                     <div class="tab-content">
                         <div class="divInput">
                             <h4>{{'Inputs' | translate}}</h4>
-                            <div *ngFor="let item of statistic['colList']; let i = index">
+                            <div *ngFor="let item of colNameArray; let i = index">
                                 <div class="Ioption">
                                     <div class="checkDIV">
                                         <input type="checkbox" id="{{ 'check1' + i }}" value={{item}} (change)="inputCheckedFun($event); disableOutput(i)" [disabled]="checks[i]" [checked]="checks1[i]">
@@ -251,7 +251,7 @@
                         </div>
                         <div class="divOutput">
                             <h4>{{'Output' | translate}}</h4>
-                            <div *ngFor="let item of statistic['colList']; let i = index">
+                            <div *ngFor="let item of colNameArray; let i = index">
                                 <div class="Ooption">
                                     <div class="radioDIV">
                                         <input type="radio" name="outputSelection" id="{{ 'radio' + i }}" value={{item}} (change)="selectedOutputFun($event); disableInput(i)" [disabled]="radios[i]" [checked]="radios1[i]">
