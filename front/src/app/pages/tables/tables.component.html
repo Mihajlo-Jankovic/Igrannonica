@@ -158,7 +158,7 @@
                         <button type="submit" class="btn btn-primary btn-lg btn-block mb-3 train" (click)="plotCheck()" style="margin-top: 15px;">{{plotButton}}</button>
                     </div>
                     <select ngbTooltip="Change applies to statistics, chart and corelation matrix" class='dropdown' (change)='onSelectedCol($event);' [ngModel]="selectedColName" style="width: 100%; right: 0px; top: 0px;">
-                        <option class="option" *ngFor="let item of statistic['colList']; let i = index" value={{item}}>{{item}}</option>
+                        <option class="option" *ngFor="let item of colNameArray; let i = index" value={{item}}>{{item}}</option>
                     </select>
                 </div>
                 <div class=" card-body" [hidden]="plotButton != 'Pie Chart'">
