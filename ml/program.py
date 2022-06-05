@@ -223,7 +223,6 @@ def startTraining(connid, fileName, inputList, output, encodingList, ratio1, rat
     except: 
         data['trainingData'] = {}
         data['ended'] = 3
-        print(data)
         r = requests.post(ENDPOINT_PATH, headers=headers, data=json.dumps(data), verify=False)
         return {"message" : "Training failed."}
     
