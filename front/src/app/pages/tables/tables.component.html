@@ -165,7 +165,7 @@
                     <div id="chart" *ngIf="selectedColDiv && numCol2">
                         <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [plotOptions]="chartOptions.plotOptions" [title]="chartOptions.title" [stroke]="chartOptions.stroke"></apx-chart>
                     </div>
-                    <h3 [hidden]="numCol2" style="text-align: center; margin-top: 7rem;"> {{'Selected column is not numerical. Boxplot cannot be displayed.' | translate } </h3>
+                    <h3 [hidden]="numCol2" style="text-align: center; margin-top: 7rem;"> {{'Selected column is not numerical. Boxplot cannot be displayed.' | translate }} </h3>
                 </div>
                 <div class=" card-body" [hidden]="plotButton == 'Pie Chart'">
                     <div class="chart-area" style="height:350px;">
@@ -391,7 +391,7 @@
                                 <option class='option' value="all">{{'All' | translate}}</option>
                                 <option class='option' value="null">{{'Null' | translate}}</option>
                                 <option class='option' value="not null">{{'Not Null' | translate}}</option>
-                                <option class='option' value="outlier">Outliers</option>
+                                <option class='option' value="outlier">{{'Outliers' | translate}}</option>
                             </select>
                         </div>
                         <div class="dropdownContainer dpr">

@@ -173,8 +173,7 @@ export class TablesComponent {
 
   public poruka: string;
 
-  statsButton: string = "Full Statistics";
-  matrixButton: string = "Full Matrix";
+
 
   X: boolean = true;
   ioSelection: boolean = false;
@@ -230,6 +229,10 @@ export class TablesComponent {
   buttonOutliers = "Replace";
 
   public message:string;
+  public message2:string;
+
+  statsButton="Full Statistics" ;
+  matrixButton= "Full Matrix";
 
   colNameArray: any = [];
 
@@ -244,8 +247,39 @@ export class TablesComponent {
   ngOnInit() {
     this.lang.lanClickedEvent.subscribe((data:string) =>{
       this.message = data;
+      if(data == 'sr')
+      this.message2 = "sr";
+      else if(data == "en")
+      this.message2 = "en";
+      if(this.message == "sr") {
+        this.statsButton="Cela statistika";
+      }
+      else{
+        this.statsButton = "Full Statistics";
+      }
+
+      if(this.message == "sr") this.matrixButton="Cela matrica";
+      else{
+        this.matrixButton = "Full Matrix";
+      }
+
+      if(this.message == "sr"){
+        this.buttonMissingValues = "Zameni";
+      }
+      else{
+        this.buttonMissingValues = "Replace";
+      }
+
+      if(this.message == "sr"){
+        this.buttonOutliers = "Zameni";
+      }
+      else{
+        this.buttonOutliers = "Replace";
+      }
     });
     this.message = sessionStorage.getItem("lang");
+    console.log(this.message2);
+   
 
     sessionStorage.setItem('lastPage', 'datapreview');
     if (this.cookieCheck) {
@@ -1405,12 +1439,13 @@ export class TablesComponent {
 
   expandStats() {
     var stats = document.getElementsByClassName('statistics')[0];
-    if (this.statsButton == "Full Statistics") {
+    if (this.statsButton == "Full Statistics" || this.statsButton=="Cela statistika") {
       this.hideBoxplot = true;
       this.hideMatrix = true;
       this.hideS = true;
       stats.classList.add('col-lg-12');
-      this.statsButton = "Close Statistics"
+      this.statsButton = "Close Statistics";
+      if(this.message2=="sr") this.statsButton = "Zatvori statistiku";
       document.getElementById("stat").classList.add("height-change");
     }
     else {
@@ -1418,7 +1453,8 @@ export class TablesComponent {
       this.hideMatrix = false;
       this.hideS = false;
       stats.classList.remove('col-lg-12');
-      this.statsButton == "Full Statistics"
+      this.statsButton == "Full Statistics";
+      if(this.message2=='sr')this.statsButton="Cela statistika";
 
       document.getElementById("stat").classList.remove("height-change");
     }
@@ -1431,13 +1467,14 @@ export class TablesComponent {
 
     let height = this.fullCorrColNamesArray.length * 80 + 180;
 
-    if (this.matrixButton == "Full Matrix") {
+    if (this.matrixButton == "Full Matrix" || this.matrixButton=="Cela matrica") {
       this.hideBoxplot = true;
       this.hideStatistics = true;
       this.hideM = true;
       matrix.classList.add('col-lg-12');
       matrix.classList.add('largeCorr');
       this.matrixButton = "Close Matrix";
+      if(this.message2 == "sr") this.matrixButton = "Zatvori matricu"
       matrixCard.setAttribute("style", "height:" + height + "px;");
       corr.setAttribute("style", "height: 100%;");
     }
@@ -1448,6 +1485,7 @@ export class TablesComponent {
       matrix.classList.remove('col-lg-12');
       matrix.classList.remove('largeCorr');
       this.matrixButton = "Full Matrix";
+      if(this.message2 == "sr") this.matrixButton=="Cela matrica";
       matrixCard.setAttribute("style", "height: 480px;");
       corr.setAttribute("style", "height: 405px;");
     }
@@ -1766,14 +1804,22 @@ export class TablesComponent {
   }
 
   selectedTypeMessage() {
-    if (this.selectedType == 'null')
-      return "No rows with null values."
-    else if (this.selectedType == "not null")
-      return "No rows with not null values."
-    else if (this.selectedType == 'outlier')
-      return "No rows with outliers."
-    else
-      return "Empty dataset."
+    if (this.selectedType == 'null'){
+      if(this.message2 == "sr") return "Nema redova sa nedostajućim vrednostima";
+      else return "No rows with null values.";
+    }
+    else if (this.selectedType == "not null"){
+      if(this.message2 == "sr") return "Nema redova bez nedostajućih vrednosti";
+      else return "No rows with not null values.";
+    }
+    else if (this.selectedType == 'outlier'){
+      if(this.message2 == "sr") return "Nema redova sa izuzecima";
+      else return "No rows with outliers.";
+    }
+    else{
+      if(this.message2 == "sr") return "Prazan skup podataka";
+      else return "Empty dataset.";
+    }
   }
 
   isDisabledOutput(item: string) 
