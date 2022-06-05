@@ -7,6 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { UserService } from "src/app/services/user.service";
 import { ToastrService } from "ngx-toastr";
 import { NotificationsService } from "src/app/services/notifications.service";
+import { LanguageService } from "src/app/services/language.service";
 
 
 @Component({
@@ -47,12 +48,13 @@ export class UserComponent implements OnInit {
   userInfo: any;
 
   public poruka: string;
+  public message: string;
 
   getUsername() {
     return sessionStorage.getItem('username');
   }
 
-  constructor(private notify: NotificationsService, private toastr: ToastrService, private userInfoService: UserInfoService, private editService: EditService, private editPasswordService: EditPasswordService, private formBuilder: FormBuilder, private userService: UserService) {
+  constructor(public lang:LanguageService,private notify: NotificationsService, private toastr: ToastrService, private userInfoService: UserInfoService, private editService: EditService, private editPasswordService: EditPasswordService, private formBuilder: FormBuilder, private userService: UserService) {
     this.editForm = formBuilder.group({
       firstname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
       lastname: ['', [Validators.required, Validators.pattern("^[A-Za-z]{2,20}")]],
@@ -67,6 +69,12 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.lang.lanClickedEvent.subscribe((data:string) =>{
+      this.message = data;
+    });
+
+    this.message = sessionStorage.getItem("lang");
+
     sessionStorage.setItem('lastPage', 'profile');
     this.getInfo();
   }
@@ -106,14 +114,14 @@ export class UserComponent implements OnInit {
     if (form.value.firstname && form.value.lastname && form.value.password && form.value.confirmPassword) {
       if (form.value.password != form.value.confirmPassword) {
         this.poruka = "Password mismatched!";
-        //this.poruka= "Lozinke se ne poklapaju"
+        if(this.message == "sr")this.poruka= "Lozinke se ne poklapaju"
         this.notify.showNotification(this.poruka);
       }
       else {
         this.editService.edit(form.value.firstname, form.value.lastname, form.value.password).subscribe(async token => {
           let JSONtoken: string = JSON.stringify(token);
           this.poruka = "Succesfully changed!";
-          //this.poruka = "Usešno promenjeno";
+          if(this.message == "sr")this.poruka = "Usešno promenjeno";
           this.notify.showNotification(this.poruka);
           await new Promise(f => setTimeout(f, 50));
           this.getInfo();
@@ -122,7 +130,7 @@ export class UserComponent implements OnInit {
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error: Wrong password!") {
             this.poruka = "Wrong password!";
-            //this.poruka = "Pogrešna lozinka";
+            if(this.message == "sr")this.poruka = "Pogrešna lozinka";
             this.notify.showNotification(this.poruka);
           }
         })
@@ -134,14 +142,14 @@ export class UserComponent implements OnInit {
     if (form.value.currentPassword && form.value.newPassword && form.value.confirmNewPassword) {
       if (form.value.newPassword != form.value.confirmNewPassword) {
         this.poruka = "Password mismatched!";
-        //this.poruka= "Lozinke se ne poklapaju"
+        if(this.message == "sr")this.poruka= "Lozinke se ne poklapaju"
         this.notify.showNotification(this.poruka);
       }
       else {
         this.editPasswordService.edit(form.value.currentPassword, form.value.newPassword).subscribe(async token => {
           let JSONtoken: string = JSON.stringify(token);
           this.poruka = "Succesfully changed!";
-          //this.poruka = "Usešno promenjeno";
+          if(this.message == "sr")this.poruka = "Usešno promenjeno";
           this.notify.showNotification(this.poruka);
           await new Promise(f => setTimeout(f, 50));
           this.getInfo();
@@ -150,7 +158,7 @@ export class UserComponent implements OnInit {
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error: Wrong password!") {
             this.poruka = "Wrong password!";
-            //this.poruka = "Pogrešna lozinka";
+            if(this.message == "sr")this.poruka = "Pogrešna lozinka";
             this.notify.showNotification(this.poruka);
           }
         })

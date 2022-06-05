@@ -17,6 +17,7 @@ import {
   ApexTooltip
 } from "ng-apexcharts";
 import { NotificationsService } from "src/app/services/notifications.service";
+import { LanguageService } from "src/app/services/language.service";
 
 declare function myFunc(): any;
 
@@ -227,7 +228,9 @@ export class TablesComponent {
   buttonMissingValues = "Replace";
   buttonOutliers = "Replace";
 
-  constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
+  public message:string;
+
+  constructor(public lang: LanguageService, private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
     sessionStorage.removeItem('statistics');
     this.cookieCheck = this.cookie.get('cortexToken');
     this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
@@ -236,6 +239,11 @@ export class TablesComponent {
   }
 
   ngOnInit() {
+    this.lang.lanClickedEvent.subscribe((data:string) =>{
+      this.message = data;
+    });
+    this.message = sessionStorage.getItem("lang");
+
     sessionStorage.setItem('lastPage', 'datapreview');
     if (this.cookieCheck) {
       this.refreshToken();
@@ -394,7 +402,7 @@ export class TablesComponent {
             let StringToken = JSON.parse(JSONtoken).responseMessage;
             if (StringToken == "Error encountered while reading dataset content.") {
               this.poruka = "Error encoundered while reading dataset content";
-              // this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
+              if(this.message == "sr") this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
               this.notify.showNotification(this.poruka);
             }
           })
@@ -434,7 +442,7 @@ export class TablesComponent {
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while reading dataset content.") {
             this.poruka = "Error encoundered while reading dataset content";
-            // this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
+            if(this.message == "sr") this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
             this.notify.showNotification(this.poruka);
           }
         })
@@ -685,7 +693,7 @@ export class TablesComponent {
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while calculating statistics.") {
             this.poruka = "Error encoundered while calculating statistics";
-            //this.poruka = "Došlo je do greške pri izračunavanju statistike";
+            if(this.message == "sr") this.poruka = "Došlo je do greške pri izračunavanju statistike";
             this.notify.showNotification(this.poruka);
           }
         })
@@ -1317,14 +1325,14 @@ export class TablesComponent {
       this.showStatistics(this.selectedColName, true);
       this.selectedRows = [];
       this.poruka = "Delete successfull";
-      //this.poruka = "Red/ovi su uspešno obrisani";
+      if(this.message == "sr") this.poruka = "Red/ovi su uspešno obrisani";
       this.notify.showNotification(this.poruka);
     }, err => {
       let JSONtoken: string = JSON.stringify(err.error);
       let StringToken = JSON.parse(JSONtoken).responseMessage;
       if (StringToken == "Error encoundered while deleting a row from the dataset.") {
         this.poruka = "Error encoundered while deleting a row from the dataset";
-        //this.poruka = "Došlo je do greške prilikom brisanja reda iz skupa podataka"
+        if(this.message == "sr") this.poruka = "Došlo je do greške prilikom brisanja reda iz skupa podataka"
         this.notify.showNotification(this.poruka);
       }
     });
@@ -1342,7 +1350,7 @@ export class TablesComponent {
 
     if (this.isNumericFun(columnName) && !this.isNumber(value)) {
       this.poruka = "You are trying to insert non numeric value into numeric column"
-      // this.poruka = "Pokušavate da umetnete nenumeričku vrednost u numeričku kolonu"
+      if(this.message == "sr") this.poruka = "Pokušavate da umetnete nenumeričku vrednost u numeričku kolonu"
       this.notify.showNotification(this.poruka);
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
@@ -1356,7 +1364,7 @@ export class TablesComponent {
         this.resetStatistic();
         this.showStatistics(this.selectedColName, true);
         this.poruka = "Edit successfull";
-        // this.poruka = "Izmena je uspela";
+        if(this.message == "sr") this.poruka = "Izmena je uspela";
         this.notify.showNotification(this.poruka);
 
       }, err => {
@@ -1364,7 +1372,7 @@ export class TablesComponent {
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if (StringToken == "Error encoundered while deleting a row from the dataset.") {
           this.poruka = "Error encoundered while editing cell content";
-          //this.poruka = "Došlo je do greške pri uređivanju sadržaja ćelije";
+          if(this.message == "sr") this.poruka = "Došlo je do greške pri uređivanju sadržaja ćelije";
           this.notify.showNotification(this.poruka);
         }
       })
@@ -1595,12 +1603,12 @@ export class TablesComponent {
     let filename =sessionStorage.getItem('filename');
     if (this.isNumericFun(this.selectedToFillMissingValCol) && !this.isNumber(this.enteredToFillMissingValCol)) {
       this.poruka = "You are trying to replace with non numeric value";
-      //this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
+      if(this.message == "sr") this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
       this.notify.showNotification(this.poruka);
     }
     else if (this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
       this.poruka = "Please choose value to replace missing values.";
-      //this.poruka = "Izaberite vrednost da biste popunili vrednosti koje nedostaju";
+      if(this.message == "sr") this.poruka = "Izaberite vrednost da biste popunili vrednosti koje nedostaju";
       this.notify.showNotification(this.poruka);
     }
     else {
@@ -1617,7 +1625,7 @@ export class TablesComponent {
             //this.reset();
             //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();
@@ -1634,7 +1642,7 @@ export class TablesComponent {
             //this.reset();
             //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();
@@ -1669,12 +1677,12 @@ export class TablesComponent {
     let filename = sessionStorage.getItem('filename');
     if (this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
       this.poruka = "Please choose value to replace outliers.";
-      //this.poruka = "Izaberite vrednost da biste zamenili izuzetke";
+      if(this.message == "sr") this.poruka = "Izaberite vrednost da biste zamenili izuzetke";
       this.notify.showNotification(this.poruka);
     }
     else if (!this.isNumber(this.enteredToReplaceOutliersCol) && this.enteredToReplaceOutliersCol != "") {
       this.poruka = "You are trying to replace with non numeric value";
-      //this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
+      if(this.message == "sr") this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
       this.notify.showNotification(this.poruka);
     }
     else {
@@ -1689,7 +1697,7 @@ export class TablesComponent {
 
             this.resetOutliers();
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();
@@ -1704,7 +1712,7 @@ export class TablesComponent {
 
             this.resetOutliers();
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();

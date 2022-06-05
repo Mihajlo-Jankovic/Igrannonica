@@ -13,6 +13,7 @@ import * as signalR from '@microsoft/signalr'
 import { SignalRService } from "src/app/services/signal-r.service";
 import { trainedModel } from "src/app/models/trainedModel.model";
 import { Router } from "@angular/router";
+import { LanguageService } from "src/app/services/language.service";
 
 @Component({
   selector: "app-dashboard",
@@ -116,11 +117,12 @@ export class DashboardComponent implements OnInit {
   public evaluationButton = false;
 
   public poruka: string;
+  public message:string;
 
   token: string;
   cookieCheck: any;
 
-  constructor(private router: Router,private toastr: ToastrService,private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { 
+  constructor(public lang:LanguageService, private router: Router,private toastr: ToastrService,private cookieService:CookieService, private http:HttpClient, private loginService: LoginService, private notify: NotificationsService) { 
     this.cookieCheck = this.cookieService.get('cortexToken');
   }
 
@@ -258,6 +260,12 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.lang.lanClickedEvent.subscribe((data:string) =>{
+      this.message = data;
+    });
+
+    this.message = sessionStorage.getItem("lang");
+
     sessionStorage.setItem('lastPage', 'training');
     if (this.cookieCheck) {
       this.refreshToken();
@@ -678,7 +686,9 @@ export class DashboardComponent implements OnInit {
   startTraining() {
     if(sessionStorage.getItem('output') == null || sessionStorage.getItem('inputList') == null) {
       this.poruka = "Input or output not selected";
-      // this.poruka = "Ulazni/izlazni podaci nisu selektovani"
+      if(this.message=="sr"){
+        this.poruka = "Ulazni/izlazni podaci nisu selektovani";
+      }
       this.notify.showNotification(this.poruka);
       return;
     }
@@ -730,7 +740,9 @@ export class DashboardComponent implements OnInit {
           this.modelsHeader.push('val_' + this.selectedItems[i]['item_id']);
         }
         this.poruka = "Starting training..."
-        //  this.poruka = "Startovanje obuke..."
+        if(this.message=="sr"){
+           this.poruka = "Startovanje obuke...";
+        }
         this.notify.showNotification(this.poruka);
 
         
@@ -739,13 +751,17 @@ export class DashboardComponent implements OnInit {
         this.training = false;
         if(this.problemType == "Regression") {
           this.poruka = "Training failed, try again later."
-          //this.poruka = "Obuka nije uspela, pokušajte kasnije"
+          if(this.message=="sr"){
+            this.poruka = "Obuka nije uspela, pokušajte kasnije";
+          }
           this.notify.showNotification(this.poruka);
         }
         else {
           this.poruka = "Training failed, try chaning loss function or metrics."
-          //this.poruka = "Obuka nije uspela, pokušajte da promenite funkciju gubitka ili metriku"
-          this.notify.showNotification("Training failed, try chaning loss function or metrics.")
+          if(this.message=="sr"){
+            this.poruka = "Obuka nije uspela, pokušajte da promenite funkciju gubitka ili metriku";
+          }
+          this.notify.showNotification(this.poruka);
         }
       }
     );
@@ -836,8 +852,10 @@ export class DashboardComponent implements OnInit {
         sessionStorage.setItem('description', this.description);
         this.router.navigate(['training']);
         this.poruka = "Experiment saved successfully!"
-        //this.poruka = "Eksperiment je uspešno sačuvan"
-        this.notify.showNotification("Experiment saved successfully!");
+        if(this.message=="sr"){
+          this.poruka = "Eksperiment je uspešno sačuvan";
+        }
+        this.notify.showNotification(this.poruka);
       }, err=>{
         let JSONtoken: string = JSON.stringify(err.error);
         let StringToken = JSON.parse(JSONtoken).responseMessage;
@@ -1394,8 +1412,12 @@ export class DashboardComponent implements OnInit {
 
         sessionStorage.setItem('modelsList', JSON.stringify(this.modelsList));
         
-        this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
-        // this.notify.showNotification("Obuka modela " + this.modelsTrained + " je završena.");
+        if(this.message=="sr"){ 
+          this.notify.showNotification("Obuka modela " + this.modelsTrained + " je završena.");
+        }
+        else{
+         this.notify.showNotification("Training of model " + this.modelsTrained + " is done.");
+        }
         
       }
       else if(data['ended'] == 2)  {
@@ -1405,7 +1427,7 @@ export class DashboardComponent implements OnInit {
       }
       else if(data['ended'] == 3) {
         this.poruka = "Training failed, try changing problem type, loss function and metrics";
-       // this.poruka = "Obuka nije uspela, pokušajte da promenite tip problema, funkciju gubitka ili metrike";
+        if(this.message =="sr") this.poruka = "Obuka nije uspela, pokušajte da promenite tip problema, funkciju gubitka ili metrike";
         this.notify.showNotification(this.poruka);
       }
     });
@@ -1413,7 +1435,7 @@ export class DashboardComponent implements OnInit {
 
   error() {
     this.poruka = "Error";
-   // this.poruka = "Greška"
+    if(this.message =="sr")  this.poruka = "Greška"
     this.notify.showNotification(this.poruka);
   }
 }

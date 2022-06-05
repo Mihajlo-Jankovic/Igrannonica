@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { NotificationsService } from 'src/app/services/notifications.service';
 import { ExpNameService } from 'src/app/services/expName.service';
+import { LanguageService } from 'src/app/services/language.service';
 
 @Component({
   selector: 'app-upload',
@@ -40,10 +41,13 @@ export class UploadComponent implements OnInit {
   deleteWarning: boolean = false;
   toDelete: any;
 
+  public message:string;
+  public poruka : string;
+
   public FilesList: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, thisUser: string, Public:string, dateCreated:Date}[];
   public FilesListUnauthorized: { fileId: number, fileName: string, userId: number, username: string, isPublic: boolean, randomFileName: string, dateCreated:Date}[];
 
-  constructor(private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService, private expName : ExpNameService) {
+  constructor(public lang:LanguageService,private notify: NotificationsService, private filesService: FilesService, private router: Router,private http: HttpClient, private loginService: LoginService, private userService: UserService, private cookie: CookieService, private toastr: ToastrService, private expName : ExpNameService) {
     // this.username = this.getUsername();
     if(this.cookie.get('cortexToken')) {
       this.cookieCheck = this.cookie.get('cortexToken');
@@ -80,6 +84,12 @@ export class UploadComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.lang.lanClickedEvent.subscribe((data:string) =>{
+      this.message = data;
+    });
+
+    this.message = sessionStorage.getItem("lang");
+
     sessionStorage.setItem('lastPage', 'upload');
     this.showDatasets(this.selectedPrivacyType, this.pageNum);
   }
@@ -170,8 +180,11 @@ export class UploadComponent implements OnInit {
 
     let file = <File>files[0];
     var fileSize = file.size;
-    if (fileSize / 1048576 > 5000)
-      this.notify.showNotification("Maximum file size is 500MB");
+    if (fileSize / 1048576 > 5000){
+      this.poruka = "Maximum file size is 500MB";
+      if(this.message == "sr") this.poruka = "Maksimalna veličina fajla je 500MB";
+      this.notify.showNotification(this.poruka);
+    }
     else {
       var fileExt = file.name.split('.').pop();
       let allowedExt = ['csv', 'json', 'xlsx', 'txt']
@@ -226,8 +239,11 @@ export class UploadComponent implements OnInit {
           })
         }
       }
-      else
-        this.notify.showNotification("Wrong file type!Available formats are csv, json, xlsx and txt.");
+      else{
+        this.poruka = "Wrong file type!Available formats are csv, json, xlsx and txt.";
+        if(this.message == "sr") this.poruka = "Pogrešan tip datoteke! Dostupni formati su csv, json, xlsx i txt";
+        this.notify.showNotification(this.poruka);
+      }
     }
 
   }
@@ -345,13 +361,17 @@ export class UploadComponent implements OnInit {
     let options = { headers: headers };
     this.http.get<any>(this.configuration.downloadFileUnauthorized + item.randomFileName, options).subscribe(token => {
       let JSONtoken: string = JSON.stringify(token);
-      this.notify.showNotification("Dataset deleted successfully.")
+      this.poruka = "Dataset deleted successfully."
+      if(this.message == "sr") this.poruka = "Skup podataka je uspešno izbrisan";
+      this.notify.showNotification(this.poruka);
       location.reload();
     },err=>{
       let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while deleting dataset.") {
-            this.notify.showNotification(StringToken);
+            this.poruka = "Error encoundered while deleting dataset.";
+            if(this.message == "sr") this.poruka = "Došlo je do greške prilikom brisanja skupa podataka";
+            this.notify.showNotification(this.poruka);
           }
     })
   }
@@ -423,7 +443,9 @@ export class UploadComponent implements OnInit {
 
 
   uploadNotificationSuccess() {
-    this.notify.showNotification("Dataset uploaded successfully.");
+    this.poruka = "Dataset uploaded successfully.";
+    if(this.message == "sr") this.poruka = "Skup podataka je uspešno otpremljen";
+    this.notify.showNotification(this.poruka);
   }
 
   nextPage(i: number) {
@@ -454,9 +476,13 @@ export class UploadComponent implements OnInit {
     }
   }
   uploadNotificationBadFileType() {
-    this.notify.showNotification("Bad file type.");
+    this.poruka = "Bad file type.";
+    if(this.message == "sr") this.poruka = "Loš tip datoteke";
+    this.notify.showNotification(this.poruka);
   }
   error() {
-    this.notify.showNotification("Error.");
+    this.poruka = "Error.";
+    if(this.message == "sr") this.poruka = "Greška";
+    this.notify.showNotification(this.poruka);
   }
 }
