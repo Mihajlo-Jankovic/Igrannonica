@@ -288,7 +288,69 @@
                         </div>
                     </div>
                     <div class="tab2" [hidden]="!resultsButton" #target2>
-                        <div class="tab-header" style="padding: 0px; width:100%; height: auto">
+
+
+                        <h3 class=" card-title" style="margin-top: 1rem;">{{'Compare training results' | translate}}</h3>
+                        <div class="filter-left">
+                            <h6>{{'Choose metric to plot' | translate}}</h6>
+                            <select class='dropdown' (change)="chartThisMetric(metricDropdown)" [(ngModel)]="metricDropdown" ngbTooltip="{{'Choose metric to plot' | translate}}" style="float:left;">
+                                <ng-container *ngFor="let item of modelsHeader; let i = index">
+                                    <option class='option' value="{{item}}">{{item}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                        <div class=" chart-area"><canvas id="metric-chart"> </canvas></div>
+
+                        <h3 class=" card-title" style="margin-top: 1rem;">Model parameters</h3>
+                        <div class=" table-responsive tableScroll">
+                            <table class="table tablesorter parametersTable">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th *ngFor="let item of modelsList; let i = index">Model {{i}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Network Summary</th>
+                                        <td *ngFor="let item of modelsList; let i = index">
+                                            <p *ngFor="let layer of getLayers(i)">{{layer[0]}} {{layer[1]}}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Regularization</th>
+                                        <td *ngFor="let item of modelsList; let i = index">{{regularizationText(i)}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Loss Function</th>
+                                        <td *ngFor="let item of modelsList; let i = index">{{item.parameters["lossFunction"]}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Optimizer</th>
+                                        <td *ngFor="let item of modelsList; let i = index">{{item.parameters["optimizer"]}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Learning Rate</th>
+                                        <td *ngFor="let item of modelsList; let i = index">{{item.parameters["learningRate"]}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Epochs</th>
+                                        <td *ngFor="let item of modelsList; let i = index">{{item.parameters["numEpochs"]}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Inputs</th>
+                                        <td *ngFor="let item of modelsList; let i = index">
+                                            <span class="show">Hover Here
+                                                <div class="tip">
+                                                    <p *ngFor="let input of item.parameters['inputList']" class="inputField"> {{input}} </p>
+                                                </div>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-header" style="padding: 0px; width:100%; height: auto; margin-top: 1rem;">
                             <div class="headerLeft">
                                 <h3 class="card-title" style="padding:0; margin: 0px;">{{'Trained Models-Epoch:' | translate}} {{selectedEpoch+1}} </h3>
                             </div>
@@ -327,7 +389,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class=" table-responsive" style="min-height: 200px; max-height: 500px;" id="table">
+                        <div class=" table-responsive tableScroll" style="min-height: 200px; max-height: 500px;" id="table">
                             <table class=" table tablesorter">
                                 <thead>
                                     <tr>
@@ -349,16 +411,6 @@
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class=" card-title" style="margin-top: 1rem;">{{'Compare training results' | translate}}</h3>
-                        <div class="filter-left">
-                            <h6>{{'Choose metric to plot' | translate}}</h6>
-                            <select class='dropdown' (change)="chartThisMetric(metricDropdown)" [(ngModel)]="metricDropdown" ngbTooltip="{{'Choose metric to plot' | translate}}" style="float:left;">
-                                <ng-container *ngFor="let item of modelsHeader; let i = index">
-                                    <option class='option' value="{{item}}">{{item}}</option>
-                                </ng-container>
-                            </select>
-                        </div>
-                        <div class=" chart-area"><canvas id="metric-chart"> </canvas></div>
                     </div>
                     <div class="tab3" [hidden]="!evaluationButton">
                         <h3 class="card-title">{{'Model Evaluation' | translate}}</h3>
@@ -381,7 +433,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class=" card-title saveTitle">{{'Save your experiment' | translate}}</h3>
+                    <h3 class=" card-title saveTitle" style="width:auto; float: left;">{{'Save your experiment' | translate}}</h3>
+                    <span class="show"><h3 class="help">?</h3><div class="tip">If you already have an experiment with the same name, the experiment will be overwritten</div></span>
                 </div>
                 <div class="card-body">
                     <div class="expContainer eciLeft">

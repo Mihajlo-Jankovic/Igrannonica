@@ -432,6 +432,7 @@ export class DashboardComponent implements OnInit {
     this.myChartData = new Chart(this.ctx, config);
 
     this.checkStorage();
+    console.log(this.modelsList);
   }
   
   refreshToken(){
@@ -1329,6 +1330,39 @@ export class DashboardComponent implements OnInit {
     this.chartThisMetric("loss");
     this.chartEvaluation("loss");
     this.updateOptions();
+  }
+
+  public networkSummary(id: number) {
+    var model = this.modelsList[id];
+    var string = "";
+    for (let i = 0; i < model.parameters["numLayers"]; i++){
+      string += model.parameters["layerList"][i].toString() + " " + model.parameters["activationFunctions"][i] + "<br>";
+    }
+    console.log(string);
+    return string;
+  }
+
+  public regularizationText(id: number) {
+    var model = this.modelsList[id];
+    if(model.parameters["regularization"] == "None"){
+      return "None"
+    }
+    else {
+      return model.parameters["regularization"] + ": " + model.parameters["regularizationRate"];
+    }
+  }
+
+  public getLayers(id: number){
+    var model = this.modelsList[id];
+    var layers = model.parameters["layerList"];
+    var funcs = model.parameters["activationFunctions"];
+    var temp: [[number, string]] = [[layers[0], funcs[0]]];
+
+    for(let i = 1; i < layers.length; i++)
+    {
+      temp.push([layers[i], funcs[i]]);
+    }
+    return temp;
   }
 
   //SOKETI
