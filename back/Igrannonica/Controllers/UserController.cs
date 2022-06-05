@@ -267,7 +267,6 @@ namespace Igrannonica.Controllers
         {
             TokenDTO token = new TokenDTO();
             User user =  _context.User.Where(u => u.username.Equals(loginDTO.username)).FirstOrDefault();
-            Console.WriteLine(user.username + " : " + loginDTO.username);
             if (user == null || user.username.Equals(loginDTO.username) == false)
             {
                 return NotFound(new { responseMessage = _configuration.GetSection("ResponseMessages:UsernameNotFound").Value });
