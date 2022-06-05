@@ -6,7 +6,6 @@ import { LoginService } from 'src/app/services/login.service';
 import { FilesService } from 'src/app/services/upload/files.service';
 import { UserService } from 'src/app/services/user.service';
 import { ToastrService } from 'ngx-toastr';
-import files from 'src/files.json';
 import { Router } from '@angular/router';
 import { NotificationsService } from 'src/app/services/notifications.service';
 import { ExpNameService } from 'src/app/services/expName.service';
@@ -228,7 +227,7 @@ export class UploadComponent implements OnInit {
         }
       }
       else
-        this.notify.showNotification("Wrong file type!Available formats are csv, json, xlsx, txt.");
+        this.notify.showNotification("Wrong file type!Available formats are csv, json, xlsx and txt.");
     }
 
   }
@@ -258,7 +257,9 @@ export class UploadComponent implements OnInit {
         let downloadLink=document.createElement('a');
         downloadLink.href = window.URL.createObjectURL(new Blob(binaryData,{type:dataType}));
         if(item.fileName){
-          downloadLink.setAttribute('download',item.fileName);
+          let filename = item.fileName.split(".");
+          filename = filename[0]+".csv";
+          downloadLink.setAttribute('download',filename);
         }
         document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -281,7 +282,9 @@ export class UploadComponent implements OnInit {
       let downloadLink = document.createElement('a');
       downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
       if (item.fileName) {
-        downloadLink.setAttribute('download', item.fileName);
+        let filename = item.fileName.split(".");
+        filename = filename[0]+".csv";
+        downloadLink.setAttribute('download', filename);
       }
       document.body.appendChild(downloadLink);
       downloadLink.click();
@@ -328,8 +331,8 @@ export class UploadComponent implements OnInit {
   delete(item) {
     if(sessionStorage.getItem('filename') == item.randomFileName)
     {
-      this.cookie.delete('filename');
-      this.cookie.delete('realName');
+      sessionStorage.removeItem('filename');
+      sessionStorage.removeItem('realName');
       this.router.navigate['upload'];
     }
     this.loggedUser = this.loginService.isAuthenticated();

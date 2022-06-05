@@ -336,7 +336,7 @@ export class TablesComponent {
   }
 
   getFileName() {
-    return sessionStorage.getItem("fileName");
+    return sessionStorage.getItem("realName");
   }
 
   refreshToken() {

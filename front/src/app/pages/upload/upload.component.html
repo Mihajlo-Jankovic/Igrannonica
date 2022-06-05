@@ -25,8 +25,8 @@
                 </div>
                 <div class="card-body">
                     <div class="file-upload">
-                        <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv, .xlsx, .json, .txt, .xml" ngbTooltip="{{'Click or drag your file here to upload' | translate}}">
-                        <div class="card-subtitle">{{'Drag n Drop your dataset here' | translate}}</div>
+                        <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv, .xlsx, .json, .txt" ngbTooltip="{{'Click or drag your file here to upload' | translate}}">
+                        <div class="card-subtitle">{{'Drag n Drop your dataset here. Available formats are csv, xlsx, json and txt.' | translate}}</div>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                                     <div style="height:30px; background: transparent;">
                                         <a class=" pull-left use-this" (click)="useThis($event,item)">{{'USE THIS' | translate}}</a>
                                         <div class=" download">
-                                            <a class=" pull-right" (click)="download($event,item)">{{'DOWNLOAD' | translate}}</a>
+                                            <a class=" pull-right" ngbTooltip="{{'This file will be downloaded as csv' | translate }}" (click)="download($event,item)">{{'DOWNLOAD' | translate}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +125,7 @@
                                     <div style="height:30px; background: transparent;">
                                         <a class=" pull-left use-this" (click)="useThisUn($event,item)">{{'USE THIS' | translate}}</a>
                                         <div class=" download">
-                                            <a class=" pull-right" (click)="downloadUn($event,item)">{{'DOWNLOAD' | translate}}</a>
+                                            <a class=" pull-right" ngbTooltip="{{'This file will be downloaded as csv' | translate }}" (click)="downloadUn($event,item)">{{'DOWNLOAD' | translate}}</a>
                                         </div>
                                     </div>
                                 </div>
