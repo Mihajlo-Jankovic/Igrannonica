@@ -28,7 +28,10 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         this.lang.lanClickedEvent.subscribe((data:string) =>{
             this.message = data;
-          });
+        });
+        this.message = sessionStorage.getItem("lang");
+
+        if(sessionStorage.getItem('lang')==null) sessionStorage.setItem("lang","en");
 
         if (this.cookieCheck) {
             this.refreshToken();
