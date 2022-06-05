@@ -58,7 +58,6 @@ else
     connectionString = builder.Configuration.GetConnectionString("DevConnection");
 }
 
-Console.WriteLine(connectionString);
 
 builder.Services.AddDbContext<MySqlContext>(options =>
 {

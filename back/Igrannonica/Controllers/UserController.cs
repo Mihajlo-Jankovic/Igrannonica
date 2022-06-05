@@ -295,7 +295,6 @@ namespace Igrannonica.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("REFRESH EXCEPTION");
                 return BadRequest(new { token = _configuration.GetSection("ResponseMessages:TokenNotValid").Value });
             }
 
@@ -336,7 +335,6 @@ namespace Igrannonica.Controllers
             }
             catch (Exception)
             {
-                Console.WriteLine("VALIDATE EXCEPTION");
                 throw;
             }
         }
@@ -382,90 +380,6 @@ namespace Igrannonica.Controllers
             }
         }
 
-
-        // GET: api/User
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<User>>> GetUser()
-        //{
-        //    return await _context.User.ToListAsync();
-        //}
-
-        // GET: api/User/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
-        {
-            var user = await _context.User.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        // PUT: api/User/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
-        {
-            if (id != user.id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/User
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.id }, user);
-        }
-
-        // DELETE: api/User/5
-        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.User.Any(e => e.id == id);
-        }
 
         private string getMongoDBConnString()
         {
@@ -580,10 +494,6 @@ namespace Igrannonica.Controllers
             var objectId = new ObjectId();
 
             var success = ObjectId.TryParse(experiment._id, out objectId);
-            if (success)
-                Console.WriteLine("dobro je");
-            else
-                Console.WriteLine("lose je");
             var mongoClient = new MongoClient(getMongoDBConnString());
             var database = mongoClient.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");
@@ -642,10 +552,6 @@ namespace Igrannonica.Controllers
             var objectId = new ObjectId();
 
             var success = ObjectId.TryParse(experiment._id, out objectId);
-            if (success)
-                Console.WriteLine("dobro je");
-            else
-                Console.WriteLine("lose je");
             var mongoClient = new MongoClient(getMongoDBConnString());
             var database = mongoClient.GetDatabase("igrannonica");
             var collection = database.GetCollection<Experiment>("experiment");

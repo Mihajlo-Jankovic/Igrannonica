@@ -264,7 +264,6 @@ namespace Igrannonica.Controllers
                             contentDisposition.FileName.Value);
                     var extension = contentDisposition.FileName.Value.Split('.')[1];
                     var newRandomFileName = string.Format("{0}.{1}", randomFileName, extension);
-                    Console.WriteLine(newRandomFileName);
                     var endpoint = new Uri(_configuration.GetSection("PythonServerLinks:Link").Value
                     + _configuration.GetSection("PythonServerPorts:FileUploadServer").Value
                     + _configuration.GetSection("Endpoints:UploadFile").Value);

@@ -9,13 +9,6 @@ namespace Igrannonica.Hubs
 {
     public class ChatHub : Hub
     {
-        /*public async override Task OnConnectedAsync()
-        {
-            Console.WriteLine("--> Connection Established!" + Context.ConnectionId);
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveConnID", Context.ConnectionId);
-            var returnVal = base.OnConnectedAsync();
-            return returnVal;
-        }*/
 
 
         public string GetConnectionId() => Context.ConnectionId;
@@ -38,19 +31,6 @@ namespace Igrannonica.Hubs
 
 
 
-        /*public string Get(string target) => $"Hello {target} {Context.ConnectionId}";
-
-        public async Task ReceiveStream(IAsyncEnumerable<string> messages, string param)
-        {
-            Console.WriteLine($"starting to read stream: {param}");
-
-            await foreach (var message in messages)
-            {
-                Console.WriteLine($"Receiving {message} {param} {Context.ConnectionId}");
-            }
-
-            Console.WriteLine("finished stream");
-        }*/
 
     }
 }

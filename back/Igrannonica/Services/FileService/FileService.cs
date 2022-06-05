@@ -14,14 +14,6 @@ namespace Igrannonica.Services.FileService
             _context = context;
             this.isProduction = isProduction;
         }
-/*
-        public async Task InvokeAsync(HttpContext context)
-        {
-
-            Thread t1 = new Thread(new ThreadStart(DeleteAllExpiredFiles));
-            t1.Start();
-            await _next(context);
-        }*/
 
 
         public async void DeleteAllExpiredFiles()

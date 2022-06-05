@@ -140,7 +140,6 @@ namespace Igrannonica.Controllers
                     + _configuration.GetSection("Endpoints:DownloadFile").Value + filename);
             var response = await client.GetAsync(endpoint);
             var bytes = await response.Content.ReadAsByteArrayAsync();
-            Console.WriteLine(file.FileName);
             return File(bytes, "csv/plain", file.FileName);
         }
 
