@@ -343,28 +343,28 @@ $spin-duration: 1s;
     text-align: center;
 }
 
-#table::-webkit-scrollbar-track {
+.tableScroll::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     background-color: #212332;
 }
 
-#table::-webkit-scrollbar {
+.tableScroll::-webkit-scrollbar {
     width: 12px;
     height: 12px;
     border-radius: 10px;
     background-color: #212332;
 }
 
-#table::-webkit-scrollbar-thumb {
+.tableScroll::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #7d3c8b;
 }
 
-#table::-webkit-scrollbar-corner {
+.tableScroll::-webkit-scrollbar-corner {
     background-color: #212332;
 }
 
@@ -448,6 +448,11 @@ body.cm-modal-open {
 .smallChart {
     width: 120px;
     height: 60px;
+}
+
+.inputField {
+    margin: 0;
+    padding: 0;
 }
 
 @media(max-width: 1775px) {
@@ -603,6 +608,86 @@ body.cm-modal-open {
 canvas {
     min-height: 230px;
     max-height: 232px;
+}
+
+.tip {
+    width: 300px;
+    border: 2px solid #7d3c8b;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    /*   visibility: hidden; */
+    display: none;
+    transition: all 0.3s ease;
+    bottom: calc(100% + 20px);
+    left: 30%;
+    margin-left: -115px;
+    background: #1e1e2e;
+    animation: 0.3s slideUp;
+    z-index: 100;
+}
+
+.tip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    width: 0;
+    height: 0;
+    left: 50%;
+    margin-left: -16px;
+    border: 16px solid #eee;
+    border-color: #1e1e2e transparent transparent transparent;
+    z-index: 1;
+}
+
+.tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    width: 0;
+    height: 0;
+    left: 50%;
+    margin-left: -20px;
+    border: 20px solid #eee;
+    border-color: #7d3c8b transparent transparent transparent;
+}
+
+.show {
+    text-decoration: underline;
+    position: relative;
+}
+
+.show:hover .tip {
+    /*   visibility: visible; */
+    display: block;
+}
+
+.help {
+    margin: 0;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin-left: 15px;
+    padding-left: 8px;
+    padding-bottom: 3px;
+    border: 1px solid white;
+    border-radius: 50%;
+}
+
+.parametersTable {
+    th {
+        min-width: 200px;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(10px);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 @media(max-width: 805px) {

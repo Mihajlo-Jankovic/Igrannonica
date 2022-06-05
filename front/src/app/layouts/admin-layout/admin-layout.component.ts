@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { LanguageService } from "src/app/services/language.service";
 
 @Component({
   selector: "app-admin-layout",
@@ -7,10 +8,16 @@ import { Component, OnInit } from "@angular/core";
 })
 export class AdminLayoutComponent implements OnInit {
   public sidebarColor: string = "red";
+  public message : string;
 
-  constructor() {}
+  constructor(public lang:LanguageService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    this.lang.lanClickedEvent.subscribe((data:string) =>{
+      this.message = data;
+    });
+  }
 
   changeSidebarColor(color){
     var sidebar = document.getElementsByClassName('sidebar')[0];

@@ -78,9 +78,10 @@ def table_data():
         filterList = FileStorageProgram.filterCSV(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']), int(jsonObject['Rows']), jsonObject['DataType'], jsonObject['PageNum'], jsonObject['ColName'])
         df = filterList[0]
         numOfPages = filterList[1]
+        colList = filterList[2]
         numericValues = FileStorageProgram.numericValues(os.path.join(app.config['UPLOAD_FOLDER'], jsonObject['FileName']))
 
-        return {'csv': json.loads(df.to_json(orient = 'split')), 'numericValues': numericValues, 'numOfPages': numOfPages}
+        return {'csv': json.loads(df.to_json(orient = 'split')), 'numericValues': numericValues, 'numOfPages': numOfPages, "colList": colList}
         
     else:
         return {"message" : "Error encoundered while reading dataset content."}

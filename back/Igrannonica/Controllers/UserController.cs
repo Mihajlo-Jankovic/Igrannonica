@@ -465,7 +465,7 @@ namespace Igrannonica.Controllers
                     dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
                 }
 
-                experiments = collection.Find(e => e.visibility == true).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+                experiments = collection.Find(e => e.visibility == true).SortByDescending(e => e.date).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
             }
 
             else
@@ -476,7 +476,7 @@ namespace Igrannonica.Controllers
                     dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
                 }
 
-                experiments = collection.Find(e => e.userId == user.id).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+                experiments = collection.Find(e => e.userId == user.id).SortByDescending(e => e.date).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
             }
 
             return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
@@ -611,7 +611,7 @@ namespace Igrannonica.Controllers
                 dto.NumOfPages = paging(numOfFiles, dto.NumPerPage);
             }
 
-            List<Experiment> experiments = collection.Find(e => e.visibility == true).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
+            List<Experiment> experiments = collection.Find(e => e.visibility == true).SortByDescending(e => e.date).Skip((dto.PageNum - 1) * dto.NumPerPage).Limit(dto.NumPerPage).ToList();
 
             return Ok(new { experiments = experiments, numOfPages = dto.NumOfPages });
         }

@@ -99,7 +99,6 @@ export class SidebarComponent implements OnInit {
 
       this.lang2.lanClickedEvent.subscribe((data:string) =>{
         this.message = data;
-        console.log("side"+this.message);
         if(this.message == "sr"){
           if(this.experimentName = "Unnamed experiment"){
             this.experimentName = "Neimenovani eksperiment";

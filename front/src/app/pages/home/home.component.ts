@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Configuration } from 'src/app/configuration';
+import { LanguageService } from "src/app/services/language.service";
 
 @Component({
     selector: "app-home",
@@ -16,14 +17,22 @@ export class HomeComponent implements OnInit {
     cookieCheck: any;
     configuration = new Configuration();
     public poruka : string;
+    public message: string;
 
-    constructor(private router: Router, private cookie : CookieService, private http: HttpClient) {
+    constructor(public lang:LanguageService, private router: Router, private cookie : CookieService, private http: HttpClient) {
         this.cookieCheck = this.cookie.get('cortexToken');
     }
     
     
 
     ngOnInit() {
+        this.lang.lanClickedEvent.subscribe((data:string) =>{
+            this.message = data;
+        });
+        this.message = sessionStorage.getItem("lang");
+
+        if(sessionStorage.getItem('lang')==null) sessionStorage.setItem("lang","en");
+
         if (this.cookieCheck) {
             this.refreshToken();
         }

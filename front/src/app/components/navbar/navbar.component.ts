@@ -118,8 +118,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.token = this.cookie.get('cortexToken');
     }
 
-    console.log("ISPIS"+sessionStorage.getItem('lang'));
-
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;

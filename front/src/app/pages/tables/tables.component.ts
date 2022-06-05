@@ -17,6 +17,7 @@ import {
   ApexTooltip
 } from "ng-apexcharts";
 import { NotificationsService } from "src/app/services/notifications.service";
+import { LanguageService } from "src/app/services/language.service";
 
 declare function myFunc(): any;
 
@@ -43,6 +44,7 @@ export class TablesComponent {
     'csv': {}, //podaci za ucitavanje tabele
     'numOfPages': 0,
     'numericValues': {}, //numericke kolone
+    'colName': []
   }
 
   data = {
@@ -227,7 +229,11 @@ export class TablesComponent {
   buttonMissingValues = "Replace";
   buttonOutliers = "Replace";
 
-  constructor(private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
+  public message:string;
+
+  colNameArray: any = [];
+
+  constructor(public lang: LanguageService, private tableService: TableService, private cookie: CookieService, private toastr: ToastrService, private http: HttpClient, private router: Router, private notify: NotificationsService) {
     sessionStorage.removeItem('statistics');
     this.cookieCheck = this.cookie.get('cortexToken');
     this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
@@ -236,6 +242,11 @@ export class TablesComponent {
   }
 
   ngOnInit() {
+    this.lang.lanClickedEvent.subscribe((data:string) =>{
+      this.message = data;
+    });
+    this.message = sessionStorage.getItem("lang");
+
     sessionStorage.setItem('lastPage', 'datapreview');
     if (this.cookieCheck) {
       this.refreshToken();
@@ -388,13 +399,17 @@ export class TablesComponent {
 
             sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
             this.selectedOutlierColumn = sessionStorage.getItem('selectedOutlierColumn');
+
+            this.colNameArray = this.csv['colList'];
+            sessionStorage.setItem('colNameArray', JSON.stringify(this.colNameArray));
+            
             this.loadTable(filter);
           }, err => {
             let JSONtoken: string = JSON.stringify(err.error);
             let StringToken = JSON.parse(JSONtoken).responseMessage;
             if (StringToken == "Error encountered while reading dataset content.") {
               this.poruka = "Error encoundered while reading dataset content";
-              // this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
+              if(this.message == "sr") this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
               this.notify.showNotification(this.poruka);
             }
           })
@@ -426,15 +441,19 @@ export class TablesComponent {
           let numerValuesCSV: any = {};
           numerValuesCSV = this.csv['numericValues'];
           this.numericValues = numerValuesCSV;
-
+          
           sessionStorage.setItem('numericValues', JSON.stringify(this.numericValues));
+
+          this.colNameArray = this.csv['colList'];
+          sessionStorage.setItem('colNameArray', JSON.stringify(this.colNameArray));
+
           this.loadTable(filter);
         }, err => {
           let JSONtoken: string = JSON.stringify(err.error);
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while reading dataset content.") {
             this.poruka = "Error encoundered while reading dataset content";
-            // this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
+            if(this.message == "sr") this.poruka = "Došlo je do greške pri čitanju sadržaja skupa podataka";
             this.notify.showNotification(this.poruka);
           }
         })
@@ -474,8 +493,10 @@ export class TablesComponent {
       numValueIndexArray.push(this.numericValues['index'][i]);
       this.numericValuesArray.push(numValueIndexArray);
     }
+
+    this.colNameArray = JSON.parse(sessionStorage.getItem('colNameArray'));
     if (!filter) {
-      this.selectedColName = this.headingLines[0][0];
+      this.selectedColName = this.colNameArray[0];
       this.selectedCol = this.numericValuesArray[0][1];
       this.selectedColDiv = true;
     }
@@ -491,26 +512,26 @@ export class TablesComponent {
   }
 
   setInputOutput() {
-
+    //console.log(this.colNameArray);
     if (sessionStorage.getItem("inputList") == null) {
-      for (let i = 0; i < this.headingLines[0].length - 2; i++) {
+      for (let i = 0; i < this.colNameArray.length - 1; i++) {
         this.radios[i] = true; //disabled
         this.checks[i] = false; //disabled
         this.radios1[i] = false; //checked
         this.checks1[i] = true; //checked
-        this.listCheckedI.push(this.headingLines[0][i])
+        this.listCheckedI.push(this.colNameArray[i])
       }
 
-      this.checks[this.headingLines[0].length - 2] = true;
-      this.checks1[this.headingLines[0].length - 2] = false;
-      this.listCheckedI.splice(this.headingLines[0].length - 2, 1);
+      this.checks[this.colNameArray.length - 1] = true;
+      this.checks1[this.colNameArray.length - 1] = false;
+      this.listCheckedI.splice(this.colNameArray.length - 1, 1);
       sessionStorage.setItem('inputList', JSON.stringify(this.listCheckedI));
 
-      this.radios[this.headingLines[0].length - 2] = false;
-      this.radios1[this.headingLines[0].length - 2] = true;
-      this.selectedOutput = this.headingLines[0][this.headingLines[0].length - 2];
+      this.radios[this.colNameArray.length - 1] = false;
+      this.radios1[this.colNameArray.length - 1] = true;
+      this.selectedOutput = this.colNameArray[this.colNameArray.length - 1];
       sessionStorage.setItem('output', this.selectedOutput);
-      this.pret = this.headingLines[0].length - 2;
+      this.pret = this.colNameArray.length - 1;
       this.setEncoding();
       this.outputStorage();
     }
@@ -519,10 +540,10 @@ export class TablesComponent {
       this.selectedOutput = sessionStorage.getItem('output');
 
       let f: number = 0;
-      for (let i = 0; i < this.headingLines[0].length - 1; i++) {
+      for (let i = 0; i < this.colNameArray.length; i++) {
         f = 0;
         for (let j = 0; j < this.listCheckedI.length; j++) {
-          if (this.headingLines[0][i] == this.listCheckedI[j]) {
+          if (this.colNameArray[i] == this.listCheckedI[j]) {
             this.checks1[i] = true;
             this.checks[i] = false;
             this.radios1[i] = false;
@@ -531,7 +552,7 @@ export class TablesComponent {
           }
         }
         if (f == 0) {
-          if (this.headingLines[0][i] == this.selectedOutput) {
+          if (this.colNameArray[i] == this.selectedOutput) {
             this.checks1[i] = false;
             this.checks[i] = true;
             this.radios1[i] = true;
@@ -552,12 +573,12 @@ export class TablesComponent {
   }
   //*
   setEncoding() {
-    for (let i = 0; i < this.headingLines[0].length - 2; i++) {
+    for (let i = 0; i < this.colNameArray.length - 1; i++) {
       let f: any = 0;
       this.restartColData();
 
       for (let j = 0; j < this.numericValues['col'].length; j++) {
-        if (this.numericValues['col'][j] == this.headingLines[0][i]) {
+        if (this.numericValues['col'][j] == this.colNameArray[i]) {
           this.column['encoding'] = "none";
           f = 1;
         }
@@ -567,9 +588,9 @@ export class TablesComponent {
         this.column['encoding'] = this.encodingList[0];
       }
       this.column['id'] = i;
-      this.column['colName'] = this.headingLines[0][i];
+      this.column['colName'] = this.colNameArray[i];
       this.column['isSelected'] = true;
-      this.column['isNum'] = this.isNumericFun(this.headingLines[0][i]);
+      this.column['isNum'] = this.isNumericFun(this.colNameArray[i]);
       this.column['encList'] = this.getSelectedEnc(this.column['isNum'], this.column['encoding']);
       this.column['output'] = false;
       this.colDataList.push(this.column);
@@ -577,10 +598,10 @@ export class TablesComponent {
 
     let f: any = 0;
     this.restartColData();
-    this.column['id'] = this.headingLines[0].length - 2;
-    this.column['colName'] = this.headingLines[0][this.headingLines[0].length - 2];
+    this.column['id'] = this.colNameArray.length - 1;
+    this.column['colName'] = this.colNameArray[this.colNameArray.length - 1];
     this.column['isSelected'] = true;
-    this.column['isNum'] = this.isNumericFun(this.headingLines[0][this.headingLines[0].length - 2]);
+    this.column['isNum'] = this.isNumericFun(this.colNameArray[this.colNameArray.length - 1]);
     /*
     f = 0;
     for(let j = 0; j < this.numericValues['col'].length; j++) {
@@ -685,7 +706,7 @@ export class TablesComponent {
           let StringToken = JSON.parse(JSONtoken).responseMessage;
           if (StringToken == "Error encoundered while calculating statistics.") {
             this.poruka = "Error encoundered while calculating statistics";
-            //this.poruka = "Došlo je do greške pri izračunavanju statistike";
+            if(this.message == "sr") this.poruka = "Došlo je do greške pri izračunavanju statistike";
             this.notify.showNotification(this.poruka);
           }
         })
@@ -1197,8 +1218,8 @@ export class TablesComponent {
     var value = event.target.value;
     var ind: number = -1;
 
-    for (let i = 0; i < this.headingLines[0].length - 1; i++) {
-      if (this.selectedOutput == this.headingLines[0][i])
+    for (let i = 0; i < this.colNameArray.length; i++) {
+      if (this.selectedOutput == this.colNameArray[i])
         ind = i;
     }
 
@@ -1317,14 +1338,14 @@ export class TablesComponent {
       this.showStatistics(this.selectedColName, true);
       this.selectedRows = [];
       this.poruka = "Delete successfull";
-      //this.poruka = "Red/ovi su uspešno obrisani";
+      if(this.message == "sr") this.poruka = "Red/ovi su uspešno obrisani";
       this.notify.showNotification(this.poruka);
     }, err => {
       let JSONtoken: string = JSON.stringify(err.error);
       let StringToken = JSON.parse(JSONtoken).responseMessage;
       if (StringToken == "Error encoundered while deleting a row from the dataset.") {
         this.poruka = "Error encoundered while deleting a row from the dataset";
-        //this.poruka = "Došlo je do greške prilikom brisanja reda iz skupa podataka"
+        if(this.message == "sr") this.poruka = "Došlo je do greške prilikom brisanja reda iz skupa podataka"
         this.notify.showNotification(this.poruka);
       }
     });
@@ -1342,7 +1363,7 @@ export class TablesComponent {
 
     if (this.isNumericFun(columnName) && !this.isNumber(value)) {
       this.poruka = "You are trying to insert non numeric value into numeric column"
-      // this.poruka = "Pokušavate da umetnete nenumeričku vrednost u numeričku kolonu"
+      if(this.message == "sr") this.poruka = "Pokušavate da umetnete nenumeričku vrednost u numeričku kolonu"
       this.notify.showNotification(this.poruka);
       this.reset();
       this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn);
@@ -1356,7 +1377,7 @@ export class TablesComponent {
         this.resetStatistic();
         this.showStatistics(this.selectedColName, true);
         this.poruka = "Edit successfull";
-        // this.poruka = "Izmena je uspela";
+        if(this.message == "sr") this.poruka = "Izmena je uspela";
         this.notify.showNotification(this.poruka);
 
       }, err => {
@@ -1364,7 +1385,7 @@ export class TablesComponent {
         let StringToken = JSON.parse(JSONtoken).responseMessage;
         if (StringToken == "Error encoundered while deleting a row from the dataset.") {
           this.poruka = "Error encoundered while editing cell content";
-          //this.poruka = "Došlo je do greške pri uređivanju sadržaja ćelije";
+          if(this.message == "sr") this.poruka = "Došlo je do greške pri uređivanju sadržaja ćelije";
           this.notify.showNotification(this.poruka);
         }
       })
@@ -1595,12 +1616,12 @@ export class TablesComponent {
     let filename =sessionStorage.getItem('filename');
     if (this.isNumericFun(this.selectedToFillMissingValCol) && !this.isNumber(this.enteredToFillMissingValCol)) {
       this.poruka = "You are trying to replace with non numeric value";
-      //this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
+      if(this.message == "sr") this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
       this.notify.showNotification(this.poruka);
     }
     else if (this.selectedToFillMissingValCol == "none" && this.enteredToFillMissingValCol == "") {
       this.poruka = "Please choose value to replace missing values.";
-      //this.poruka = "Izaberite vrednost da biste popunili vrednosti koje nedostaju";
+      if(this.message == "sr") this.poruka = "Izaberite vrednost da biste popunili vrednosti koje nedostaju";
       this.notify.showNotification(this.poruka);
     }
     else {
@@ -1617,7 +1638,7 @@ export class TablesComponent {
             //this.reset();
             //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();
@@ -1634,7 +1655,7 @@ export class TablesComponent {
             //this.reset();
             //this.showTable(this.selectedType, this.selectedRow, this.page, false, this.selectedOutlierColumn)
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();
@@ -1669,12 +1690,12 @@ export class TablesComponent {
     let filename = sessionStorage.getItem('filename');
     if (this.selectedToReplaceOutliers == "none" && this.enteredToReplaceOutliersCol == "") {
       this.poruka = "Please choose value to replace outliers.";
-      //this.poruka = "Izaberite vrednost da biste zamenili izuzetke";
+      if(this.message == "sr") this.poruka = "Izaberite vrednost da biste zamenili izuzetke";
       this.notify.showNotification(this.poruka);
     }
     else if (!this.isNumber(this.enteredToReplaceOutliersCol) && this.enteredToReplaceOutliersCol != "") {
       this.poruka = "You are trying to replace with non numeric value";
-      //this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
+      if(this.message == "sr") this.poruka = "Pokušavate da zamenite nenumeričkom vrednošću";
       this.notify.showNotification(this.poruka);
     }
     else {
@@ -1689,7 +1710,7 @@ export class TablesComponent {
 
             this.resetOutliers();
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();
@@ -1704,7 +1725,7 @@ export class TablesComponent {
 
             this.resetOutliers();
             this.poruka = "Edit successfull";
-            // this.poruka = "Izmena je uspela";
+            if(this.message == "sr") this.poruka = "Izmena je uspela";
             this.notify.showNotification(this.poruka);
             setTimeout(() => {
               this.clearStorage();

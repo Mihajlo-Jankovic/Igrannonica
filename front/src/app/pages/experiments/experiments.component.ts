@@ -7,6 +7,7 @@ import { LoginService } from 'src/app/services/login.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotificationsService } from 'src/app/services/notifications.service';
 import { ExpNameService } from 'src/app/services/expName.service';
+import { LanguageService } from 'src/app/services/language.service';
 
 @Component({
   selector: 'app-experiments',
@@ -93,8 +94,9 @@ export class ExperimentsComponent implements OnInit {
   experimentListUnauthorized: any = []
 
   public poruka: string;
+  public message: string;
 
-  constructor(private notify: NotificationsService, private userService: UserService, private cookie: CookieService, private router: Router, private loginService: LoginService, private http: HttpClient, private expName: ExpNameService) {
+  constructor(public lang:LanguageService, private notify: NotificationsService, private userService: UserService, private cookie: CookieService, private router: Router, private loginService: LoginService, private http: HttpClient, private expName: ExpNameService) {
     if (this.cookie.get('cortexToken')) {
       this.cookieCheck = this.cookie.get('cortexToken');
       this.selectedPrivacyType = 'myexperiments'
@@ -102,6 +104,10 @@ export class ExperimentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.lang.lanClickedEvent.subscribe((data:string) =>{
+      this.message = data;
+    });
+    this.message = sessionStorage.getItem("lang");
     sessionStorage.setItem('lastPage', 'experiments');
     this.showExperiments(this.selectedPrivacyType, this.pageNum);
   }
@@ -289,8 +295,8 @@ export class ExperimentsComponent implements OnInit {
     this.userService.deleteExperiment(id).subscribe(res => {
       if (res['id']) {
         this.poruka = "Experiment deleted successfully.";
-        // this.poruka = "Eksperiment je uspešno obrisan"
-        this.notify.showNotification("Experiment deleted successfully.");
+        if(this.message == "sr") this.poruka = "Eksperiment je uspešno obrisan"
+        this.notify.showNotification(this.poruka);
       }
       this.experimentListAuthorized = [];
       this.experimentListUnauthorized = [];
