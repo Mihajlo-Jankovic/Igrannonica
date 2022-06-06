@@ -205,5 +205,6 @@
     "Hover Here" : "Prevuci ovde",
     "Model parameters" : "Parametri modela",
     "Loss Function" : "Funkcija gubitka",
-    "Learning Rate" : "Stopa učenja"
+    "Learning Rate" : "Stopa učenja",
+    "Start training new model to track it's live performance.": "Počnite da obučavate novi model da biste pratili njegove performanse uživo"
 }

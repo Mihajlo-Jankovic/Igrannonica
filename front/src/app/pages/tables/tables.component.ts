@@ -251,34 +251,35 @@ export class TablesComponent {
       this.message2 = "sr";
       else if(data == "en")
       this.message2 = "en";
-      if(this.message == "sr") {
+      if(this.message2 == "sr") {
         this.statsButton="Cela statistika";
       }
       else{
         this.statsButton = "Full Statistics";
       }
 
-      if(this.message == "sr") this.matrixButton="Cela matrica";
+      if(this.message2 == "sr") this.matrixButton="Cela matrica";
       else{
         this.matrixButton = "Full Matrix";
       }
 
-      if(this.message == "sr"){
+      if(this.message2 == "sr"){
         this.buttonMissingValues = "Zameni";
       }
       else{
         this.buttonMissingValues = "Replace";
       }
 
-      if(this.message == "sr"){
+      if(this.message2 == "sr"){
         this.buttonOutliers = "Zameni";
       }
       else{
         this.buttonOutliers = "Replace";
       }
+      this.message = this.message2;
     });
-    this.message = sessionStorage.getItem("lang");
-    console.log(this.message2);
+    //this.message = sessionStorage.getItem("lang");
+    console.log(this.message);
    
 
     sessionStorage.setItem('lastPage', 'datapreview');
