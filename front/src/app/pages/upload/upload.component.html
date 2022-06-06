@@ -1,0 +1,139 @@
+<div class=" content">
+
+
+    <div class="warning-wrapper" [hidden]="!deleteWarning">
+        <div class="warning-modal">
+            <div class="warning-modal-body">
+                <div class="warning-body" style="padding: 0.5%;overflow: auto;">
+                    <div class="warning-content">
+                        <h3>{{'Are you sure you want to delete this file?' | translate}}</h3>
+                        <h4 style="margin: 0 0 30px 0;">{{'This change is permanent.' | translate}}</h4>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn2" (click)="delete(toDelete); deleteWarning=false;">{{'Delete' | translate}}</button>
+                        <button class="btn btn-primary btn-lg btn-block mb-3 warning-btn1" (click)="deleteWarning=false;">{{'Cancel' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="warning-modal-background"></div>
+    </div>
+
+    <div class=" row">
+        <div class=" col-md-12">
+            <div class=" card">
+                <div class="card-header">
+                    <h3 class="card-title">{{'Upload a new dataset' | translate}}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="file-upload">
+                        <input class="file-input" type="file" #file (change)="uploadFile(file.files)" accept=".csv, .xlsx, .json, .txt" ngbTooltip="{{'Click or drag your file here to upload' | translate}}">
+                        <div class="card-subtitle">{{'Drag n Drop your dataset here. Available formats are csv, xlsx, json and txt.' | translate}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class=" card">
+                <div class="card-header">
+                    <h3 class="card-title" style="float:left; margin-top:5px;"> {{'Choose an existing dataset' | translate}}</h3>
+                    <div class="header-filter" *ngIf="loggedUser">
+                        <div class="filter-left">
+                            <h6 *ngIf="cookieCheck">{{'Filter datasets' | translate}}</h6>
+                            <select class='dropdown' *ngIf="cookieCheck" [(ngModel)]="selectedPrivacyType" (change)='onSelectedType($event)' placeholder="{{'Data Privacy' | translate}}" ngbTooltip="{{'Data Privacy' | translate}}" style="float:left;">
+                                <option class='option' value="public">{{'Public' | translate}}</option>
+                                <option class='option' value="mydatasets">{{'My datasets' | translate}}</option>
+                            </select>
+                        </div>
+                        <div class="filter-right">
+                            <div class="buttons" [hidden]="!numOfPages">
+                                <button class=" btn btn-link page" style="padding-left: 0;" (click)="lastPage()">
+                                    <i class="tim-icons icon-double-right arrow"></i>
+                                </button>
+                                <button class=" btn btn-link page" style="padding-left: 0; padding-right: 0px;" (click)="nextPage(1)">
+                                    <i class="tim-icons icon-minimal-right arrow"></i>
+                                </button>
+                                <button class=" btn btn-link page" style="padding-right: 0px;" (click)="nextPage(2)" [hidden]="pageNum >= numOfPages-1">
+                                    {{pageNum+2}}
+                                </button>
+                                <button class=" btn btn-link page" (click)="nextPage(1)" [hidden]="pageNum == numOfPages">
+                                    {{pageNum+1}}
+                                </button>
+                                <button class=" btn btn-link page" style="color: white;">{{pageNum}}</button>
+                                <button class=" btn btn-link page" (click)="previousPage(1)" [hidden]="pageNum == 1">
+                                    {{pageNum-1}}
+                                </button>
+                                <button class=" btn btn-link page" (click)="previousPage(2)" [hidden]="pageNum < 3">
+                                    {{pageNum-2}}
+                                </button>
+                                <button class=" btn btn-link page" style="padding-left:0px;" (click)="previousPage(1)">
+                                    <i class="tim-icons icon-minimal-left arrow"></i>
+                                </button>
+                                <button class=" btn btn-link page" (click)="firstPage()">
+                                    <i class="tim-icons icon-double-left arrow"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body filelist" style="padding-right: 0;">
+                    <div style="margin: auto" *ngIf="noFiles && selectedPrivacyType == 'public'">
+                        <h2 style="text-align:center">{{'No public datasets available.' | translate}}</h2>
+                    </div>
+                    <div style="margin: auto" *ngIf="noFiles && selectedPrivacyType == 'mydatasets'">
+                        <h2 style="text-align:center">{{"You haven't uploaded any files yet." | translate}}</h2>
+                    </div>
+                    <div class="authorized" *ngIf="cookieCheck">
+                        <div *ngFor="let item of FilesList">
+                            <div class="file">
+                                <div class="fileContent">
+                                    <div class=" row">
+                                        <div class="titleHeader">
+                                            <h4 class="" style="margin-bottom:0; margin-right: 0px; width: auto; float: left;">{{'Dataset:' | translate}}</h4>
+                                            <div *ngIf="item.thisUser" class="settings">
+                                                <button class=" btn btn-link trash " (click)="deleteCheck(item)" placement="left" ngbTooltip="{{'Delete file' | translate}}" container="body" style="left: 20px">
+                                                    <i class="tim-icons icon-trash-simple"> </i>
+                                                </button>
+                                                <label class="switch" ngbTooltip="{{'Change files privacy by toggling this' | translate}}">
+                                                    <input type="checkbox" *ngIf="item.Public" (change)="onCheckboxChange($event,item)" checked>
+                                                    <input type="checkbox" *ngIf="!item.Public" (change)="onCheckboxChange($event,item)">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="pull-right fileName">{{item.fileName}}</div>
+                                    </div>
+                                    <p>{{'Created:' | translate}} {{item.dateCreated}}</p>
+                                    <p>{{'Uploaded by:' | translate}} {{item.username}}</p>
+                                    <div style="height:30px; background: transparent;">
+                                        <a class=" pull-left use-this" (click)="useThis($event,item)">{{'USE THIS' | translate}}</a>
+                                        <div class=" download">
+                                            <a class=" pull-right" ngbTooltip="{{'This file will be downloaded as csv' | translate }}" (click)="download($event,item)">{{'DOWNLOAD' | translate}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unauthorized" *ngIf="!cookieCheck">
+                        <div *ngFor="let item of FilesListUnauthorized">
+                            <div class="file">
+                                <div class="fileContent">
+                                    <div class=" row">
+                                        <h4 class="card-title" style="margin-bottom:0">{{'Dataset:' | translate}}</h4>
+                                        <div class="pull-right fileName">{{item.fileName}}</div>
+                                    </div>
+                                    <p>{{'Created:' | translate}} {{item.dateCreated}}</p>
+                                    <p>{{'Uploaded by:' | translate}} {{item.username}}</p>
+                                    <div style="height:30px; background: transparent;">
+                                        <a class=" pull-left use-this" (click)="useThisUn($event,item)">{{'USE THIS' | translate}}</a>
+                                        <div class=" download">
+                                            <a class=" pull-right" ngbTooltip="{{'This file will be downloaded as csv' | translate }}" (click)="downloadUn($event,item)">{{'DOWNLOAD' | translate}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
