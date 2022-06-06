@@ -731,6 +731,7 @@ export class TablesComponent {
       this.tableService.getStatistics(filename, 0).subscribe(
         (response) => {
           this.statistic = response;
+          //this.showStatisticDiv = true;
           sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
           this.loadStatistics(col);
           this.setMissingValuesandOutliers();
