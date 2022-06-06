@@ -537,7 +537,7 @@ export class TablesComponent {
     this.numCol2 = this.isNumericFun(this.selectedColName);
 
     if (!filter) {
-      //this.showStatisticDiv = true;
+      this.showStatisticDiv = true;
       this.showStatistics(this.selectedColName, true);
     }
     //*
@@ -730,7 +730,7 @@ export class TablesComponent {
       this.tableService.getStatistics(filename, 0).subscribe(
         (response) => {
           this.statistic = response;
-          this.showStatisticDiv = true;
+          //this.showStatisticDiv = true;
           sessionStorage.setItem('statistics', JSON.stringify(this.statistic));
           this.loadStatistics(col);
           this.setMissingValuesandOutliers();

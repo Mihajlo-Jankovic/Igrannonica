@@ -193,7 +193,7 @@
     "Selected column is not numerical. Boxplot cannot be displayed." : "Izabrana kolona nije numerička. Nije moguće iscrtati boxplot.",
     "Too many different values." : "Previše različitih podataka",
     "Selected column is not numerical." : "Izabrana kolona nije numerička.",
-    "Choose column to view it's statistics" : "Izaberite kolonu da vidite njenu statistiku",
+    "Choose column to view it's statistics" : "Izaberite kolonu za prikaz statistike",
     "Change applies to statistics, chart and corelation matrix" : "Promena se odnosi na statistiku, grafik i korelacionu matricu",
     "Choose metrics to display in graph bellow" : "Izaberite metrike koje će se prikazati na grafiku ispod",
     "Training in progress..." : "Treniranje u toku...",
