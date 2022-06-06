@@ -3,7 +3,7 @@ import { environment } from "src/environments/environment";
 
 export class Configuration
 {
-    public port : string = "https://localhost:7219"; // http://147.91.204.115:10106 https://localhost:7219
+    public port : string = "http://147.91.204.115:10106"; // http://147.91.204.115:10106 https://localhost:7219
     
 
     public login : string = this.port + "/api/User/login";
